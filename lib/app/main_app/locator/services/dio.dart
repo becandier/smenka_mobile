@@ -1,0 +1,23 @@
+import 'package:dio/dio.dart';
+import 'package:talker_dio_logger/talker_dio_logger.dart';
+import 'package:talker_flutter/talker_flutter.dart';
+import 'package:templatecmd/app/config/app_config.dart';
+import 'package:templatecmd/app/main_app/locator/_locator.dart';
+
+/// Инициализатор dio клиента приложения
+class DioInitializer implements ServiceInitializer {
+  @override
+  String get serviceName => 'Dio';
+
+  @override
+  Future<void> initialize(AppServiceLocator locator) async {
+    final dio = Dio();
+    final talker = locator.get<Talker>();
+    final appConfig = locator.get<AppConfig>();
+
+    dio.interceptors.add(TalkerDioLogger(talker: talker));
+    dio.options.baseUrl = appConfig.apiEndPoint;
+
+    locator.register<Dio>(dio);
+  }
+}

@@ -1,0 +1,87 @@
+part of 'app.dart';
+
+class _SuccessApp extends StatefulWidget {
+  const _SuccessApp({
+    required this.appConfig,
+    required this.sharedPreferences,
+    required this.packageInfo,
+    required this.talker,
+    required this.dio,
+    required this.debugRepository,
+  });
+  final AppConfig appConfig;
+  final SharedPreferences sharedPreferences;
+  final PackageInfo packageInfo;
+  final Talker talker;
+  final Dio dio;
+  final IDebugRepositoryImp debugRepository;
+
+  @override
+  State<_SuccessApp> createState() => _SuccessAppState();
+}
+
+class _SuccessAppState extends State<_SuccessApp> {
+  // Local device
+  Locale? _deviceLocale;
+
+  // Router
+  late AppRouter _router;
+  @override
+  void initState() {
+    super.initState();
+    _deviceLocale = PlatformDispatcher.instance.locale;
+    _router = AppRouter();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: widget.appConfig),
+        RepositoryProvider.value(value: widget.sharedPreferences),
+        RepositoryProvider.value(value: widget.packageInfo),
+        RepositoryProvider.value(value: widget.talker),
+        RepositoryProvider.value(value: widget.dio),
+        RepositoryProvider<IDebugRepositoryImp>.value(
+          value: widget.debugRepository,
+        ),
+      ],
+      child: MaterialApp.router(
+        routerConfig: _router.config(
+          navigatorObservers: () => [
+            TalkerRouteObserver(widget.talker),
+          ],
+        ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: _deviceLocale,
+        builder: (context, child) {
+          return TalkerWrapper(
+            talker: widget.talker,
+            options: const TalkerWrapperOptions(
+              enableErrorAlerts: true,
+            ),
+            child: UpgradeAlert(
+              navigatorKey: _router.navigatorKey,
+              upgrader: Upgrader(
+                languageCode: _deviceLocale?.languageCode,
+                minAppVersion: widget.appConfig.minVersion,
+              ),
+              child: TechWorksWrapper(
+                navigatorKey: _router.navigatorKey,
+                techWorks: widget.appConfig.techWork,
+                child: DebugGestureDetector(
+                  navigatorKey: _router.navigatorKey,
+                  password: context.read<AppConfig>().debugModePassword,
+                  child: ConnectivityWrapper(
+                    child: child ?? const SizedBox(),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
