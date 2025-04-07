@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:templatecmd/app/_app.dart';
 import 'package:templatecmd/l10n/localization_extension.dart';
@@ -115,63 +113,6 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
       }
     }
 
-    // Определяем текущую платформу
-    final isIOS = Platform.isIOS;
-
-    if (isIOS) {
-      // Cupertino стиль для iOS
-      return showCupertinoDialog<bool>(
-        context: checkContext,
-        useRootNavigator: false,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return CupertinoAlertDialog(
-                title: Text(context.l10n.enterInDebugMode),
-                content: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: CupertinoTextField(
-                    controller: controller,
-                    placeholder: context.l10n.password,
-                    obscureText: obscureText,
-                    autofocus: true,
-                    suffix: CupertinoButton(
-                      onPressed: () {
-                        setState(() {
-                          obscureText = !obscureText;
-                        });
-                      },
-                      child: Icon(
-                        obscureText
-                            ? CupertinoIcons.eye_slash
-                            : CupertinoIcons.eye,
-                        color: CupertinoColors.systemGrey,
-                        size: 22,
-                      ),
-                    ),
-                    onSubmitted: (_) => handleSubmit(context),
-                  ),
-                ),
-                actions: [
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      context.router.maybePop(false);
-                    },
-                    isDestructiveAction: true,
-                    child: Text(context.l10n.cancel),
-                  ),
-                  CupertinoDialogAction(
-                    onPressed: () => handleSubmit(context),
-                    isDefaultAction: true,
-                    child: Text(context.l10n.login),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    } else {
       // Material стиль для других платформ
       return showDialog<bool>(
         context: checkContext,
@@ -223,7 +164,6 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
           );
         },
       );
-    }
   }
 
   @override

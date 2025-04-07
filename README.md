@@ -27,6 +27,7 @@ Following instruction replace default project to your new project.
 	- PRIVACY_POLICY (STRING)
 	- MIN_VERSION (STRING) - if current version is smaller then min version, user will not able to use app. 
 	- TECH_WORK (BOOL) - if this field is true user will not be able to use app.  
+	- DEBUG_MODE_PASSWORD (STRING) - password for debug mode
 
 ### 3. Icon
 For setup icon of application change file <assets/logo.png> and run command:
