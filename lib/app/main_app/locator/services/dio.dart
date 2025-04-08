@@ -3,6 +3,8 @@ import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:templatecmd/app/config/app_config.dart';
 import 'package:templatecmd/app/main_app/locator/_locator.dart';
+import 'package:templatecmd/core/network/dio_errors_interception.dart';
+import 'package:templatecmd/core/network/dio_headers_intercaption.dart';
 
 /// Инициализатор dio клиента приложения
 class DioInitializer implements ServiceInitializer {
@@ -16,6 +18,8 @@ class DioInitializer implements ServiceInitializer {
     final appConfig = locator.get<AppConfig>();
 
     dio.interceptors.add(TalkerDioLogger(talker: talker));
+    dio.interceptors.add(ApiErrorInterceptor());
+    dio.interceptors.add(DioHeadersIntercaption());
     dio.options.baseUrl = appConfig.apiEndPoint;
 
     locator.register<Dio>(dio);
