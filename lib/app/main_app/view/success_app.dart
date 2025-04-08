@@ -74,7 +74,11 @@ class _SuccessAppState extends State<_SuccessApp> {
                   navigatorKey: _router.navigatorKey,
                   password: context.read<AppConfig>().debugModePassword,
                   child: ConnectivityWrapper(
-                    child: child ?? const SizedBox(),
+                    child: GestureDetector(
+                      onTap: () =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
+                      child: child ?? const SizedBox(),
+                    ),
                   ),
                 ),
               ),

@@ -5,11 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:templatecmd/app/_app.dart';
 import 'package:templatecmd/l10n/localization_extension.dart';
 
-/// Типы тапов, которые мы отслеживаем
-enum TapType { long, short }
-
 /// Виджет-детектор заданной последовательности жестов.
-/// При выполнении последовательности: long, long, short, short,
+/// При выполнении последовательности из 3 длинных тапов
 /// вызывается pushDebugScreen.
 class DebugGestureDetector extends StatefulWidget {
   const DebugGestureDetector({
@@ -30,48 +27,34 @@ class DebugGestureDetector extends StatefulWidget {
 }
 
 class _DebugGestureDetectorState extends State<DebugGestureDetector> {
-  // Определяем нужную последовательность
-  static const _pattern = [
-    TapType.long,
-    TapType.long,
-    TapType.short,
-    TapType.short,
-  ];
+  // Количество длинных тапов для активации
+  static const _requiredTapCount = 3;
 
-  final List<TapType> _currentSequence = [];
+  // Текущее количество зарегистрированных тапов
+  int _tapCount = 0;
   Timer? _resetTimer;
 
-  void _resetSequence() {
-    _currentSequence.clear();
+  void _resetTapCount() {
+    _tapCount = 0;
   }
 
-  void _registerTap(TapType tap) {
+  void _registerLongTap() {
     // Отменяем предыдущий таймер и запускаем новый
     _resetTimer?.cancel();
-    _currentSequence.add(tap);
+    _tapCount++;
 
-    // Проверяем, совпадает ли текущая последовательность
-    // с началом нужного паттерна
-    for (var i = 0; i < _currentSequence.length; i++) {
-      if (_currentSequence[i] != _pattern[i]) {
-        _resetSequence();
-        return;
-      }
-    }
-
-    // Если последовательность полная, вызываем callback и сбрасываем состояние
-    if (_currentSequence.length == _pattern.length) {
-      _resetSequence();
+    // Если достигнуто нужное количество тапов, вызываем проверку пароля
+    if (_tapCount == _requiredTapCount) {
+      _resetTapCount();
       Future.delayed(
         Duration.zero,
         _promptPassword,
       );
-
       return;
     }
 
-    // Если последовательность не полная, запускаем таймер сброса
-    _resetTimer = Timer(widget.timeoutBetweenTaps, _resetSequence);
+    // Запускаем таймер сброса
+    _resetTimer = Timer(widget.timeoutBetweenTaps, _resetTapCount);
   }
 
   void pushDebugScreen() {
@@ -113,57 +96,58 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
       }
     }
 
-      // Material стиль для других платформ
-      return showDialog<bool>(
-        context: checkContext,
-        useRootNavigator: false,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return Form(
-                key: formKey,
-                child: AlertDialog(
-                  title: Text(context.l10n.enterInDebugMode),
-                  content: TextFormField(
-                    autofocus: true,
-                    validator: (value) => value == widget.password
-                        ? null
-                        : context.l10n.passwordIncorrect,
-                    controller: controller,
-                    obscureText: obscureText,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.password,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          obscureText ? Icons.visibility_off : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            obscureText = !obscureText;
-                          });
-                        },
+    return showDialog<bool>(
+      context: checkContext,
+      useRootNavigator: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Form(
+              key: formKey,
+              child: AlertDialog(
+                title: Text(context.l10n.enterInDebugMode),
+                content: TextFormField(
+                  autofocus: true,
+                  validator: (value) => value == widget.password
+                      ? null
+                      : context.l10n.passwordIncorrect,
+                  controller: controller,
+                  obscureText: obscureText,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.password,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        obscureText ? Icons.visibility_off : Icons.visibility,
                       ),
-                    ),
-                    onFieldSubmitted: (_) => handleSubmit(context),
-                  ),
-                  actions: [
-                    TextButton(
                       onPressed: () {
-                        context.router.maybePop(false);
+                        setState(() {
+                          obscureText = !obscureText;
+                        });
                       },
-                      child: Text(context.l10n.cancel),
                     ),
-                    ElevatedButton(
-                      onPressed: () => handleSubmit(context),
-                      child: Text(context.l10n.login),
-                    ),
-                  ],
+                  ),
+                  onFieldSubmitted: (_) => handleSubmit(context),
                 ),
-              );
-            },
-          );
-        },
-      );
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      context.router.maybePop(false);
+                    },
+                    child: Text(
+                      context.l10n.cancel,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => handleSubmit(context),
+                    child: Text(context.l10n.login),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -176,8 +160,7 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => _registerTap(TapType.short),
-      onLongPress: () => _registerTap(TapType.long),
+      onLongPress: _registerLongTap,
       child: widget.child,
     );
   }
