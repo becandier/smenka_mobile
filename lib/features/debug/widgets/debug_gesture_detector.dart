@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:templatecmd/app/_app.dart';
+import 'package:templatecmd/features/debug/cubit/debug_cubit.dart';
 import 'package:templatecmd/l10n/localization_extension.dart';
 
 /// Виджет-детектор заданной последовательности жестов.
@@ -34,22 +36,29 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
   int _tapCount = 0;
   Timer? _resetTimer;
 
+  // Сбрасываем количество тапов
   void _resetTapCount() {
     _tapCount = 0;
   }
 
+  // Записываем тап
   void _registerLongTap() {
     // Отменяем предыдущий таймер и запускаем новый
     _resetTimer?.cancel();
     _tapCount++;
-
+    final isDeviceAccess =
+        context.read<DebugCubit>().state.isDeviceAccess ?? false;
     // Если достигнуто нужное количество тапов, вызываем проверку пароля
     if (_tapCount == _requiredTapCount) {
       _resetTapCount();
-      Future.delayed(
-        Duration.zero,
-        _promptPassword,
-      );
+      if (isDeviceAccess) {
+        pushDebugScreen();
+      } else {
+        Future.delayed(
+          Duration.zero,
+          _promptPassword,
+        );
+      }
       return;
     }
 
@@ -57,16 +66,19 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
     _resetTimer = Timer(widget.timeoutBetweenTaps, _resetTapCount);
   }
 
+  // Переходим в экран отладки
   void pushDebugScreen() {
     final checkContext = widget.navigatorKey != null &&
             widget.navigatorKey!.currentContext != null
         ? widget.navigatorKey!.currentContext!
         : context;
+    context.read<DebugCubit>().setDeviceAccess();
     checkContext.router.push(
       const DebugRoute(),
     );
   }
 
+  // Проверяем введенный пароль
   Future<void> _promptPassword() async {
     var isValid = false;
     final checkContext = widget.navigatorKey != null &&
@@ -80,6 +92,7 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
     }
   }
 
+  // Показываем модалку для ввода пароля
   Future<bool?> showEnterPasswordModal(
     BuildContext checkContext,
   ) {

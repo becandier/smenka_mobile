@@ -21,4 +21,14 @@ class IDebugRepositoryImp extends DebugRepository {
     }
     return Flavors.values.byName(flavor);
   }
+
+  @override
+  FutureOr<void> setDeviceAccess() async {
+    await sharedPreferences.setBool('debug', true);
+  }
+
+  @override
+  FutureOr<bool> getDeviceAccess() {
+    return sharedPreferences.getBool('debug') ?? false;
+  }
 }

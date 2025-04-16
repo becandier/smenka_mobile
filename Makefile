@@ -10,6 +10,9 @@ NC = \033[0m # No Color
 gen:
 	flutter pub run build_runner build --delete-conflicting-outputs
 
+genw:
+	flutter pub run build_runner watch --delete-conflicting-outputs
+
 loc:
 	flutter gen-l10n
 

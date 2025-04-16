@@ -2,6 +2,6 @@ enum FeatureStatus {
   initial,
   loading,
   success,
-  failure,
+  error,
   idle,
 }

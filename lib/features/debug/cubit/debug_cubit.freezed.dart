@@ -15,185 +15,191 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$DebugState {
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is DebugState);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'DebugState()';
-  }
-}
-
-/// @nodoc
-class $DebugStateCopyWith<$Res> {
-  $DebugStateCopyWith(DebugState _, $Res Function(DebugState) __);
-}
-
-/// @nodoc
-
-class Initial implements DebugState {
-  const Initial();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is Initial);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'DebugState.initial()';
-  }
-}
-
-/// @nodoc
-
-class Loading implements DebugState {
-  const Loading();
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is Loading);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() {
-    return 'DebugState.loading()';
-  }
-}
-
-/// @nodoc
-
-class Error implements DebugState {
-  const Error(this.message);
-
-  final String message;
+  Flavors? get flavor;
+  bool? get isDeviceAccess;
+  String? get errorMessage;
+  FeatureStatus get status;
 
   /// Create a copy of DebugState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ErrorCopyWith<Error> get copyWith =>
-      _$ErrorCopyWithImpl<Error>(this, _$identity);
+  $DebugStateCopyWith<DebugState> get copyWith =>
+      _$DebugStateCopyWithImpl<DebugState>(this as DebugState, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is Error &&
-            (identical(other.message, message) || other.message == message));
+            other is DebugState &&
+            (identical(other.flavor, flavor) || other.flavor == flavor) &&
+            (identical(other.isDeviceAccess, isDeviceAccess) ||
+                other.isDeviceAccess == isDeviceAccess) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
+            (identical(other.status, status) || other.status == status));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, message);
+  int get hashCode =>
+      Object.hash(runtimeType, flavor, isDeviceAccess, errorMessage, status);
 
   @override
   String toString() {
-    return 'DebugState.error(message: $message)';
+    return 'DebugState(flavor: $flavor, isDeviceAccess: $isDeviceAccess, errorMessage: $errorMessage, status: $status)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ErrorCopyWith<$Res> implements $DebugStateCopyWith<$Res> {
-  factory $ErrorCopyWith(Error value, $Res Function(Error) _then) =
-      _$ErrorCopyWithImpl;
+abstract mixin class $DebugStateCopyWith<$Res> {
+  factory $DebugStateCopyWith(
+          DebugState value, $Res Function(DebugState) _then) =
+      _$DebugStateCopyWithImpl;
   @useResult
-  $Res call({String message});
+  $Res call(
+      {Flavors? flavor,
+      bool? isDeviceAccess,
+      String? errorMessage,
+      FeatureStatus status});
 }
 
 /// @nodoc
-class _$ErrorCopyWithImpl<$Res> implements $ErrorCopyWith<$Res> {
-  _$ErrorCopyWithImpl(this._self, this._then);
+class _$DebugStateCopyWithImpl<$Res> implements $DebugStateCopyWith<$Res> {
+  _$DebugStateCopyWithImpl(this._self, this._then);
 
-  final Error _self;
-  final $Res Function(Error) _then;
+  final DebugState _self;
+  final $Res Function(DebugState) _then;
 
   /// Create a copy of DebugState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  @override
   $Res call({
-    Object? message = null,
+    Object? flavor = freezed,
+    Object? isDeviceAccess = freezed,
+    Object? errorMessage = freezed,
+    Object? status = null,
   }) {
-    return _then(Error(
-      null == message
-          ? _self.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_self.copyWith(
+      flavor: freezed == flavor
+          ? _self.flavor
+          : flavor // ignore: cast_nullable_to_non_nullable
+              as Flavors?,
+      isDeviceAccess: freezed == isDeviceAccess
+          ? _self.isDeviceAccess
+          : isDeviceAccess // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      errorMessage: freezed == errorMessage
+          ? _self.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as FeatureStatus,
     ));
   }
 }
 
 /// @nodoc
 
-class Success implements DebugState {
-  const Success(this.flavor);
+class _DebugState implements DebugState {
+  const _DebugState(
+      {this.flavor,
+      this.isDeviceAccess,
+      this.errorMessage,
+      this.status = FeatureStatus.initial});
 
-  final Flavors flavor;
+  @override
+  final Flavors? flavor;
+  @override
+  final bool? isDeviceAccess;
+  @override
+  final String? errorMessage;
+  @override
+  @JsonKey()
+  final FeatureStatus status;
 
   /// Create a copy of DebugState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $SuccessCopyWith<Success> get copyWith =>
-      _$SuccessCopyWithImpl<Success>(this, _$identity);
+  _$DebugStateCopyWith<_DebugState> get copyWith =>
+      __$DebugStateCopyWithImpl<_DebugState>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is Success &&
-            (identical(other.flavor, flavor) || other.flavor == flavor));
+            other is _DebugState &&
+            (identical(other.flavor, flavor) || other.flavor == flavor) &&
+            (identical(other.isDeviceAccess, isDeviceAccess) ||
+                other.isDeviceAccess == isDeviceAccess) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
+            (identical(other.status, status) || other.status == status));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, flavor);
+  int get hashCode =>
+      Object.hash(runtimeType, flavor, isDeviceAccess, errorMessage, status);
 
   @override
   String toString() {
-    return 'DebugState.success(flavor: $flavor)';
+    return 'DebugState(flavor: $flavor, isDeviceAccess: $isDeviceAccess, errorMessage: $errorMessage, status: $status)';
   }
 }
 
 /// @nodoc
-abstract mixin class $SuccessCopyWith<$Res>
+abstract mixin class _$DebugStateCopyWith<$Res>
     implements $DebugStateCopyWith<$Res> {
-  factory $SuccessCopyWith(Success value, $Res Function(Success) _then) =
-      _$SuccessCopyWithImpl;
+  factory _$DebugStateCopyWith(
+          _DebugState value, $Res Function(_DebugState) _then) =
+      __$DebugStateCopyWithImpl;
+  @override
   @useResult
-  $Res call({Flavors flavor});
+  $Res call(
+      {Flavors? flavor,
+      bool? isDeviceAccess,
+      String? errorMessage,
+      FeatureStatus status});
 }
 
 /// @nodoc
-class _$SuccessCopyWithImpl<$Res> implements $SuccessCopyWith<$Res> {
-  _$SuccessCopyWithImpl(this._self, this._then);
+class __$DebugStateCopyWithImpl<$Res> implements _$DebugStateCopyWith<$Res> {
+  __$DebugStateCopyWithImpl(this._self, this._then);
 
-  final Success _self;
-  final $Res Function(Success) _then;
+  final _DebugState _self;
+  final $Res Function(_DebugState) _then;
 
   /// Create a copy of DebugState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? flavor = null,
+    Object? flavor = freezed,
+    Object? isDeviceAccess = freezed,
+    Object? errorMessage = freezed,
+    Object? status = null,
   }) {
-    return _then(Success(
-      null == flavor
+    return _then(_DebugState(
+      flavor: freezed == flavor
           ? _self.flavor
           : flavor // ignore: cast_nullable_to_non_nullable
-              as Flavors,
+              as Flavors?,
+      isDeviceAccess: freezed == isDeviceAccess
+          ? _self.isDeviceAccess
+          : isDeviceAccess // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      errorMessage: freezed == errorMessage
+          ? _self.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as FeatureStatus,
     ));
   }
 }

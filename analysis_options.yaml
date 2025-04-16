@@ -1,4 +1,3 @@
-
 include: package:very_good_analysis/analysis_options.7.0.0.yaml
 linter:
   rules:
@@ -7,6 +6,6 @@ linter:
 analyzer:
   errors:
     invalid_annotation_target: ignore
+    avoid_catches_without_on_clauses: ignore
   plugins:
     - custom_lint
-  

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:templatecmd/app/config/flavors.dart';
+import 'package:templatecmd/core/constants/feature_statuses.dart';
 import 'package:templatecmd/features/debug/data/_data.dart';
 
 part 'debug_cubit.freezed.dart';
@@ -10,22 +11,82 @@ class DebugCubit extends Cubit<DebugState> {
   DebugCubit({
     required DebugRepository debugRepository,
   })  : _debugRepository = debugRepository,
-        super(const DebugState.initial());
+        super(const DebugState()) {
+    init();
+  }
 
   final DebugRepository _debugRepository;
 
+  Future<void> init() async {
+    await fetchFlavor();
+    await fetchDeviceAccess();
+  }
+
   Future<void> fetchFlavor() async {
-    emit(const DebugState.loading());
+    emit(
+      state.copyWith(
+        status: FeatureStatus.loading,
+      ),
+    );
     try {
       final flavor = await _debugRepository.getFlavor();
-      emit(DebugState.success(flavor));
+      emit(
+        state.copyWith(
+          flavor: flavor,
+          status: FeatureStatus.success,
+        ),
+      );
     } on Exception catch (e) {
-      emit(DebugState.error(e.toString()));
+      emit(
+        state.copyWith(
+          errorMessage: e.toString(),
+          status: FeatureStatus.error,
+        ),
+      );
     }
   }
 
   Future<void> setFlavor(Flavors flavor) async {
     await _debugRepository.setFlavor(flavor);
-    emit(DebugState.success(flavor));
+    emit(
+      state.copyWith(
+        flavor: flavor,
+        status: FeatureStatus.success,
+      ),
+    );
+  }
+
+  Future<void> fetchDeviceAccess() async {
+    emit(
+      state.copyWith(
+        status: FeatureStatus.loading,
+      ),
+    );
+    try {
+      final isDeviceAccess = await _debugRepository.getDeviceAccess();
+      emit(
+        state.copyWith(
+          isDeviceAccess: isDeviceAccess,
+          status: FeatureStatus.success,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          errorMessage: e.toString(),
+          status: FeatureStatus.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> setDeviceAccess() async {
+    await _debugRepository.setDeviceAccess();
+    emit(
+      state.copyWith(
+        isDeviceAccess: true,
+        status: FeatureStatus.success,
+      ),
+    );
   }
 }
