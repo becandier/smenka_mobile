@@ -64,7 +64,7 @@ class _TechWorksWrapperState extends State<TechWorksWrapper> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  context.read<MainAppCubit>().init();
+                  context.read<MainAppCubit>().refreshApp();
                 },
                 child: Text(context.l10n.refresh),
               ),

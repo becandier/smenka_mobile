@@ -4,8 +4,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:templatecmd/app/_app.dart';
-import 'package:templatecmd/features/debug/cubit/debug_cubit.dart';
 import 'package:templatecmd/l10n/localization_extension.dart';
+import 'package:templatecmd/pages/debug/cubit/debug_cubit.dart';
 
 /// Виджет-детектор заданной последовательности жестов.
 /// При выполнении последовательности из 3 длинных тапов

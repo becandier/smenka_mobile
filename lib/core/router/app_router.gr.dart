@@ -11,22 +11,6 @@
 part of 'app_router.dart';
 
 /// generated route for
-/// [AzkarPage]
-class AzkarRoute extends PageRouteInfo<void> {
-  const AzkarRoute({List<PageRouteInfo>? children})
-    : super(AzkarRoute.name, initialChildren: children);
-
-  static const String name = 'AzkarRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const AzkarPage();
-    },
-  );
-}
-
-/// generated route for
 /// [DebugPage]
 class DebugRoute extends PageRouteInfo<void> {
   const DebugRoute({List<PageRouteInfo>? children})

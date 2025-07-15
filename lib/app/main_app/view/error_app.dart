@@ -10,7 +10,7 @@ class _ErrorApp extends StatelessWidget {
         body: Center(
           child: TextButton(
             onPressed: () {
-              context.read<MainAppCubit>().init();
+              context.read<MainAppCubit>().refreshApp();
             },
             child: const Text('Error'),
           ),

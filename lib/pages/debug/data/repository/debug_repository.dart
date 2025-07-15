@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:templatecmd/app/config/_config.dart';
 
 abstract class DebugRepository {
+  /// Установка текущего флаера
   FutureOr<void> setFlavor(Flavors flavor);
+
+  /// Получение текущего флаера
   FutureOr<Flavors> getFlavor();
 
-  /// Доступ к режиму отладки
+  /// Установка доступа к режиму отладки
   FutureOr<void> setDeviceAccess();
 
   /// Получить доступ к режиму отладки

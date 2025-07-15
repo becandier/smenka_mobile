@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:templatecmd/features/_features.dart';
+import 'package:templatecmd/pages/_features.dart';
 
 part 'app_router.gr.dart';
 
@@ -27,10 +27,6 @@ class AppRouter extends RootStackRouter {
                   path: 'home',
                   initial: true,
                   page: ExampleHomeRoute.page,
-                ),
-                AutoRoute(
-                  path: 'azkars',
-                  page: AzkarRoute.page,
                 ),
               ],
             ),

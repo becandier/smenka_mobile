@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:templatecmd/app/config/flavors.dart';
 import 'package:templatecmd/core/constants/feature_statuses.dart';
-import 'package:templatecmd/features/debug/data/_data.dart';
+import 'package:templatecmd/pages/debug/data/_data.dart';
 
 part 'debug_cubit.freezed.dart';
 part 'debug_state.dart';
@@ -12,14 +12,16 @@ class DebugCubit extends Cubit<DebugState> {
     required DebugRepository debugRepository,
   })  : _debugRepository = debugRepository,
         super(const DebugState()) {
-    init();
+    _init();
   }
 
   final DebugRepository _debugRepository;
 
-  Future<void> init() async {
-    await fetchFlavor();
-    await fetchDeviceAccess();
+  Future<void> _init() async {
+    await Future.wait([
+      fetchFlavor(),
+      fetchDeviceAccess(),
+    ]);
   }
 
   Future<void> fetchFlavor() async {

@@ -5,9 +5,8 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:templatecmd/app/config/_config.dart';
 import 'package:templatecmd/app/main_app/cubit/_cubit.dart';
 import 'package:templatecmd/core/constants/feature_statuses.dart';
-import 'package:templatecmd/features/debug/cubit/debug_cubit.dart';
-import 'package:templatecmd/features/debug/data/repository/_repository.dart';
 import 'package:templatecmd/l10n/localization_extension.dart';
+import 'package:templatecmd/pages/debug/cubit/debug_cubit.dart';
 
 @RoutePage()
 class DebugPage extends StatelessWidget {
@@ -15,12 +14,7 @@ class DebugPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DebugCubit(
-        debugRepository: context.read<IDebugRepositoryImp>(),
-      )..fetchFlavor(),
-      child: const _DebugView(),
-    );
+    return const _DebugView();
   }
 }
 
@@ -37,7 +31,7 @@ class _DebugView extends StatelessWidget {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              context.read<MainAppCubit>().init();
+              context.read<MainAppCubit>().refreshApp();
             },
             child: const Icon(Icons.refresh),
           ),

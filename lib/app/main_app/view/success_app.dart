@@ -46,45 +46,54 @@ class _SuccessAppState extends State<_SuccessApp> {
           value: widget.debugRepository,
         ),
       ],
-      child: MaterialApp.router(
-        routerConfig: _router.config(
-          navigatorObservers: () => [
-            TalkerRouteObserver(widget.talker),
-          ],
-        ),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: _deviceLocale,
-        builder: (context, child) {
-          return TalkerWrapper(
-            talker: widget.talker,
-            options: const TalkerWrapperOptions(
-              enableErrorAlerts: true,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => DebugCubit(
+              debugRepository: context.read<IDebugRepositoryImp>(),
             ),
-            child: UpgradeAlert(
-              navigatorKey: _router.navigatorKey,
-              upgrader: Upgrader(
-                languageCode: _deviceLocale?.languageCode,
-                minAppVersion: widget.appConfig.minVersion,
+          ),
+        ],
+        child: MaterialApp.router(
+          routerConfig: _router.config(
+            navigatorObservers: () => [
+              TalkerRouteObserver(widget.talker),
+            ],
+          ),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: _deviceLocale,
+          builder: (context, child) {
+            return TalkerWrapper(
+              talker: widget.talker,
+              options: const TalkerWrapperOptions(
+                enableErrorAlerts: true,
               ),
-              child: TechWorksWrapper(
+              child: UpgradeAlert(
                 navigatorKey: _router.navigatorKey,
-                techWorks: widget.appConfig.techWork,
-                child: DebugGestureDetector(
+                upgrader: Upgrader(
+                  languageCode: _deviceLocale?.languageCode,
+                  minAppVersion: widget.appConfig.minVersion,
+                ),
+                child: TechWorksWrapper(
                   navigatorKey: _router.navigatorKey,
-                  password: context.read<AppConfig>().debugModePassword,
-                  child: ConnectivityWrapper(
-                    child: GestureDetector(
-                      onTap: () =>
-                          FocusManager.instance.primaryFocus?.unfocus(),
-                      child: child ?? const SizedBox(),
+                  techWorks: widget.appConfig.techWork,
+                  child: DebugGestureDetector(
+                    navigatorKey: _router.navigatorKey,
+                    password: context.read<AppConfig>().debugModePassword,
+                    child: ConnectivityWrapper(
+                      child: GestureDetector(
+                        onTap: () =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
+                        child: child ?? const SizedBox(),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

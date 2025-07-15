@@ -9,10 +9,11 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:templatecmd/app/_app.dart';
 import 'package:templatecmd/app/main_app/cubit/_cubit.dart';
 import 'package:templatecmd/build_gen/assets.gen.dart';
-import 'package:templatecmd/features/_features.dart';
-import 'package:templatecmd/features/debug/data/repository/_repository.dart';
-import 'package:templatecmd/features/debug/widgets/debug_gesture_detector.dart';
 import 'package:templatecmd/l10n/app_localizations.dart';
+import 'package:templatecmd/pages/_features.dart';
+import 'package:templatecmd/pages/debug/cubit/debug_cubit.dart';
+import 'package:templatecmd/pages/debug/data/repository/_repository.dart';
+import 'package:templatecmd/pages/debug/widgets/debug_gesture_detector.dart';
 import 'package:upgrader/upgrader.dart';
 
 part 'error_app.dart';

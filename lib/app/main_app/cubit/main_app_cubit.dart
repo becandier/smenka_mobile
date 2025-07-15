@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:templatecmd/app/_app.dart';
 import 'package:templatecmd/app/main_app/locator/_locator.dart';
-import 'package:templatecmd/features/debug/data/repository/_repository.dart';
+import 'package:templatecmd/pages/debug/data/repository/_repository.dart';
 
 part 'main_app_cubit.freezed.dart';
 part 'main_app_state.dart';
@@ -20,7 +20,7 @@ part 'main_app_state.dart';
 /// Основной Cubit для инициализации приложения
 class MainAppCubit extends Cubit<MainAppState> {
   MainAppCubit() : super(MainAppState.loading()) {
-    init();
+    _init();
   }
 
   /// Service Locator для доступа к сервисам приложения
@@ -39,8 +39,12 @@ class MainAppCubit extends Cubit<MainAppState> {
     PackageInfoInitializer(),
   ];
 
+  Future<void> refreshApp() async {
+    await _init();
+  }
+
   /// Инициализация приложения
-  Future<void> init() async {
+  Future<void> _init() async {
     try {
       emit(MainAppState.loading());
 

@@ -91,13 +91,19 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
                 other.packageInfo == packageInfo) &&
             (identical(other.talker, talker) || other.talker == talker) &&
             (identical(other.dio, dio) || other.dio == dio) &&
-            (identical(other.debugRepository, debugRepository) ||
-                other.debugRepository == debugRepository));
+            const DeepCollectionEquality()
+                .equals(other.debugRepository, debugRepository));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, appConfig, sharedPreferences,
-      packageInfo, talker, dio, debugRepository);
+  int get hashCode => Object.hash(
+      runtimeType,
+      appConfig,
+      sharedPreferences,
+      packageInfo,
+      talker,
+      dio,
+      const DeepCollectionEquality().hash(debugRepository));
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -138,7 +144,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? packageInfo = null,
     Object? talker = null,
     Object? dio = null,
-    Object? debugRepository = null,
+    Object? debugRepository = freezed,
   }) {
     return _then(MainAppStateSuccess(
       appConfig: null == appConfig
@@ -161,7 +167,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.dio
           : dio // ignore: cast_nullable_to_non_nullable
               as Dio,
-      debugRepository: null == debugRepository
+      debugRepository: freezed == debugRepository
           ? _self.debugRepository
           : debugRepository // ignore: cast_nullable_to_non_nullable
               as IDebugRepositoryImp,
