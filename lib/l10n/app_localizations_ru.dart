@@ -21,7 +21,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get techWorks => 'Технические работы';
 
   @override
-  String get techWorksDescription => 'В данный момент в приложении производятся технические работы. Приложение будет доступно после их окончания.';
+  String get techWorksDescription =>
+      'В данный момент в приложении производятся технические работы. Приложение будет доступно после их окончания.';
 
   @override
   String get refresh => 'Обновить';
@@ -33,10 +34,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get close => 'Закрыть';
 
   @override
-  String get deviceNotConnected => 'Устройство не подключено к сети. Проверьте соединение.';
+  String get deviceNotConnected =>
+      'Устройство не подключено к сети. Проверьте соединение.';
 
   @override
-  String get vpnEnabled => 'VPN включён. Это может повлиять на работу приложения.';
+  String get vpnEnabled =>
+      'VPN включён. Это может повлиять на работу приложения.';
 
   @override
   String get home => 'Главная';
