@@ -53,8 +53,6 @@ class MainAppCubit extends Cubit<MainAppState> {
         await _initService(initializer);
       }
 
-      throw Exception('App initialization error');
-
       // Успешно инициализировали приложение
       emit(
         MainAppState.success(
