@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -86,6 +85,222 @@ class _$ApiExceptionCopyWithImpl<$Res> implements $ApiExceptionCopyWith<$Res> {
           : data // ignore: cast_nullable_to_non_nullable
               as dynamic,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [ApiException].
+extension ApiExceptionPatterns on ApiException {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ServerException value)? server,
+    TResult Function(NetworkException value)? network,
+    TResult Function(UnauthorizedException value)? unauthorized,
+    TResult Function(ValidationException value)? validation,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ServerException() when server != null:
+        return server(_that);
+      case NetworkException() when network != null:
+        return network(_that);
+      case UnauthorizedException() when unauthorized != null:
+        return unauthorized(_that);
+      case ValidationException() when validation != null:
+        return validation(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ServerException value) server,
+    required TResult Function(NetworkException value) network,
+    required TResult Function(UnauthorizedException value) unauthorized,
+    required TResult Function(ValidationException value) validation,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ServerException():
+        return server(_that);
+      case NetworkException():
+        return network(_that);
+      case UnauthorizedException():
+        return unauthorized(_that);
+      case ValidationException():
+        return validation(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ServerException value)? server,
+    TResult? Function(NetworkException value)? network,
+    TResult? Function(UnauthorizedException value)? unauthorized,
+    TResult? Function(ValidationException value)? validation,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ServerException() when server != null:
+        return server(_that);
+      case NetworkException() when network != null:
+        return network(_that);
+      case UnauthorizedException() when unauthorized != null:
+        return unauthorized(_that);
+      case ValidationException() when validation != null:
+        return validation(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message, String? code, dynamic data)? server,
+    TResult Function(String message, String? code, dynamic data)? network,
+    TResult Function(String message, String? code, dynamic data)? unauthorized,
+    TResult Function(String message, Map<String, String?> errors, String? code,
+            dynamic data)?
+        validation,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ServerException() when server != null:
+        return server(_that.message, _that.code, _that.data);
+      case NetworkException() when network != null:
+        return network(_that.message, _that.code, _that.data);
+      case UnauthorizedException() when unauthorized != null:
+        return unauthorized(_that.message, _that.code, _that.data);
+      case ValidationException() when validation != null:
+        return validation(_that.message, _that.errors, _that.code, _that.data);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message, String? code, dynamic data)
+        server,
+    required TResult Function(String message, String? code, dynamic data)
+        network,
+    required TResult Function(String message, String? code, dynamic data)
+        unauthorized,
+    required TResult Function(String message, Map<String, String?> errors,
+            String? code, dynamic data)
+        validation,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ServerException():
+        return server(_that.message, _that.code, _that.data);
+      case NetworkException():
+        return network(_that.message, _that.code, _that.data);
+      case UnauthorizedException():
+        return unauthorized(_that.message, _that.code, _that.data);
+      case ValidationException():
+        return validation(_that.message, _that.errors, _that.code, _that.data);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message, String? code, dynamic data)? server,
+    TResult? Function(String message, String? code, dynamic data)? network,
+    TResult? Function(String message, String? code, dynamic data)? unauthorized,
+    TResult? Function(String message, Map<String, String?> errors, String? code,
+            dynamic data)?
+        validation,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case ServerException() when server != null:
+        return server(_that.message, _that.code, _that.data);
+      case NetworkException() when network != null:
+        return network(_that.message, _that.code, _that.data);
+      case UnauthorizedException() when unauthorized != null:
+        return unauthorized(_that.message, _that.code, _that.data);
+      case ValidationException() when validation != null:
+        return validation(_that.message, _that.errors, _that.code, _that.data);
+      case _:
+        return null;
+    }
   }
 }
 

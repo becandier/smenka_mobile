@@ -14,7 +14,7 @@ part of 'app_router.dart';
 /// [DebugPage]
 class DebugRoute extends PageRouteInfo<void> {
   const DebugRoute({List<PageRouteInfo>? children})
-    : super(DebugRoute.name, initialChildren: children);
+      : super(DebugRoute.name, initialChildren: children);
 
   static const String name = 'DebugRoute';
 
@@ -30,7 +30,7 @@ class DebugRoute extends PageRouteInfo<void> {
 /// [ExampleHomePage]
 class ExampleHomeRoute extends PageRouteInfo<void> {
   const ExampleHomeRoute({List<PageRouteInfo>? children})
-    : super(ExampleHomeRoute.name, initialChildren: children);
+      : super(ExampleHomeRoute.name, initialChildren: children);
 
   static const String name = 'ExampleHomeRoute';
 
@@ -46,7 +46,7 @@ class ExampleHomeRoute extends PageRouteInfo<void> {
 /// [HomeTabPage]
 class HomeTab extends PageRouteInfo<void> {
   const HomeTab({List<PageRouteInfo>? children})
-    : super(HomeTab.name, initialChildren: children);
+      : super(HomeTab.name, initialChildren: children);
 
   static const String name = 'HomeTab';
 
@@ -62,7 +62,7 @@ class HomeTab extends PageRouteInfo<void> {
 /// [MainRouterPage]
 class MainRouterRoute extends PageRouteInfo<void> {
   const MainRouterRoute({List<PageRouteInfo>? children})
-    : super(MainRouterRoute.name, initialChildren: children);
+      : super(MainRouterRoute.name, initialChildren: children);
 
   static const String name = 'MainRouterRoute';
 
@@ -78,7 +78,7 @@ class MainRouterRoute extends PageRouteInfo<void> {
 /// [SettingsTabPage]
 class SettingsTab extends PageRouteInfo<void> {
   const SettingsTab({List<PageRouteInfo>? children})
-    : super(SettingsTab.name, initialChildren: children);
+      : super(SettingsTab.name, initialChildren: children);
 
   static const String name = 'SettingsTab';
 

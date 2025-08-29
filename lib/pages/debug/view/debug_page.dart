@@ -63,22 +63,24 @@ class _DebugContent extends StatelessWidget {
           subtitle: Text(flavor?.name ?? ''),
           onTap: () => showDialog<void>(
             context: context,
-            builder: (_) => SimpleDialog(
-              title: Text(context.l10n.flavor),
-              children: Flavors.values
-                  .map(
-                    (e) => RadioListTile(
-                      title: Text(e.name),
-                      value: e,
-                      groupValue: flavor,
-                      onChanged: (value) {
-                        if (value == null) return;
-                        context.read<DebugCubit>().setFlavor(value);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  )
-                  .toList(),
+            builder: (_) => RadioGroup<Flavors>(
+              groupValue: flavor,
+              onChanged: (value) {
+                if (value == null) return;
+                context.read<DebugCubit>().setFlavor(value);
+                Navigator.pop(context);
+              },
+              child: SimpleDialog(
+                title: Text(context.l10n.flavor),
+                children: Flavors.values
+                    .map(
+                      (e) => RadioListTile(
+                        title: Text(e.name),
+                        value: e,
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
           ),
         ),

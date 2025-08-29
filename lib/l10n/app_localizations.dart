@@ -225,6 +225,30 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Азкары'**
   String get azkars;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In ru, this message translates to:
+  /// **'Произошла ошибка'**
+  String get errorOccurred;
+
+  /// No description provided for @errorDescription.
+  ///
+  /// In ru, this message translates to:
+  /// **'К сожалению, что-то пошло не так. Мы уже работаем над исправлением этой проблемы.'**
+  String get errorDescription;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробовать снова'**
+  String get tryAgain;
+
+  /// No description provided for @errorDetails.
+  ///
+  /// In ru, this message translates to:
+  /// **'Детали ошибки'**
+  String get errorDetails;
 }
 
 class _AppLocalizationsDelegate

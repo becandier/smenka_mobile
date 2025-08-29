@@ -76,4 +76,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get azkars => 'Азкары';
+
+  @override
+  String get errorOccurred => 'Произошла ошибка';
+
+  @override
+  String get errorDescription =>
+      'К сожалению, что-то пошло не так. Мы уже работаем над исправлением этой проблемы.';
+
+  @override
+  String get tryAgain => 'Попробовать снова';
+
+  @override
+  String get errorDetails => 'Детали ошибки';
 }

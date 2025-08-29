@@ -51,7 +51,10 @@ class _AppView extends StatelessWidget {
               debugRepository: state.debugRepository,
             ),
           MainAppStateLoading() => const _LoadingApp(),
-          MainAppStateError() => const _ErrorApp(),
+          MainAppStateError() => _ErrorApp(
+              error: state.error,
+              stackTrace: state.stackTrace,
+            ),
         };
       },
     );

@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -38,6 +37,219 @@ mixin _$MainAppState implements DiagnosticableTreeMixin {
 /// @nodoc
 class $MainAppStateCopyWith<$Res> {
   $MainAppStateCopyWith(MainAppState _, $Res Function(MainAppState) __);
+}
+
+/// Adds pattern-matching-related methods to [MainAppState].
+extension MainAppStatePatterns on MainAppState {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(MainAppStateSuccess value)? success,
+    TResult Function(MainAppStateLoading value)? loading,
+    TResult Function(MainAppStateError value)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MainAppStateSuccess() when success != null:
+        return success(_that);
+      case MainAppStateLoading() when loading != null:
+        return loading(_that);
+      case MainAppStateError() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(MainAppStateSuccess value) success,
+    required TResult Function(MainAppStateLoading value) loading,
+    required TResult Function(MainAppStateError value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MainAppStateSuccess():
+        return success(_that);
+      case MainAppStateLoading():
+        return loading(_that);
+      case MainAppStateError():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(MainAppStateSuccess value)? success,
+    TResult? Function(MainAppStateLoading value)? loading,
+    TResult? Function(MainAppStateError value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MainAppStateSuccess() when success != null:
+        return success(_that);
+      case MainAppStateLoading() when loading != null:
+        return loading(_that);
+      case MainAppStateError() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(
+            AppConfig appConfig,
+            SharedPreferences sharedPreferences,
+            PackageInfo packageInfo,
+            Talker talker,
+            Dio dio,
+            IDebugRepositoryImp debugRepository)?
+        success,
+    TResult Function()? loading,
+    TResult Function(Object? error, StackTrace? stackTrace)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MainAppStateSuccess() when success != null:
+        return success(_that.appConfig, _that.sharedPreferences,
+            _that.packageInfo, _that.talker, _that.dio, _that.debugRepository);
+      case MainAppStateLoading() when loading != null:
+        return loading();
+      case MainAppStateError() when error != null:
+        return error(_that.error, _that.stackTrace);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            AppConfig appConfig,
+            SharedPreferences sharedPreferences,
+            PackageInfo packageInfo,
+            Talker talker,
+            Dio dio,
+            IDebugRepositoryImp debugRepository)
+        success,
+    required TResult Function() loading,
+    required TResult Function(Object? error, StackTrace? stackTrace) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MainAppStateSuccess():
+        return success(_that.appConfig, _that.sharedPreferences,
+            _that.packageInfo, _that.talker, _that.dio, _that.debugRepository);
+      case MainAppStateLoading():
+        return loading();
+      case MainAppStateError():
+        return error(_that.error, _that.stackTrace);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            AppConfig appConfig,
+            SharedPreferences sharedPreferences,
+            PackageInfo packageInfo,
+            Talker talker,
+            Dio dio,
+            IDebugRepositoryImp debugRepository)?
+        success,
+    TResult? Function()? loading,
+    TResult? Function(Object? error, StackTrace? stackTrace)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MainAppStateSuccess() when success != null:
+        return success(_that.appConfig, _that.sharedPreferences,
+            _that.packageInfo, _that.talker, _that.dio, _that.debugRepository);
+      case MainAppStateLoading() when loading != null:
+        return loading();
+      case MainAppStateError() when error != null:
+        return error(_that.error, _that.stackTrace);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc
@@ -91,19 +303,13 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
                 other.packageInfo == packageInfo) &&
             (identical(other.talker, talker) || other.talker == talker) &&
             (identical(other.dio, dio) || other.dio == dio) &&
-            const DeepCollectionEquality()
-                .equals(other.debugRepository, debugRepository));
+            (identical(other.debugRepository, debugRepository) ||
+                other.debugRepository == debugRepository));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      appConfig,
-      sharedPreferences,
-      packageInfo,
-      talker,
-      dio,
-      const DeepCollectionEquality().hash(debugRepository));
+  int get hashCode => Object.hash(runtimeType, appConfig, sharedPreferences,
+      packageInfo, talker, dio, debugRepository);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -144,7 +350,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? packageInfo = null,
     Object? talker = null,
     Object? dio = null,
-    Object? debugRepository = freezed,
+    Object? debugRepository = null,
   }) {
     return _then(MainAppStateSuccess(
       appConfig: null == appConfig
@@ -167,7 +373,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.dio
           : dio // ignore: cast_nullable_to_non_nullable
               as Dio,
-      debugRepository: freezed == debugRepository
+      debugRepository: null == debugRepository
           ? _self.debugRepository
           : debugRepository // ignore: cast_nullable_to_non_nullable
               as IDebugRepositoryImp,
@@ -203,25 +409,79 @@ class MainAppStateLoading extends MainAppState with DiagnosticableTreeMixin {
 /// @nodoc
 
 class MainAppStateError extends MainAppState with DiagnosticableTreeMixin {
-  MainAppStateError() : super._();
+  MainAppStateError({required this.error, required this.stackTrace})
+      : super._();
+
+  final Object? error;
+  final StackTrace? stackTrace;
+
+  /// Create a copy of MainAppState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $MainAppStateErrorCopyWith<MainAppStateError> get copyWith =>
+      _$MainAppStateErrorCopyWithImpl<MainAppStateError>(this, _$identity);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties..add(DiagnosticsProperty('type', 'MainAppState.error'));
+    properties
+      ..add(DiagnosticsProperty('type', 'MainAppState.error'))
+      ..add(DiagnosticsProperty('error', error))
+      ..add(DiagnosticsProperty('stackTrace', stackTrace));
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is MainAppStateError);
+        (other.runtimeType == runtimeType &&
+            other is MainAppStateError &&
+            const DeepCollectionEquality().equals(other.error, error) &&
+            (identical(other.stackTrace, stackTrace) ||
+                other.stackTrace == stackTrace));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(error), stackTrace);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.error()';
+    return 'MainAppState.error(error: $error, stackTrace: $stackTrace)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $MainAppStateErrorCopyWith<$Res>
+    implements $MainAppStateCopyWith<$Res> {
+  factory $MainAppStateErrorCopyWith(
+          MainAppStateError value, $Res Function(MainAppStateError) _then) =
+      _$MainAppStateErrorCopyWithImpl;
+  @useResult
+  $Res call({Object? error, StackTrace? stackTrace});
+}
+
+/// @nodoc
+class _$MainAppStateErrorCopyWithImpl<$Res>
+    implements $MainAppStateErrorCopyWith<$Res> {
+  _$MainAppStateErrorCopyWithImpl(this._self, this._then);
+
+  final MainAppStateError _self;
+  final $Res Function(MainAppStateError) _then;
+
+  /// Create a copy of MainAppState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? error = freezed,
+    Object? stackTrace = freezed,
+  }) {
+    return _then(MainAppStateError(
+      error: freezed == error ? _self.error : error,
+      stackTrace: freezed == stackTrace
+          ? _self.stackTrace
+          : stackTrace // ignore: cast_nullable_to_non_nullable
+              as StackTrace?,
+    ));
   }
 }
 

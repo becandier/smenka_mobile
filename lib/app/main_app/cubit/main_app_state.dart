@@ -14,5 +14,8 @@ sealed class MainAppState with _$MainAppState {
     required IDebugRepositoryImp debugRepository,
   }) = MainAppStateSuccess;
   factory MainAppState.loading() = MainAppStateLoading;
-  factory MainAppState.error() = MainAppStateError;
+  factory MainAppState.error({
+    required Object? error,
+    required StackTrace? stackTrace,
+  }) = MainAppStateError;
 }
