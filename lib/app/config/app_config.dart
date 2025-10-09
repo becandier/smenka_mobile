@@ -3,17 +3,17 @@ import 'package:templatecmd/app/config/_config.dart';
 class AppConfig {
   AppConfig({
     required AppConfigRemote remoteConfig,
-    required this.env,
+    required this.flavor,
   }) : _remoteConfig = remoteConfig {
     _init();
   }
 
   /// Апи для получения доступа к удалленному конфигу
   final AppConfigRemote _remoteConfig;
-  final Flavors env;
+  final Flavors flavor;
 
   void _init() {
-    final isProd = env == Flavors.prod;
+    final isProd = flavor == Flavors.prod;
     apiEndPoint = isProd
         ? _getString('API_ENDPOINT_PROD')
         : _getString('API_ENDPOINT_DEV');

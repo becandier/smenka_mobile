@@ -65,7 +65,7 @@ class _SuccessAppState extends State<_SuccessApp> {
           locale: _deviceLocale,
           builder: (context, child) {
             return DevModeBannerWrapper(
-              isDevMode: widget.appConfig.env == Flavors.dev,
+              isDevMode: widget.appConfig.flavor == Flavors.dev,
               child: TalkerWrapper(
                 talker: widget.talker,
                 options: const TalkerWrapperOptions(

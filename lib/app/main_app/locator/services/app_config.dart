@@ -15,7 +15,7 @@ class AppConfigInitializer implements ServiceInitializer {
 
     final appConfig = AppConfig(
       remoteConfig: remoteConfig,
-      env: flavor,
+      flavor: flavor,
     );
 
     locator.register<AppConfig>(appConfig);
