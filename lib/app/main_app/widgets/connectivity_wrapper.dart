@@ -1,7 +1,11 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:templatecmd/l10n/_l10n.dart';
+import 'package:templatecmd/l10n/localization_extension.dart';
 
+@Deprecated('''
+Есть баг с context ScaffoldMessenger. 
+Используйте альтернативный подход для обработки подключения.
+''')
 class ConnectivityWrapper extends StatefulWidget {
   const ConnectivityWrapper({
     required this.child,

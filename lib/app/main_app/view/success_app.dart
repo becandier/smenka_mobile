@@ -64,24 +64,25 @@ class _SuccessAppState extends State<_SuccessApp> {
           supportedLocales: AppLocalizations.supportedLocales,
           locale: _deviceLocale,
           builder: (context, child) {
-            return TalkerWrapper(
-              talker: widget.talker,
-              options: const TalkerWrapperOptions(
-                enableErrorAlerts: true,
-              ),
-              child: UpgradeAlert(
-                navigatorKey: _router.navigatorKey,
-                upgrader: Upgrader(
-                  languageCode: _deviceLocale?.languageCode,
-                  minAppVersion: widget.appConfig.minVersion,
+            return DevModeBannerWrapper(
+              isDevMode: widget.appConfig.env == Flavors.dev,
+              child: TalkerWrapper(
+                talker: widget.talker,
+                options: const TalkerWrapperOptions(
+                  enableErrorAlerts: true,
                 ),
-                child: TechWorksWrapper(
+                child: UpgradeAlert(
                   navigatorKey: _router.navigatorKey,
-                  techWorks: widget.appConfig.techWork,
-                  child: DebugGestureDetector(
+                  upgrader: Upgrader(
+                    languageCode: _deviceLocale?.languageCode,
+                    minAppVersion: widget.appConfig.minVersion,
+                  ),
+                  child: TechWorksWrapper(
                     navigatorKey: _router.navigatorKey,
-                    password: context.read<AppConfig>().debugModePassword,
-                    child: ConnectivityWrapper(
+                    techWorks: widget.appConfig.techWork,
+                    child: DebugGestureDetector(
+                      navigatorKey: _router.navigatorKey,
+                      password: context.read<AppConfig>().debugModePassword,
                       child: GestureDetector(
                         onTap: () =>
                             FocusManager.instance.primaryFocus?.unfocus(),
