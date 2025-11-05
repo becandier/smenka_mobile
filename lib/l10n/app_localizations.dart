@@ -249,6 +249,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Детали ошибки'**
   String get errorDetails;
+
+  /// No description provided for @errorVpnDescription.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить необходимые данные для работы приложения. Пожалуйста, выключите VPN и повторите попытку.'**
+  String get errorVpnDescription;
 }
 
 class _AppLocalizationsDelegate

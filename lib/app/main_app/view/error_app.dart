@@ -1,3 +1,6 @@
+// Мда..
+// ignore_for_file: lines_longer_than_80_chars
+
 part of 'app.dart';
 
 class _ErrorApp extends StatefulWidget {
@@ -62,6 +65,13 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
     _pulseController.dispose();
     _slideController.dispose();
     super.dispose();
+  }
+
+  String errorMessage() {
+    if (widget.error.toString().contains('AppConfig')) {
+      return 'Не удалось загрузить необходимые данные для работы приложения. Пожалуйста, выключите VPN и повторите попытку.';
+    }
+    return 'К сожалению, что-то пошло не так. Мы уже работаем над исправлением этой проблемы.';
   }
 
   @override
@@ -139,12 +149,12 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        AppLocalizations.of(context)?.errorDescription ??
-                            'К сожалению, что-то пошло не так. Мы уже работаем над исправлением этой проблемы.',
+                        errorMessage(),
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           height: 1.5,
+                          fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
                       ),

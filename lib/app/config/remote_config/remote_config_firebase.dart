@@ -1,7 +1,7 @@
-import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:templatecmd/app/config/remote_config/_remote_config.dart';
 
 class AppConfigRemoteFirebase extends AppConfigRemote {
@@ -18,8 +18,12 @@ class AppConfigRemoteFirebase extends AppConfigRemote {
       );
       await remoteConfig.fetchAndActivate();
     } on FirebaseException catch (e, stackTrace) {
-      log(e.message.toString());
-      log(stackTrace.toString());
+      if (!kDebugMode) {
+        await FirebaseCrashlytics.instance.recordError(e, stackTrace);
+      }
+      if (remoteConfig.getAll().isEmpty) {
+        rethrow;
+      }
     }
   }
 
