@@ -8,6 +8,7 @@ class _SuccessApp extends StatefulWidget {
     required this.talker,
     required this.dio,
     required this.debugRepository,
+    required this.themeMode,
   });
   final AppConfig appConfig;
   final SharedPreferences sharedPreferences;
@@ -15,6 +16,7 @@ class _SuccessApp extends StatefulWidget {
   final Talker talker;
   final Dio dio;
   final IDebugRepositoryImp debugRepository;
+  final ThemeMode themeMode;
 
   @override
   State<_SuccessApp> createState() => _SuccessAppState();
@@ -53,45 +55,63 @@ class _SuccessAppState extends State<_SuccessApp> {
               debugRepository: context.read<IDebugRepositoryImp>(),
             ),
           ),
-        ],
-        child: MaterialApp.router(
-          routerConfig: _router.config(
-            navigatorObservers: () => [
-              TalkerRouteObserver(widget.talker),
-            ],
+          BlocProvider(
+            create: (context) => ThemeCubit(
+              themeLocalStorageApi: ThemeLocalStorageApi(
+                key: PrefsKeys.theme,
+                localApi: widget.sharedPreferences,
+              ),
+              initialValue: widget.themeMode,
+            ),
           ),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: _deviceLocale,
-          builder: (context, child) {
-            return DevModeBannerWrapper(
-              isDevMode: widget.appConfig.flavor == Flavors.dev,
-              child: TalkerWrapper(
-                talker: widget.talker,
-                options: const TalkerWrapperOptions(
-                  enableErrorAlerts: true,
-                ),
-                child: UpgradeAlert(
-                  navigatorKey: _router.navigatorKey,
-                  upgrader: Upgrader(
-                    languageCode: _deviceLocale?.languageCode,
-                    minAppVersion: widget.appConfig.minVersion,
-                  ),
-                  child: TechWorksWrapper(
-                    navigatorKey: _router.navigatorKey,
-                    techWorks: widget.appConfig.techWork,
-                    child: DebugGestureDetector(
+        ],
+        child: BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, state) {
+            return MaterialApp.router(
+              /// Theme
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: state,
+
+              routerConfig: _router.config(
+                navigatorObservers: () => [
+                  TalkerRouteObserver(widget.talker),
+                ],
+              ),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: _deviceLocale,
+              builder: (context, child) {
+                return DevModeBannerWrapper(
+                  isDevMode: widget.appConfig.flavor == Flavors.dev,
+                  child: TalkerWrapper(
+                    talker: widget.talker,
+                    options: const TalkerWrapperOptions(
+                      enableErrorAlerts: true,
+                    ),
+                    child: UpgradeAlert(
                       navigatorKey: _router.navigatorKey,
-                      password: context.read<AppConfig>().debugModePassword,
-                      child: GestureDetector(
-                        onTap: () =>
-                            FocusManager.instance.primaryFocus?.unfocus(),
-                        child: child ?? const SizedBox(),
+                      upgrader: Upgrader(
+                        languageCode: _deviceLocale?.languageCode,
+                        minAppVersion: widget.appConfig.minVersion,
+                      ),
+                      child: TechWorksWrapper(
+                        navigatorKey: _router.navigatorKey,
+                        techWorks: widget.appConfig.techWork,
+                        child: DebugGestureDetector(
+                          navigatorKey: _router.navigatorKey,
+                          password: context.read<AppConfig>().debugModePassword,
+                          child: GestureDetector(
+                            onTap: () =>
+                                FocusManager.instance.primaryFocus?.unfocus(),
+                            child: child ?? const SizedBox(),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         ),

@@ -93,4 +93,13 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get errorVpnDescription =>
       'Не удалось загрузить необходимые данные для работы приложения. Пожалуйста, выключите VPN и повторите попытку.';
+
+  @override
+  String get light => 'Светлая';
+
+  @override
+  String get dark => 'Тёмная';
+
+  @override
+  String get system => 'Системная';
 }

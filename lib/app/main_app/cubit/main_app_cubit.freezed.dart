@@ -154,7 +154,8 @@ extension MainAppStatePatterns on MainAppState {
             PackageInfo packageInfo,
             Talker talker,
             Dio dio,
-            IDebugRepositoryImp debugRepository)?
+            IDebugRepositoryImp debugRepository,
+            ThemeMode themeMode)?
         success,
     TResult Function()? loading,
     TResult Function(Object? error, StackTrace? stackTrace)? error,
@@ -163,8 +164,14 @@ extension MainAppStatePatterns on MainAppState {
     final _that = this;
     switch (_that) {
       case MainAppStateSuccess() when success != null:
-        return success(_that.appConfig, _that.sharedPreferences,
-            _that.packageInfo, _that.talker, _that.dio, _that.debugRepository);
+        return success(
+            _that.appConfig,
+            _that.sharedPreferences,
+            _that.packageInfo,
+            _that.talker,
+            _that.dio,
+            _that.debugRepository,
+            _that.themeMode);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -195,7 +202,8 @@ extension MainAppStatePatterns on MainAppState {
             PackageInfo packageInfo,
             Talker talker,
             Dio dio,
-            IDebugRepositoryImp debugRepository)
+            IDebugRepositoryImp debugRepository,
+            ThemeMode themeMode)
         success,
     required TResult Function() loading,
     required TResult Function(Object? error, StackTrace? stackTrace) error,
@@ -203,8 +211,14 @@ extension MainAppStatePatterns on MainAppState {
     final _that = this;
     switch (_that) {
       case MainAppStateSuccess():
-        return success(_that.appConfig, _that.sharedPreferences,
-            _that.packageInfo, _that.talker, _that.dio, _that.debugRepository);
+        return success(
+            _that.appConfig,
+            _that.sharedPreferences,
+            _that.packageInfo,
+            _that.talker,
+            _that.dio,
+            _that.debugRepository,
+            _that.themeMode);
       case MainAppStateLoading():
         return loading();
       case MainAppStateError():
@@ -232,7 +246,8 @@ extension MainAppStatePatterns on MainAppState {
             PackageInfo packageInfo,
             Talker talker,
             Dio dio,
-            IDebugRepositoryImp debugRepository)?
+            IDebugRepositoryImp debugRepository,
+            ThemeMode themeMode)?
         success,
     TResult? Function()? loading,
     TResult? Function(Object? error, StackTrace? stackTrace)? error,
@@ -240,8 +255,14 @@ extension MainAppStatePatterns on MainAppState {
     final _that = this;
     switch (_that) {
       case MainAppStateSuccess() when success != null:
-        return success(_that.appConfig, _that.sharedPreferences,
-            _that.packageInfo, _that.talker, _that.dio, _that.debugRepository);
+        return success(
+            _that.appConfig,
+            _that.sharedPreferences,
+            _that.packageInfo,
+            _that.talker,
+            _that.dio,
+            _that.debugRepository,
+            _that.themeMode);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -261,7 +282,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       required this.packageInfo,
       required this.talker,
       required this.dio,
-      required this.debugRepository})
+      required this.debugRepository,
+      required this.themeMode})
       : super._();
 
   final AppConfig appConfig;
@@ -270,6 +292,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   final Talker talker;
   final Dio dio;
   final IDebugRepositoryImp debugRepository;
+  final ThemeMode themeMode;
 
   /// Create a copy of MainAppState
   /// with the given fields replaced by the non-null parameter values.
@@ -287,7 +310,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('packageInfo', packageInfo))
       ..add(DiagnosticsProperty('talker', talker))
       ..add(DiagnosticsProperty('dio', dio))
-      ..add(DiagnosticsProperty('debugRepository', debugRepository));
+      ..add(DiagnosticsProperty('debugRepository', debugRepository))
+      ..add(DiagnosticsProperty('themeMode', themeMode));
   }
 
   @override
@@ -304,16 +328,18 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
             (identical(other.talker, talker) || other.talker == talker) &&
             (identical(other.dio, dio) || other.dio == dio) &&
             (identical(other.debugRepository, debugRepository) ||
-                other.debugRepository == debugRepository));
+                other.debugRepository == debugRepository) &&
+            (identical(other.themeMode, themeMode) ||
+                other.themeMode == themeMode));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, appConfig, sharedPreferences,
-      packageInfo, talker, dio, debugRepository);
+      packageInfo, talker, dio, debugRepository, themeMode);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository)';
+    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode)';
   }
 }
 
@@ -330,7 +356,8 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res>
       PackageInfo packageInfo,
       Talker talker,
       Dio dio,
-      IDebugRepositoryImp debugRepository});
+      IDebugRepositoryImp debugRepository,
+      ThemeMode themeMode});
 }
 
 /// @nodoc
@@ -351,6 +378,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? talker = null,
     Object? dio = null,
     Object? debugRepository = null,
+    Object? themeMode = null,
   }) {
     return _then(MainAppStateSuccess(
       appConfig: null == appConfig
@@ -377,6 +405,10 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.debugRepository
           : debugRepository // ignore: cast_nullable_to_non_nullable
               as IDebugRepositoryImp,
+      themeMode: null == themeMode
+          ? _self.themeMode
+          : themeMode // ignore: cast_nullable_to_non_nullable
+              as ThemeMode,
     ));
   }
 }

@@ -255,6 +255,24 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не удалось загрузить необходимые данные для работы приложения. Пожалуйста, выключите VPN и повторите попытку.'**
   String get errorVpnDescription;
+
+  /// No description provided for @light.
+  ///
+  /// In ru, this message translates to:
+  /// **'Светлая'**
+  String get light;
+
+  /// No description provided for @dark.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тёмная'**
+  String get dark;
+
+  /// No description provided for @system.
+  ///
+  /// In ru, this message translates to:
+  /// **'Системная'**
+  String get system;
 }
 
 class _AppLocalizationsDelegate
