@@ -12,6 +12,7 @@ sealed class MainAppState with _$MainAppState {
     required Talker talker,
     required Dio dio,
     required IDebugRepositoryImp debugRepository,
+    required ThemeMode themeMode,
   }) = MainAppStateSuccess;
   factory MainAppState.loading() = MainAppStateLoading;
   factory MainAppState.error({

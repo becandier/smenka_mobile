@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:templatecmd/app/_app.dart';
 import 'package:templatecmd/app/main_app/locator/_locator.dart';
+import 'package:templatecmd/app/main_app/locator/services/theme_local_storage_service.dart';
 import 'package:templatecmd/pages/debug/data/repository/_repository.dart';
 
 part 'main_app_cubit.freezed.dart';
@@ -37,6 +39,7 @@ class MainAppCubit extends Cubit<MainAppState> {
     AppConfigInitializer(),
     DioInitializer(),
     PackageInfoInitializer(),
+    ThemeLocalStorageServiceInitializer(),
   ];
 
   Future<void> refreshApp() async {
@@ -62,6 +65,7 @@ class MainAppCubit extends Cubit<MainAppState> {
           talker: _serviceLocator.get<Talker>(),
           dio: _serviceLocator.get<Dio>(),
           debugRepository: _serviceLocator.get<IDebugRepositoryImp>(),
+          themeMode: _serviceLocator.get<ThemeMode>(),
         ),
       );
     } catch (e, stackTrace) {
