@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:templatecmd/app/main_app/cubit/_cubit.dart' show MainAppCubit;
+import 'package:templatecmd/app/main_app/cubit/main_app_cubit.dart'
+    show MainAppCubit;
 import 'package:templatecmd/app/main_app/locator/service_locator.dart';
 import 'package:templatecmd/core/constants/prefs_keys.dart';
 import 'package:templatecmd/data/api/local/theme_local_storage_api.dart';
+import 'package:templatecmd/pages/theme/cubit/theme_cubit.dart' show ThemeCubit;
 
 /// Service initializer for theme persistence.
 ///
@@ -15,7 +19,7 @@ import 'package:templatecmd/data/api/local/theme_local_storage_api.dart';
 /// See also:
 /// - [ThemeLocalStorageApi] for storage implementation
 /// - [ThemeCubit] for runtime theme management
-class ThemeLocalStorageServiceInitializer implements ServiceInitializer {
+class ThemeModeServiceInitializer implements ServiceInitializer {
   @override
   String get serviceName => 'ThemeLocalStorage';
 

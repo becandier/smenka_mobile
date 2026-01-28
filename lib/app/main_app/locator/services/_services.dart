@@ -6,3 +6,4 @@ export 'firebase_remote_config.dart';
 export 'package_info.dart';
 export 'shared_preferences.dart';
 export 'talker.dart';
+export 'theme_local_storage_service.dart';

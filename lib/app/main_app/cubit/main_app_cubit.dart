@@ -71,6 +71,9 @@ class MainAppCubit extends Cubit<MainAppState> {
         ),
       );
 
+      // Фаза 5: Сервисы с зависимостями на SharedPreferences
+      await _initService(ThemeModeServiceInitializer());
+
       // Успешно инициализировали приложение
       emit(
         MainAppState.success(
