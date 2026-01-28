@@ -18,10 +18,8 @@ dependencies:
   firebase_core: ^4.0.0
   firebase_remote_config: ^6.0.0
   flutter_bloc: ^9.0.0
-  flutter_launcher_icons: ^0.14.2
   upgrader: ^11.3.1
   shared_preferences: ^2.3.5
-  very_good_analysis: ^9.0.0
   flutter_svg: ^2.0.17
   firebase_crashlytics: ^5.0.0
   intl: ^0.20.2
@@ -44,7 +42,8 @@ dev_dependencies:
     sdk: flutter
 
   auto_route_generator: ^10.0.1
-  flutter_lints: ^6.0.0
+  very_good_analysis: ^9.0.0
+  flutter_launcher_icons: ^0.14.2
   build_runner: ^2.4.15
   freezed: ^3.0.3
   json_serializable: ^6.9.4

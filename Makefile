@@ -5,7 +5,10 @@ KEY_ID = Q6WPLKL8NJ
 
 # ANSI code for blue text
 BLUE = \033[0;34m
+GREEN = \033[0;32m
 NC = \033[0m # No Color
+
+# ==================== Development ====================
 
 gen:
 	flutter pub run build_runner build --delete-conflicting-outputs
@@ -15,6 +18,58 @@ genw:
 
 loc:
 	flutter gen-l10n
+
+clean:
+	@echo "$(BLUE)Cleaning project...$(NC)"
+	flutter clean
+	flutter pub get
+	@echo "$(GREEN)Done!$(NC)"
+
+get:
+	flutter pub get
+
+# ==================== Quality ====================
+
+analyze:
+	@echo "$(BLUE)Running analysis...$(NC)"
+	flutter analyze
+	@echo "$(GREEN)Analysis complete!$(NC)"
+
+format:
+	@echo "$(BLUE)Formatting code...$(NC)"
+	dart format lib test
+	@echo "$(GREEN)Formatting complete!$(NC)"
+
+fix:
+	@echo "$(BLUE)Applying fixes...$(NC)"
+	dart fix --apply
+	@echo "$(GREEN)Fixes applied!$(NC)"
+
+test:
+	@echo "$(BLUE)Running tests...$(NC)"
+	flutter test
+	@echo "$(GREEN)Tests complete!$(NC)"
+
+test-coverage:
+	@echo "$(BLUE)Running tests with coverage...$(NC)"
+	flutter test --coverage
+	@echo "$(GREEN)Coverage report generated!$(NC)"
+
+check:
+	@echo "$(BLUE)Running full check (format + analyze + test)...$(NC)"
+	dart format lib test
+	flutter analyze
+	flutter test
+	@echo "$(GREEN)All checks passed!$(NC)"
+
+# ==================== Icons ====================
+
+icons:
+	@echo "$(BLUE)Generating app icons...$(NC)"
+	dart run flutter_launcher_icons
+	@echo "$(GREEN)Icons generated!$(NC)"
+
+# ==================== Localization ====================
 
 testfl:
 	@echo "$(BLUE)Проверьте включен ли у вас VPN и актуален ли код версии!$(NC)"
