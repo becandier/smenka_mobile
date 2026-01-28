@@ -8,6 +8,10 @@ import 'package:templatecmd/app/main_app/locator/_locator.dart';
 
 /// Инициализатор логгера Talker
 class TalkerInitializer implements ServiceInitializer {
+  TalkerInitializer({required this.crashlytics});
+
+  final FirebaseCrashlytics crashlytics;
+
   @override
   String get serviceName => 'Talker';
 
@@ -22,21 +26,18 @@ class TalkerInitializer implements ServiceInitializer {
       ),
     );
     // Устанавливаем обработчик ошибок Flutter с использованием Talker
-    if (locator.isRegistered<FirebaseCrashlytics>()) {
-      final crashlytics = locator.get<FirebaseCrashlytics>();
-      FlutterError.onError = (errorDetails) {
-        talker.handle(
-          errorDetails.exception,
-          errorDetails.stack,
-          'Flutter error',
-        );
-        crashlytics.recordFlutterFatalError(errorDetails);
-      };
-      PlatformDispatcher.instance.onError = (error, stack) {
-        talker.handle(error, stack);
-        crashlytics.recordError(error, stack, fatal: true);
-        return true;
-      };
-    }
+    FlutterError.onError = (errorDetails) {
+      talker.handle(
+        errorDetails.exception,
+        errorDetails.stack,
+        'Flutter error',
+      );
+      crashlytics.recordFlutterFatalError(errorDetails);
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      talker.handle(error, stack);
+      crashlytics.recordError(error, stack, fatal: true);
+      return true;
+    };
   }
 }

@@ -4,12 +4,15 @@ import 'package:templatecmd/pages/debug/data/repository/debug_repository_imp.dar
 
 /// Инициализатор репозитория отладки
 class DebugRepositoryInitializer implements ServiceInitializer {
+  DebugRepositoryInitializer({required this.sharedPreferences});
+
+  final SharedPreferences sharedPreferences;
+
   @override
   String get serviceName => 'Debug Repository';
 
   @override
   Future<void> initialize(AppServiceLocator locator) async {
-    final sharedPreferences = locator.get<SharedPreferences>();
     final debugRepository = IDebugRepositoryImp(
       sharedPreferences: sharedPreferences,
     );

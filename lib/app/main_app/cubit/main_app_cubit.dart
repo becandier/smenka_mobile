@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:templatecmd/app/_app.dart';
 import 'package:templatecmd/app/main_app/locator/_locator.dart';
-import 'package:templatecmd/app/main_app/locator/services/theme_local_storage_service.dart';
 import 'package:templatecmd/pages/debug/data/repository/_repository.dart';
 
 part 'main_app_cubit.freezed.dart';
@@ -28,20 +27,6 @@ class MainAppCubit extends Cubit<MainAppState> {
   /// Service Locator для доступа к сервисам приложения
   final _serviceLocator = AppServiceLocator();
 
-  /// Список инициализаторов сервисов в порядке инициализации
-  final List<ServiceInitializer> _initializers = [
-    FirebaseInitializer(),
-    CrashlyticsInitializer(),
-    TalkerInitializer(),
-    SharedPreferencesInitializer(),
-    DebugRepositoryInitializer(),
-    RemoteConfigInitializer(),
-    AppConfigInitializer(),
-    DioInitializer(),
-    PackageInfoInitializer(),
-    ThemeLocalStorageServiceInitializer(),
-  ];
-
   Future<void> refreshApp() async {
     await _init();
   }
@@ -51,10 +36,40 @@ class MainAppCubit extends Cubit<MainAppState> {
     try {
       emit(MainAppState.loading());
 
-      // Инициализируем все сервисы последовательно
-      for (final initializer in _initializers) {
-        await _initService(initializer);
-      }
+      // Фаза 1: Базовые сервисы без зависимостей
+      await _initService(FirebaseInitializer());
+      await _initService(CrashlyticsInitializer());
+      await _initService(SharedPreferencesInitializer());
+      await _initService(RemoteConfigInitializer());
+      await _initService(PackageInfoInitializer());
+
+      // Фаза 2: Сервисы с зависимостями
+      await _initService(
+        TalkerInitializer(
+          crashlytics: _serviceLocator.get(),
+        ),
+      );
+      await _initService(
+        DebugRepositoryInitializer(
+          sharedPreferences: _serviceLocator.get(),
+        ),
+      );
+
+      // Фаза 3: Сервисы с зависимостями на фазу 2
+      await _initService(
+        AppConfigInitializer(
+          remoteConfig: _serviceLocator.get(),
+          debugRepository: _serviceLocator.get(),
+        ),
+      );
+
+      // Фаза 4: Сервисы с зависимостями на фазу 3
+      await _initService(
+        DioInitializer(
+          talker: _serviceLocator.get(),
+          appConfig: _serviceLocator.get(),
+        ),
+      );
 
       // Успешно инициализировали приложение
       emit(

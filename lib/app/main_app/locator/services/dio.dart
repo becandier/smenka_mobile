@@ -8,14 +8,20 @@ import 'package:templatecmd/core/network/dio_headers_intercaption.dart';
 
 /// Инициализатор dio клиента приложения
 class DioInitializer implements ServiceInitializer {
+  DioInitializer({
+    required this.talker,
+    required this.appConfig,
+  });
+
+  final Talker talker;
+  final AppConfig appConfig;
+
   @override
   String get serviceName => 'Dio';
 
   @override
   Future<void> initialize(AppServiceLocator locator) async {
     final dio = Dio();
-    final talker = locator.get<Talker>();
-    final appConfig = locator.get<AppConfig>();
 
     dio.interceptors.add(TalkerDioLogger(talker: talker));
     dio.interceptors.add(ApiErrorInterceptor());
