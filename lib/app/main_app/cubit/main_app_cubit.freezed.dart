@@ -155,7 +155,8 @@ extension MainAppStatePatterns on MainAppState {
             Talker talker,
             Dio dio,
             IDebugRepositoryImp debugRepository,
-            ThemeMode themeMode)?
+            ThemeMode themeMode,
+            AuthStateNotifier authNotifier)?
         success,
     TResult Function()? loading,
     TResult Function(Object? error, StackTrace? stackTrace)? error,
@@ -171,7 +172,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.talker,
             _that.dio,
             _that.debugRepository,
-            _that.themeMode);
+            _that.themeMode,
+            _that.authNotifier);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -203,7 +205,8 @@ extension MainAppStatePatterns on MainAppState {
             Talker talker,
             Dio dio,
             IDebugRepositoryImp debugRepository,
-            ThemeMode themeMode)
+            ThemeMode themeMode,
+            AuthStateNotifier authNotifier)
         success,
     required TResult Function() loading,
     required TResult Function(Object? error, StackTrace? stackTrace) error,
@@ -218,7 +221,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.talker,
             _that.dio,
             _that.debugRepository,
-            _that.themeMode);
+            _that.themeMode,
+            _that.authNotifier);
       case MainAppStateLoading():
         return loading();
       case MainAppStateError():
@@ -247,7 +251,8 @@ extension MainAppStatePatterns on MainAppState {
             Talker talker,
             Dio dio,
             IDebugRepositoryImp debugRepository,
-            ThemeMode themeMode)?
+            ThemeMode themeMode,
+            AuthStateNotifier authNotifier)?
         success,
     TResult? Function()? loading,
     TResult? Function(Object? error, StackTrace? stackTrace)? error,
@@ -262,7 +267,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.talker,
             _that.dio,
             _that.debugRepository,
-            _that.themeMode);
+            _that.themeMode,
+            _that.authNotifier);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -283,7 +289,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       required this.talker,
       required this.dio,
       required this.debugRepository,
-      required this.themeMode})
+      required this.themeMode,
+      required this.authNotifier})
       : super._();
 
   final AppConfig appConfig;
@@ -293,6 +300,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   final Dio dio;
   final IDebugRepositoryImp debugRepository;
   final ThemeMode themeMode;
+  final AuthStateNotifier authNotifier;
 
   /// Create a copy of MainAppState
   /// with the given fields replaced by the non-null parameter values.
@@ -311,7 +319,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('talker', talker))
       ..add(DiagnosticsProperty('dio', dio))
       ..add(DiagnosticsProperty('debugRepository', debugRepository))
-      ..add(DiagnosticsProperty('themeMode', themeMode));
+      ..add(DiagnosticsProperty('themeMode', themeMode))
+      ..add(DiagnosticsProperty('authNotifier', authNotifier));
   }
 
   @override
@@ -330,16 +339,18 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
             (identical(other.debugRepository, debugRepository) ||
                 other.debugRepository == debugRepository) &&
             (identical(other.themeMode, themeMode) ||
-                other.themeMode == themeMode));
+                other.themeMode == themeMode) &&
+            (identical(other.authNotifier, authNotifier) ||
+                other.authNotifier == authNotifier));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, appConfig, sharedPreferences,
-      packageInfo, talker, dio, debugRepository, themeMode);
+      packageInfo, talker, dio, debugRepository, themeMode, authNotifier);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode)';
+    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier)';
   }
 }
 
@@ -357,7 +368,8 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res>
       Talker talker,
       Dio dio,
       IDebugRepositoryImp debugRepository,
-      ThemeMode themeMode});
+      ThemeMode themeMode,
+      AuthStateNotifier authNotifier});
 }
 
 /// @nodoc
@@ -379,6 +391,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? dio = null,
     Object? debugRepository = null,
     Object? themeMode = null,
+    Object? authNotifier = null,
   }) {
     return _then(MainAppStateSuccess(
       appConfig: null == appConfig
@@ -409,6 +422,10 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.themeMode
           : themeMode // ignore: cast_nullable_to_non_nullable
               as ThemeMode,
+      authNotifier: null == authNotifier
+          ? _self.authNotifier
+          : authNotifier // ignore: cast_nullable_to_non_nullable
+              as AuthStateNotifier,
     ));
   }
 }

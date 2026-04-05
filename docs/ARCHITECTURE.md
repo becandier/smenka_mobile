@@ -1,0 +1,142 @@
+# Архитектура — текущее состояние
+
+Последнее обновление: 2026-04-05 (фаза 1)
+
+---
+
+## Стек
+
+- Flutter, Dart
+- auto_route (навигация)
+- flutter_bloc / Cubit (state management)
+- freezed + json_serializable (модели)
+- Dio (HTTP)
+- GetIt + Injectable (DI)
+- SharedPreferences (локальное хранение)
+- Firebase (Crashlytics, Remote Config)
+
+---
+
+## Структура проекта
+
+```
+lib/
+├── app/
+│   ├── config/                    # Конфигурация приложения
+│   ├── main_app/
+│   │   ├── cubit/                 # MainAppCubit (инициализация)
+│   │   ├── locator/               # DI-регистрация (GetIt)
+│   │   │   ├── repositories/      # Регистрация репозиториев
+│   │   │   └── services/          # Регистрация сервисов (Dio, Firebase и т.д.)
+│   │   ├── view/                  # App + SuccessApp
+│   │   └── widgets/               # Connectivity/TechWork wrappers
+│   └── main.dart
+├── core/
+│   ├── network/                   # Dio errors, Task, TaskHandler
+│   ├── router/                    # AppRouter (auto_route)
+│   └── theme/                     # Тема, цвета
+├── data/
+│   ├── api/local/                 # Локальное хранение (tokens, theme)
+│   ├── domain/                    # Domain-слой (абстрактные репо + модели)
+│   │   ├── auth/                  # AuthToken, AuthState, RegisterResult
+│   │   ├── user/                  # User
+│   │   ├── organization/          # Organization, Member, OrgSettings, OrgStats, JoinResult
+│   │   ├── location/              # WorkLocation
+│   │   └── shift/                 # Shift, Pause, ShiftStats, PaginatedShifts
+│   └── infrastructure/            # Реализации (datasource + dto + mappers + repos)
+│       ├── auth/
+│       ├── user/
+│       ├── organization/
+│       ├── location/
+│       └── shift/
+├── l10n/                          # Локализация (ARB)
+└── pages/                         # UI-слой (экраны)
+    ├── auth/                      # Login (шаблон)
+    ├── home/                      # ExampleHome (заглушка)
+    ├── main_router/               # Bottom tabs router
+    ├── theme/                     # ThemeCubit + виджет переключения
+    └── debug/                     # Debug-страница
+```
+
+---
+
+## Domain-модели (Freezed)
+
+| Модель | Файл | Описание |
+|--------|------|----------|
+| `AuthToken` | `domain/auth/models/auth_token.dart` | access_token + refresh_token |
+| `AuthState` | `domain/auth/models/auth_state.dart` | Sealed: Authenticated / Unauthenticated / Unknown |
+| `RegisterResult` | `domain/auth/models/register_result.dart` | userId + message |
+| `User` | `domain/user/models/user.dart` | id, email, name, phone, isVerified, createdAt |
+| `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt |
+| `Member` | `domain/organization/models/member.dart` | id, orgId, userId, userName, userEmail, role (enum), joinedAt |
+| `OrgSettings` | `domain/organization/models/org_settings.dart` | geoCheck, autoFinish, pauseLimits |
+| `OrgStats` | `domain/organization/models/org_stats.dart` | period, totals + perEmployee list |
+| `JoinResult` | `domain/organization/models/join_result.dart` | orgId, orgName, role |
+| `WorkLocation` | `domain/location/models/work_location.dart` | id, orgId, name, lat, lng, radius |
+| `Shift` | `domain/shift/models/shift.dart` | id, userId, orgId, times, status (enum), pauses, workedSeconds |
+| `Pause` | `domain/shift/models/shift.dart` | id, shiftId, startedAt, finishedAt |
+| `ShiftStats` | `domain/shift/models/shift_stats.dart` | period, totalWorked, count, average |
+| `PaginatedShifts` | `domain/shift/models/paginated_list.dart` | items, total, limit, offset |
+
+---
+
+## API DataSources
+
+| DataSource | Base Path | Методы |
+|------------|-----------|--------|
+| `AuthDataSource` | `/api/v1/auth` | register, verify, resendCode, login, refresh, logout |
+| `UserDataSource` | `/api/v1/users` | getMe, updateMe |
+| `OrganizationDataSource` | `/api/v1/organizations` | create, getAll, getById, update, delete, rotateInvite, join, getMembers, removeMember, getSettings, updateSettings, getShifts, getStats |
+| `LocationDataSource` | `/api/v1/organizations/{orgId}/locations` | create, getAll, update, delete |
+| `ShiftDataSource` | `/api/v1/shifts` | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
+
+---
+
+## Репозитории
+
+| Репозиторий | Зависимости | Методы |
+|-------------|-------------|--------|
+| `AuthRepository` | AuthDataSource, AuthTokenStorage, AuthStateNotifier | checkAuthStatus, register, verify, resendCode, login, refresh, logout |
+| `UserRepository` | UserDataSource | getMe, updateMe |
+| `OrganizationRepository` | OrganizationDataSource | create, getAll, getById, update, delete, rotateInvite, join, getMembers, removeMember, getSettings, updateSettings, getShifts, getStats |
+| `LocationRepository` | LocationDataSource | create, getAll, update, delete |
+| `ShiftRepository` | ShiftDataSource | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
+
+---
+
+## Кубиты (UI State Management)
+
+| Кубит | Статус | Описание |
+|-------|--------|----------|
+| `MainAppCubit` | Готов | Инициализация приложения |
+| `ThemeCubit` | Готов | Управление темой |
+| `DebugCubit` | Готов | Debug-информация |
+
+---
+
+## Навигация (auto_route)
+
+| Route | Path | Описание |
+|-------|------|----------|
+| `LoginRoute` | `/login` | Авторизация |
+| `DebugRoute` | `/debug` | Debug-страница |
+| `MainRouterRoute` | `/` | Bottom tabs (Home, Settings) |
+| `ExampleHomeRoute` | `/home` | Заглушка |
+
+**Guard**: Если не авторизован → редирект на `LoginRoute`
+
+---
+
+## Локальное хранение
+
+| Сервис | Хранилище | Данные |
+|--------|-----------|--------|
+| `AuthTokenStorage` | SharedPreferences | access_token, refresh_token |
+| `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
+
+---
+
+## Ключевые решения
+
+См. `docs/decisions/` для полных ADR.

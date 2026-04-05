@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:templatecmd/app/config/flavors.dart';
-import 'package:templatecmd/core/constants/feature_statuses.dart';
-import 'package:templatecmd/pages/debug/data/_data.dart';
+import 'package:smenka_mobile/app/config/flavors.dart';
+import 'package:smenka_mobile/core/constants/feature_statuses.dart';
+import 'package:smenka_mobile/pages/debug/data/_data.dart';
 
 part 'debug_cubit.freezed.dart';
 part 'debug_state.dart';

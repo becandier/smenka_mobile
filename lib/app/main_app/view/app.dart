@@ -6,18 +6,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:templatecmd/app/_app.dart';
-import 'package:templatecmd/app/main_app/cubit/_cubit.dart';
-import 'package:templatecmd/app/main_app/widgets/_widgets.dart';
-import 'package:templatecmd/build_gen/assets.gen.dart';
-import 'package:templatecmd/core/constants/prefs_keys.dart';
-import 'package:templatecmd/core/theme/app_theme.dart';
-import 'package:templatecmd/data/api/local/theme_local_storage_api.dart';
-import 'package:templatecmd/l10n/app_localizations.dart';
-import 'package:templatecmd/pages/debug/cubit/debug_cubit.dart';
-import 'package:templatecmd/pages/debug/data/repository/_repository.dart';
-import 'package:templatecmd/pages/debug/widgets/debug_gesture_detector.dart';
-import 'package:templatecmd/pages/theme/cubit/theme_cubit.dart';
+import 'package:smenka_mobile/app/_app.dart';
+import 'package:smenka_mobile/app/main_app/cubit/_cubit.dart';
+import 'package:smenka_mobile/app/main_app/widgets/_widgets.dart';
+import 'package:smenka_mobile/build_gen/assets.gen.dart';
+import 'package:smenka_mobile/core/constants/prefs_keys.dart';
+import 'package:smenka_mobile/core/theme/app_theme.dart';
+import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
+import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
+import 'package:smenka_mobile/l10n/app_localizations.dart';
+import 'package:smenka_mobile/pages/debug/cubit/debug_cubit.dart';
+import 'package:smenka_mobile/pages/debug/data/repository/_repository.dart';
+import 'package:smenka_mobile/pages/debug/widgets/debug_gesture_detector.dart';
+import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart';
 import 'package:upgrader/upgrader.dart';
 
 part 'error_app.dart';
@@ -54,6 +55,7 @@ class _AppView extends StatelessWidget {
               dio: state.dio,
               debugRepository: state.debugRepository,
               themeMode: state.themeMode,
+              authNotifier: state.authNotifier,
             ),
           MainAppStateLoading() => const _LoadingApp(),
           MainAppStateError() => _ErrorApp(

@@ -1,5 +1,5 @@
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:templatecmd/app/main_app/locator/_locator.dart';
+import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
 
 /// Инициализатор информации о пакете приложения
 class PackageInfoInitializer implements ServiceInitializer {

@@ -345,7 +345,7 @@ extension AppTextStylesExtension on BuildContext {
 Edit [`app_theme.dart`](app_theme.dart):
 
 ```dart
-import 'package:templatecmd/core/theme/text_styles/app_text_styles.dart';
+import 'package:smenka_mobile/core/theme/text_styles/app_text_styles.dart';
 
 static ThemeData _buildTheme(IColors colors, Brightness brightness) {
   final appColors = AppColors(...);

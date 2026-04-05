@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$AuthTokenDto {
   String get accessToken;
   String get refreshToken;
-  int get expiresIn;
+  String get tokenType;
 
   /// Create a copy of AuthTokenDto
   /// with the given fields replaced by the non-null parameter values.
@@ -38,18 +38,18 @@ mixin _$AuthTokenDto {
                 other.accessToken == accessToken) &&
             (identical(other.refreshToken, refreshToken) ||
                 other.refreshToken == refreshToken) &&
-            (identical(other.expiresIn, expiresIn) ||
-                other.expiresIn == expiresIn));
+            (identical(other.tokenType, tokenType) ||
+                other.tokenType == tokenType));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, accessToken, refreshToken, expiresIn);
+      Object.hash(runtimeType, accessToken, refreshToken, tokenType);
 
   @override
   String toString() {
-    return 'AuthTokenDto(accessToken: $accessToken, refreshToken: $refreshToken, expiresIn: $expiresIn)';
+    return 'AuthTokenDto(accessToken: $accessToken, refreshToken: $refreshToken, tokenType: $tokenType)';
   }
 }
 
@@ -59,7 +59,7 @@ abstract mixin class $AuthTokenDtoCopyWith<$Res> {
           AuthTokenDto value, $Res Function(AuthTokenDto) _then) =
       _$AuthTokenDtoCopyWithImpl;
   @useResult
-  $Res call({String accessToken, String refreshToken, int expiresIn});
+  $Res call({String accessToken, String refreshToken, String tokenType});
 }
 
 /// @nodoc
@@ -76,7 +76,7 @@ class _$AuthTokenDtoCopyWithImpl<$Res> implements $AuthTokenDtoCopyWith<$Res> {
   $Res call({
     Object? accessToken = null,
     Object? refreshToken = null,
-    Object? expiresIn = null,
+    Object? tokenType = null,
   }) {
     return _then(_self.copyWith(
       accessToken: null == accessToken
@@ -87,10 +87,10 @@ class _$AuthTokenDtoCopyWithImpl<$Res> implements $AuthTokenDtoCopyWith<$Res> {
           ? _self.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expiresIn: null == expiresIn
-          ? _self.expiresIn
-          : expiresIn // ignore: cast_nullable_to_non_nullable
-              as int,
+      tokenType: null == tokenType
+          ? _self.tokenType
+          : tokenType // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -188,14 +188,14 @@ extension AuthTokenDtoPatterns on AuthTokenDto {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String accessToken, String refreshToken, int expiresIn)?
+    TResult Function(String accessToken, String refreshToken, String tokenType)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _AuthTokenDto() when $default != null:
-        return $default(_that.accessToken, _that.refreshToken, _that.expiresIn);
+        return $default(_that.accessToken, _that.refreshToken, _that.tokenType);
       case _:
         return orElse();
     }
@@ -216,13 +216,13 @@ extension AuthTokenDtoPatterns on AuthTokenDto {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String accessToken, String refreshToken, int expiresIn)
+    TResult Function(String accessToken, String refreshToken, String tokenType)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _AuthTokenDto():
-        return $default(_that.accessToken, _that.refreshToken, _that.expiresIn);
+        return $default(_that.accessToken, _that.refreshToken, _that.tokenType);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -242,13 +242,14 @@ extension AuthTokenDtoPatterns on AuthTokenDto {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String accessToken, String refreshToken, int expiresIn)?
+    TResult? Function(
+            String accessToken, String refreshToken, String tokenType)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _AuthTokenDto() when $default != null:
-        return $default(_that.accessToken, _that.refreshToken, _that.expiresIn);
+        return $default(_that.accessToken, _that.refreshToken, _that.tokenType);
       case _:
         return null;
     }
@@ -256,12 +257,13 @@ extension AuthTokenDtoPatterns on AuthTokenDto {
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _AuthTokenDto implements AuthTokenDto {
   const _AuthTokenDto(
       {required this.accessToken,
       required this.refreshToken,
-      required this.expiresIn});
+      required this.tokenType});
   factory _AuthTokenDto.fromJson(Map<String, dynamic> json) =>
       _$AuthTokenDtoFromJson(json);
 
@@ -270,7 +272,7 @@ class _AuthTokenDto implements AuthTokenDto {
   @override
   final String refreshToken;
   @override
-  final int expiresIn;
+  final String tokenType;
 
   /// Create a copy of AuthTokenDto
   /// with the given fields replaced by the non-null parameter values.
@@ -296,18 +298,18 @@ class _AuthTokenDto implements AuthTokenDto {
                 other.accessToken == accessToken) &&
             (identical(other.refreshToken, refreshToken) ||
                 other.refreshToken == refreshToken) &&
-            (identical(other.expiresIn, expiresIn) ||
-                other.expiresIn == expiresIn));
+            (identical(other.tokenType, tokenType) ||
+                other.tokenType == tokenType));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, accessToken, refreshToken, expiresIn);
+      Object.hash(runtimeType, accessToken, refreshToken, tokenType);
 
   @override
   String toString() {
-    return 'AuthTokenDto(accessToken: $accessToken, refreshToken: $refreshToken, expiresIn: $expiresIn)';
+    return 'AuthTokenDto(accessToken: $accessToken, refreshToken: $refreshToken, tokenType: $tokenType)';
   }
 }
 
@@ -319,7 +321,7 @@ abstract mixin class _$AuthTokenDtoCopyWith<$Res>
       __$AuthTokenDtoCopyWithImpl;
   @override
   @useResult
-  $Res call({String accessToken, String refreshToken, int expiresIn});
+  $Res call({String accessToken, String refreshToken, String tokenType});
 }
 
 /// @nodoc
@@ -337,7 +339,7 @@ class __$AuthTokenDtoCopyWithImpl<$Res>
   $Res call({
     Object? accessToken = null,
     Object? refreshToken = null,
-    Object? expiresIn = null,
+    Object? tokenType = null,
   }) {
     return _then(_AuthTokenDto(
       accessToken: null == accessToken
@@ -348,10 +350,10 @@ class __$AuthTokenDtoCopyWithImpl<$Res>
           ? _self.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expiresIn: null == expiresIn
-          ? _self.expiresIn
-          : expiresIn // ignore: cast_nullable_to_non_nullable
-              as int,
+      tokenType: null == tokenType
+          ? _self.tokenType
+          : tokenType // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }

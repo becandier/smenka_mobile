@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:templatecmd/pages/_features.dart';
+import 'package:flutter/widgets.dart';
+import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
+import 'package:smenka_mobile/pages/_features.dart';
 
 part 'app_router.gr.dart';
 
@@ -8,9 +10,33 @@ part 'app_router.gr.dart';
 /// App Router for the app
 class AppRouter extends RootStackRouter {
   /// App Router for the app
-  AppRouter();
+  AppRouter({required this.authNotifier});
+
+  /// Нотифаер для реактивного отслеживания состояния авторизации
+  final AuthStateNotifier authNotifier;
+
+  @override
+  late final List<AutoRouteGuard> guards = [
+    AutoRouteGuard.simple((resolver, router) {
+      if (authNotifier.isAuthenticated ||
+          resolver.routeName == LoginRoute.name) {
+        resolver.next();
+      } else {
+        resolver.redirectUntil(
+          LoginRoute(
+            onResult: (didLogin) => resolver.next(didLogin),
+          ),
+        );
+      }
+    }),
+  ];
+
   @override
   List<AutoRoute> get routes => [
+        AutoRoute(
+          page: LoginRoute.page,
+          path: '/login',
+        ),
         AutoRoute(
           page: DebugRoute.page,
           path: '/debug',

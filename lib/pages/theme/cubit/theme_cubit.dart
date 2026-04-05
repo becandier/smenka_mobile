@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:templatecmd/data/api/local/theme_local_storage_api.dart';
+import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
 
 /// Cubit for managing application theme mode.
 ///

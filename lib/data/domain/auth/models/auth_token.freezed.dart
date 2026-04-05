@@ -16,7 +16,6 @@ T _$identity<T>(T value) => value;
 mixin _$AuthToken {
   String get accessToken;
   String get refreshToken;
-  DateTime get expiresAt;
 
   /// Create a copy of AuthToken
   /// with the given fields replaced by the non-null parameter values.
@@ -33,18 +32,15 @@ mixin _$AuthToken {
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
             (identical(other.refreshToken, refreshToken) ||
-                other.refreshToken == refreshToken) &&
-            (identical(other.expiresAt, expiresAt) ||
-                other.expiresAt == expiresAt));
+                other.refreshToken == refreshToken));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, accessToken, refreshToken, expiresAt);
+  int get hashCode => Object.hash(runtimeType, accessToken, refreshToken);
 
   @override
   String toString() {
-    return 'AuthToken(accessToken: $accessToken, refreshToken: $refreshToken, expiresAt: $expiresAt)';
+    return 'AuthToken(accessToken: $accessToken, refreshToken: $refreshToken)';
   }
 }
 
@@ -53,7 +49,7 @@ abstract mixin class $AuthTokenCopyWith<$Res> {
   factory $AuthTokenCopyWith(AuthToken value, $Res Function(AuthToken) _then) =
       _$AuthTokenCopyWithImpl;
   @useResult
-  $Res call({String accessToken, String refreshToken, DateTime expiresAt});
+  $Res call({String accessToken, String refreshToken});
 }
 
 /// @nodoc
@@ -70,7 +66,6 @@ class _$AuthTokenCopyWithImpl<$Res> implements $AuthTokenCopyWith<$Res> {
   $Res call({
     Object? accessToken = null,
     Object? refreshToken = null,
-    Object? expiresAt = null,
   }) {
     return _then(_self.copyWith(
       accessToken: null == accessToken
@@ -81,10 +76,6 @@ class _$AuthTokenCopyWithImpl<$Res> implements $AuthTokenCopyWith<$Res> {
           ? _self.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expiresAt: null == expiresAt
-          ? _self.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
     ));
   }
 }
@@ -182,15 +173,13 @@ extension AuthTokenPatterns on AuthToken {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            String accessToken, String refreshToken, DateTime expiresAt)?
-        $default, {
+    TResult Function(String accessToken, String refreshToken)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _AuthToken() when $default != null:
-        return $default(_that.accessToken, _that.refreshToken, _that.expiresAt);
+        return $default(_that.accessToken, _that.refreshToken);
       case _:
         return orElse();
     }
@@ -211,14 +200,12 @@ extension AuthTokenPatterns on AuthToken {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            String accessToken, String refreshToken, DateTime expiresAt)
-        $default,
+    TResult Function(String accessToken, String refreshToken) $default,
   ) {
     final _that = this;
     switch (_that) {
       case _AuthToken():
-        return $default(_that.accessToken, _that.refreshToken, _that.expiresAt);
+        return $default(_that.accessToken, _that.refreshToken);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -238,14 +225,12 @@ extension AuthTokenPatterns on AuthToken {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            String accessToken, String refreshToken, DateTime expiresAt)?
-        $default,
+    TResult? Function(String accessToken, String refreshToken)? $default,
   ) {
     final _that = this;
     switch (_that) {
       case _AuthToken() when $default != null:
-        return $default(_that.accessToken, _that.refreshToken, _that.expiresAt);
+        return $default(_that.accessToken, _that.refreshToken);
       case _:
         return null;
     }
@@ -254,19 +239,13 @@ extension AuthTokenPatterns on AuthToken {
 
 /// @nodoc
 
-class _AuthToken extends AuthToken {
-  const _AuthToken(
-      {required this.accessToken,
-      required this.refreshToken,
-      required this.expiresAt})
-      : super._();
+class _AuthToken implements AuthToken {
+  const _AuthToken({required this.accessToken, required this.refreshToken});
 
   @override
   final String accessToken;
   @override
   final String refreshToken;
-  @override
-  final DateTime expiresAt;
 
   /// Create a copy of AuthToken
   /// with the given fields replaced by the non-null parameter values.
@@ -284,18 +263,15 @@ class _AuthToken extends AuthToken {
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
             (identical(other.refreshToken, refreshToken) ||
-                other.refreshToken == refreshToken) &&
-            (identical(other.expiresAt, expiresAt) ||
-                other.expiresAt == expiresAt));
+                other.refreshToken == refreshToken));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, accessToken, refreshToken, expiresAt);
+  int get hashCode => Object.hash(runtimeType, accessToken, refreshToken);
 
   @override
   String toString() {
-    return 'AuthToken(accessToken: $accessToken, refreshToken: $refreshToken, expiresAt: $expiresAt)';
+    return 'AuthToken(accessToken: $accessToken, refreshToken: $refreshToken)';
   }
 }
 
@@ -307,7 +283,7 @@ abstract mixin class _$AuthTokenCopyWith<$Res>
       __$AuthTokenCopyWithImpl;
   @override
   @useResult
-  $Res call({String accessToken, String refreshToken, DateTime expiresAt});
+  $Res call({String accessToken, String refreshToken});
 }
 
 /// @nodoc
@@ -324,7 +300,6 @@ class __$AuthTokenCopyWithImpl<$Res> implements _$AuthTokenCopyWith<$Res> {
   $Res call({
     Object? accessToken = null,
     Object? refreshToken = null,
-    Object? expiresAt = null,
   }) {
     return _then(_AuthToken(
       accessToken: null == accessToken
@@ -335,10 +310,6 @@ class __$AuthTokenCopyWithImpl<$Res> implements _$AuthTokenCopyWith<$Res> {
           ? _self.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expiresAt: null == expiresAt
-          ? _self.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
     ));
   }
 }

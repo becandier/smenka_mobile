@@ -1,5 +1,5 @@
-import 'package:templatecmd/app/config/_config.dart';
-import 'package:templatecmd/app/main_app/locator/_locator.dart';
+import 'package:smenka_mobile/app/config/_config.dart';
+import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
 
 /// Инициализатор Firebase Remote Config
 class RemoteConfigInitializer implements ServiceInitializer {

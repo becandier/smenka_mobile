@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:templatecmd/app/main_app/locator/_locator.dart';
+import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
 
 /// Инициализатор логгера Talker
 class TalkerInitializer implements ServiceInitializer {

@@ -2,11 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:templatecmd/app/config/_config.dart';
-import 'package:templatecmd/app/main_app/cubit/_cubit.dart';
-import 'package:templatecmd/core/constants/feature_statuses.dart';
-import 'package:templatecmd/l10n/localization_extension.dart';
-import 'package:templatecmd/pages/debug/cubit/debug_cubit.dart';
+import 'package:smenka_mobile/app/config/_config.dart';
+import 'package:smenka_mobile/app/main_app/cubit/_cubit.dart';
+import 'package:smenka_mobile/core/constants/feature_statuses.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/debug/cubit/debug_cubit.dart';
 
 @RoutePage()
 class DebugPage extends StatelessWidget {

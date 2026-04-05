@@ -1,35 +1,33 @@
 import 'dart:ui';
 
-import 'package:templatecmd/core/theme/colors/i_colors.dart';
+import 'package:smenka_mobile/core/theme/colors/i_colors.dart';
 
 /// Dark theme color palette implementation.
 ///
-/// Provides color values optimized for dark mode following Material Design 3 guidelines.
-/// To customize colors, modify the hex values below.
-///
-/// Usage:
-/// ```dart
-/// final colors = DarkColors();
-/// final primary = colors.primary; // #D0BCFF
-/// ```
+/// Lightened blue primary (#7AB5E8) for visibility on dark backgrounds.
+/// TickTick-inspired: clean, minimal, dark surfaces.
 class DarkColors implements IColors {
-  /// Dark background for main screens
   @override
-  Color get background => const Color(0xFF1E1E1E);
+  Color get primary => const Color(0xFF7AB5E8);
 
-  /// Red error color for validation states
   @override
-  Color get error => const Color(0xFFB3261E);
+  Color get secondary => const Color(0xFF8E99A4);
 
-  /// Light purple primary color - visible on dark backgrounds
   @override
-  Color get primary => const Color(0xFFD0BCFF);
+  Color get background => const Color(0xFF121212);
 
-  /// Light gray-purple secondary color for supporting elements
   @override
-  Color get secondary => const Color(0xFFCCC2DC);
+  Color get surface => const Color(0xFF1E1E1E);
 
-  /// Dark surface color for cards and sheets
   @override
-  Color get surface => const Color(0xFF1C1B1F);
+  Color get error => const Color(0xFFEF5350);
+
+  @override
+  Color get success => const Color(0xFF66BB6A);
+
+  @override
+  Color get warning => const Color(0xFFFFA726);
+
+  @override
+  Color get info => const Color(0xFF42A5F5);
 }

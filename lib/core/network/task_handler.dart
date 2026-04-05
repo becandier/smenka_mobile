@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:templatecmd/core/network/api_exceptions.dart';
-import 'package:templatecmd/core/network/task.dart';
+import 'package:smenka_mobile/core/network/api_exceptions.dart';
+import 'package:smenka_mobile/core/network/task.dart';
 
 /// Миксин для обработки ошибок на уровне репозитория
 /// Оборачивает вызовы в Task<T>

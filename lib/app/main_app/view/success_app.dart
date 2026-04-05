@@ -9,6 +9,7 @@ class _SuccessApp extends StatefulWidget {
     required this.dio,
     required this.debugRepository,
     required this.themeMode,
+    required this.authNotifier,
   });
   final AppConfig appConfig;
   final SharedPreferences sharedPreferences;
@@ -17,6 +18,7 @@ class _SuccessApp extends StatefulWidget {
   final Dio dio;
   final IDebugRepositoryImp debugRepository;
   final ThemeMode themeMode;
+  final AuthStateNotifier authNotifier;
 
   @override
   State<_SuccessApp> createState() => _SuccessAppState();
@@ -32,7 +34,7 @@ class _SuccessAppState extends State<_SuccessApp> {
   void initState() {
     super.initState();
     _deviceLocale = PlatformDispatcher.instance.locale;
-    _router = AppRouter();
+    _router = AppRouter(authNotifier: widget.authNotifier);
   }
 
   @override
@@ -74,6 +76,7 @@ class _SuccessAppState extends State<_SuccessApp> {
               themeMode: state,
 
               routerConfig: _router.config(
+                reevaluateListenable: widget.authNotifier,
                 navigatorObservers: () => [
                   TalkerRouteObserver(widget.talker),
                 ],

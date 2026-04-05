@@ -1,2 +1,3 @@
+export 'auth_state.dart';
 export 'auth_token.dart';
-export 'user.dart';
+export 'register_result.dart';

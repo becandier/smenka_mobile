@@ -8,14 +8,14 @@ part of 'auth_token_dto.dart';
 
 _AuthTokenDto _$AuthTokenDtoFromJson(Map<String, dynamic> json) =>
     _AuthTokenDto(
-      accessToken: json['accessToken'] as String,
-      refreshToken: json['refreshToken'] as String,
-      expiresIn: (json['expiresIn'] as num).toInt(),
+      accessToken: json['access_token'] as String,
+      refreshToken: json['refresh_token'] as String,
+      tokenType: json['token_type'] as String,
     );
 
 Map<String, dynamic> _$AuthTokenDtoToJson(_AuthTokenDto instance) =>
     <String, dynamic>{
-      'accessToken': instance.accessToken,
-      'refreshToken': instance.refreshToken,
-      'expiresIn': instance.expiresIn,
+      'access_token': instance.accessToken,
+      'refresh_token': instance.refreshToken,
+      'token_type': instance.tokenType,
     };

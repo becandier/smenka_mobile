@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:templatecmd/core/theme/colors/app_colors.dart.dart';
-import 'package:templatecmd/l10n/localization_extension.dart';
-import 'package:templatecmd/pages/theme/cubit/theme_cubit.dart';
+import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart';
 
 /// Theme selector button widget with popup menu.
 ///

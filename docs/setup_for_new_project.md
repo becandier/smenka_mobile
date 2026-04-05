@@ -12,7 +12,7 @@ yourshortprojectname should be without "_" and Uppercase symbols.
 
   
 
-Initial identifier for template is **com.app.templatecmd**
+Initial identifier for template is **com.app.smenka_mobile**
 
   
 
@@ -22,7 +22,7 @@ Initial identifier for template is **com.app.templatecmd**
 
 Go to https://developer.apple.com/account/resources/identifiers and create new identifier.
 
-2. Replace com.app.templatecmd everywhere in project to your identifier.
+2. Replace com.app.smenka_mobile everywhere in project to your identifier.
 
   
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:templatecmd/core/theme/colors/i_colors.dart';
+import 'package:smenka_mobile/core/theme/colors/i_colors.dart';
 
 /// ThemeExtension wrapper for app colors.
 ///
@@ -12,11 +12,6 @@ import 'package:templatecmd/core/theme/colors/i_colors.dart';
 /// final appColors = context.appColors;
 /// Container(color: appColors.primary);
 /// ```
-///
-/// See also:
-/// - [IColors] for color interface definition
-/// - [LightColors] and [DarkColors] for implementations
-/// - [AppTheme] for theme configuration
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
     required this.primary,
@@ -24,6 +19,9 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.background,
     required this.surface,
     required this.error,
+    required this.success,
+    required this.warning,
+    required this.info,
   });
 
   /// Creates AppColors from an [IColors] implementation
@@ -33,22 +31,19 @@ class AppColors extends ThemeExtension<AppColors> {
         background: colors.background,
         surface: colors.surface,
         error: colors.error,
+        success: colors.success,
+        warning: colors.warning,
+        info: colors.info,
       );
 
-  /// Primary brand color for key UI elements (buttons, links, accents)
   final Color primary;
-
-  /// Secondary color for less prominent elements
   final Color secondary;
-
-  /// Main background color for screens
   final Color background;
-
-  /// Surface color for cards, sheets, and elevated components
   final Color surface;
-
-  /// Error color for validation and error states
   final Color error;
+  final Color success;
+  final Color warning;
+  final Color info;
 
   @override
   AppColors copyWith({
@@ -57,6 +52,9 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? background,
     Color? surface,
     Color? error,
+    Color? success,
+    Color? warning,
+    Color? info,
   }) {
     return AppColors(
       primary: primary ?? this.primary,
@@ -64,14 +62,15 @@ class AppColors extends ThemeExtension<AppColors> {
       background: background ?? this.background,
       surface: surface ?? this.surface,
       error: error ?? this.error,
+      success: success ?? this.success,
+      warning: warning ?? this.warning,
+      info: info ?? this.info,
     );
   }
 
   @override
   AppColors lerp(covariant AppColors? other, double t) {
-    if (other == null) {
-      return this;
-    }
+    if (other == null) return this;
 
     return AppColors(
       primary: Color.lerp(primary, other.primary, t) ?? primary,
@@ -79,6 +78,9 @@ class AppColors extends ThemeExtension<AppColors> {
       background: Color.lerp(background, other.background, t) ?? background,
       surface: Color.lerp(surface, other.surface, t) ?? surface,
       error: Color.lerp(error, other.error, t) ?? error,
+      success: Color.lerp(success, other.success, t) ?? success,
+      warning: Color.lerp(warning, other.warning, t) ?? warning,
+      info: Color.lerp(info, other.info, t) ?? info,
     );
   }
 }

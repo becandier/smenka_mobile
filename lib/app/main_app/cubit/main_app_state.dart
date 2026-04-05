@@ -13,6 +13,7 @@ sealed class MainAppState with _$MainAppState {
     required Dio dio,
     required IDebugRepositoryImp debugRepository,
     required ThemeMode themeMode,
+    required AuthStateNotifier authNotifier,
   }) = MainAppStateSuccess;
   factory MainAppState.loading() = MainAppStateLoading;
   factory MainAppState.error({

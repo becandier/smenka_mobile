@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:templatecmd/app/main_app/cubit/_cubit.dart' show MainAppCubit;
-import 'package:templatecmd/app/main_app/cubit/main_app_cubit.dart'
+import 'package:smenka_mobile/app/main_app/cubit/_cubit.dart' show MainAppCubit;
+import 'package:smenka_mobile/app/main_app/cubit/main_app_cubit.dart'
     show MainAppCubit;
-import 'package:templatecmd/app/main_app/locator/service_locator.dart';
-import 'package:templatecmd/core/constants/prefs_keys.dart';
-import 'package:templatecmd/data/api/local/theme_local_storage_api.dart';
-import 'package:templatecmd/pages/theme/cubit/theme_cubit.dart' show ThemeCubit;
+import 'package:smenka_mobile/app/main_app/locator/service_locator.dart';
+import 'package:smenka_mobile/core/constants/prefs_keys.dart';
+import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
+import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart' show ThemeCubit;
 
 /// Service initializer for theme persistence.
 ///

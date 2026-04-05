@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:templatecmd/app/main_app/locator/_locator.dart';
+import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
 
 /// Инициализатор SharedPreferences
 class SharedPreferencesInitializer implements ServiceInitializer {

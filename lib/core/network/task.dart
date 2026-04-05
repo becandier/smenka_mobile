@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:templatecmd/core/network/api_exceptions.dart';
+import 'package:smenka_mobile/core/network/api_exceptions.dart';
 
 part 'task.freezed.dart';
 

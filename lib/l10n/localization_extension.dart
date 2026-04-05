@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:templatecmd/l10n/app_localizations.dart';
+import 'package:smenka_mobile/l10n/app_localizations.dart';
 
 extension LocalizationExtension on BuildContext {
   AppLocalizations get l10n {

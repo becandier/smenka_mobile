@@ -1,35 +1,33 @@
 import 'dart:ui';
 
-import 'package:templatecmd/core/theme/colors/i_colors.dart';
+import 'package:smenka_mobile/core/theme/colors/i_colors.dart';
 
 /// Light theme color palette implementation.
 ///
-/// Provides color values optimized for light mode following Material Design 3 guidelines.
-/// To customize colors, modify the hex values below.
-///
-/// Usage:
-/// ```dart
-/// final colors = LightColors();
-/// final primary = colors.primary; // #6750A4
-/// ```
+/// Calm blue primary (#4A90D9) with neutral gray-blue secondary.
+/// TickTick-inspired: clean, minimal, soft surfaces.
 class LightColors implements IColors {
-  /// White background for main screens
   @override
-  Color get background => const Color(0xFFFFFFFF);
+  Color get primary => const Color(0xFF4A90D9);
 
-  /// Red error color for validation states
   @override
-  Color get error => const Color(0xFFB3261E);
+  Color get secondary => const Color(0xFF5C6B7A);
 
-  /// Purple primary color - main brand accent
   @override
-  Color get primary => const Color(0xFF6750A4);
+  Color get background => const Color(0xFFFAFBFC);
 
-  /// Gray-purple secondary color for supporting elements
   @override
-  Color get secondary => const Color(0xFF625B71);
+  Color get surface => const Color(0xFFFFFFFF);
 
-  /// Near-white surface color for cards and sheets
   @override
-  Color get surface => const Color(0xFFFFFBFE);
+  Color get error => const Color(0xFFE53935);
+
+  @override
+  Color get success => const Color(0xFF4CAF50);
+
+  @override
+  Color get warning => const Color(0xFFFF9800);
+
+  @override
+  Color get info => const Color(0xFF2196F3);
 }

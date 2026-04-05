@@ -10,10 +10,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smenka_mobile/app/_app.dart';
+import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
+import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
+import 'package:smenka_mobile/data/domain/auth/_auth.dart';
+import 'package:smenka_mobile/pages/debug/data/repository/_repository.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:templatecmd/app/_app.dart';
-import 'package:templatecmd/app/main_app/locator/_locator.dart';
-import 'package:templatecmd/pages/debug/data/repository/_repository.dart';
 
 part 'main_app_cubit.freezed.dart';
 part 'main_app_state.dart';
@@ -63,16 +65,47 @@ class MainAppCubit extends Cubit<MainAppState> {
         ),
       );
 
-      // Фаза 4: Сервисы с зависимостями на фазу 3
+      // Фаза 3.5: Auth инфраструктура
+      final authTokenStorage = AuthTokenStorage(
+        prefs: _serviceLocator.get<SharedPreferences>(),
+      );
+      _serviceLocator.register<AuthTokenStorage>(authTokenStorage);
+
+      final authNotifier = AuthStateNotifier();
+      _serviceLocator.register<AuthStateNotifier>(authNotifier);
+
+      // Фаза 4: Dio (с AuthInterceptor)
       await _initService(
         DioInitializer(
           talker: _serviceLocator.get(),
           appConfig: _serviceLocator.get(),
+          tokenStorage: authTokenStorage,
+          authNotifier: authNotifier,
         ),
       );
 
-      // Фаза 5: Сервисы с зависимостями на SharedPreferences
+      // Фаза 5: Репозитории (зависят от Dio)
+      final dio = _serviceLocator.get<Dio>();
+
+      await _initService(
+        AuthRepositoryInitializer(
+          dio: dio,
+          tokenStorage: authTokenStorage,
+          authNotifier: authNotifier,
+        ),
+      );
+      await _initService(UserRepositoryInitializer(dio: dio));
+      await _initService(ShiftRepositoryInitializer(dio: dio));
+      await _initService(OrganizationRepositoryInitializer(dio: dio));
+      await _initService(LocationRepositoryInitializer(dio: dio));
+
+      // Фаза 6: Сервисы с зависимостями на SharedPreferences
       await _initService(ThemeModeServiceInitializer());
+
+      // Проверяем авторизацию при старте
+      if (_serviceLocator.isRegistered<AuthRepository>()) {
+        await _serviceLocator.get<AuthRepository>().checkAuthStatus();
+      }
 
       // Успешно инициализировали приложение
       emit(
@@ -84,6 +117,7 @@ class MainAppCubit extends Cubit<MainAppState> {
           dio: _serviceLocator.get<Dio>(),
           debugRepository: _serviceLocator.get<IDebugRepositoryImp>(),
           themeMode: _serviceLocator.get<ThemeMode>(),
+          authNotifier: _serviceLocator.get<AuthStateNotifier>(),
         ),
       );
     } catch (e, stackTrace) {

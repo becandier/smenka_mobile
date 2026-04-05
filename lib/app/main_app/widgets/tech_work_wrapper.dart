@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:templatecmd/app/main_app/cubit/_cubit.dart';
-import 'package:templatecmd/l10n/localization_extension.dart';
+import 'package:smenka_mobile/app/main_app/cubit/_cubit.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 class TechWorksWrapper extends StatefulWidget {
   const TechWorksWrapper({

@@ -1,4 +1,4 @@
-import 'package:templatecmd/app/config/_config.dart';
+import 'package:smenka_mobile/app/config/_config.dart';
 
 class AppConfig {
   AppConfig({

@@ -25,4 +25,13 @@ abstract class IColors {
 
   /// Error color for validation and error states
   Color get error;
+
+  /// Success color for completed/approved states
+  Color get success;
+
+  /// Warning color for pending/attention states
+  Color get warning;
+
+  /// Info color for informational messages
+  Color get info;
 }

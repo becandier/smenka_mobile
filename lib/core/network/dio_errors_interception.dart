@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:templatecmd/core/network/api_exceptions.dart';
+import 'package:smenka_mobile/core/network/api_exceptions.dart';
 
-/// Интерцептор ошибок API
+/// Интерцептор ошибок API.
+///
+/// Парсит формат ошибок бекенда:
+/// `{"data": null, "error": {"code": "...", "message": "..."}}`
 class ApiErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final exception = _handleError(err);
-    // Создаем новый DioException с оригинальным типом исключения
     handler.reject(
       DioException(
         requestOptions: err.requestOptions,
@@ -20,80 +22,93 @@ class ApiErrorInterceptor extends Interceptor {
 
   ApiException _handleError(DioException error) {
     // Если ошибка уже является ApiException, возвращаем её
-    if (error.error is ApiException) {
-      return error.error! as ApiException;
+    final existingError = error.error;
+    if (existingError is ApiException) {
+      return existingError;
     }
 
     // Проверяем сетевые ошибки
     if (error.error is SocketException ||
-        error.type == DioExceptionType.connectionTimeout) {
+        error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.receiveTimeout ||
+        error.type == DioExceptionType.sendTimeout) {
       return const ApiException.network(
         message: 'Проверьте подключение к интернету',
         code: 'NETWORK_ERROR',
       );
     }
 
-    if (error.response == null) {
+    if (error.type == DioExceptionType.connectionError) {
+      return const ApiException.network(
+        message: 'Не удалось подключиться к серверу',
+        code: 'CONNECTION_ERROR',
+      );
+    }
+
+    final response = error.response;
+    if (response == null) {
       return const ApiException.server(
         message: 'Произошла непредвиденная ошибка',
         code: 'UNKNOWN_ERROR',
       );
     }
 
-    final statusCode = error.response?.statusCode;
-    final data = error.response?.data;
+    return _parseResponseError(response);
+  }
 
-    /// Преобразует карту ошибок из формата Map<String, List<String>>
-    /// в Map<String, String?>
-    /// Берет первый элемент из каждого списка или null, если список пуст
-    Map<String, String?> convertErrorsMap(Map<String, dynamic> errorsMap) {
-      final result = <String, String?>{};
+  ApiException _parseResponseError(Response<dynamic> response) {
+    final data = response.data;
 
-      errorsMap.forEach((key, value) {
-        if (value is List && value.isNotEmpty) {
-          result[key] = value.first.toString();
-        } else if (value is String) {
-          result[key] = value;
-        } else {
-          result[key] = null;
-        }
-      });
-
-      return result;
+    // Парсим формат ошибок бекенда
+    if (data is Map<String, dynamic>) {
+      final errorData = data['error'];
+      if (errorData is Map<String, dynamic>) {
+        return _parseBackendError(errorData);
+      }
     }
 
-    return switch (statusCode) {
-      401 => ApiException.unauthorized(
+    // Fallback по HTTP статусу
+    return switch (response.statusCode) {
+      401 => const ApiException.unauthorized(
           message: 'Необходима авторизация',
           code: 'UNAUTHORIZED',
-          data: data,
         ),
-      422 when data is Map && data['errors'] is Map => ApiException.validation(
-          message: 'Ошибка валидации',
-          errors: convertErrorsMap(data['errors'] as Map<String, dynamic>),
-          code: 'VALIDATION_ERROR',
-          data: data,
-        ),
-      403 => ApiException.server(
-          message: 'Доступ запрещен',
-          code: 'FORBIDDEN',
-          data: data,
-        ),
-      404 => ApiException.server(
-          message: 'Ресурс не найден',
-          code: 'NOT_FOUND',
-          data: data,
-        ),
-      500 || 502 || 503 || 504 => ApiException.server(
-          message: 'Ошибка сервера',
-          code: 'SERVER_ERROR',
-          data: data,
-        ),
-      _ => ApiException.server(
+      _ => const ApiException.server(
           message: 'Произошла непредвиденная ошибка',
           code: 'UNKNOWN_ERROR',
-          data: data,
         ),
     };
+  }
+
+  ApiException _parseBackendError(Map<String, dynamic> errorData) {
+    final code = errorData['code'] as String? ?? 'UNKNOWN_ERROR';
+    final message = errorData['message'] as String? ?? 'Произошла ошибка';
+    final validation = errorData['validation'] as List<dynamic>?;
+
+    // Ошибки авторизации
+    if (code == 'INVALID_CREDENTIALS' ||
+        code == 'INVALID_TOKEN' ||
+        code == 'UNAUTHORIZED') {
+      return ApiException.unauthorized(message: message, code: code);
+    }
+
+    // Ошибки валидации
+    if (validation != null && validation.isNotEmpty) {
+      final errors = <String, String?>{};
+      for (final item in validation) {
+        if (item is Map<String, dynamic>) {
+          final field = item['field'] as String? ?? '';
+          final fieldMessage = item['message'] as String?;
+          errors[field] = fieldMessage;
+        }
+      }
+      return ApiException.validation(
+        message: message,
+        errors: errors,
+        code: code,
+      );
+    }
+
+    return ApiException.server(message: message, code: code);
   }
 }

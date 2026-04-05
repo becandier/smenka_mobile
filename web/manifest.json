@@ -1,6 +1,6 @@
 {
-    "name": "templatecmd",
-    "short_name": "templatecmd",
+    "name": "smenka_mobile",
+    "short_name": "smenka_mobile",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#hexcode",

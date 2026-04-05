@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:templatecmd/data/api/local/local_storage_api.dart';
+import 'package:smenka_mobile/data/api/local/local_storage_api.dart';
 
 /// Local storage API for persisting theme mode preference.
 ///

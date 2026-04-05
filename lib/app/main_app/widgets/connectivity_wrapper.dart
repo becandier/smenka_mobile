@@ -1,6 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:templatecmd/l10n/localization_extension.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 @Deprecated('''
 Есть баг с context ScaffoldMessenger. 

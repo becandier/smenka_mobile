@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:templatecmd/app/main_app/locator/_locator.dart';
-import 'package:templatecmd/firebase_options.dart';
+import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
+import 'package:smenka_mobile/firebase_options.dart';
 
 /// Инициализатор Firebase
 class FirebaseInitializer implements ServiceInitializer {

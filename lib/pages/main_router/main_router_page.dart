@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:templatecmd/l10n/localization_extension.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 @RoutePage()
 class MainRouterPage extends StatelessWidget {
