@@ -44,7 +44,7 @@ lib/
 │   │   ├── user/                  # User
 │   │   ├── organization/          # Organization, Member, OrgSettings, OrgStats, JoinResult
 │   │   ├── location/              # WorkLocation
-│   │   └── shift/                 # Shift, Pause, ShiftStats, PaginatedShifts
+│   │   └── shift/                 # Shift, Pause, ShiftStats, DefaultPaginator<T>
 │   └── infrastructure/            # Реализации (datasource + dto + mappers + repos)
 │       ├── auth/
 │       ├── user/
@@ -120,6 +120,7 @@ lib/
 | `DebugCubit` | Готов | Debug-информация |
 | `AuthCubit` | Готов | Глобальное состояние авторизации (shared) |
 | `LoginCubit` | Готов | Login/Register форма с валидацией |
+| `VerifyCubit` | Готов | Верификация email (код + таймер) |
 
 ---
 
@@ -128,6 +129,7 @@ lib/
 | Route | Path | Описание |
 |-------|------|----------|
 | `LoginRoute` | `/login` | Авторизация |
+| `VerifyRoute` | `/verify` | Подтверждение email |
 | `DebugRoute` | `/debug` | Debug-страница |
 | `MainRouterRoute` | `/` | Bottom tabs (Home, Settings) |
 | `ExampleHomeRoute` | `/home` | Заглушка |
@@ -146,6 +148,12 @@ lib/
 ---
 
 ## Утилиты
+
+### Общие виджеты (`lib/widgets/`)
+- `AppTextField` — кастомное текстовое поле с валидацией (файл: `lib/widgets/app_text_field.dart`)
+- `AppButton` — кнопка с состоянием загрузки (файл: `lib/widgets/app_button.dart`)
+- `PinCodeField` — поле ввода PIN/кода подтверждения (файл: `lib/widgets/pin_code_field.dart`)
+- Barrel file: `lib/widgets/_widgets.dart`
 
 ### Toast-уведомления
 - `context.modals.showSuccess/showError/showInfo/showWarning` — overlay-based toast

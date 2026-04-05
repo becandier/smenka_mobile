@@ -30,16 +30,16 @@
 
 ---
 
-## Фаза 2 — Auth Flow `[~]`
+## Фаза 2 — Auth Flow `[x]`
 - [x] **Login** — email + пароль, валидация, навигация на регистрацию
 - [x] **Register** — email + пароль + имя, валидация
-- [ ] **Verify Email** — ввод 4-значного кода, таймер повторной отправки (30с cooldown)
-- [ ] Кубиты: LoginCubit, RegisterCubit, VerifyCubit
-- [ ] Интеграция с AuthRepository (login, register, verify, resendCode)
-- [ ] Guard: редирект на Login если не авторизован (уже есть базовый)
-- [ ] Обработка ошибок: неверный пароль, email занят, неверный код и т.д.
-- [ ] Локализация всех текстов
-- [ ] Роуты в app_router
+- [x] **Verify Email** — ввод 4-значного кода, таймер повторной отправки (30с cooldown)
+- [x] Кубиты: LoginCubit, RegisterCubit (it's LoginCubit with toggle), VerifyCubit
+- [x] Интеграция с AuthRepository (login, register, verify, resendCode)
+- [x] Guard: редирект на Login если не авторизован (уже есть базовый)
+- [x] Обработка ошибок: неверный пароль, email занят, неверный код и т.д.
+- [x] Локализация всех текстов
+- [x] Роуты в app_router
 
 ---
 
