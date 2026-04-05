@@ -138,3 +138,47 @@ class SettingsTab extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [VerifyPage]
+class VerifyRoute extends PageRouteInfo<VerifyRouteArgs> {
+  VerifyRoute({required String email, Key? key, List<PageRouteInfo>? children})
+      : super(
+          VerifyRoute.name,
+          args: VerifyRouteArgs(email: email, key: key),
+          initialChildren: children,
+        );
+
+  static const String name = 'VerifyRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<VerifyRouteArgs>();
+      return VerifyPage(email: args.email, key: args.key);
+    },
+  );
+}
+
+class VerifyRouteArgs {
+  const VerifyRouteArgs({required this.email, this.key});
+
+  final String email;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'VerifyRouteArgs{email: $email, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! VerifyRouteArgs) return false;
+    return email == other.email && key == other.key;
+  }
+
+  @override
+  int get hashCode => email.hashCode ^ key.hashCode;
+}
