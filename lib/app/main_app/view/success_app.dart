@@ -10,6 +10,7 @@ class _SuccessApp extends StatefulWidget {
     required this.debugRepository,
     required this.themeMode,
     required this.authNotifier,
+    required this.authRepository,
   });
   final AppConfig appConfig;
   final SharedPreferences sharedPreferences;
@@ -19,6 +20,7 @@ class _SuccessApp extends StatefulWidget {
   final IDebugRepositoryImp debugRepository;
   final ThemeMode themeMode;
   final AuthStateNotifier authNotifier;
+  final AuthRepository authRepository;
 
   @override
   State<_SuccessApp> createState() => _SuccessAppState();
@@ -52,6 +54,12 @@ class _SuccessAppState extends State<_SuccessApp> {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(
+            create: (_) => AuthCubit(
+              authRepository: widget.authRepository,
+              authNotifier: widget.authNotifier,
+            ),
+          ),
           BlocProvider(
             create: (context) => DebugCubit(
               debugRepository: context.read<IDebugRepositoryImp>(),
