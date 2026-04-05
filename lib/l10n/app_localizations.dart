@@ -273,6 +273,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Системная'**
   String get system;
+
+  /// No description provided for @noData.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет данных'**
+  String get noData;
+
+  /// No description provided for @retry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

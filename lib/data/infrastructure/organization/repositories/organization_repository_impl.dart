@@ -1,3 +1,4 @@
+import 'package:smenka_mobile/core/models/default_paginator.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/network/task_handler.dart';
 import 'package:smenka_mobile/data/domain/organization/_organization.dart';
@@ -106,7 +107,7 @@ class OrganizationRepositoryImpl
   }
 
   @override
-  Future<Task<PaginatedShifts>> getShifts(
+  Future<Task<DefaultPaginator<Shift>>> getShifts(
     String orgId, {
     String? userId,
     ShiftStatus? status,

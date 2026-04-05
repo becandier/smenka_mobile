@@ -1,8 +1,9 @@
+import 'package:smenka_mobile/core/models/default_paginator.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 
 abstract class ShiftRepository {
-  Future<Task<PaginatedShifts>> getShifts({
+  Future<Task<DefaultPaginator<Shift>>> getShifts({
     ShiftStatus? status,
     DateTime? dateFrom,
     DateTime? dateTo,

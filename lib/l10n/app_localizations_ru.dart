@@ -102,4 +102,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get system => 'Системная';
+
+  @override
+  String get noData => 'Нет данных';
+
+  @override
+  String get retry => 'Повторить';
 }
