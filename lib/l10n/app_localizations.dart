@@ -285,6 +285,138 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Повторить'**
   String get retry;
+
+  /// No description provided for @authLogin.
+  ///
+  /// In ru, this message translates to:
+  /// **'Войти'**
+  String get authLogin;
+
+  /// No description provided for @authRegister.
+  ///
+  /// In ru, this message translates to:
+  /// **'Зарегистрироваться'**
+  String get authRegister;
+
+  /// No description provided for @authEmail.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email'**
+  String get authEmail;
+
+  /// No description provided for @authEmailHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'example@mail.com'**
+  String get authEmailHint;
+
+  /// No description provided for @authPassword.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пароль'**
+  String get authPassword;
+
+  /// No description provided for @authName.
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя'**
+  String get authName;
+
+  /// No description provided for @authNameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Иван Иванов'**
+  String get authNameHint;
+
+  /// No description provided for @authNoAccount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет аккаунта? Зарегистрироваться'**
+  String get authNoAccount;
+
+  /// No description provided for @authHasAccount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уже есть аккаунт? Войти'**
+  String get authHasAccount;
+
+  /// No description provided for @authVerifyTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подтверждение email'**
+  String get authVerifyTitle;
+
+  /// No description provided for @authVerifySubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Код отправлен на {email}'**
+  String authVerifySubtitle(String email);
+
+  /// No description provided for @authResendCode.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить повторно'**
+  String get authResendCode;
+
+  /// No description provided for @authResendCodeTimer.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить повторно ({seconds}с)'**
+  String authResendCodeTimer(int seconds);
+
+  /// No description provided for @authPasswordMinLength.
+  ///
+  /// In ru, this message translates to:
+  /// **'Минимум 8 символов'**
+  String get authPasswordMinLength;
+
+  /// No description provided for @authPasswordNeedLetter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Хотя бы одна буква'**
+  String get authPasswordNeedLetter;
+
+  /// No description provided for @authPasswordNeedDigit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Хотя бы одна цифра'**
+  String get authPasswordNeedDigit;
+
+  /// No description provided for @authCodeSent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Код отправлен на почту'**
+  String get authCodeSent;
+
+  /// No description provided for @authCodeResent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Код отправлен повторно'**
+  String get authCodeResent;
+
+  /// No description provided for @authEmailTaken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пользователь с таким email уже существует'**
+  String get authEmailTaken;
+
+  /// No description provided for @authInvalidCredentials.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неверный email или пароль'**
+  String get authInvalidCredentials;
+
+  /// No description provided for @authInvalidCode.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неверный или просроченный код'**
+  String get authInvalidCode;
+
+  /// No description provided for @authEmailNotVerified.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email не подтверждён, введите код'**
+  String get authEmailNotVerified;
 }
 
 class _AppLocalizationsDelegate
