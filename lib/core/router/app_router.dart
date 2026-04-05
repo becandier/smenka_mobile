@@ -19,7 +19,8 @@ class AppRouter extends RootStackRouter {
   late final List<AutoRouteGuard> guards = [
     AutoRouteGuard.simple((resolver, router) {
       if (authNotifier.isAuthenticated ||
-          resolver.routeName == LoginRoute.name) {
+          resolver.routeName == LoginRoute.name ||
+          resolver.routeName == VerifyRoute.name) {
         resolver.next();
       } else {
         resolver.redirectUntil(
@@ -36,6 +37,10 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           page: LoginRoute.page,
           path: '/login',
+        ),
+        AutoRoute(
+          page: VerifyRoute.page,
+          path: '/verify',
         ),
         AutoRoute(
           page: DebugRoute.page,

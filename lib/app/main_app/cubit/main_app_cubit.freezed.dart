@@ -156,7 +156,8 @@ extension MainAppStatePatterns on MainAppState {
             Dio dio,
             IDebugRepositoryImp debugRepository,
             ThemeMode themeMode,
-            AuthStateNotifier authNotifier)?
+            AuthStateNotifier authNotifier,
+            AuthRepository authRepository)?
         success,
     TResult Function()? loading,
     TResult Function(Object? error, StackTrace? stackTrace)? error,
@@ -173,7 +174,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.dio,
             _that.debugRepository,
             _that.themeMode,
-            _that.authNotifier);
+            _that.authNotifier,
+            _that.authRepository);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -206,7 +208,8 @@ extension MainAppStatePatterns on MainAppState {
             Dio dio,
             IDebugRepositoryImp debugRepository,
             ThemeMode themeMode,
-            AuthStateNotifier authNotifier)
+            AuthStateNotifier authNotifier,
+            AuthRepository authRepository)
         success,
     required TResult Function() loading,
     required TResult Function(Object? error, StackTrace? stackTrace) error,
@@ -222,7 +225,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.dio,
             _that.debugRepository,
             _that.themeMode,
-            _that.authNotifier);
+            _that.authNotifier,
+            _that.authRepository);
       case MainAppStateLoading():
         return loading();
       case MainAppStateError():
@@ -252,7 +256,8 @@ extension MainAppStatePatterns on MainAppState {
             Dio dio,
             IDebugRepositoryImp debugRepository,
             ThemeMode themeMode,
-            AuthStateNotifier authNotifier)?
+            AuthStateNotifier authNotifier,
+            AuthRepository authRepository)?
         success,
     TResult? Function()? loading,
     TResult? Function(Object? error, StackTrace? stackTrace)? error,
@@ -268,7 +273,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.dio,
             _that.debugRepository,
             _that.themeMode,
-            _that.authNotifier);
+            _that.authNotifier,
+            _that.authRepository);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -290,7 +296,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       required this.dio,
       required this.debugRepository,
       required this.themeMode,
-      required this.authNotifier})
+      required this.authNotifier,
+      required this.authRepository})
       : super._();
 
   final AppConfig appConfig;
@@ -301,6 +308,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   final IDebugRepositoryImp debugRepository;
   final ThemeMode themeMode;
   final AuthStateNotifier authNotifier;
+  final AuthRepository authRepository;
 
   /// Create a copy of MainAppState
   /// with the given fields replaced by the non-null parameter values.
@@ -320,7 +328,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('dio', dio))
       ..add(DiagnosticsProperty('debugRepository', debugRepository))
       ..add(DiagnosticsProperty('themeMode', themeMode))
-      ..add(DiagnosticsProperty('authNotifier', authNotifier));
+      ..add(DiagnosticsProperty('authNotifier', authNotifier))
+      ..add(DiagnosticsProperty('authRepository', authRepository));
   }
 
   @override
@@ -341,16 +350,27 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
             (identical(other.themeMode, themeMode) ||
                 other.themeMode == themeMode) &&
             (identical(other.authNotifier, authNotifier) ||
-                other.authNotifier == authNotifier));
+                other.authNotifier == authNotifier) &&
+            (identical(other.authRepository, authRepository) ||
+                other.authRepository == authRepository));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, appConfig, sharedPreferences,
-      packageInfo, talker, dio, debugRepository, themeMode, authNotifier);
+  int get hashCode => Object.hash(
+      runtimeType,
+      appConfig,
+      sharedPreferences,
+      packageInfo,
+      talker,
+      dio,
+      debugRepository,
+      themeMode,
+      authNotifier,
+      authRepository);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier)';
+    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository)';
   }
 }
 
@@ -369,7 +389,8 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res>
       Dio dio,
       IDebugRepositoryImp debugRepository,
       ThemeMode themeMode,
-      AuthStateNotifier authNotifier});
+      AuthStateNotifier authNotifier,
+      AuthRepository authRepository});
 }
 
 /// @nodoc
@@ -392,6 +413,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? debugRepository = null,
     Object? themeMode = null,
     Object? authNotifier = null,
+    Object? authRepository = null,
   }) {
     return _then(MainAppStateSuccess(
       appConfig: null == appConfig
@@ -426,6 +448,10 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.authNotifier
           : authNotifier // ignore: cast_nullable_to_non_nullable
               as AuthStateNotifier,
+      authRepository: null == authRepository
+          ? _self.authRepository
+          : authRepository // ignore: cast_nullable_to_non_nullable
+              as AuthRepository,
     ));
   }
 }

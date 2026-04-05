@@ -14,6 +14,7 @@ sealed class MainAppState with _$MainAppState {
     required IDebugRepositoryImp debugRepository,
     required ThemeMode themeMode,
     required AuthStateNotifier authNotifier,
+    required AuthRepository authRepository,
   }) = MainAppStateSuccess;
   factory MainAppState.loading() = MainAppStateLoading;
   factory MainAppState.error({

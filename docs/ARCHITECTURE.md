@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-05 (фаза 1)
+Последнее обновление: 2026-04-05 (фаза 2)
 
 ---
 
@@ -32,8 +32,10 @@ lib/
 │   │   └── widgets/               # Connectivity/TechWork wrappers
 │   └── main.dart
 ├── core/
+│   ├── bloc/                      # SectionData, PaginatedSectionData, PaginationMixin
+│   ├── models/                    # DefaultPaginator<T>
 │   ├── network/                   # Dio errors, Task, TaskHandler
-│   ├── router/                    # AppRouter (auto_route)
+│   ├── router/                    # AppRouter, AppModals (context.modals)
 │   └── theme/                     # Тема, цвета
 ├── data/
 │   ├── api/local/                 # Локальное хранение (tokens, theme)
@@ -42,7 +44,7 @@ lib/
 │   │   ├── user/                  # User
 │   │   ├── organization/          # Organization, Member, OrgSettings, OrgStats, JoinResult
 │   │   ├── location/              # WorkLocation
-│   │   └── shift/                 # Shift, Pause, ShiftStats, PaginatedShifts
+│   │   └── shift/                 # Shift, Pause, ShiftStats, DefaultPaginator<T>
 │   └── infrastructure/            # Реализации (datasource + dto + mappers + repos)
 │       ├── auth/
 │       ├── user/
@@ -50,8 +52,12 @@ lib/
 │       ├── location/
 │       └── shift/
 ├── l10n/                          # Локализация (ARB)
+├── widgets/                       # Переиспользуемые виджеты
+│   ├── app_toast/                 # Toast-уведомления (AppToast, AppToastManager)
+│   ├── section_data/              # SectionDataWrapper, SectionLoader, SectionError
+│   └── paginated_section_data/    # PaginatedSectionDataList/Grid/SliverList/SliverGrid
 └── pages/                         # UI-слой (экраны)
-    ├── auth/                      # Login (шаблон)
+    ├── auth/                      # Login/Register + PasswordRequirements
     ├── home/                      # ExampleHome (заглушка)
     ├── main_router/               # Bottom tabs router
     ├── theme/                     # ThemeCubit + виджет переключения
@@ -77,7 +83,7 @@ lib/
 | `Shift` | `domain/shift/models/shift.dart` | id, userId, orgId, times, status (enum), pauses, workedSeconds |
 | `Pause` | `domain/shift/models/shift.dart` | id, shiftId, startedAt, finishedAt |
 | `ShiftStats` | `domain/shift/models/shift_stats.dart` | period, totalWorked, count, average |
-| `PaginatedShifts` | `domain/shift/models/paginated_list.dart` | items, total, limit, offset |
+| `DefaultPaginator<T>` | `core/models/default_paginator.dart` | hasMore, data, total (универсальная пагинация) |
 
 ---
 
@@ -112,6 +118,9 @@ lib/
 | `MainAppCubit` | Готов | Инициализация приложения |
 | `ThemeCubit` | Готов | Управление темой |
 | `DebugCubit` | Готов | Debug-информация |
+| `AuthCubit` | Готов | Глобальное состояние авторизации (shared) |
+| `LoginCubit` | Готов | Login/Register форма с валидацией |
+| `VerifyCubit` | Готов | Верификация email (код + таймер) |
 
 ---
 
@@ -120,6 +129,7 @@ lib/
 | Route | Path | Описание |
 |-------|------|----------|
 | `LoginRoute` | `/login` | Авторизация |
+| `VerifyRoute` | `/verify` | Подтверждение email |
 | `DebugRoute` | `/debug` | Debug-страница |
 | `MainRouterRoute` | `/` | Bottom tabs (Home, Settings) |
 | `ExampleHomeRoute` | `/home` | Заглушка |
@@ -134,6 +144,34 @@ lib/
 |--------|-----------|--------|
 | `AuthTokenStorage` | SharedPreferences | access_token, refresh_token |
 | `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
+
+---
+
+## Утилиты
+
+### Общие виджеты (`lib/widgets/`)
+- `AppTextField` — кастомное текстовое поле с валидацией (файл: `lib/widgets/app_text_field.dart`)
+- `AppButton` — кнопка с состоянием загрузки (файл: `lib/widgets/app_button.dart`)
+- `PinCodeField` — поле ввода PIN/кода подтверждения (файл: `lib/widgets/pin_code_field.dart`)
+- Barrel file: `lib/widgets/_widgets.dart`
+
+### Toast-уведомления
+- `context.modals.showSuccess/showError/showInfo/showWarning` — overlay-based toast
+- Файлы: `lib/widgets/app_toast/`, extension в `lib/core/router/app_modals.dart`
+- Использует `AppColors` из темы (success, error, warning, info)
+
+### Управление состоянием секций
+- `SectionData<T>` — состояние секции: data, status (FeatureStatus), error + хелперы (toLoading, toSuccess, toError, toIdle)
+- `PaginatedSectionData<T>` — пагинированное состояние: data, hasMore, currentPage, perPage, status, error
+- `PaginationMixin` — mixin для кубитов: `fetchPaginated()` (с `DefaultPaginator<T>`) и `fetchPaginatedByCount()` (определяет hasMore по количеству)
+- `DefaultPaginator<T>` — универсальная модель ответа пагинации (hasMore, data, total)
+
+### Виджеты секций
+- `SectionDataWrapper<C, S, T>` — обёртка: автоматически показывает loader/error/content по `SectionData<T>`
+- `SectionLoader` / `SectionError` — стандартные виджеты загрузки и ошибки
+- `PaginatedSectionDataList<C, S, T>` — ListView с автоподгрузкой при 80% скролла + pull-to-refresh
+- `PaginatedSectionDataGrid<C, S, T>` — GridView аналогично
+- `PaginatedSliverList<C, S, T>` / `PaginatedSliverGrid<C, S, T>` — Sliver-варианты для CustomScrollView
 
 ---
 

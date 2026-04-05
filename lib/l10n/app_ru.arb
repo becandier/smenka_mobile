@@ -29,5 +29,39 @@
     "errorVpnDescription": "Не удалось загрузить необходимые данные для работы приложения. Пожалуйста, выключите VPN и повторите попытку.",
     "light": "Светлая",
     "dark": "Тёмная",
-    "system": "Системная"
+    "system": "Системная",
+    "noData": "Нет данных",
+    "retry": "Повторить",
+    "authLogin": "Войти",
+    "authRegister": "Зарегистрироваться",
+    "authEmail": "Email",
+    "authEmailHint": "example@mail.com",
+    "authPassword": "Пароль",
+    "authName": "Имя",
+    "authNameHint": "Иван Иванов",
+    "authNoAccount": "Нет аккаунта? Зарегистрироваться",
+    "authHasAccount": "Уже есть аккаунт? Войти",
+    "authVerifyTitle": "Подтверждение email",
+    "authVerifySubtitle": "Код отправлен на {email}",
+    "@authVerifySubtitle": {
+        "placeholders": {
+            "email": {"type": "String"}
+        }
+    },
+    "authResendCode": "Отправить повторно",
+    "authResendCodeTimer": "Отправить повторно ({seconds}с)",
+    "@authResendCodeTimer": {
+        "placeholders": {
+            "seconds": {"type": "int"}
+        }
+    },
+    "authPasswordMinLength": "Минимум 8 символов",
+    "authPasswordNeedLetter": "Хотя бы одна буква",
+    "authPasswordNeedDigit": "Хотя бы одна цифра",
+    "authCodeSent": "Код отправлен на почту",
+    "authCodeResent": "Код отправлен повторно",
+    "authEmailTaken": "Пользователь с таким email уже существует",
+    "authInvalidCredentials": "Неверный email или пароль",
+    "authInvalidCode": "Неверный или просроченный код",
+    "authEmailNotVerified": "Email не подтверждён, введите код"
 }

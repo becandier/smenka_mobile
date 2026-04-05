@@ -118,6 +118,7 @@ class MainAppCubit extends Cubit<MainAppState> {
           debugRepository: _serviceLocator.get<IDebugRepositoryImp>(),
           themeMode: _serviceLocator.get<ThemeMode>(),
           authNotifier: _serviceLocator.get<AuthStateNotifier>(),
+          authRepository: _serviceLocator.get<AuthRepository>(),
         ),
       );
     } catch (e, stackTrace) {

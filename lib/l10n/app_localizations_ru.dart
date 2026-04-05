@@ -102,4 +102,80 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get system => 'Системная';
+
+  @override
+  String get noData => 'Нет данных';
+
+  @override
+  String get retry => 'Повторить';
+
+  @override
+  String get authLogin => 'Войти';
+
+  @override
+  String get authRegister => 'Зарегистрироваться';
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authEmailHint => 'example@mail.com';
+
+  @override
+  String get authPassword => 'Пароль';
+
+  @override
+  String get authName => 'Имя';
+
+  @override
+  String get authNameHint => 'Иван Иванов';
+
+  @override
+  String get authNoAccount => 'Нет аккаунта? Зарегистрироваться';
+
+  @override
+  String get authHasAccount => 'Уже есть аккаунт? Войти';
+
+  @override
+  String get authVerifyTitle => 'Подтверждение email';
+
+  @override
+  String authVerifySubtitle(String email) {
+    return 'Код отправлен на $email';
+  }
+
+  @override
+  String get authResendCode => 'Отправить повторно';
+
+  @override
+  String authResendCodeTimer(int seconds) {
+    return 'Отправить повторно ($secondsс)';
+  }
+
+  @override
+  String get authPasswordMinLength => 'Минимум 8 символов';
+
+  @override
+  String get authPasswordNeedLetter => 'Хотя бы одна буква';
+
+  @override
+  String get authPasswordNeedDigit => 'Хотя бы одна цифра';
+
+  @override
+  String get authCodeSent => 'Код отправлен на почту';
+
+  @override
+  String get authCodeResent => 'Код отправлен повторно';
+
+  @override
+  String get authEmailTaken => 'Пользователь с таким email уже существует';
+
+  @override
+  String get authInvalidCredentials => 'Неверный email или пароль';
+
+  @override
+  String get authInvalidCode => 'Неверный или просроченный код';
+
+  @override
+  String get authEmailNotVerified => 'Email не подтверждён, введите код';
 }
