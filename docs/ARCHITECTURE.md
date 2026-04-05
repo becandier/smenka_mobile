@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-05 (фаза 1)
+Последнее обновление: 2026-04-05 (фаза 2)
 
 ---
 
@@ -57,7 +57,7 @@ lib/
 │   ├── section_data/              # SectionDataWrapper, SectionLoader, SectionError
 │   └── paginated_section_data/    # PaginatedSectionDataList/Grid/SliverList/SliverGrid
 └── pages/                         # UI-слой (экраны)
-    ├── auth/                      # Login (шаблон)
+    ├── auth/                      # Login/Register + PasswordRequirements
     ├── home/                      # ExampleHome (заглушка)
     ├── main_router/               # Bottom tabs router
     ├── theme/                     # ThemeCubit + виджет переключения
@@ -118,6 +118,8 @@ lib/
 | `MainAppCubit` | Готов | Инициализация приложения |
 | `ThemeCubit` | Готов | Управление темой |
 | `DebugCubit` | Готов | Debug-информация |
+| `AuthCubit` | Готов | Глобальное состояние авторизации (shared) |
+| `LoginCubit` | Готов | Login/Register форма с валидацией |
 
 ---
 

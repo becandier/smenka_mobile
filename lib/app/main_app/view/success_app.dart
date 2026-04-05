@@ -51,6 +51,9 @@ class _SuccessAppState extends State<_SuccessApp> {
         RepositoryProvider<IDebugRepositoryImp>.value(
           value: widget.debugRepository,
         ),
+        RepositoryProvider<AuthRepository>.value(
+          value: widget.authRepository,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [

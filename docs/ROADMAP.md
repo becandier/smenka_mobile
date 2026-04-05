@@ -30,9 +30,9 @@
 
 ---
 
-## Фаза 2 — Auth Flow `[ ]`
-- [ ] **Login** — email + пароль, валидация, навигация на регистрацию
-- [ ] **Register** — email + пароль + имя, валидация
+## Фаза 2 — Auth Flow `[~]`
+- [x] **Login** — email + пароль, валидация, навигация на регистрацию
+- [x] **Register** — email + пароль + имя, валидация
 - [ ] **Verify Email** — ввод 4-значного кода, таймер повторной отправки (30с cooldown)
 - [ ] Кубиты: LoginCubit, RegisterCubit, VerifyCubit
 - [ ] Интеграция с AuthRepository (login, register, verify, resendCode)
