@@ -10,10 +10,10 @@ part 'shift_tracker_state.freezed.dart';
 abstract class ShiftTrackerState with _$ShiftTrackerState {
   const factory ShiftTrackerState({
     /// Активная смена (SectionData — loading/error на init, success при наличии)
-    @Default(SectionData()) SectionData<Shift> activeShift,
+    @Default(SectionData<Shift>()) SectionData<Shift> activeShift,
 
     /// Организации пользователя
-    @Default(SectionData()) SectionData<List<Organization>> organizations,
+    @Default(SectionData<List<Organization>>()) SectionData<List<Organization>> organizations,
 
     /// Выбранная организация (null = персональная)
     String? selectedOrganizationId,
