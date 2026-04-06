@@ -43,17 +43,17 @@ class ExampleHomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [HomeTabPage]
-class HomeTab extends PageRouteInfo<void> {
-  const HomeTab({List<PageRouteInfo>? children})
-      : super(HomeTab.name, initialChildren: children);
+/// [HistoryTabPage]
+class HistoryTab extends PageRouteInfo<void> {
+  const HistoryTab({List<PageRouteInfo>? children})
+      : super(HistoryTab.name, initialChildren: children);
 
-  static const String name = 'HomeTab';
+  static const String name = 'HistoryTab';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const HomeTabPage();
+      return const HistoryTabPage();
     },
   );
 }
@@ -124,17 +124,49 @@ class MainRouterRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [SettingsTabPage]
-class SettingsTab extends PageRouteInfo<void> {
-  const SettingsTab({List<PageRouteInfo>? children})
-      : super(SettingsTab.name, initialChildren: children);
+/// [ProfileTabPage]
+class ProfileTab extends PageRouteInfo<void> {
+  const ProfileTab({List<PageRouteInfo>? children})
+      : super(ProfileTab.name, initialChildren: children);
 
-  static const String name = 'SettingsTab';
+  static const String name = 'ProfileTab';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const SettingsTabPage();
+      return const ProfileTabPage();
+    },
+  );
+}
+
+/// generated route for
+/// [ShiftTabPage]
+class ShiftTab extends PageRouteInfo<void> {
+  const ShiftTab({List<PageRouteInfo>? children})
+      : super(ShiftTab.name, initialChildren: children);
+
+  static const String name = 'ShiftTab';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ShiftTabPage();
+    },
+  );
+}
+
+/// generated route for
+/// [ShiftTrackerPage]
+class ShiftTrackerRoute extends PageRouteInfo<void> {
+  const ShiftTrackerRoute({List<PageRouteInfo>? children})
+      : super(ShiftTrackerRoute.name, initialChildren: children);
+
+  static const String name = 'ShiftTrackerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ShiftTrackerPage();
     },
   );
 }
