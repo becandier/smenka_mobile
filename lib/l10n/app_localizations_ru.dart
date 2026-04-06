@@ -178,4 +178,84 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get authEmailNotVerified => 'Email не подтверждён, введите код';
+
+  @override
+  String get shiftTracker => 'Смена';
+
+  @override
+  String get shiftHistory => 'История';
+
+  @override
+  String get shiftProfile => 'Профиль';
+
+  @override
+  String get shiftStart => 'Начать смену';
+
+  @override
+  String get shiftPause => 'Пауза';
+
+  @override
+  String get shiftResume => 'Продолжить';
+
+  @override
+  String get shiftFinish => 'Завершить';
+
+  @override
+  String get shiftPersonal => 'Персональная';
+
+  @override
+  String get shiftSelectOrg => 'Выберите организацию';
+
+  @override
+  String get shiftActive => 'Смена активна';
+
+  @override
+  String get shiftPaused => 'Смена на паузе';
+
+  @override
+  String get shiftElapsed => 'Время работы';
+
+  @override
+  String get shiftPauses => 'Паузы';
+
+  @override
+  String shiftPauseNumber(int number) {
+    return 'Пауза $number';
+  }
+
+  @override
+  String get shiftNoPauses => 'Пауз нет';
+
+  @override
+  String get shiftStarted => 'Смена начата';
+
+  @override
+  String get shiftFinished => 'Смена завершена';
+
+  @override
+  String get shiftPauseStarted => 'Пауза начата';
+
+  @override
+  String get shiftResumed => 'Смена продолжена';
+
+  @override
+  String get shiftLocationRequired =>
+      'Для этой организации требуется геопроверка';
+
+  @override
+  String get shiftLocationDenied => 'Доступ к геолокации запрещён';
+
+  @override
+  String get shiftLocationOutOfRange =>
+      'Вы находитесь за пределами рабочей зоны';
+
+  @override
+  String get shiftConfirmFinish => 'Завершить смену?';
+
+  @override
+  String get shiftConfirmFinishBody =>
+      'Вы уверены, что хотите завершить текущую смену?';
+
+  @override
+  String get confirm => 'Подтвердить';
 }
