@@ -27,6 +27,22 @@ class DebugRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [EditProfileModal]
+class EditProfileRoute extends PageRouteInfo<void> {
+  const EditProfileRoute({List<PageRouteInfo>? children})
+      : super(EditProfileRoute.name, initialChildren: children);
+
+  static const String name = 'EditProfileRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EditProfileModal();
+    },
+  );
+}
+
+/// generated route for
 /// [ExampleHomePage]
 class ExampleHomeRoute extends PageRouteInfo<void> {
   const ExampleHomeRoute({List<PageRouteInfo>? children})
@@ -124,6 +140,22 @@ class MainRouterRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ProfilePage]
+class ProfileRoute extends PageRouteInfo<void> {
+  const ProfileRoute({List<PageRouteInfo>? children})
+      : super(ProfileRoute.name, initialChildren: children);
+
+  static const String name = 'ProfileRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ProfilePage();
+    },
+  );
+}
+
+/// generated route for
 /// [ProfileTabPage]
 class ProfileTab extends PageRouteInfo<void> {
   const ProfileTab({List<PageRouteInfo>? children})
@@ -135,6 +167,69 @@ class ProfileTab extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const ProfileTabPage();
+    },
+  );
+}
+
+/// generated route for
+/// [ShiftDetailPage]
+class ShiftDetailRoute extends PageRouteInfo<ShiftDetailRouteArgs> {
+  ShiftDetailRoute({
+    required Shift shift,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ShiftDetailRoute.name,
+          args: ShiftDetailRouteArgs(shift: shift, key: key),
+          initialChildren: children,
+        );
+
+  static const String name = 'ShiftDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ShiftDetailRouteArgs>();
+      return ShiftDetailPage(shift: args.shift, key: args.key);
+    },
+  );
+}
+
+class ShiftDetailRouteArgs {
+  const ShiftDetailRouteArgs({required this.shift, this.key});
+
+  final Shift shift;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ShiftDetailRouteArgs{shift: $shift, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ShiftDetailRouteArgs) return false;
+    return shift == other.shift && key == other.key;
+  }
+
+  @override
+  int get hashCode => shift.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [ShiftHistoryPage]
+class ShiftHistoryRoute extends PageRouteInfo<void> {
+  const ShiftHistoryRoute({List<PageRouteInfo>? children})
+      : super(ShiftHistoryRoute.name, initialChildren: children);
+
+  static const String name = 'ShiftHistoryRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ShiftHistoryPage();
     },
   );
 }

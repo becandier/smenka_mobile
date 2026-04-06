@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/widgets.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
+import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/pages/_features.dart';
 
 part 'app_router.gr.dart';
@@ -68,7 +69,11 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(
                   path: '',
                   initial: true,
-                  page: ExampleHomeRoute.page,
+                  page: ShiftHistoryRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail',
+                  page: ShiftDetailRoute.page,
                 ),
               ],
             ),
@@ -79,7 +84,13 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(
                   path: '',
                   initial: true,
-                  page: ExampleHomeRoute.page,
+                  page: ProfileRoute.page,
+                ),
+                CustomRoute<void>(
+                  path: 'edit',
+                  page: EditProfileRoute.page,
+                  transitionsBuilder: TransitionsBuilders.slideBottom,
+                  opaque: false,
                 ),
               ],
             ),

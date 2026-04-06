@@ -9,7 +9,7 @@ import 'package:smenka_mobile/pages/profile/cubit/profile_cubit.dart';
 import 'package:smenka_mobile/pages/profile/cubit/profile_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
 
-@RoutePage()
+@RoutePage(name: 'EditProfileRoute')
 class EditProfileModal extends StatefulWidget {
   const EditProfileModal({super.key});
 
