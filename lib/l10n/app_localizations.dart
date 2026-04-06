@@ -417,6 +417,156 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Email не подтверждён, введите код'**
   String get authEmailNotVerified;
+
+  /// No description provided for @shiftTracker.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена'**
+  String get shiftTracker;
+
+  /// No description provided for @shiftHistory.
+  ///
+  /// In ru, this message translates to:
+  /// **'История'**
+  String get shiftHistory;
+
+  /// No description provided for @shiftProfile.
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль'**
+  String get shiftProfile;
+
+  /// No description provided for @shiftStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать смену'**
+  String get shiftStart;
+
+  /// No description provided for @shiftPause.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пауза'**
+  String get shiftPause;
+
+  /// No description provided for @shiftResume.
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить'**
+  String get shiftResume;
+
+  /// No description provided for @shiftFinish.
+  ///
+  /// In ru, this message translates to:
+  /// **'Завершить'**
+  String get shiftFinish;
+
+  /// No description provided for @shiftPersonal.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персональная'**
+  String get shiftPersonal;
+
+  /// No description provided for @shiftSelectOrg.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите организацию'**
+  String get shiftSelectOrg;
+
+  /// No description provided for @shiftActive.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена активна'**
+  String get shiftActive;
+
+  /// No description provided for @shiftPaused.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена на паузе'**
+  String get shiftPaused;
+
+  /// No description provided for @shiftElapsed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время работы'**
+  String get shiftElapsed;
+
+  /// No description provided for @shiftPauses.
+  ///
+  /// In ru, this message translates to:
+  /// **'Паузы'**
+  String get shiftPauses;
+
+  /// No description provided for @shiftPauseNumber.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пауза {number}'**
+  String shiftPauseNumber(int number);
+
+  /// No description provided for @shiftNoPauses.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пауз нет'**
+  String get shiftNoPauses;
+
+  /// No description provided for @shiftStarted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена начата'**
+  String get shiftStarted;
+
+  /// No description provided for @shiftFinished.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена завершена'**
+  String get shiftFinished;
+
+  /// No description provided for @shiftPauseStarted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пауза начата'**
+  String get shiftPauseStarted;
+
+  /// No description provided for @shiftResumed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена продолжена'**
+  String get shiftResumed;
+
+  /// No description provided for @shiftLocationRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Для этой организации требуется геопроверка'**
+  String get shiftLocationRequired;
+
+  /// No description provided for @shiftLocationDenied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступ к геолокации запрещён'**
+  String get shiftLocationDenied;
+
+  /// No description provided for @shiftLocationOutOfRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы находитесь за пределами рабочей зоны'**
+  String get shiftLocationOutOfRange;
+
+  /// No description provided for @shiftConfirmFinish.
+  ///
+  /// In ru, this message translates to:
+  /// **'Завершить смену?'**
+  String get shiftConfirmFinish;
+
+  /// No description provided for @shiftConfirmFinishBody.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы уверены, что хотите завершить текущую смену?'**
+  String get shiftConfirmFinishBody;
+
+  /// No description provided for @confirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подтвердить'**
+  String get confirm;
 }
 
 class _AppLocalizationsDelegate

@@ -52,21 +52,32 @@ class AppRouter extends RootStackRouter {
           children: [
             AutoRoute(
               path: '',
-              page: HomeTab.page,
+              page: ShiftTab.page,
               children: [
                 AutoRoute(
-                  path: 'home',
+                  path: 'shift',
+                  initial: true,
+                  page: ShiftTrackerRoute.page,
+                ),
+              ],
+            ),
+            AutoRoute(
+              path: 'history',
+              page: HistoryTab.page,
+              children: [
+                AutoRoute(
+                  path: '',
                   initial: true,
                   page: ExampleHomeRoute.page,
                 ),
               ],
             ),
             AutoRoute(
-              path: 'settings',
-              page: SettingsTab.page,
+              path: 'profile',
+              page: ProfileTab.page,
               children: [
                 AutoRoute(
-                  path: 'settings',
+                  path: '',
                   initial: true,
                   page: ExampleHomeRoute.page,
                 ),
@@ -77,18 +88,26 @@ class AppRouter extends RootStackRouter {
       ];
 }
 
-@RoutePage(name: 'HomeTab')
+@RoutePage(name: 'ShiftTab')
 
-/// Home Tab Page for the app
-class HomeTabPage extends AutoRouter {
-  /// Home Tab Page for the app
-  const HomeTabPage({super.key});
+/// Shift Tab Page for the app
+class ShiftTabPage extends AutoRouter {
+  /// Shift Tab Page for the app
+  const ShiftTabPage({super.key});
 }
 
-@RoutePage(name: 'SettingsTab')
+@RoutePage(name: 'HistoryTab')
 
-/// Settings Tab Page for the app
-class SettingsTabPage extends AutoRouter {
-  /// Settings Tab Page for the app
-  const SettingsTabPage({super.key});
+/// History Tab Page for the app
+class HistoryTabPage extends AutoRouter {
+  /// History Tab Page for the app
+  const HistoryTabPage({super.key});
+}
+
+@RoutePage(name: 'ProfileTab')
+
+/// Profile Tab Page for the app
+class ProfileTabPage extends AutoRouter {
+  /// Profile Tab Page for the app
+  const ProfileTabPage({super.key});
 }

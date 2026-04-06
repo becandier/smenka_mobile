@@ -63,5 +63,35 @@
     "authEmailTaken": "Пользователь с таким email уже существует",
     "authInvalidCredentials": "Неверный email или пароль",
     "authInvalidCode": "Неверный или просроченный код",
-    "authEmailNotVerified": "Email не подтверждён, введите код"
+    "authEmailNotVerified": "Email не подтверждён, введите код",
+    "shiftTracker": "Смена",
+    "shiftHistory": "История",
+    "shiftProfile": "Профиль",
+    "shiftStart": "Начать смену",
+    "shiftPause": "Пауза",
+    "shiftResume": "Продолжить",
+    "shiftFinish": "Завершить",
+    "shiftPersonal": "Персональная",
+    "shiftSelectOrg": "Выберите организацию",
+    "shiftActive": "Смена активна",
+    "shiftPaused": "Смена на паузе",
+    "shiftElapsed": "Время работы",
+    "shiftPauses": "Паузы",
+    "shiftPauseNumber": "Пауза {number}",
+    "@shiftPauseNumber": {
+        "placeholders": {
+            "number": {"type": "int"}
+        }
+    },
+    "shiftNoPauses": "Пауз нет",
+    "shiftStarted": "Смена начата",
+    "shiftFinished": "Смена завершена",
+    "shiftPauseStarted": "Пауза начата",
+    "shiftResumed": "Смена продолжена",
+    "shiftLocationRequired": "Для этой организации требуется геопроверка",
+    "shiftLocationDenied": "Доступ к геолокации запрещён",
+    "shiftLocationOutOfRange": "Вы находитесь за пределами рабочей зоны",
+    "shiftConfirmFinish": "Завершить смену?",
+    "shiftConfirmFinishBody": "Вы уверены, что хотите завершить текущую смену?",
+    "confirm": "Подтвердить"
 }

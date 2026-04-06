@@ -15,6 +15,8 @@ import 'package:smenka_mobile/core/theme/app_theme.dart';
 import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
 import 'package:smenka_mobile/data/domain/auth/repositories/auth_repository.dart';
+import 'package:smenka_mobile/data/domain/shift/_shift.dart';
+import 'package:smenka_mobile/data/domain/organization/_organization.dart';
 import 'package:smenka_mobile/shared/auth/cubit/auth_cubit.dart';
 import 'package:smenka_mobile/l10n/app_localizations.dart';
 import 'package:smenka_mobile/pages/debug/cubit/debug_cubit.dart';
@@ -59,6 +61,8 @@ class _AppView extends StatelessWidget {
               themeMode: state.themeMode,
               authNotifier: state.authNotifier,
               authRepository: state.authRepository,
+              shiftRepository: state.shiftRepository,
+              organizationRepository: state.organizationRepository,
             ),
           MainAppStateLoading() => const _LoadingApp(),
           MainAppStateError() => _ErrorApp(

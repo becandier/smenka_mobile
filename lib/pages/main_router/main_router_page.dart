@@ -19,12 +19,19 @@ class MainRouterPage extends StatelessWidget {
             onDestinationSelected: tabsRouter.setActiveIndex,
             destinations: [
               NavigationDestination(
-                icon: const Icon(Icons.home),
-                label: context.l10n.home,
+                icon: const Icon(Icons.timer_outlined),
+                selectedIcon: const Icon(Icons.timer),
+                label: context.l10n.shiftTracker,
               ),
               NavigationDestination(
-                icon: const Icon(Icons.settings),
-                label: context.l10n.settings,
+                icon: const Icon(Icons.history_outlined),
+                selectedIcon: const Icon(Icons.history),
+                label: context.l10n.shiftHistory,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.person_outline),
+                selectedIcon: const Icon(Icons.person),
+                label: context.l10n.shiftProfile,
               ),
             ],
           ),

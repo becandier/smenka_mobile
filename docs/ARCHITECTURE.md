@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-05 (фаза 2)
+Последнее обновление: 2026-04-06 (фаза 3)
 
 ---
 
@@ -60,6 +60,10 @@ lib/
     ├── auth/                      # Login/Register + PasswordRequirements
     ├── home/                      # ExampleHome (заглушка)
     ├── main_router/               # Bottom tabs router
+    ├── shift_tracker/             # Трекер смены (Tab 1)
+    │   ├── cubit/                 # ShiftTrackerCubit + State
+    │   ├── view/                  # ShiftTrackerPage
+    │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent, _OrgSelector, _PauseList
     ├── theme/                     # ThemeCubit + виджет переключения
     └── debug/                     # Debug-страница
 ```
@@ -121,6 +125,7 @@ lib/
 | `AuthCubit` | Готов | Глобальное состояние авторизации (shared) |
 | `LoginCubit` | Готов | Login/Register форма с валидацией |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
+| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер |
 
 ---
 
@@ -131,7 +136,8 @@ lib/
 | `LoginRoute` | `/login` | Авторизация |
 | `VerifyRoute` | `/verify` | Подтверждение email |
 | `DebugRoute` | `/debug` | Debug-страница |
-| `MainRouterRoute` | `/` | Bottom tabs (Home, Settings) |
+| `MainRouterRoute` | `/` | Bottom tabs (Смена, История, Профиль) |
+| `ShiftTrackerRoute` | `/shift` | Трекер смены (Tab 1) |
 | `ExampleHomeRoute` | `/home` | Заглушка |
 
 **Guard**: Если не авторизован → редирект на `LoginRoute`
