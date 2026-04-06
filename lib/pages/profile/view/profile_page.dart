@@ -5,14 +5,11 @@ import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
-import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/user/models/_models.dart';
-import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/profile/cubit/profile_cubit.dart';
 import 'package:smenka_mobile/pages/profile/cubit/profile_state.dart';
 import 'package:smenka_mobile/pages/theme/widgets/theme_button_widget.dart';
-import 'package:smenka_mobile/shared/auth/cubit/auth_cubit.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
 
 part '../widgets/_profile_header.dart';
@@ -26,14 +23,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ProfileCubit(
-        userRepository: context.read<UserRepository>(),
-        organizationRepository: context.read<OrganizationRepository>(),
-        authCubit: context.read<AuthCubit>(),
-      ),
-      child: const _ProfileView(),
-    );
+    return const _ProfileView();
   }
 }
 
