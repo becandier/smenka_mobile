@@ -13,7 +13,8 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
     @Default(SectionData<Shift>()) SectionData<Shift> activeShift,
 
     /// Организации пользователя
-    @Default(SectionData<List<Organization>>()) SectionData<List<Organization>> organizations,
+    @Default(SectionData<List<Organization>>())
+    SectionData<List<Organization>> organizations,
 
     /// Выбранная организация (null = персональная)
     String? selectedOrganizationId,
