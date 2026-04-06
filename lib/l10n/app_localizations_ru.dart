@@ -258,4 +258,146 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get confirm => 'Подтвердить';
+
+  @override
+  String get historyTitle => 'История смен';
+
+  @override
+  String get historyEmpty => 'Нет смен';
+
+  @override
+  String get historyFilterAll => 'Все';
+
+  @override
+  String get historyFilterActive => 'Активные';
+
+  @override
+  String get historyFilterPaused => 'На паузе';
+
+  @override
+  String get historyFilterFinished => 'Завершённые';
+
+  @override
+  String get historyDateFrom => 'Дата от';
+
+  @override
+  String get historyDateTo => 'Дата до';
+
+  @override
+  String get historyResetFilters => 'Сбросить';
+
+  @override
+  String get statsTitle => 'Статистика';
+
+  @override
+  String get statsPeriodDay => 'День';
+
+  @override
+  String get statsPeriodWeek => 'Неделя';
+
+  @override
+  String get statsPeriodMonth => 'Месяц';
+
+  @override
+  String get statsTotalWorked => 'Отработано';
+
+  @override
+  String get statsShiftCount => 'Смен';
+
+  @override
+  String get statsAverage => 'Среднее';
+
+  @override
+  String statsHours(int hours, int minutes) {
+    return '$hours ч $minutes мин';
+  }
+
+  @override
+  String get detailTitle => 'Детали смены';
+
+  @override
+  String get detailStarted => 'Начало';
+
+  @override
+  String get detailFinished => 'Конец';
+
+  @override
+  String get detailDuration => 'Длительность';
+
+  @override
+  String get detailStatus => 'Статус';
+
+  @override
+  String get detailOrganization => 'Организация';
+
+  @override
+  String get detailPauses => 'Паузы';
+
+  @override
+  String get detailPersonal => 'Персональная';
+
+  @override
+  String get detailInProgress => 'В процессе';
+
+  @override
+  String get statusActive => 'Активна';
+
+  @override
+  String get statusPaused => 'На паузе';
+
+  @override
+  String get statusFinished => 'Завершена';
+
+  @override
+  String get profileTitle => 'Профиль';
+
+  @override
+  String get personalInfo => 'Личные данные';
+
+  @override
+  String get editProfile => 'Редактировать';
+
+  @override
+  String get myOrganizations => 'Мои организации';
+
+  @override
+  String get noOrganizations => 'Вы не состоите в организациях';
+
+  @override
+  String get logoutConfirmTitle => 'Выход';
+
+  @override
+  String get logoutConfirmMessage => 'Вы уверены, что хотите выйти?';
+
+  @override
+  String get save => 'Сохранить';
+
+  @override
+  String get phone => 'Телефон';
+
+  @override
+  String get phoneHint => '+7 999 123 45 67';
+
+  @override
+  String get phoneNotSpecified => 'Не указан';
+
+  @override
+  String memberSince(String date) {
+    return 'Зарегистрирован с $date';
+  }
+
+  @override
+  String get profileUpdated => 'Профиль обновлён';
+
+  @override
+  String get theme => 'Тема';
+
+  @override
+  String get roleOwner => 'Владелец';
+
+  @override
+  String get roleMember => 'Участник';
+
+  @override
+  String get nameRequired => 'Имя не может быть пустым';
 }

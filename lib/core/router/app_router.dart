@@ -1,7 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
+import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
+import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/_features.dart';
+import 'package:smenka_mobile/shared/auth/cubit/auth_cubit.dart';
 
 part 'app_router.gr.dart';
 
@@ -68,7 +73,11 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(
                   path: '',
                   initial: true,
-                  page: ExampleHomeRoute.page,
+                  page: ShiftHistoryRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail',
+                  page: ShiftDetailRoute.page,
                 ),
               ],
             ),
@@ -79,7 +88,12 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(
                   path: '',
                   initial: true,
-                  page: ExampleHomeRoute.page,
+                  page: ProfileRoute.page,
+                ),
+                CustomRoute<void>(
+                  path: 'edit',
+                  page: EditProfileRoute.page,
+                  customRouteBuilder: _modalBottomSheetBuilder,
                 ),
               ],
             ),
@@ -107,7 +121,32 @@ class HistoryTabPage extends AutoRouter {
 @RoutePage(name: 'ProfileTab')
 
 /// Profile Tab Page for the app
-class ProfileTabPage extends AutoRouter {
+class ProfileTabPage extends StatelessWidget {
   /// Profile Tab Page for the app
   const ProfileTabPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => ProfileCubit(
+        userRepository: context.read<UserRepository>(),
+        organizationRepository: context.read<OrganizationRepository>(),
+        authCubit: context.read<AuthCubit>(),
+      ),
+      child: const AutoRouter(),
+    );
+  }
+}
+
+Route<T> _modalBottomSheetBuilder<T>(
+  BuildContext context,
+  Widget child,
+  AutoRoutePage<T> page,
+) {
+  return ModalBottomSheetRoute<T>(
+    builder: (_) => child,
+    isScrollControlled: true,
+    useSafeArea: true,
+    settings: page,
+  );
 }

@@ -567,6 +567,282 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Подтвердить'**
   String get confirm;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'История смен'**
+  String get historyTitle;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет смен'**
+  String get historyEmpty;
+
+  /// No description provided for @historyFilterAll.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get historyFilterAll;
+
+  /// No description provided for @historyFilterActive.
+  ///
+  /// In ru, this message translates to:
+  /// **'Активные'**
+  String get historyFilterActive;
+
+  /// No description provided for @historyFilterPaused.
+  ///
+  /// In ru, this message translates to:
+  /// **'На паузе'**
+  String get historyFilterPaused;
+
+  /// No description provided for @historyFilterFinished.
+  ///
+  /// In ru, this message translates to:
+  /// **'Завершённые'**
+  String get historyFilterFinished;
+
+  /// No description provided for @historyDateFrom.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дата от'**
+  String get historyDateFrom;
+
+  /// No description provided for @historyDateTo.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дата до'**
+  String get historyDateTo;
+
+  /// No description provided for @historyResetFilters.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сбросить'**
+  String get historyResetFilters;
+
+  /// No description provided for @statsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Статистика'**
+  String get statsTitle;
+
+  /// No description provided for @statsPeriodDay.
+  ///
+  /// In ru, this message translates to:
+  /// **'День'**
+  String get statsPeriodDay;
+
+  /// No description provided for @statsPeriodWeek.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неделя'**
+  String get statsPeriodWeek;
+
+  /// No description provided for @statsPeriodMonth.
+  ///
+  /// In ru, this message translates to:
+  /// **'Месяц'**
+  String get statsPeriodMonth;
+
+  /// No description provided for @statsTotalWorked.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отработано'**
+  String get statsTotalWorked;
+
+  /// No description provided for @statsShiftCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смен'**
+  String get statsShiftCount;
+
+  /// No description provided for @statsAverage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Среднее'**
+  String get statsAverage;
+
+  /// No description provided for @statsHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours} ч {minutes} мин'**
+  String statsHours(int hours, int minutes);
+
+  /// No description provided for @detailTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Детали смены'**
+  String get detailTitle;
+
+  /// No description provided for @detailStarted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало'**
+  String get detailStarted;
+
+  /// No description provided for @detailFinished.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец'**
+  String get detailFinished;
+
+  /// No description provided for @detailDuration.
+  ///
+  /// In ru, this message translates to:
+  /// **'Длительность'**
+  String get detailDuration;
+
+  /// No description provided for @detailStatus.
+  ///
+  /// In ru, this message translates to:
+  /// **'Статус'**
+  String get detailStatus;
+
+  /// No description provided for @detailOrganization.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация'**
+  String get detailOrganization;
+
+  /// No description provided for @detailPauses.
+  ///
+  /// In ru, this message translates to:
+  /// **'Паузы'**
+  String get detailPauses;
+
+  /// No description provided for @detailPersonal.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персональная'**
+  String get detailPersonal;
+
+  /// No description provided for @detailInProgress.
+  ///
+  /// In ru, this message translates to:
+  /// **'В процессе'**
+  String get detailInProgress;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In ru, this message translates to:
+  /// **'Активна'**
+  String get statusActive;
+
+  /// No description provided for @statusPaused.
+  ///
+  /// In ru, this message translates to:
+  /// **'На паузе'**
+  String get statusPaused;
+
+  /// No description provided for @statusFinished.
+  ///
+  /// In ru, this message translates to:
+  /// **'Завершена'**
+  String get statusFinished;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль'**
+  String get profileTitle;
+
+  /// No description provided for @personalInfo.
+  ///
+  /// In ru, this message translates to:
+  /// **'Личные данные'**
+  String get personalInfo;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать'**
+  String get editProfile;
+
+  /// No description provided for @myOrganizations.
+  ///
+  /// In ru, this message translates to:
+  /// **'Мои организации'**
+  String get myOrganizations;
+
+  /// No description provided for @noOrganizations.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы не состоите в организациях'**
+  String get noOrganizations;
+
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выход'**
+  String get logoutConfirmTitle;
+
+  /// No description provided for @logoutConfirmMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы уверены, что хотите выйти?'**
+  String get logoutConfirmMessage;
+
+  /// No description provided for @save.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить'**
+  String get save;
+
+  /// No description provided for @phone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Телефон'**
+  String get phone;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'+7 999 123 45 67'**
+  String get phoneHint;
+
+  /// No description provided for @phoneNotSpecified.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не указан'**
+  String get phoneNotSpecified;
+
+  /// No description provided for @memberSince.
+  ///
+  /// In ru, this message translates to:
+  /// **'Зарегистрирован с {date}'**
+  String memberSince(String date);
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль обновлён'**
+  String get profileUpdated;
+
+  /// No description provided for @theme.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тема'**
+  String get theme;
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In ru, this message translates to:
+  /// **'Владелец'**
+  String get roleOwner;
+
+  /// No description provided for @roleMember.
+  ///
+  /// In ru, this message translates to:
+  /// **'Участник'**
+  String get roleMember;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя не может быть пустым'**
+  String get nameRequired;
 }
 
 class _AppLocalizationsDelegate
