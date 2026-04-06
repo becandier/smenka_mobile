@@ -93,5 +93,67 @@
     "shiftLocationOutOfRange": "Вы находитесь за пределами рабочей зоны",
     "shiftConfirmFinish": "Завершить смену?",
     "shiftConfirmFinishBody": "Вы уверены, что хотите завершить текущую смену?",
-    "confirm": "Подтвердить"
+    "confirm": "Подтвердить",
+
+    "historyTitle": "История смен",
+    "historyEmpty": "Нет смен",
+    "historyFilterAll": "Все",
+    "historyFilterActive": "Активные",
+    "historyFilterPaused": "На паузе",
+    "historyFilterFinished": "Завершённые",
+    "historyDateFrom": "Дата от",
+    "historyDateTo": "Дата до",
+    "historyResetFilters": "Сбросить",
+
+    "statsTitle": "Статистика",
+    "statsPeriodDay": "День",
+    "statsPeriodWeek": "Неделя",
+    "statsPeriodMonth": "Месяц",
+    "statsTotalWorked": "Отработано",
+    "statsShiftCount": "Смен",
+    "statsAverage": "Среднее",
+    "statsHours": "{hours} ч {minutes} мин",
+    "@statsHours": {
+        "placeholders": {
+            "hours": {"type": "int"},
+            "minutes": {"type": "int"}
+        }
+    },
+
+    "detailTitle": "Детали смены",
+    "detailStarted": "Начало",
+    "detailFinished": "Конец",
+    "detailDuration": "Длительность",
+    "detailStatus": "Статус",
+    "detailOrganization": "Организация",
+    "detailPauses": "Паузы",
+    "detailPersonal": "Персональная",
+    "detailInProgress": "В процессе",
+
+    "statusActive": "Активна",
+    "statusPaused": "На паузе",
+    "statusFinished": "Завершена",
+
+    "profileTitle": "Профиль",
+    "personalInfo": "Личные данные",
+    "editProfile": "Редактировать",
+    "myOrganizations": "Мои организации",
+    "noOrganizations": "Вы не состоите в организациях",
+    "logoutConfirmTitle": "Выход",
+    "logoutConfirmMessage": "Вы уверены, что хотите выйти?",
+    "save": "Сохранить",
+    "phone": "Телефон",
+    "phoneHint": "+7 999 123 45 67",
+    "phoneNotSpecified": "Не указан",
+    "memberSince": "Зарегистрирован с {date}",
+    "@memberSince": {
+        "placeholders": {
+            "date": {"type": "String"}
+        }
+    },
+    "profileUpdated": "Профиль обновлён",
+    "theme": "Тема",
+    "roleOwner": "Владелец",
+    "roleMember": "Участник",
+    "nameRequired": "Имя не может быть пустым"
 }
