@@ -36,7 +36,7 @@ class _PersonalInfoSection extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => context.router.push(EditProfileRoute()),
+                    onPressed: () => context.router.push(const EditProfileRoute()),
                     child: Text(l10n.editProfile),
                   ),
                 ],

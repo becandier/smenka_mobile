@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-06 (фаза 3)
+Последнее обновление: 2026-04-06 (фаза 5)
 
 ---
 
@@ -64,6 +64,18 @@ lib/
     │   ├── cubit/                 # ShiftTrackerCubit + State
     │   ├── view/                  # ShiftTrackerPage
     │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent, _OrgSelector, _PauseList
+    ├── shift_history/             # История смен (Tab 2)
+    │   ├── cubit/                 # ShiftHistoryCubit, ShiftStatsCubit + States
+    │   ├── view/                  # ShiftHistoryPage
+    │   └── widgets/               # _StatsSection, _ShiftFilters, _ShiftCard
+    ├── shift_detail/              # Детали смены (push)
+    │   ├── cubit/                 # ShiftDetailCubit + State
+    │   ├── view/                  # ShiftDetailPage
+    │   └── widgets/               # _DetailInfoSection, _DetailPauseList
+    ├── profile/                   # Профиль (Tab 3)
+    │   ├── cubit/                 # ProfileCubit + State
+    │   ├── view/                  # ProfilePage
+    │   └── widgets/               # _ProfileHeader, _PersonalInfoSection, _OrganizationsSection, _SettingsSection, EditProfileModal
     ├── theme/                     # ThemeCubit + виджет переключения
     └── debug/                     # Debug-страница
 ```
@@ -126,6 +138,10 @@ lib/
 | `LoginCubit` | Готов | Login/Register форма с валидацией |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
 | `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер |
+| `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, дата) |
+| `ShiftStatsCubit` | Готов | Статистика смен (день/неделя/месяц) |
+| `ShiftDetailCubit` | Готов | Детали одной смены |
+| `ProfileCubit` | Готов | Профиль: загрузка юзера, организаций, обновление, logout |
 
 ---
 
@@ -138,7 +154,10 @@ lib/
 | `DebugRoute` | `/debug` | Debug-страница |
 | `MainRouterRoute` | `/` | Bottom tabs (Смена, История, Профиль) |
 | `ShiftTrackerRoute` | `/shift` | Трекер смены (Tab 1) |
-| `ExampleHomeRoute` | `/home` | Заглушка |
+| `ShiftHistoryRoute` | `/history` | История смен (Tab 2) |
+| `ShiftDetailRoute` | `/history/detail` | Детали смены (push) |
+| `ProfileRoute` | `/profile` | Экран профиля (Tab 3) |
+| `EditProfileRoute` | `/profile/edit` | Модалка редактирования профиля (CustomRoute) |
 
 **Guard**: Если не авторизован → редирект на `LoginRoute`
 
