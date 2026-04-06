@@ -355,8 +355,8 @@ extension ShiftTrackerStatePatterns on ShiftTrackerState {
 
 class _ShiftTrackerState extends ShiftTrackerState {
   const _ShiftTrackerState(
-      {this.activeShift = const SectionData(),
-      this.organizations = const SectionData(),
+      {this.activeShift = const SectionData<Shift>(),
+      this.organizations = const SectionData<List<Organization>>(),
       this.selectedOrganizationId,
       this.elapsedSeconds = 0,
       this.actionStatus = FeatureStatus.initial,
