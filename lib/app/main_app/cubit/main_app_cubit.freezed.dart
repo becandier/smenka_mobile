@@ -157,7 +157,9 @@ extension MainAppStatePatterns on MainAppState {
             IDebugRepositoryImp debugRepository,
             ThemeMode themeMode,
             AuthStateNotifier authNotifier,
-            AuthRepository authRepository)?
+            AuthRepository authRepository,
+            ShiftRepository shiftRepository,
+            OrganizationRepository organizationRepository)?
         success,
     TResult Function()? loading,
     TResult Function(Object? error, StackTrace? stackTrace)? error,
@@ -175,7 +177,9 @@ extension MainAppStatePatterns on MainAppState {
             _that.debugRepository,
             _that.themeMode,
             _that.authNotifier,
-            _that.authRepository);
+            _that.authRepository,
+            _that.shiftRepository,
+            _that.organizationRepository);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -209,7 +213,9 @@ extension MainAppStatePatterns on MainAppState {
             IDebugRepositoryImp debugRepository,
             ThemeMode themeMode,
             AuthStateNotifier authNotifier,
-            AuthRepository authRepository)
+            AuthRepository authRepository,
+            ShiftRepository shiftRepository,
+            OrganizationRepository organizationRepository)
         success,
     required TResult Function() loading,
     required TResult Function(Object? error, StackTrace? stackTrace) error,
@@ -226,7 +232,9 @@ extension MainAppStatePatterns on MainAppState {
             _that.debugRepository,
             _that.themeMode,
             _that.authNotifier,
-            _that.authRepository);
+            _that.authRepository,
+            _that.shiftRepository,
+            _that.organizationRepository);
       case MainAppStateLoading():
         return loading();
       case MainAppStateError():
@@ -257,7 +265,9 @@ extension MainAppStatePatterns on MainAppState {
             IDebugRepositoryImp debugRepository,
             ThemeMode themeMode,
             AuthStateNotifier authNotifier,
-            AuthRepository authRepository)?
+            AuthRepository authRepository,
+            ShiftRepository shiftRepository,
+            OrganizationRepository organizationRepository)?
         success,
     TResult? Function()? loading,
     TResult? Function(Object? error, StackTrace? stackTrace)? error,
@@ -274,7 +284,9 @@ extension MainAppStatePatterns on MainAppState {
             _that.debugRepository,
             _that.themeMode,
             _that.authNotifier,
-            _that.authRepository);
+            _that.authRepository,
+            _that.shiftRepository,
+            _that.organizationRepository);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -297,7 +309,9 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       required this.debugRepository,
       required this.themeMode,
       required this.authNotifier,
-      required this.authRepository})
+      required this.authRepository,
+      required this.shiftRepository,
+      required this.organizationRepository})
       : super._();
 
   final AppConfig appConfig;
@@ -309,6 +323,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   final ThemeMode themeMode;
   final AuthStateNotifier authNotifier;
   final AuthRepository authRepository;
+  final ShiftRepository shiftRepository;
+  final OrganizationRepository organizationRepository;
 
   /// Create a copy of MainAppState
   /// with the given fields replaced by the non-null parameter values.
@@ -329,7 +345,10 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('debugRepository', debugRepository))
       ..add(DiagnosticsProperty('themeMode', themeMode))
       ..add(DiagnosticsProperty('authNotifier', authNotifier))
-      ..add(DiagnosticsProperty('authRepository', authRepository));
+      ..add(DiagnosticsProperty('authRepository', authRepository))
+      ..add(DiagnosticsProperty('shiftRepository', shiftRepository))
+      ..add(DiagnosticsProperty(
+          'organizationRepository', organizationRepository));
   }
 
   @override
@@ -352,7 +371,11 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
             (identical(other.authNotifier, authNotifier) ||
                 other.authNotifier == authNotifier) &&
             (identical(other.authRepository, authRepository) ||
-                other.authRepository == authRepository));
+                other.authRepository == authRepository) &&
+            (identical(other.shiftRepository, shiftRepository) ||
+                other.shiftRepository == shiftRepository) &&
+            (identical(other.organizationRepository, organizationRepository) ||
+                other.organizationRepository == organizationRepository));
   }
 
   @override
@@ -366,11 +389,13 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       debugRepository,
       themeMode,
       authNotifier,
-      authRepository);
+      authRepository,
+      shiftRepository,
+      organizationRepository);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository)';
+    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository)';
   }
 }
 
@@ -390,7 +415,9 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res>
       IDebugRepositoryImp debugRepository,
       ThemeMode themeMode,
       AuthStateNotifier authNotifier,
-      AuthRepository authRepository});
+      AuthRepository authRepository,
+      ShiftRepository shiftRepository,
+      OrganizationRepository organizationRepository});
 }
 
 /// @nodoc
@@ -414,6 +441,8 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? themeMode = null,
     Object? authNotifier = null,
     Object? authRepository = null,
+    Object? shiftRepository = null,
+    Object? organizationRepository = null,
   }) {
     return _then(MainAppStateSuccess(
       appConfig: null == appConfig
@@ -452,6 +481,14 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.authRepository
           : authRepository // ignore: cast_nullable_to_non_nullable
               as AuthRepository,
+      shiftRepository: null == shiftRepository
+          ? _self.shiftRepository
+          : shiftRepository // ignore: cast_nullable_to_non_nullable
+              as ShiftRepository,
+      organizationRepository: null == organizationRepository
+          ? _self.organizationRepository
+          : organizationRepository // ignore: cast_nullable_to_non_nullable
+              as OrganizationRepository,
     ));
   }
 }
