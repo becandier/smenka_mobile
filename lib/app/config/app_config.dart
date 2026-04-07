@@ -20,6 +20,7 @@ class AppConfig {
     minVersion = _getString('MIN_VERSION');
     techWork = _getBool('TECH_WORK');
     debugModePassword = _getString('DEBUG_MODE_PASSWORD');
+    yandexMapsApiKey = _getString('YANDEX_MAP_KEY');
   }
 
   late final String endPoint;
@@ -27,6 +28,7 @@ class AppConfig {
   late final String minVersion;
   late final bool techWork;
   late final String debugModePassword;
+  late final String yandexMapsApiKey;
 
   String _getString(String key) {
     final value = _remoteConfig.getString(key);

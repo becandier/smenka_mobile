@@ -16,6 +16,8 @@ import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
 import 'package:smenka_mobile/data/domain/organization/_organization.dart';
+import 'package:smenka_mobile/data/domain/user/_user.dart';
+import 'package:smenka_mobile/data/domain/location/_location.dart';
 import 'package:smenka_mobile/pages/debug/data/repository/_repository.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -123,6 +125,8 @@ class MainAppCubit extends Cubit<MainAppState> {
           authRepository: _serviceLocator.get<AuthRepository>(),
           shiftRepository: _serviceLocator.get<ShiftRepository>(),
           organizationRepository: _serviceLocator.get<OrganizationRepository>(),
+          userRepository: _serviceLocator.get<UserRepository>(),
+          locationRepository: _serviceLocator.get<LocationRepository>(),
         ),
       );
     } catch (e, stackTrace) {

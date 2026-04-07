@@ -13,6 +13,8 @@ class _SuccessApp extends StatefulWidget {
     required this.authRepository,
     required this.shiftRepository,
     required this.organizationRepository,
+    required this.userRepository,
+    required this.locationRepository,
   });
   final AppConfig appConfig;
   final SharedPreferences sharedPreferences;
@@ -25,6 +27,8 @@ class _SuccessApp extends StatefulWidget {
   final AuthRepository authRepository;
   final ShiftRepository shiftRepository;
   final OrganizationRepository organizationRepository;
+  final UserRepository userRepository;
+  final LocationRepository locationRepository;
 
   @override
   State<_SuccessApp> createState() => _SuccessAppState();
@@ -63,6 +67,12 @@ class _SuccessAppState extends State<_SuccessApp> {
         ),
         RepositoryProvider<OrganizationRepository>.value(
           value: widget.organizationRepository,
+        ),
+        RepositoryProvider<UserRepository>.value(
+          value: widget.userRepository,
+        ),
+        RepositoryProvider<LocationRepository>.value(
+          value: widget.locationRepository,
         ),
       ],
       child: MultiBlocProvider(

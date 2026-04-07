@@ -17,6 +17,8 @@ sealed class MainAppState with _$MainAppState {
     required AuthRepository authRepository,
     required ShiftRepository shiftRepository,
     required OrganizationRepository organizationRepository,
+    required UserRepository userRepository,
+    required LocationRepository locationRepository,
   }) = MainAppStateSuccess;
   factory MainAppState.loading() = MainAppStateLoading;
   factory MainAppState.error({
