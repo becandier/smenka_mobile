@@ -39,6 +39,8 @@ dependencies:
   yandex_maps_mapkit_lite: 4.30.0-beta
   fl_chart: ^0.70.2
   geolocator: ^14.0.0
+  shimmer: ^3.0.0
+  app_links: ^6.3.2
 
 dev_dependencies:
   flutter_test:
