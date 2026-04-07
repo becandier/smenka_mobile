@@ -10,12 +10,16 @@ class SectionDataWrapper<C extends StateStreamable<S>, S, T>
     required this.selector,
     required this.contentBuilder,
     required this.onRetry,
+    this.emptyBuilder,
+    this.loadingBuilder,
     super.key,
   });
 
   final SectionData<T> Function(S state) selector;
   final Widget Function(T data) contentBuilder;
   final VoidCallback onRetry;
+  final Widget Function()? emptyBuilder;
+  final Widget Function()? loadingBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class SectionDataWrapper<C extends StateStreamable<S>, S, T>
       selector: selector,
       builder: (context, sectionData) {
         if (sectionData.isLoading) {
-          return const SectionLoader();
+          return SectionLoader(loadingBuilder: loadingBuilder);
         }
 
         if (sectionData.error case final errorMessage?) {
@@ -34,7 +38,7 @@ class SectionDataWrapper<C extends StateStreamable<S>, S, T>
         }
 
         if (!sectionData.hasData) {
-          return const SizedBox.shrink();
+          return emptyBuilder?.call() ?? const SizedBox.shrink();
         }
 
         final data = sectionData.data as T;

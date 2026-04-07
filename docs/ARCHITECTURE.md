@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-07 (фаза 7)
+Последнее обновление: 2026-04-07 (фаза 8)
 
 ---
 
@@ -224,6 +224,19 @@ lib/
 |--------|-----------|--------|
 | `AuthTokenStorage` | SharedPreferences | access_token, refresh_token |
 | `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
+| `PendingInviteStorage` | SharedPreferences | pending_invite_code |
+
+---
+
+## Deep Links
+
+| Сервис | Описание |
+|--------|----------|
+| `DeepLinkService` | Обработка входящих URI (app_links). Парсит `smenka://invite/{code}` |
+| `PendingInviteStorage` | Хранение инвайт-кода для обработки после авторизации |
+
+**Схема:** `smenka://invite/{code}` (custom URI scheme)
+**Обработка:** `_SuccessApp` слушает `DeepLinkService.inviteCodeStream` → если авторизован — join, если нет — сохраняет код
 
 ---
 
@@ -233,6 +246,8 @@ lib/
 - `AppTextField` — кастомное текстовое поле с валидацией (файл: `lib/widgets/app_text_field.dart`)
 - `AppButton` — кнопка с состоянием загрузки (файл: `lib/widgets/app_button.dart`)
 - `PinCodeField` — поле ввода PIN/кода подтверждения (файл: `lib/widgets/pin_code_field.dart`)
+- `AppEmptyState` — переиспользуемый empty state (иконка + заголовок + опц. подзаголовок + опц. кнопка) (файл: `lib/widgets/app_empty_state.dart`)
+- `AppShimmerLoader` — shimmer placeholder для загрузки списков (файл: `lib/widgets/app_shimmer_loader.dart`)
 - Barrel file: `lib/widgets/_widgets.dart`
 
 ### Toast-уведомления
@@ -247,8 +262,9 @@ lib/
 - `DefaultPaginator<T>` — универсальная модель ответа пагинации (hasMore, data, total)
 
 ### Виджеты секций
-- `SectionDataWrapper<C, S, T>` — обёртка: автоматически показывает loader/error/content по `SectionData<T>`
-- `SectionLoader` / `SectionError` — стандартные виджеты загрузки и ошибки
+- `SectionDataWrapper<C, S, T>` — обёртка: автоматически показывает shimmer/error/content по `SectionData<T>`. Опц. параметры: `emptyBuilder`, `loadingBuilder`
+- `SectionLoader` — shimmer-загрузка (по умолчанию `AppShimmerLoader`). Опц. `loadingBuilder` для кастомизации
+- `SectionError` — стандартный виджет ошибки с retry
 - `PaginatedSectionDataList<C, S, T>` — ListView с автоподгрузкой при 80% скролла + pull-to-refresh
 - `PaginatedSectionDataGrid<C, S, T>` — GridView аналогично
 - `PaginatedSliverList<C, S, T>` / `PaginatedSliverGrid<C, S, T>` — Sliver-варианты для CustomScrollView

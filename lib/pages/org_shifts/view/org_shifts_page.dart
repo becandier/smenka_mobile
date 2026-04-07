@@ -59,11 +59,9 @@ class _OrgShiftsView extends StatelessWidget {
                   .read<OrgShiftsCubit>()
                   .loadShifts(isRefresh: false),
               onRefresh: () => context.read<OrgShiftsCubit>().loadShifts(),
-              emptyBuilder: () => Center(
-                child: Text(
-                  l10n.orgShiftsEmpty,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+              emptyBuilder: () => AppEmptyState(
+                icon: Icons.work_history_outlined,
+                title: l10n.orgShiftsEmpty,
               ),
             ),
           ),

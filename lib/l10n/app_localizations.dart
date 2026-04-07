@@ -1365,6 +1365,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Рабочие точки'**
   String get orgDetailLocations;
+
+  /// No description provided for @deepLinkJoinSuccess.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы присоединились к {orgName} по ссылке'**
+  String deepLinkJoinSuccess(String orgName);
+
+  /// No description provided for @deepLinkJoinError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось присоединиться по ссылке'**
+  String get deepLinkJoinError;
 }
 
 class _AppLocalizationsDelegate

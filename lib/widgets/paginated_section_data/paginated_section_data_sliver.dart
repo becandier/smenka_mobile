@@ -17,6 +17,7 @@ class PaginatedSliverList<C extends StateStreamable<S>, S, T>
     this.emptyBuilder,
     this.onRetry,
     this.loadMoreThreshold = 0.8,
+    this.loadingBuilder,
     super.key,
   });
 
@@ -27,6 +28,7 @@ class PaginatedSliverList<C extends StateStreamable<S>, S, T>
   final Widget Function()? emptyBuilder;
   final VoidCallback? onRetry;
   final double loadMoreThreshold;
+  final Widget Function()? loadingBuilder;
 
   @override
   State<PaginatedSliverList<C, S, T>> createState() =>
@@ -70,7 +72,9 @@ class _PaginatedSliverListState<C extends StateStreamable<S>, S, T>
         builder: (context, sectionData) {
           // Loading
           if (sectionData.isLoading && sectionData.isEmpty) {
-            return const SliverToBoxAdapter(child: SectionLoader());
+            return SliverToBoxAdapter(
+              child: widget.loadingBuilder?.call() ?? const SectionLoader(),
+            );
           }
 
           // Error
@@ -132,6 +136,7 @@ class PaginatedSliverGrid<C extends StateStreamable<S>, S, T>
     this.emptyBuilder,
     this.onRetry,
     this.loadMoreThreshold = 0.8,
+    this.loadingBuilder,
     super.key,
   });
 
@@ -142,6 +147,7 @@ class PaginatedSliverGrid<C extends StateStreamable<S>, S, T>
   final Widget Function()? emptyBuilder;
   final VoidCallback? onRetry;
   final double loadMoreThreshold;
+  final Widget Function()? loadingBuilder;
 
   @override
   State<PaginatedSliverGrid<C, S, T>> createState() =>
@@ -185,7 +191,9 @@ class _PaginatedSliverGridState<C extends StateStreamable<S>, S, T>
         builder: (context, sectionData) {
           // Loading
           if (sectionData.isLoading && sectionData.isEmpty) {
-            return const SliverToBoxAdapter(child: SectionLoader());
+            return SliverToBoxAdapter(
+              child: widget.loadingBuilder?.call() ?? const SectionLoader(),
+            );
           }
 
           // Error

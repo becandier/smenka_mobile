@@ -296,5 +296,13 @@
     "superAdminAllOrgs": "Все организации",
     "superAdminEmpty": "Нет организаций",
 
-    "orgDetailLocations": "Рабочие точки"
+    "orgDetailLocations": "Рабочие точки",
+
+    "deepLinkJoinSuccess": "Вы присоединились к {orgName} по ссылке",
+    "@deepLinkJoinSuccess": {
+        "placeholders": {
+            "orgName": {"type": "String"}
+        }
+    },
+    "deepLinkJoinError": "Не удалось присоединиться по ссылке"
 }

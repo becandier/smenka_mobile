@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:smenka_mobile/widgets/app_shimmer_loader.dart';
 
 class SectionLoader extends StatelessWidget {
-  const SectionLoader({super.key});
+  const SectionLoader({this.loadingBuilder, super.key});
+
+  final Widget Function()? loadingBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Center(
-        child: CircularProgressIndicator.adaptive(),
-      ),
-    );
+    return loadingBuilder?.call() ?? const AppShimmerLoader();
   }
 }

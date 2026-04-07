@@ -68,6 +68,10 @@ class _ShiftHistoryView extends StatelessWidget {
                   .read<ShiftHistoryCubit>()
                   .loadShifts(isRefresh: false),
               onRefresh: () => context.read<ShiftHistoryCubit>().loadShifts(),
+              emptyBuilder: () => AppEmptyState(
+                icon: Icons.history_outlined,
+                title: context.l10n.historyEmpty,
+              ),
             ),
           ),
         ],

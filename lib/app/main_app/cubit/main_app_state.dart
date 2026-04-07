@@ -19,6 +19,8 @@ sealed class MainAppState with _$MainAppState {
     required OrganizationRepository organizationRepository,
     required UserRepository userRepository,
     required LocationRepository locationRepository,
+    required DeepLinkService deepLinkService,
+    required PendingInviteStorage pendingInviteStorage,
   }) = MainAppStateSuccess;
   factory MainAppState.loading() = MainAppStateLoading;
   factory MainAppState.error({
