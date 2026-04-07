@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
+import 'package:smenka_mobile/data/domain/user/models/user.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_state.dart';
 
@@ -21,8 +23,22 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
   final OrganizationRepository _organizationRepository;
   final UserRepository _userRepository;
   String _currentUserId = '';
+  MemberRole? _currentMemberRole;
+  UserRole _currentUserRole = UserRole.user;
 
   String get currentUserId => _currentUserId;
+  MemberRole? get currentMemberRole => _currentMemberRole;
+  UserRole get currentUserRole => _currentUserRole;
+
+  bool get isOwner {
+    final org = state.organization.data;
+    return org != null && org.ownerId == _currentUserId;
+  }
+
+  bool get isAdminOrOwner =>
+      isOwner ||
+      _currentMemberRole == MemberRole.admin ||
+      _currentUserRole == UserRole.superAdmin;
 
   Future<void> _init() async {
     await Future.wait([
@@ -35,7 +51,10 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
   Future<void> _loadCurrentUser() async {
     final result = await _userRepository.getMe();
     result.fold(
-      onSuccess: (user) => _currentUserId = user.id,
+      onSuccess: (user) {
+        _currentUserId = user.id;
+        _currentUserRole = user.role;
+      },
       onFailure: (_) {},
     );
   }
@@ -66,6 +85,10 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
     result.fold(
       onSuccess: (members) {
         emit(state.copyWith(members: state.members.toSuccess(members)));
+        final myMembership = members.where((m) => m.userId == _currentUserId);
+        if (myMembership.isNotEmpty) {
+          _currentMemberRole = myMembership.first.role;
+        }
       },
       onFailure: (error) {
         emit(state.copyWith(members: state.members.toError(error.message)));

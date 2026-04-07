@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
+import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
@@ -14,7 +15,7 @@ import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detai
 import 'package:smenka_mobile/widgets/_widgets.dart';
 
 part '../widgets/_org_header.dart';
-part '../widgets/_org_members_section.dart';
+part '../widgets/_org_navigation_section.dart';
 part '../widgets/_org_invite_section.dart';
 part '../widgets/_org_actions_section.dart';
 
@@ -58,7 +59,6 @@ class _OrganizationDetailView extends StatelessWidget {
         onRetry: () => context.read<OrganizationDetailCubit>().refresh(),
         contentBuilder: (org) {
           final cubit = context.read<OrganizationDetailCubit>();
-          final isOwner = org.ownerId == cubit.currentUserId;
 
           return RefreshIndicator.adaptive(
             onRefresh: () =>
@@ -68,9 +68,9 @@ class _OrganizationDetailView extends StatelessWidget {
               children: [
                 _OrgHeader(organization: org),
                 const SizedBox(height: 24),
-                const _OrgMembersSection(),
+                const _OrgNavigationSection(),
                 const SizedBox(height: 24),
-                if (isOwner) ...[
+                if (cubit.isOwner) ...[
                   _OrgInviteSection(organization: org),
                   const SizedBox(height: 24),
                 ],
