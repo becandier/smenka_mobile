@@ -172,6 +172,208 @@ class MainRouterRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MembersPage]
+class MembersRoute extends PageRouteInfo<MembersRouteArgs> {
+  MembersRoute({required String orgId, Key? key, List<PageRouteInfo>? children})
+      : super(
+          MembersRoute.name,
+          args: MembersRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'MembersRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<MembersRouteArgs>(
+        orElse: () => MembersRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return MembersPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class MembersRouteArgs {
+  const MembersRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'MembersRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MembersRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [OrgSettingsPage]
+class OrgSettingsRoute extends PageRouteInfo<OrgSettingsRouteArgs> {
+  OrgSettingsRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          OrgSettingsRoute.name,
+          args: OrgSettingsRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'OrgSettingsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<OrgSettingsRouteArgs>(
+        orElse: () =>
+            OrgSettingsRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return OrgSettingsPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class OrgSettingsRouteArgs {
+  const OrgSettingsRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'OrgSettingsRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! OrgSettingsRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [OrgShiftsPage]
+class OrgShiftsRoute extends PageRouteInfo<OrgShiftsRouteArgs> {
+  OrgShiftsRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          OrgShiftsRoute.name,
+          args: OrgShiftsRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'OrgShiftsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<OrgShiftsRouteArgs>(
+        orElse: () => OrgShiftsRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return OrgShiftsPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class OrgShiftsRouteArgs {
+  const OrgShiftsRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'OrgShiftsRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! OrgShiftsRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [OrgStatsPage]
+class OrgStatsRoute extends PageRouteInfo<OrgStatsRouteArgs> {
+  OrgStatsRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          OrgStatsRoute.name,
+          args: OrgStatsRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'OrgStatsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<OrgStatsRouteArgs>(
+        orElse: () => OrgStatsRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return OrgStatsPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class OrgStatsRouteArgs {
+  const OrgStatsRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'OrgStatsRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! OrgStatsRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [OrganizationDetailPage]
 class OrganizationDetailRoute
     extends PageRouteInfo<OrganizationDetailRouteArgs> {
@@ -425,4 +627,56 @@ class VerifyRouteArgs {
 
   @override
   int get hashCode => email.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [WorkLocationsPage]
+class WorkLocationsRoute extends PageRouteInfo<WorkLocationsRouteArgs> {
+  WorkLocationsRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          WorkLocationsRoute.name,
+          args: WorkLocationsRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'WorkLocationsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<WorkLocationsRouteArgs>(
+        orElse: () =>
+            WorkLocationsRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return WorkLocationsPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class WorkLocationsRouteArgs {
+  const WorkLocationsRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'WorkLocationsRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! WorkLocationsRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
 }
