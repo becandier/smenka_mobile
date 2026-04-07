@@ -24,7 +24,7 @@ class AppShimmerLoader extends StatelessWidget {
         : appColors.surface;
     final highlightColor = brightness == Brightness.light
         ? appColors.background
-        : appColors.surface.withValues(alpha: 0.5);
+        : appColors.secondary.withValues(alpha: 0.15);
 
     return Shimmer.fromColors(
       baseColor: baseColor,
@@ -41,18 +41,20 @@ class AppShimmerLoader extends StatelessWidget {
   }
 
   Widget _defaultItemBuilder(BuildContext context, int index) {
-    return const _ShimmerPlaceholder();
+    return _ShimmerPlaceholder(color: context.appColors.surface);
   }
 }
 
 class _ShimmerPlaceholder extends StatelessWidget {
-  const _ShimmerPlaceholder();
+  const _ShimmerPlaceholder({required this.color});
+
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: color,
         borderRadius: BorderRadius.circular(12),
       ),
       child: const SizedBox(
