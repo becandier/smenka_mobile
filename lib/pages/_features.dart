@@ -2,6 +2,7 @@ export 'auth/_auth.dart';
 export 'debug/_debug.dart';
 export 'home/_home.dart';
 export 'main_router/_main_router.dart';
+export 'members/_members.dart';
 export 'organization_detail/_organization_detail.dart';
 export 'organizations/_organizations.dart';
 export 'profile/_profile.dart';
