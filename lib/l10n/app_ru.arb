@@ -211,5 +211,90 @@
         "placeholders": {
             "date": {"type": "String"}
         }
-    }
+    },
+
+    "membersTitle": "Участники",
+    "membersEmpty": "Нет участников",
+    "membersRemove": "Удалить участника",
+    "membersRemoveConfirm": "Удалить {name} из организации?",
+    "@membersRemoveConfirm": {
+        "placeholders": {
+            "name": {"type": "String"}
+        }
+    },
+    "membersRemoved": "Участник удалён",
+    "membersMakeAdmin": "Назначить администратором",
+    "membersMakeEmployee": "Снять администратора",
+    "membersRoleChanged": "Роль изменена",
+    "membersCantEditSelf": "Нельзя изменить свою роль",
+    "membersJoinedAt": "С {date}",
+    "@membersJoinedAt": {
+        "placeholders": {
+            "date": {"type": "String"}
+        }
+    },
+
+    "orgSettingsTitle": "Настройки организации",
+    "orgSettingsGeoCheck": "Геопроверка",
+    "orgSettingsGeoCheckDesc": "Проверять местоположение при начале смены",
+    "orgSettingsAutoFinish": "Автозавершение (часы)",
+    "orgSettingsAutoFinishDesc": "Автоматически завершать смену через N часов",
+    "orgSettingsMaxPause": "Макс. пауза (минуты)",
+    "orgSettingsMaxPauseDesc": "Максимальная продолжительность одной паузы",
+    "orgSettingsMaxPauses": "Макс. пауз за смену",
+    "orgSettingsMaxPausesDesc": "Максимальное количество пауз за смену",
+    "orgSettingsSaved": "Настройки сохранены",
+
+    "workLocationsTitle": "Рабочие точки",
+    "workLocationsEmpty": "Нет рабочих точек",
+    "workLocationsAdd": "Добавить точку",
+    "workLocationsDelete": "Удалить точку",
+    "workLocationsDeleteConfirm": "Удалить рабочую точку \"{name}\"?",
+    "@workLocationsDeleteConfirm": {
+        "placeholders": {
+            "name": {"type": "String"}
+        }
+    },
+    "workLocationsDeleted": "Точка удалена",
+    "workLocationsRadius": "Радиус: {meters} м",
+    "@workLocationsRadius": {
+        "placeholders": {
+            "meters": {"type": "int"}
+        }
+    },
+
+    "addLocationTitle": "Новая точка",
+    "editLocationTitle": "Редактирование точки",
+    "addLocationName": "Название точки",
+    "addLocationNameHint": "Например: Офис на Тверской",
+    "addLocationNameRequired": "Укажите название",
+    "addLocationRadius": "Радиус ({meters} м)",
+    "@addLocationRadius": {
+        "placeholders": {
+            "meters": {"type": "int"}
+        }
+    },
+    "addLocationSaved": "Точка сохранена",
+    "addLocationMoveMap": "Переместите карту для выбора точки",
+
+    "orgShiftsTitle": "Смены сотрудников",
+    "orgShiftsEmpty": "Нет смен",
+    "orgShiftsFilterEmployee": "Сотрудник",
+    "orgShiftsAllEmployees": "Все сотрудники",
+
+    "orgStatsTitle": "Статистика организации",
+    "orgStatsTotalHours": "Всего часов",
+    "orgStatsShiftCount": "Кол-во смен",
+    "orgStatsAvgShift": "Средняя смена",
+    "orgStatsChartTitle": "Часы по сотрудникам",
+    "orgStatsTableName": "Сотрудник",
+    "orgStatsTableShifts": "Смены",
+    "orgStatsTableHours": "Часы",
+    "orgStatsTableAvg": "Средн.",
+
+    "superAdminTitle": "Админ-панель",
+    "superAdminAllOrgs": "Все организации",
+    "superAdminEmpty": "Нет организаций",
+
+    "orgDetailLocations": "Рабочие точки"
 }
