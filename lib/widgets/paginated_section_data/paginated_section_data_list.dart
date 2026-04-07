@@ -21,6 +21,7 @@ class PaginatedSectionDataList<C extends StateStreamable<S>, S, T>
     this.scrollController,
     this.padding,
     this.physics,
+    this.loadingBuilder,
     super.key,
   });
 
@@ -33,6 +34,7 @@ class PaginatedSectionDataList<C extends StateStreamable<S>, S, T>
   final ScrollController? scrollController;
   final EdgeInsetsGeometry? padding;
   final ScrollPhysics? physics;
+  final Widget Function()? loadingBuilder;
 
   @override
   State<PaginatedSectionDataList<C, S, T>> createState() =>
@@ -76,7 +78,7 @@ class _PaginatedSectionDataListState<C extends StateStreamable<S>, S, T>
       builder: (context, sectionData) {
         // Loading
         if (sectionData.isLoading && sectionData.isEmpty) {
-          return const SectionLoader();
+          return widget.loadingBuilder?.call() ?? const SectionLoader();
         }
 
         // Error
