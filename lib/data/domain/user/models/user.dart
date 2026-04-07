@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user.freezed.dart';
 
+enum UserRole { superAdmin, user }
+
 @freezed
 abstract class User with _$User {
   const factory User({
@@ -10,6 +12,7 @@ abstract class User with _$User {
     required String name,
     String? phone,
     required bool isVerified,
+    required UserRole role,
     required DateTime createdAt,
   }) = _User;
 }

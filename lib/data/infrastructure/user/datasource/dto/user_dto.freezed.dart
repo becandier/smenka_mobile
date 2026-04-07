@@ -19,6 +19,7 @@ mixin _$UserDto {
   String get name;
   String? get phone;
   bool get isVerified;
+  String get role;
   DateTime get createdAt;
 
   /// Create a copy of UserDto
@@ -42,18 +43,19 @@ mixin _$UserDto {
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.isVerified, isVerified) ||
                 other.isVerified == isVerified) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, email, name, phone, isVerified, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType, id, email, name, phone, isVerified, role, createdAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, createdAt: $createdAt)';
+    return 'UserDto(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, role: $role, createdAt: $createdAt)';
   }
 }
 
@@ -68,6 +70,7 @@ abstract mixin class $UserDtoCopyWith<$Res> {
       String name,
       String? phone,
       bool isVerified,
+      String role,
       DateTime createdAt});
 }
 
@@ -88,6 +91,7 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
     Object? name = null,
     Object? phone = freezed,
     Object? isVerified = null,
+    Object? role = null,
     Object? createdAt = null,
   }) {
     return _then(_self.copyWith(
@@ -111,6 +115,10 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
           ? _self.isVerified
           : isVerified // ignore: cast_nullable_to_non_nullable
               as bool,
+      role: null == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -213,7 +221,7 @@ extension UserDtoPatterns on UserDto {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String id, String email, String name, String? phone,
-            bool isVerified, DateTime createdAt)?
+            bool isVerified, String role, DateTime createdAt)?
         $default, {
     required TResult orElse(),
   }) {
@@ -221,7 +229,7 @@ extension UserDtoPatterns on UserDto {
     switch (_that) {
       case _UserDto() when $default != null:
         return $default(_that.id, _that.email, _that.name, _that.phone,
-            _that.isVerified, _that.createdAt);
+            _that.isVerified, _that.role, _that.createdAt);
       case _:
         return orElse();
     }
@@ -243,14 +251,14 @@ extension UserDtoPatterns on UserDto {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String id, String email, String name, String? phone,
-            bool isVerified, DateTime createdAt)
+            bool isVerified, String role, DateTime createdAt)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _UserDto():
         return $default(_that.id, _that.email, _that.name, _that.phone,
-            _that.isVerified, _that.createdAt);
+            _that.isVerified, _that.role, _that.createdAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -271,14 +279,14 @@ extension UserDtoPatterns on UserDto {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(String id, String email, String name, String? phone,
-            bool isVerified, DateTime createdAt)?
+            bool isVerified, String role, DateTime createdAt)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _UserDto() when $default != null:
         return $default(_that.id, _that.email, _that.name, _that.phone,
-            _that.isVerified, _that.createdAt);
+            _that.isVerified, _that.role, _that.createdAt);
       case _:
         return null;
     }
@@ -295,6 +303,7 @@ class _UserDto implements UserDto {
       required this.name,
       this.phone,
       required this.isVerified,
+      required this.role,
       required this.createdAt});
   factory _UserDto.fromJson(Map<String, dynamic> json) =>
       _$UserDtoFromJson(json);
@@ -309,6 +318,8 @@ class _UserDto implements UserDto {
   final String? phone;
   @override
   final bool isVerified;
+  @override
+  final String role;
   @override
   final DateTime createdAt;
 
@@ -338,18 +349,19 @@ class _UserDto implements UserDto {
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.isVerified, isVerified) ||
                 other.isVerified == isVerified) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, email, name, phone, isVerified, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType, id, email, name, phone, isVerified, role, createdAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, createdAt: $createdAt)';
+    return 'UserDto(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, role: $role, createdAt: $createdAt)';
   }
 }
 
@@ -365,6 +377,7 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
       String name,
       String? phone,
       bool isVerified,
+      String role,
       DateTime createdAt});
 }
 
@@ -385,6 +398,7 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
     Object? name = null,
     Object? phone = freezed,
     Object? isVerified = null,
+    Object? role = null,
     Object? createdAt = null,
   }) {
     return _then(_UserDto(
@@ -408,6 +422,10 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
           ? _self.isVerified
           : isVerified // ignore: cast_nullable_to_non_nullable
               as bool,
+      role: null == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable

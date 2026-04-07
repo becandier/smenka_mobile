@@ -12,6 +12,7 @@ abstract class UserDto with _$UserDto {
     required String name,
     String? phone,
     required bool isVerified,
+    required String role,
     required DateTime createdAt,
   }) = _UserDto;
 
