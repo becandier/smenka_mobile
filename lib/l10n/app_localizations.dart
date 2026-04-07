@@ -843,6 +843,216 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Имя не может быть пустым'**
   String get nameRequired;
+
+  /// No description provided for @organizationsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организации'**
+  String get organizationsTitle;
+
+  /// No description provided for @organizationsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы не состоите ни в одной организации'**
+  String get organizationsEmpty;
+
+  /// No description provided for @organizationsCreate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать организацию'**
+  String get organizationsCreate;
+
+  /// No description provided for @organizationsJoin.
+  ///
+  /// In ru, this message translates to:
+  /// **'Присоединиться'**
+  String get organizationsJoin;
+
+  /// No description provided for @organizationsJoinByCode.
+  ///
+  /// In ru, this message translates to:
+  /// **'Присоединиться по коду'**
+  String get organizationsJoinByCode;
+
+  /// No description provided for @createOrgTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая организация'**
+  String get createOrgTitle;
+
+  /// No description provided for @createOrgNameLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Название организации'**
+  String get createOrgNameLabel;
+
+  /// No description provided for @createOrgNameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите название'**
+  String get createOrgNameHint;
+
+  /// No description provided for @createOrgNameRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Название не может быть пустым'**
+  String get createOrgNameRequired;
+
+  /// No description provided for @createOrgSuccess.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация создана'**
+  String get createOrgSuccess;
+
+  /// No description provided for @joinOrgTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Присоединиться к организации'**
+  String get joinOrgTitle;
+
+  /// No description provided for @joinOrgCodeLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Инвайт-код'**
+  String get joinOrgCodeLabel;
+
+  /// No description provided for @joinOrgCodeHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите 8-значный код'**
+  String get joinOrgCodeHint;
+
+  /// No description provided for @joinOrgCodeRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Код не может быть пустым'**
+  String get joinOrgCodeRequired;
+
+  /// No description provided for @joinOrgSuccess.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы присоединились к {orgName}'**
+  String joinOrgSuccess(String orgName);
+
+  /// No description provided for @orgDetailTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация'**
+  String get orgDetailTitle;
+
+  /// No description provided for @orgDetailMembers.
+  ///
+  /// In ru, this message translates to:
+  /// **'Участники'**
+  String get orgDetailMembers;
+
+  /// No description provided for @orgDetailMembersCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count} участников'**
+  String orgDetailMembersCount(int count);
+
+  /// No description provided for @orgDetailInviteCode.
+  ///
+  /// In ru, this message translates to:
+  /// **'Инвайт-код'**
+  String get orgDetailInviteCode;
+
+  /// No description provided for @orgDetailInviteCopied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Код скопирован'**
+  String get orgDetailInviteCopied;
+
+  /// No description provided for @orgDetailRotateInvite.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обновить код'**
+  String get orgDetailRotateInvite;
+
+  /// No description provided for @orgDetailRotateConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Старый код перестанет работать. Обновить?'**
+  String get orgDetailRotateConfirm;
+
+  /// No description provided for @orgDetailLeave.
+  ///
+  /// In ru, this message translates to:
+  /// **'Покинуть организацию'**
+  String get orgDetailLeave;
+
+  /// No description provided for @orgDetailLeaveConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы уверены, что хотите покинуть организацию?'**
+  String get orgDetailLeaveConfirm;
+
+  /// No description provided for @orgDetailDelete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить организацию'**
+  String get orgDetailDelete;
+
+  /// No description provided for @orgDetailDeleteConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация будет удалена безвозвратно. Продолжить?'**
+  String get orgDetailDeleteConfirm;
+
+  /// No description provided for @orgDetailDeleted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация удалена'**
+  String get orgDetailDeleted;
+
+  /// No description provided for @orgDetailLeft.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы покинули организацию'**
+  String get orgDetailLeft;
+
+  /// No description provided for @orgDetailSettings.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки'**
+  String get orgDetailSettings;
+
+  /// No description provided for @orgDetailShifts.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смены сотрудников'**
+  String get orgDetailShifts;
+
+  /// No description provided for @orgDetailStats.
+  ///
+  /// In ru, this message translates to:
+  /// **'Статистика'**
+  String get orgDetailStats;
+
+  /// No description provided for @roleOwnerFull.
+  ///
+  /// In ru, this message translates to:
+  /// **'Владелец'**
+  String get roleOwnerFull;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In ru, this message translates to:
+  /// **'Администратор'**
+  String get roleAdmin;
+
+  /// No description provided for @roleEmployee.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сотрудник'**
+  String get roleEmployee;
+
+  /// No description provided for @memberSinceDate.
+  ///
+  /// In ru, this message translates to:
+  /// **'С {date}'**
+  String memberSinceDate(String date);
 }
 
 class _AppLocalizationsDelegate

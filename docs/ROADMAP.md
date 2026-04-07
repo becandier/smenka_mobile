@@ -82,21 +82,21 @@
 
 ---
 
-## Фаза 6 — Организации `[ ]`
-- [ ] Обновить User domain модель — добавить `role` (enum: superAdmin, user)
-- [ ] Обновить UserDto + маппинг (role приходит из GET /users/me)
-- [ ] **OrganizationsList** — список организаций пользователя
-- [ ] Карточки: название, роль (owner/admin/employee), дата создания
-- [ ] **CreateOrganization** — модалка с вводом названия (только для super_admin, скрыта для обычных)
-- [ ] **JoinOrganization** — модалка с вводом 8-значного инвайт-кода (для всех пользователей)
-- [ ] **OrganizationDetail** — экран организации (контент по роли)
-- [ ] Для employee: название, мои смены, кнопка "Покинуть"
-- [ ] Для admin: + список сотрудников, локации, смены всех, статистика
-- [ ] Для owner: + редактирование, настройки, инвайт-код, удаление орг, удаление сотрудников
-- [ ] Защита UI по глобальной роли: кнопка "Создать организацию" видна только super_admin
-- [ ] Кубиты: OrganizationsCubit, OrganizationDetailCubit, CreateOrgCubit, JoinOrgCubit
-- [ ] Интеграция с OrganizationRepository (getAll, create, join, getById, update, delete, rotateInvite)
-- [ ] Локализация
+## Фаза 6 — Организации `[x]`
+- [x] Обновить User domain модель — добавить `role` (enum: superAdmin, user)
+- [x] Обновить UserDto + маппинг (role приходит из GET /users/me)
+- [x] **OrganizationsList** — список организаций пользователя
+- [x] Карточки: название, навигация в детали
+- [x] **CreateOrganization** — модалка с вводом названия (только для super_admin, скрыта для обычных)
+- [x] **JoinOrganization** — модалка с вводом 8-значного инвайт-кода (для всех пользователей)
+- [x] **OrganizationDetail** — экран организации (контент по роли)
+- [x] Для employee: название, участники, кнопка "Покинуть"
+- [x] Для owner: + инвайт-код, ротация кода, удаление организации
+- [x] Защита UI по глобальной роли: кнопка "Создать организацию" видна только super_admin
+- [x] Кубиты: OrganizationsCubit, OrganizationDetailCubit (создание/присоединение через OrganizationsCubit)
+- [x] Интеграция с OrganizationRepository (getAll, create, join, getById, getMembers, rotateInvite, removeMember, delete)
+- [x] Локализация
+- [x] 4-й таб навигации (Организации), навигация из профиля
 
 ---
 

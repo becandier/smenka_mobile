@@ -19,6 +19,7 @@ mixin _$User {
   String get name;
   String? get phone;
   bool get isVerified;
+  UserRole get role;
   DateTime get createdAt;
 
   /// Create a copy of User
@@ -39,17 +40,18 @@ mixin _$User {
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.isVerified, isVerified) ||
                 other.isVerified == isVerified) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, email, name, phone, isVerified, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType, id, email, name, phone, isVerified, role, createdAt);
 
   @override
   String toString() {
-    return 'User(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, createdAt: $createdAt)';
+    return 'User(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, role: $role, createdAt: $createdAt)';
   }
 }
 
@@ -64,6 +66,7 @@ abstract mixin class $UserCopyWith<$Res> {
       String name,
       String? phone,
       bool isVerified,
+      UserRole role,
       DateTime createdAt});
 }
 
@@ -84,6 +87,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
     Object? name = null,
     Object? phone = freezed,
     Object? isVerified = null,
+    Object? role = null,
     Object? createdAt = null,
   }) {
     return _then(_self.copyWith(
@@ -107,6 +111,10 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
           ? _self.isVerified
           : isVerified // ignore: cast_nullable_to_non_nullable
               as bool,
+      role: null == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as UserRole,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -209,7 +217,7 @@ extension UserPatterns on User {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String id, String email, String name, String? phone,
-            bool isVerified, DateTime createdAt)?
+            bool isVerified, UserRole role, DateTime createdAt)?
         $default, {
     required TResult orElse(),
   }) {
@@ -217,7 +225,7 @@ extension UserPatterns on User {
     switch (_that) {
       case _User() when $default != null:
         return $default(_that.id, _that.email, _that.name, _that.phone,
-            _that.isVerified, _that.createdAt);
+            _that.isVerified, _that.role, _that.createdAt);
       case _:
         return orElse();
     }
@@ -239,14 +247,14 @@ extension UserPatterns on User {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String id, String email, String name, String? phone,
-            bool isVerified, DateTime createdAt)
+            bool isVerified, UserRole role, DateTime createdAt)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _User():
         return $default(_that.id, _that.email, _that.name, _that.phone,
-            _that.isVerified, _that.createdAt);
+            _that.isVerified, _that.role, _that.createdAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -267,14 +275,14 @@ extension UserPatterns on User {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(String id, String email, String name, String? phone,
-            bool isVerified, DateTime createdAt)?
+            bool isVerified, UserRole role, DateTime createdAt)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _User() when $default != null:
         return $default(_that.id, _that.email, _that.name, _that.phone,
-            _that.isVerified, _that.createdAt);
+            _that.isVerified, _that.role, _that.createdAt);
       case _:
         return null;
     }
@@ -290,6 +298,7 @@ class _User implements User {
       required this.name,
       this.phone,
       required this.isVerified,
+      required this.role,
       required this.createdAt});
 
   @override
@@ -302,6 +311,8 @@ class _User implements User {
   final String? phone;
   @override
   final bool isVerified;
+  @override
+  final UserRole role;
   @override
   final DateTime createdAt;
 
@@ -324,17 +335,18 @@ class _User implements User {
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.isVerified, isVerified) ||
                 other.isVerified == isVerified) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, email, name, phone, isVerified, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType, id, email, name, phone, isVerified, role, createdAt);
 
   @override
   String toString() {
-    return 'User(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, createdAt: $createdAt)';
+    return 'User(id: $id, email: $email, name: $name, phone: $phone, isVerified: $isVerified, role: $role, createdAt: $createdAt)';
   }
 }
 
@@ -350,6 +362,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       String name,
       String? phone,
       bool isVerified,
+      UserRole role,
       DateTime createdAt});
 }
 
@@ -370,6 +383,7 @@ class __$UserCopyWithImpl<$Res> implements _$UserCopyWith<$Res> {
     Object? name = null,
     Object? phone = freezed,
     Object? isVerified = null,
+    Object? role = null,
     Object? createdAt = null,
   }) {
     return _then(_User(
@@ -393,6 +407,10 @@ class __$UserCopyWithImpl<$Res> implements _$UserCopyWith<$Res> {
           ? _self.isVerified
           : isVerified // ignore: cast_nullable_to_non_nullable
               as bool,
+      role: null == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as UserRole,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable

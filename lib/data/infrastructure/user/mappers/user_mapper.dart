@@ -9,7 +9,15 @@ extension UserMapper on UserDto {
       name: name,
       phone: phone,
       isVerified: isVerified,
+      role: _parseUserRole(role),
       createdAt: createdAt,
     );
+  }
+
+  static UserRole _parseUserRole(String role) {
+    return switch (role) {
+      'super_admin' => UserRole.superAdmin,
+      _ => UserRole.user,
+    };
   }
 }

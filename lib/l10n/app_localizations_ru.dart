@@ -400,4 +400,118 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get nameRequired => 'Имя не может быть пустым';
+
+  @override
+  String get organizationsTitle => 'Организации';
+
+  @override
+  String get organizationsEmpty => 'Вы не состоите ни в одной организации';
+
+  @override
+  String get organizationsCreate => 'Создать организацию';
+
+  @override
+  String get organizationsJoin => 'Присоединиться';
+
+  @override
+  String get organizationsJoinByCode => 'Присоединиться по коду';
+
+  @override
+  String get createOrgTitle => 'Новая организация';
+
+  @override
+  String get createOrgNameLabel => 'Название организации';
+
+  @override
+  String get createOrgNameHint => 'Введите название';
+
+  @override
+  String get createOrgNameRequired => 'Название не может быть пустым';
+
+  @override
+  String get createOrgSuccess => 'Организация создана';
+
+  @override
+  String get joinOrgTitle => 'Присоединиться к организации';
+
+  @override
+  String get joinOrgCodeLabel => 'Инвайт-код';
+
+  @override
+  String get joinOrgCodeHint => 'Введите 8-значный код';
+
+  @override
+  String get joinOrgCodeRequired => 'Код не может быть пустым';
+
+  @override
+  String joinOrgSuccess(String orgName) {
+    return 'Вы присоединились к $orgName';
+  }
+
+  @override
+  String get orgDetailTitle => 'Организация';
+
+  @override
+  String get orgDetailMembers => 'Участники';
+
+  @override
+  String orgDetailMembersCount(int count) {
+    return '$count участников';
+  }
+
+  @override
+  String get orgDetailInviteCode => 'Инвайт-код';
+
+  @override
+  String get orgDetailInviteCopied => 'Код скопирован';
+
+  @override
+  String get orgDetailRotateInvite => 'Обновить код';
+
+  @override
+  String get orgDetailRotateConfirm =>
+      'Старый код перестанет работать. Обновить?';
+
+  @override
+  String get orgDetailLeave => 'Покинуть организацию';
+
+  @override
+  String get orgDetailLeaveConfirm =>
+      'Вы уверены, что хотите покинуть организацию?';
+
+  @override
+  String get orgDetailDelete => 'Удалить организацию';
+
+  @override
+  String get orgDetailDeleteConfirm =>
+      'Организация будет удалена безвозвратно. Продолжить?';
+
+  @override
+  String get orgDetailDeleted => 'Организация удалена';
+
+  @override
+  String get orgDetailLeft => 'Вы покинули организацию';
+
+  @override
+  String get orgDetailSettings => 'Настройки';
+
+  @override
+  String get orgDetailShifts => 'Смены сотрудников';
+
+  @override
+  String get orgDetailStats => 'Статистика';
+
+  @override
+  String get roleOwnerFull => 'Владелец';
+
+  @override
+  String get roleAdmin => 'Администратор';
+
+  @override
+  String get roleEmployee => 'Сотрудник';
+
+  @override
+  String memberSinceDate(String date) {
+    return 'С $date';
+  }
 }
