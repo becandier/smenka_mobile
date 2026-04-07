@@ -1422,10 +1422,10 @@ packages:
     dependency: "direct main"
     description:
       name: yandex_maps_mapkit_lite
-      sha256: f68ea2fc07a8cc6691bad33b2b793c847ef36a99d1e2e3ab301e95ea4d8e5ed4
+      sha256: bcfa5a2412bcfe17cf5fe2aec4234fe71073c93ef16a55cefb71f849bea8a363
       url: "https://pub.dev"
     source: hosted
-    version: "4.33.1-beta"
+    version: "4.30.0-beta"
 sdks:
   dart: ">=3.9.0 <4.0.0"
   flutter: ">=3.35.0"
