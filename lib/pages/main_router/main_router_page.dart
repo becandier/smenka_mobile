@@ -29,6 +29,11 @@ class MainRouterPage extends StatelessWidget {
                 label: context.l10n.shiftHistory,
               ),
               NavigationDestination(
+                icon: const Icon(Icons.business_outlined),
+                selectedIcon: const Icon(Icons.business),
+                label: context.l10n.organizationsTitle,
+              ),
+              NavigationDestination(
                 icon: const Icon(Icons.person_outline),
                 selectedIcon: const Icon(Icons.person),
                 label: context.l10n.shiftProfile,

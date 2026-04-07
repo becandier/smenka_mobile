@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smenka_mobile/core/bloc/section_data.dart';
+import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -27,9 +27,7 @@ class OrganizationsPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.login),
             tooltip: l10n.organizationsJoin,
-            onPressed: () {
-              // TODO: context.router.push(const JoinOrgRoute()) — wire in Task 7
-            },
+            onPressed: () => context.router.push(const JoinOrgRoute()),
           ),
         ],
       ),
@@ -90,9 +88,8 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             AppButton(
-              onPressed: () {
-                // TODO: context.router.push(const JoinOrgRoute()) — wire in Task 7
-              },
+              onPressed: () =>
+                  context.router.push(const JoinOrgRoute()),
               label: l10n.organizationsJoinByCode,
               isOutlined: true,
             ),

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
-import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_cubit.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
@@ -28,6 +29,22 @@ class OrganizationDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => OrganizationDetailCubit(
+        orgId: orgId,
+        organizationRepository: context.read<OrganizationRepository>(),
+        userRepository: context.read<UserRepository>(),
+      ),
+      child: const _OrganizationDetailView(),
+    );
+  }
+}
+
+class _OrganizationDetailView extends StatelessWidget {
+  const _OrganizationDetailView();
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
 
     return Scaffold(
@@ -44,7 +61,8 @@ class OrganizationDetailPage extends StatelessWidget {
           final isOwner = org.ownerId == cubit.currentUserId;
 
           return RefreshIndicator.adaptive(
-            onRefresh: () => context.read<OrganizationDetailCubit>().refresh(),
+            onRefresh: () =>
+                context.read<OrganizationDetailCubit>().refresh(),
             child: ListView(
               padding: const EdgeInsets.only(bottom: 32),
               children: [

@@ -11,6 +11,22 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [CreateOrgModal]
+class CreateOrgRoute extends PageRouteInfo<void> {
+  const CreateOrgRoute({List<PageRouteInfo>? children})
+      : super(CreateOrgRoute.name, initialChildren: children);
+
+  static const String name = 'CreateOrgRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CreateOrgModal();
+    },
+  );
+}
+
+/// generated route for
 /// [DebugPage]
 class DebugRoute extends PageRouteInfo<void> {
   const DebugRoute({List<PageRouteInfo>? children})
@@ -70,6 +86,22 @@ class HistoryTab extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const HistoryTabPage();
+    },
+  );
+}
+
+/// generated route for
+/// [JoinOrgModal]
+class JoinOrgRoute extends PageRouteInfo<void> {
+  const JoinOrgRoute({List<PageRouteInfo>? children})
+      : super(JoinOrgRoute.name, initialChildren: children);
+
+  static const String name = 'JoinOrgRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const JoinOrgModal();
     },
   );
 }
@@ -135,6 +167,91 @@ class MainRouterRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const MainRouterPage();
+    },
+  );
+}
+
+/// generated route for
+/// [OrganizationDetailPage]
+class OrganizationDetailRoute
+    extends PageRouteInfo<OrganizationDetailRouteArgs> {
+  OrganizationDetailRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          OrganizationDetailRoute.name,
+          args: OrganizationDetailRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'OrganizationDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<OrganizationDetailRouteArgs>(
+        orElse: () =>
+            OrganizationDetailRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return OrganizationDetailPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class OrganizationDetailRouteArgs {
+  const OrganizationDetailRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'OrganizationDetailRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! OrganizationDetailRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [OrganizationsPage]
+class OrganizationsRoute extends PageRouteInfo<void> {
+  const OrganizationsRoute({List<PageRouteInfo>? children})
+      : super(OrganizationsRoute.name, initialChildren: children);
+
+  static const String name = 'OrganizationsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const OrganizationsPage();
+    },
+  );
+}
+
+/// generated route for
+/// [OrganizationsTabPage]
+class OrganizationsTab extends PageRouteInfo<void> {
+  const OrganizationsTab({List<PageRouteInfo>? children})
+      : super(OrganizationsTab.name, initialChildren: children);
+
+  static const String name = 'OrganizationsTab';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const OrganizationsTabPage();
     },
   );
 }

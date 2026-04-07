@@ -2,23 +2,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
+import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_state.dart';
 
 class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
   OrganizationDetailCubit({
     required String orgId,
-    required String currentUserId,
     required OrganizationRepository organizationRepository,
+    required UserRepository userRepository,
   })  : _orgId = orgId,
-        _currentUserId = currentUserId,
         _organizationRepository = organizationRepository,
+        _userRepository = userRepository,
         super(const OrganizationDetailState()) {
     _init();
   }
 
   final String _orgId;
-  final String _currentUserId;
   final OrganizationRepository _organizationRepository;
+  final UserRepository _userRepository;
+  String _currentUserId = '';
 
   String get currentUserId => _currentUserId;
 
@@ -26,7 +28,16 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
     await Future.wait([
       _loadOrganization(),
       _loadMembers(),
+      _loadCurrentUser(),
     ]);
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final result = await _userRepository.getMe();
+    result.fold(
+      onSuccess: (user) => _currentUserId = user.id,
+      onFailure: (_) {},
+    );
   }
 
   Future<void> _loadOrganization() async {

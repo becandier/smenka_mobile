@@ -15,9 +15,9 @@ class _OrgListCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          // TODO: navigate to OrganizationDetailRoute — wire in Task 7
-        },
+        onTap: () => context.router.push(
+          OrganizationDetailRoute(orgId: organization.id),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(

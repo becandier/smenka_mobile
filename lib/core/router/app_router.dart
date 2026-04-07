@@ -82,6 +82,31 @@ class AppRouter extends RootStackRouter {
               ],
             ),
             AutoRoute(
+              path: 'organizations',
+              page: OrganizationsTab.page,
+              children: [
+                AutoRoute(
+                  path: '',
+                  initial: true,
+                  page: OrganizationsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail/:orgId',
+                  page: OrganizationDetailRoute.page,
+                ),
+                CustomRoute<void>(
+                  path: 'create',
+                  page: CreateOrgRoute.page,
+                  customRouteBuilder: _modalBottomSheetBuilder,
+                ),
+                CustomRoute<void>(
+                  path: 'join',
+                  page: JoinOrgRoute.page,
+                  customRouteBuilder: _modalBottomSheetBuilder,
+                ),
+              ],
+            ),
+            AutoRoute(
               path: 'profile',
               page: ProfileTab.page,
               children: [
@@ -94,6 +119,10 @@ class AppRouter extends RootStackRouter {
                   path: 'edit',
                   page: EditProfileRoute.page,
                   customRouteBuilder: _modalBottomSheetBuilder,
+                ),
+                AutoRoute(
+                  path: 'org-detail/:orgId',
+                  page: OrganizationDetailRoute.page,
                 ),
               ],
             ),
@@ -116,6 +145,25 @@ class ShiftTabPage extends AutoRouter {
 class HistoryTabPage extends AutoRouter {
   /// History Tab Page for the app
   const HistoryTabPage({super.key});
+}
+
+@RoutePage(name: 'OrganizationsTab')
+
+/// Organizations Tab Page for the app
+class OrganizationsTabPage extends StatelessWidget {
+  /// Organizations Tab Page for the app
+  const OrganizationsTabPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => OrganizationsCubit(
+        organizationRepository: context.read<OrganizationRepository>(),
+        userRepository: context.read<UserRepository>(),
+      ),
+      child: const AutoRouter(),
+    );
+  }
 }
 
 @RoutePage(name: 'ProfileTab')

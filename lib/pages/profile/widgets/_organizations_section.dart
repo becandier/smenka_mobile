@@ -92,50 +92,62 @@ class _OrgCard extends StatelessWidget {
       child: Material(
         color: appColors.surface,
         borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: appColors.primary.withValues(alpha: 0.1),
-                child: Text(
-                  org.name.isNotEmpty ? org.name[0].toUpperCase() : '?',
-                  style: textTheme.titleSmall?.copyWith(
-                    color: appColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  org.name,
-                  style: textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Material(
-                color: isOwner
-                    ? appColors.primary.withValues(alpha: 0.1)
-                    : appColors.secondary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => context.router.push(
+            OrganizationDetailRoute(orgId: org.id),
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor:
+                      appColors.primary.withValues(alpha: 0.1),
                   child: Text(
-                    roleLabel,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: isOwner ? appColors.primary : appColors.secondary,
+                    org.name.isNotEmpty
+                        ? org.name[0].toUpperCase()
+                        : '?',
+                    style: textTheme.titleSmall?.copyWith(
+                      color: appColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    org.name,
+                    style: textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ),
-            ],
+                Material(
+                  color: isOwner
+                      ? appColors.primary.withValues(alpha: 0.1)
+                      : appColors.secondary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    child: Text(
+                      roleLabel,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: isOwner
+                            ? appColors.primary
+                            : appColors.secondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
