@@ -30,7 +30,7 @@ class DioInitializer implements ServiceInitializer {
   @override
   Future<void> initialize(AppServiceLocator locator) async {
     final dio = Dio();
-    dio.options.baseUrl = appConfig.apiEndPoint;
+    dio.options.baseUrl = '${appConfig.endPoint}/api/v1';
 
     final authInterceptor = AuthInterceptor(
       tokenStorage: tokenStorage,

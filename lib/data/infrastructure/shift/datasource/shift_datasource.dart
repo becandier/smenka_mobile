@@ -26,7 +26,7 @@ class ShiftDataSource {
     }
 
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/shifts/',
+      '/shifts/',
       queryParameters: queryParameters,
     );
     return PaginatedShiftsDto.fromJson(response.data!);
@@ -34,7 +34,7 @@ class ShiftDataSource {
 
   Future<ShiftStatsDto> getStats({required String period}) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/shifts/stats',
+      '/shifts/stats',
       queryParameters: {'period': period},
     );
     return ShiftStatsDto.fromJson(response.data!);
@@ -51,7 +51,7 @@ class ShiftDataSource {
     if (longitude != null) data['longitude'] = longitude;
 
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/shifts/start',
+      '/shifts/start',
       data: data.isEmpty ? null : data,
     );
     return ShiftDto.fromJson(response.data!);
@@ -59,21 +59,21 @@ class ShiftDataSource {
 
   Future<ShiftDto> pauseShift(String shiftId) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/shifts/$shiftId/pause',
+      '/shifts/$shiftId/pause',
     );
     return ShiftDto.fromJson(response.data!);
   }
 
   Future<ShiftDto> resumeShift(String shiftId) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/shifts/$shiftId/resume',
+      '/shifts/$shiftId/resume',
     );
     return ShiftDto.fromJson(response.data!);
   }
 
   Future<ShiftDto> finishShift(String shiftId) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/shifts/$shiftId/finish',
+      '/shifts/$shiftId/finish',
     );
     return ShiftDto.fromJson(response.data!);
   }

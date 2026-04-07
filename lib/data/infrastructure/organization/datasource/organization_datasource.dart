@@ -9,7 +9,7 @@ class OrganizationDataSource {
 
   Future<OrganizationDto> create({required String name}) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/organizations/',
+      '/organizations/',
       data: {'name': name},
     );
     return OrganizationDto.fromJson(response.data!);
@@ -17,7 +17,7 @@ class OrganizationDataSource {
 
   Future<List<OrganizationDto>> getAll() async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/organizations/',
+      '/organizations/',
     );
     final items = response.data!['items'] as List<dynamic>;
     return items
@@ -28,40 +28,40 @@ class OrganizationDataSource {
 
   Future<OrganizationDto> getById(String orgId) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId',
+      '/organizations/$orgId',
     );
     return OrganizationDto.fromJson(response.data!);
   }
 
   Future<OrganizationDto> update(String orgId, {required String name}) async {
     final response = await _dio.patch<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId',
+      '/organizations/$orgId',
       data: {'name': name},
     );
     return OrganizationDto.fromJson(response.data!);
   }
 
   Future<void> delete(String orgId) async {
-    await _dio.delete<void>('/api/v1/organizations/$orgId');
+    await _dio.delete<void>('/organizations/$orgId');
   }
 
   Future<String> rotateInvite(String orgId) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/rotate-invite',
+      '/organizations/$orgId/rotate-invite',
     );
     return response.data!['invite_code'] as String;
   }
 
   Future<JoinResultDto> join(String inviteCode) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/organizations/join/$inviteCode',
+      '/organizations/join/$inviteCode',
     );
     return JoinResultDto.fromJson(response.data!);
   }
 
   Future<List<MemberDto>> getMembers(String orgId) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/members',
+      '/organizations/$orgId/members',
     );
     final items = response.data!['items'] as List<dynamic>;
     return items
@@ -72,13 +72,13 @@ class OrganizationDataSource {
 
   Future<void> removeMember(String orgId, String memberUserId) async {
     await _dio.delete<void>(
-      '/api/v1/organizations/$orgId/members/$memberUserId',
+      '/organizations/$orgId/members/$memberUserId',
     );
   }
 
   Future<OrgSettingsDto> getSettings(String orgId) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/settings',
+      '/organizations/$orgId/settings',
     );
     return OrgSettingsDto.fromJson(response.data!);
   }
@@ -99,7 +99,7 @@ class OrganizationDataSource {
     }
 
     final response = await _dio.patch<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/settings',
+      '/organizations/$orgId/settings',
       data: data,
     );
     return OrgSettingsDto.fromJson(response.data!);
@@ -128,7 +128,7 @@ class OrganizationDataSource {
     }
 
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/shifts',
+      '/organizations/$orgId/shifts',
       queryParameters: queryParameters,
     );
     return PaginatedShiftsDto.fromJson(response.data!);
@@ -136,7 +136,7 @@ class OrganizationDataSource {
 
   Future<OrgStatsDto> getStats(String orgId, {required String period}) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/stats',
+      '/organizations/$orgId/stats',
       queryParameters: {'period': period},
     );
     return OrgStatsDto.fromJson(response.data!);

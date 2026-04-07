@@ -13,7 +13,7 @@ class AuthDataSource {
     required String name,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/auth/register',
+      '/auth/register',
       data: {'email': email, 'password': password, 'name': name},
     );
     return RegisterResultDto.fromJson(response.data!);
@@ -24,7 +24,7 @@ class AuthDataSource {
     required String code,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/auth/verify',
+      '/auth/verify',
       data: {'email': email, 'code': code},
     );
     return AuthTokenDto.fromJson(response.data!);
@@ -32,7 +32,7 @@ class AuthDataSource {
 
   Future<void> resendCode({required String email}) async {
     await _dio.post<Map<String, dynamic>>(
-      '/api/v1/auth/resend-code',
+      '/auth/resend-code',
       data: {'email': email},
     );
   }
@@ -42,7 +42,7 @@ class AuthDataSource {
     required String password,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/auth/login',
+      '/auth/login',
       data: {'email': email, 'password': password},
     );
     return AuthTokenDto.fromJson(response.data!);
@@ -50,7 +50,7 @@ class AuthDataSource {
 
   Future<AuthTokenDto> refresh({required String refreshToken}) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/auth/refresh',
+      '/auth/refresh',
       data: {'refresh_token': refreshToken},
     );
     return AuthTokenDto.fromJson(response.data!);
@@ -58,7 +58,7 @@ class AuthDataSource {
 
   Future<void> logout({required String refreshToken}) async {
     await _dio.post<void>(
-      '/api/v1/auth/logout',
+      '/auth/logout',
       data: {'refresh_token': refreshToken},
     );
   }

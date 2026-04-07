@@ -90,7 +90,7 @@ class AuthInterceptor extends QueuedInterceptor {
     );
 
     final response = await refreshDio.post<Map<String, dynamic>>(
-      '/api/v1/auth/refresh',
+      '/auth/refresh',
       data: {'refresh_token': refreshToken},
     );
 

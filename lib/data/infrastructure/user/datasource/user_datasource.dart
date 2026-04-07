@@ -7,7 +7,7 @@ class UserDataSource {
   final Dio _dio;
 
   Future<UserDto> getMe() async {
-    final response = await _dio.get<Map<String, dynamic>>('/api/v1/users/me');
+    final response = await _dio.get<Map<String, dynamic>>('/users/me');
     return UserDto.fromJson(response.data!);
   }
 
@@ -17,7 +17,7 @@ class UserDataSource {
     if (phone != null) data['phone'] = phone;
 
     final response = await _dio.patch<Map<String, dynamic>>(
-      '/api/v1/users/me',
+      '/users/me',
       data: data,
     );
     return UserDto.fromJson(response.data!);

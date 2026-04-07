@@ -14,16 +14,15 @@ class AppConfig {
 
   void _init() {
     final isProd = flavor == Flavors.prod;
-    apiEndPoint = isProd
-        ? _getString('API_ENDPOINT_PROD')
-        : _getString('API_ENDPOINT_DEV');
+    endPoint =
+        isProd ? _getString('ENDPOINT_PROD') : _getString('ENDPOINT_DEV');
     privacyPolicy = _getString('PRIVACY_POLICY');
     minVersion = _getString('MIN_VERSION');
     techWork = _getBool('TECH_WORK');
     debugModePassword = _getString('DEBUG_MODE_PASSWORD');
   }
 
-  late final String apiEndPoint;
+  late final String endPoint;
   late final String privacyPolicy;
   late final String minVersion;
   late final bool techWork;

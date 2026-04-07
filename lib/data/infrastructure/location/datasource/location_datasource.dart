@@ -14,7 +14,7 @@ class LocationDataSource {
     int radiusMeters = 100,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/locations/',
+      '/organizations/$orgId/locations/',
       data: {
         'name': name,
         'latitude': latitude,
@@ -27,7 +27,7 @@ class LocationDataSource {
 
   Future<List<WorkLocationDto>> getAll(String orgId) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/locations/',
+      '/organizations/$orgId/locations/',
     );
     final items = response.data!['items'] as List<dynamic>;
     return items
@@ -51,7 +51,7 @@ class LocationDataSource {
     if (radiusMeters != null) data['radius_meters'] = radiusMeters;
 
     final response = await _dio.patch<Map<String, dynamic>>(
-      '/api/v1/organizations/$orgId/locations/$locationId',
+      '/organizations/$orgId/locations/$locationId',
       data: data,
     );
     return WorkLocationDto.fromJson(response.data!);
@@ -59,7 +59,7 @@ class LocationDataSource {
 
   Future<void> delete(String orgId, String locationId) async {
     await _dio.delete<void>(
-      '/api/v1/organizations/$orgId/locations/$locationId',
+      '/organizations/$orgId/locations/$locationId',
     );
   }
 }
