@@ -12,7 +12,7 @@ yourshortprojectname should be without "_" and Uppercase symbols.
 
   
 
-Initial identifier for template is **com.app.smenka_mobile**
+Initial identifier for template is **com.becandier.smenka**
 
   
 
@@ -22,7 +22,7 @@ Initial identifier for template is **com.app.smenka_mobile**
 
 Go to https://developer.apple.com/account/resources/identifiers and create new identifier.
 
-2. Replace com.app.smenka_mobile everywhere in project to your identifier.
+2. Replace com.becandier.smenka everywhere in project to your identifier.
 
   
 
@@ -42,9 +42,9 @@ Following instruction replace default project to your new project.
 
 1.a. Remote config with field:
 
-- API_ENDPOINT_DEV (STRING)
+- ENDPOINT_DEV (STRING)
 
-- API_ENDPOINT_PROD (STRING)
+- ENDPOINT_PROD (STRING)
 
 - PRIVACY_POLICY (STRING)
 

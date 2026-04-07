@@ -1,4 +1,4 @@
-package com.app.smenka_mobile
+package com.becandier.smenka
 
 import io.flutter.embedding.android.FlutterActivity
 
