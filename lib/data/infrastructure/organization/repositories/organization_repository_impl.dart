@@ -137,4 +137,28 @@ class OrganizationRepositoryImpl
       return dto.toDomain();
     });
   }
+
+  @override
+  Future<Task<List<Organization>>> getAllOrganizations() {
+    return execute(() async {
+      final dtos = await _dataSource.getAllOrganizations();
+      return dtos.map((d) => d.toDomain()).toList();
+    });
+  }
+
+  @override
+  Future<Task<Member>> updateMemberRole(
+    String orgId,
+    String userId, {
+    required MemberRole role,
+  }) {
+    return execute(() async {
+      final dto = await _dataSource.updateMemberRole(
+        orgId,
+        userId,
+        role: role.name,
+      );
+      return dto.toDomain();
+    });
+  }
 }

@@ -10,7 +10,7 @@ class _OrgActionsSection extends StatelessWidget {
     final l10n = context.l10n;
     final appColors = context.appColors;
     final cubit = context.read<OrganizationDetailCubit>();
-    final isOwner = organization.ownerId == cubit.currentUserId;
+    final isOwner = cubit.isOwner;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -1053,6 +1053,318 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'С {date}'**
   String memberSinceDate(String date);
+
+  /// No description provided for @membersTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Участники'**
+  String get membersTitle;
+
+  /// No description provided for @membersEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет участников'**
+  String get membersEmpty;
+
+  /// No description provided for @membersRemove.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить участника'**
+  String get membersRemove;
+
+  /// No description provided for @membersRemoveConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить {name} из организации?'**
+  String membersRemoveConfirm(String name);
+
+  /// No description provided for @membersRemoved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Участник удалён'**
+  String get membersRemoved;
+
+  /// No description provided for @membersMakeAdmin.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначить администратором'**
+  String get membersMakeAdmin;
+
+  /// No description provided for @membersMakeEmployee.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять администратора'**
+  String get membersMakeEmployee;
+
+  /// No description provided for @membersRoleChanged.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роль изменена'**
+  String get membersRoleChanged;
+
+  /// No description provided for @membersCantEditSelf.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нельзя изменить свою роль'**
+  String get membersCantEditSelf;
+
+  /// No description provided for @membersJoinedAt.
+  ///
+  /// In ru, this message translates to:
+  /// **'С {date}'**
+  String membersJoinedAt(String date);
+
+  /// No description provided for @orgSettingsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки организации'**
+  String get orgSettingsTitle;
+
+  /// No description provided for @orgSettingsGeoCheck.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геопроверка'**
+  String get orgSettingsGeoCheck;
+
+  /// No description provided for @orgSettingsGeoCheckDesc.
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверять местоположение при начале смены'**
+  String get orgSettingsGeoCheckDesc;
+
+  /// No description provided for @orgSettingsAutoFinish.
+  ///
+  /// In ru, this message translates to:
+  /// **'Автозавершение (часы)'**
+  String get orgSettingsAutoFinish;
+
+  /// No description provided for @orgSettingsAutoFinishDesc.
+  ///
+  /// In ru, this message translates to:
+  /// **'Автоматически завершать смену через N часов'**
+  String get orgSettingsAutoFinishDesc;
+
+  /// No description provided for @orgSettingsMaxPause.
+  ///
+  /// In ru, this message translates to:
+  /// **'Макс. пауза (минуты)'**
+  String get orgSettingsMaxPause;
+
+  /// No description provided for @orgSettingsMaxPauseDesc.
+  ///
+  /// In ru, this message translates to:
+  /// **'Максимальная продолжительность одной паузы'**
+  String get orgSettingsMaxPauseDesc;
+
+  /// No description provided for @orgSettingsMaxPauses.
+  ///
+  /// In ru, this message translates to:
+  /// **'Макс. пауз за смену'**
+  String get orgSettingsMaxPauses;
+
+  /// No description provided for @orgSettingsMaxPausesDesc.
+  ///
+  /// In ru, this message translates to:
+  /// **'Максимальное количество пауз за смену'**
+  String get orgSettingsMaxPausesDesc;
+
+  /// No description provided for @orgSettingsSaved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки сохранены'**
+  String get orgSettingsSaved;
+
+  /// No description provided for @workLocationsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочие точки'**
+  String get workLocationsTitle;
+
+  /// No description provided for @workLocationsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет рабочих точек'**
+  String get workLocationsEmpty;
+
+  /// No description provided for @workLocationsAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить точку'**
+  String get workLocationsAdd;
+
+  /// No description provided for @workLocationsDelete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить точку'**
+  String get workLocationsDelete;
+
+  /// No description provided for @workLocationsDeleteConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить рабочую точку \"{name}\"?'**
+  String workLocationsDeleteConfirm(String name);
+
+  /// No description provided for @workLocationsDeleted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Точка удалена'**
+  String get workLocationsDeleted;
+
+  /// No description provided for @workLocationsRadius.
+  ///
+  /// In ru, this message translates to:
+  /// **'Радиус: {meters} м'**
+  String workLocationsRadius(int meters);
+
+  /// No description provided for @addLocationTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая точка'**
+  String get addLocationTitle;
+
+  /// No description provided for @editLocationTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактирование точки'**
+  String get editLocationTitle;
+
+  /// No description provided for @addLocationName.
+  ///
+  /// In ru, this message translates to:
+  /// **'Название точки'**
+  String get addLocationName;
+
+  /// No description provided for @addLocationNameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Офис на Тверской'**
+  String get addLocationNameHint;
+
+  /// No description provided for @addLocationNameRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите название'**
+  String get addLocationNameRequired;
+
+  /// No description provided for @addLocationRadius.
+  ///
+  /// In ru, this message translates to:
+  /// **'Радиус ({meters} м)'**
+  String addLocationRadius(int meters);
+
+  /// No description provided for @addLocationSaved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Точка сохранена'**
+  String get addLocationSaved;
+
+  /// No description provided for @addLocationMoveMap.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переместите карту для выбора точки'**
+  String get addLocationMoveMap;
+
+  /// No description provided for @orgShiftsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смены сотрудников'**
+  String get orgShiftsTitle;
+
+  /// No description provided for @orgShiftsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет смен'**
+  String get orgShiftsEmpty;
+
+  /// No description provided for @orgShiftsFilterEmployee.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сотрудник'**
+  String get orgShiftsFilterEmployee;
+
+  /// No description provided for @orgShiftsAllEmployees.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все сотрудники'**
+  String get orgShiftsAllEmployees;
+
+  /// No description provided for @orgStatsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Статистика организации'**
+  String get orgStatsTitle;
+
+  /// No description provided for @orgStatsTotalHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'Всего часов'**
+  String get orgStatsTotalHours;
+
+  /// No description provided for @orgStatsShiftCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Кол-во смен'**
+  String get orgStatsShiftCount;
+
+  /// No description provided for @orgStatsAvgShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'Средняя смена'**
+  String get orgStatsAvgShift;
+
+  /// No description provided for @orgStatsChartTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Часы по сотрудникам'**
+  String get orgStatsChartTitle;
+
+  /// No description provided for @orgStatsTableName.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сотрудник'**
+  String get orgStatsTableName;
+
+  /// No description provided for @orgStatsTableShifts.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смены'**
+  String get orgStatsTableShifts;
+
+  /// No description provided for @orgStatsTableHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'Часы'**
+  String get orgStatsTableHours;
+
+  /// No description provided for @orgStatsTableAvg.
+  ///
+  /// In ru, this message translates to:
+  /// **'Средн.'**
+  String get orgStatsTableAvg;
+
+  /// No description provided for @superAdminTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Админ-панель'**
+  String get superAdminTitle;
+
+  /// No description provided for @superAdminAllOrgs.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все организации'**
+  String get superAdminAllOrgs;
+
+  /// No description provided for @superAdminEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет организаций'**
+  String get superAdminEmpty;
+
+  /// No description provided for @orgDetailLocations.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочие точки'**
+  String get orgDetailLocations;
 }
 
 class _AppLocalizationsDelegate

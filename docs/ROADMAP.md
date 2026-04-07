@@ -100,21 +100,21 @@
 
 ---
 
-## Фаза 7 — Управление организацией `[ ]`
-- [ ] **MembersList** — список участников (имя, email, роль, дата)
-- [ ] Удаление участника (owner/admin)
-- [ ] Назначение/снятие роли admin у участника (owner/super_admin) — PATCH /organizations/{id}/members/{user_id}/role
-- [ ] **SuperAdminPanel** — экран super_admin: список ВСЕХ организаций системы (GET /organizations/all)
-- [ ] Переход из панели в конкретную организацию — управление ролями, участниками, настройками
-- [ ] **OrgSettings** — настройки организации (owner only)
-- [ ] Toggle geo_check, auto_finish_hours, max_pause_minutes, max_pauses_per_shift
-- [ ] **WorkLocations** — список рабочих точек + карта с маркерами и радиусами
-- [ ] **AddEditLocation** — карта с выбором точки, название, радиус
-- [ ] **OrgShifts** — смены сотрудников (admin/owner), фильтры, пагинация
-- [ ] **OrgStats** — статистика организации + per_employee таблица
-- [ ] Кубиты: MembersCubit, OrgSettingsCubit, LocationsCubit, OrgShiftsCubit, OrgStatsCubit, SuperAdminCubit
-- [ ] Интеграция с OrganizationRepository, LocationRepository
-- [ ] Локализация
+## Фаза 7 — Управление организацией `[x]`
+- [x] **MembersList** — список участников (имя, email, роль, дата)
+- [x] Удаление участника (owner/admin)
+- [x] Назначение/снятие роли admin у участника (owner/super_admin) — PATCH /organizations/{id}/members/{user_id}/role
+- [x] **SuperAdminPanel** — экран super_admin: список ВСЕХ организаций системы (GET /organizations/all)
+- [x] Переход из панели в конкретную организацию — управление ролями, участниками, настройками
+- [x] **OrgSettings** — настройки организации (owner only)
+- [x] Toggle geo_check, auto_finish_hours, max_pause_minutes, max_pauses_per_shift
+- [x] **WorkLocations** — список рабочих точек + карта с маркерами и радиусами
+- [x] **AddEditLocation** — карта с выбором точки, название, радиус
+- [x] **OrgShifts** — смены сотрудников (admin/owner), фильтры, пагинация
+- [x] **OrgStats** — статистика организации + per_employee таблица и chart
+- [x] Кубиты: MembersCubit, OrgSettingsCubit, LocationsCubit, AddEditLocationCubit, OrgShiftsCubit, OrgStatsCubit, SuperAdminCubit
+- [x] Интеграция с OrganizationRepository, LocationRepository
+- [x] Локализация
 
 ---
 

@@ -514,4 +514,174 @@ class AppLocalizationsRu extends AppLocalizations {
   String memberSinceDate(String date) {
     return 'С $date';
   }
+
+  @override
+  String get membersTitle => 'Участники';
+
+  @override
+  String get membersEmpty => 'Нет участников';
+
+  @override
+  String get membersRemove => 'Удалить участника';
+
+  @override
+  String membersRemoveConfirm(String name) {
+    return 'Удалить $name из организации?';
+  }
+
+  @override
+  String get membersRemoved => 'Участник удалён';
+
+  @override
+  String get membersMakeAdmin => 'Назначить администратором';
+
+  @override
+  String get membersMakeEmployee => 'Снять администратора';
+
+  @override
+  String get membersRoleChanged => 'Роль изменена';
+
+  @override
+  String get membersCantEditSelf => 'Нельзя изменить свою роль';
+
+  @override
+  String membersJoinedAt(String date) {
+    return 'С $date';
+  }
+
+  @override
+  String get orgSettingsTitle => 'Настройки организации';
+
+  @override
+  String get orgSettingsGeoCheck => 'Геопроверка';
+
+  @override
+  String get orgSettingsGeoCheckDesc =>
+      'Проверять местоположение при начале смены';
+
+  @override
+  String get orgSettingsAutoFinish => 'Автозавершение (часы)';
+
+  @override
+  String get orgSettingsAutoFinishDesc =>
+      'Автоматически завершать смену через N часов';
+
+  @override
+  String get orgSettingsMaxPause => 'Макс. пауза (минуты)';
+
+  @override
+  String get orgSettingsMaxPauseDesc =>
+      'Максимальная продолжительность одной паузы';
+
+  @override
+  String get orgSettingsMaxPauses => 'Макс. пауз за смену';
+
+  @override
+  String get orgSettingsMaxPausesDesc =>
+      'Максимальное количество пауз за смену';
+
+  @override
+  String get orgSettingsSaved => 'Настройки сохранены';
+
+  @override
+  String get workLocationsTitle => 'Рабочие точки';
+
+  @override
+  String get workLocationsEmpty => 'Нет рабочих точек';
+
+  @override
+  String get workLocationsAdd => 'Добавить точку';
+
+  @override
+  String get workLocationsDelete => 'Удалить точку';
+
+  @override
+  String workLocationsDeleteConfirm(String name) {
+    return 'Удалить рабочую точку \"$name\"?';
+  }
+
+  @override
+  String get workLocationsDeleted => 'Точка удалена';
+
+  @override
+  String workLocationsRadius(int meters) {
+    return 'Радиус: $meters м';
+  }
+
+  @override
+  String get addLocationTitle => 'Новая точка';
+
+  @override
+  String get editLocationTitle => 'Редактирование точки';
+
+  @override
+  String get addLocationName => 'Название точки';
+
+  @override
+  String get addLocationNameHint => 'Например: Офис на Тверской';
+
+  @override
+  String get addLocationNameRequired => 'Укажите название';
+
+  @override
+  String addLocationRadius(int meters) {
+    return 'Радиус ($meters м)';
+  }
+
+  @override
+  String get addLocationSaved => 'Точка сохранена';
+
+  @override
+  String get addLocationMoveMap => 'Переместите карту для выбора точки';
+
+  @override
+  String get orgShiftsTitle => 'Смены сотрудников';
+
+  @override
+  String get orgShiftsEmpty => 'Нет смен';
+
+  @override
+  String get orgShiftsFilterEmployee => 'Сотрудник';
+
+  @override
+  String get orgShiftsAllEmployees => 'Все сотрудники';
+
+  @override
+  String get orgStatsTitle => 'Статистика организации';
+
+  @override
+  String get orgStatsTotalHours => 'Всего часов';
+
+  @override
+  String get orgStatsShiftCount => 'Кол-во смен';
+
+  @override
+  String get orgStatsAvgShift => 'Средняя смена';
+
+  @override
+  String get orgStatsChartTitle => 'Часы по сотрудникам';
+
+  @override
+  String get orgStatsTableName => 'Сотрудник';
+
+  @override
+  String get orgStatsTableShifts => 'Смены';
+
+  @override
+  String get orgStatsTableHours => 'Часы';
+
+  @override
+  String get orgStatsTableAvg => 'Средн.';
+
+  @override
+  String get superAdminTitle => 'Админ-панель';
+
+  @override
+  String get superAdminAllOrgs => 'Все организации';
+
+  @override
+  String get superAdminEmpty => 'Нет организаций';
+
+  @override
+  String get orgDetailLocations => 'Рабочие точки';
 }

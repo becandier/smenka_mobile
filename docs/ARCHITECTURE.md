@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-07 (фаза 6)
+Последнее обновление: 2026-04-07 (фаза 7)
 
 ---
 
@@ -76,10 +76,37 @@ lib/
     │   ├── cubit/                 # OrganizationsCubit + State
     │   ├── view/                  # OrganizationsPage
     │   └── widgets/               # _OrgListCard, CreateOrgModal, JoinOrgModal
-    ├── organization_detail/       # Детали организации (push)
+    ├── organization_detail/       # Детали организации — навигационный хаб (push)
     │   ├── cubit/                 # OrganizationDetailCubit + State
     │   ├── view/                  # OrganizationDetailPage
     │   └── widgets/               # _OrgHeader, _OrgMembersSection, _OrgInviteSection, _OrgActionsSection
+    ├── members/                   # Участники организации (push)
+    │   ├── cubit/                 # MembersCubit + State
+    │   ├── view/                  # MembersPage
+    │   └── widgets/               # _MemberTile
+    ├── org_settings/              # Настройки организации (push)
+    │   ├── cubit/                 # OrgSettingsCubit + State
+    │   └── view/                  # OrgSettingsPage
+    ├── work_locations/            # Рабочие точки (push)
+    │   ├── cubit/                 # LocationsCubit + State
+    │   ├── view/                  # WorkLocationsPage
+    │   └── widgets/               # _LocationTile
+    ├── add_edit_location/         # Добавить/ред. точку (push)
+    │   ├── cubit/                 # AddEditLocationCubit + State
+    │   ├── view/                  # AddEditLocationPage (Yandex Map)
+    │   └── widgets/               # _CenterMarker, _LocationForm
+    ├── org_shifts/                # Смены сотрудников (push)
+    │   ├── cubit/                 # OrgShiftsCubit + State
+    │   ├── view/                  # OrgShiftsPage
+    │   └── widgets/               # _OrgShiftCard, _OrgShiftsFilters
+    ├── org_stats/                 # Статистика организации (push)
+    │   ├── cubit/                 # OrgStatsCubit + State
+    │   ├── view/                  # OrgStatsPage (fl_chart)
+    │   └── widgets/               # _StatsCards, _StatsChart, _StatsTable
+    ├── super_admin/               # Панель super_admin (Tab 5)
+    │   ├── cubit/                 # SuperAdminCubit + State
+    │   ├── view/                  # SuperAdminPage
+    │   └── widgets/               # _AdminOrgCard
     ├── profile/                   # Профиль (Tab 4)
     │   ├── cubit/                 # ProfileCubit + State
     │   ├── view/                  # ProfilePage
@@ -152,6 +179,13 @@ lib/
 | `OrganizationsCubit` | Готов | Список организаций, создание, присоединение, текущий юзер |
 | `OrganizationDetailCubit` | Готов | Детали орг: участники, инвайт, покинуть, удалить |
 | `ProfileCubit` | Готов | Профиль: загрузка юзера, организаций, обновление, logout |
+| `MembersCubit` | Готов | Участники: список, удаление, смена роли |
+| `OrgSettingsCubit` | Готов | Настройки организации |
+| `LocationsCubit` | Готов | Рабочие точки: список, удаление |
+| `AddEditLocationCubit` | Готов | Добавление/редактирование рабочей точки (Yandex Map) |
+| `OrgShiftsCubit` | Готов | Смены сотрудников (пагинация + фильтры) |
+| `OrgStatsCubit` | Готов | Статистика организации (период + chart) |
+| `SuperAdminCubit` | Готов | Все организации системы (super_admin) |
 
 ---
 
@@ -172,6 +206,13 @@ lib/
 | `JoinOrgRoute` | `/organizations/join` | Модалка присоединения (CustomRoute) |
 | `ProfileRoute` | `/profile` | Экран профиля (Tab 4) |
 | `EditProfileRoute` | `/profile/edit` | Модалка редактирования профиля (CustomRoute) |
+| `OrgMembersRoute` | `/organizations/detail/:orgId/members` | Участники организации |
+| `OrgSettingsRoute` | `/organizations/detail/:orgId/settings` | Настройки организации |
+| `WorkLocationsRoute` | `/organizations/detail/:orgId/locations` | Рабочие точки |
+| `AddEditLocationRoute` | `/organizations/detail/:orgId/locations/add` | Добавить/ред. точку |
+| `OrgShiftsRoute` | `/organizations/detail/:orgId/shifts` | Смены сотрудников |
+| `OrgStatsRoute` | `/organizations/detail/:orgId/stats` | Статистика организации |
+| `SuperAdminRoute` | `/admin` | Панель super_admin (Tab 5, conditional) |
 
 **Guard**: Если не авторизован → редирект на `LoginRoute`
 

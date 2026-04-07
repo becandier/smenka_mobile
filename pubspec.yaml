@@ -36,6 +36,9 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_gen: ^5.10.0
   bloc: ^9.0.0
+  yandex_maps_mapkit_lite: 4.30.0-beta
+  fl_chart: ^0.70.2
+  geolocator: ^14.0.0
 
 dev_dependencies:
   flutter_test:

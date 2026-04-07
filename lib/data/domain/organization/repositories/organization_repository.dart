@@ -34,4 +34,11 @@ abstract class OrganizationRepository {
   });
 
   Future<Task<OrgStats>> getStats(String orgId, {required String period});
+
+  Future<Task<List<Organization>>> getAllOrganizations();
+  Future<Task<Member>> updateMemberRole(
+    String orgId,
+    String userId, {
+    required MemberRole role,
+  });
 }
