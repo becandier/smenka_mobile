@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
+import 'package:smenka_mobile/data/domain/location/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
@@ -104,6 +105,30 @@ class AppRouter extends RootStackRouter {
                   page: JoinOrgRoute.page,
                   customRouteBuilder: _modalBottomSheetBuilder,
                 ),
+                AutoRoute(
+                  path: 'detail/:orgId/members',
+                  page: OrgMembersRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail/:orgId/settings',
+                  page: OrgSettingsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail/:orgId/locations',
+                  page: WorkLocationsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail/:orgId/locations/add',
+                  page: AddEditLocationRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail/:orgId/shifts',
+                  page: OrgShiftsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'detail/:orgId/stats',
+                  page: OrgStatsRoute.page,
+                ),
               ],
             ),
             AutoRoute(
@@ -119,6 +144,21 @@ class AppRouter extends RootStackRouter {
                   path: 'edit',
                   page: EditProfileRoute.page,
                   customRouteBuilder: _modalBottomSheetBuilder,
+                ),
+                AutoRoute(
+                  path: 'org-detail/:orgId',
+                  page: OrganizationDetailRoute.page,
+                ),
+              ],
+            ),
+            AutoRoute(
+              path: 'admin',
+              page: SuperAdminTab.page,
+              children: [
+                AutoRoute(
+                  path: '',
+                  initial: true,
+                  page: SuperAdminRoute.page,
                 ),
                 AutoRoute(
                   path: 'org-detail/:orgId',
@@ -184,6 +224,14 @@ class ProfileTabPage extends StatelessWidget {
       child: const AutoRouter(),
     );
   }
+}
+
+@RoutePage(name: 'SuperAdminTab')
+
+/// Super Admin Tab Page for the app
+class SuperAdminTabPage extends AutoRouter {
+  /// Super Admin Tab Page for the app
+  const SuperAdminTabPage({super.key});
 }
 
 Route<T> _modalBottomSheetBuilder<T>(

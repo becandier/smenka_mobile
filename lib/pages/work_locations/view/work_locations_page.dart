@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
+import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/location/models/_models.dart';
 import 'package:smenka_mobile/data/domain/location/repositories/location_repository.dart';
@@ -85,9 +88,8 @@ class _WorkLocationsView extends StatelessWidget {
   }
 
   Future<void> _navigateToAddLocation(BuildContext context) async {
-    // TODO(work_locations): раскомментировать после добавления роута в Task 12
-    // final cubit = context.read<LocationsCubit>();
-    // await context.router.push(AddEditLocationRoute(orgId: cubit.orgId));
-    // cubit.loadLocations();
+    final cubit = context.read<LocationsCubit>();
+    await context.router.push(AddEditLocationRoute(orgId: cubit.orgId));
+    unawaited(cubit.loadLocations());
   }
 }

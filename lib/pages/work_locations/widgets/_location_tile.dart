@@ -116,10 +116,12 @@ class _LocationTile extends StatelessWidget {
   }
 
   void _navigateToEdit(BuildContext context) {
-    // TODO(work_locations): раскомментировать после добавления роута в Task 12
-    // final cubit = context.read<LocationsCubit>();
-    // context.router.push(
-    //   AddEditLocationRoute(orgId: cubit.orgId, location: location),
-    // );
+    final cubit = context.read<LocationsCubit>();
+    context.router.push(
+      AddEditLocationRoute(
+        orgId: cubit.orgId,
+        existingLocation: location,
+      ),
+    );
   }
 }

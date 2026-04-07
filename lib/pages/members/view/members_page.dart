@@ -13,7 +13,7 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 
 part '../widgets/_member_tile.dart';
 
-@RoutePage()
+@RoutePage(name: 'OrgMembersRoute')
 class MembersPage extends StatelessWidget {
   const MembersPage({
     @pathParam required this.orgId,

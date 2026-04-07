@@ -11,6 +11,70 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [AddEditLocationPage]
+class AddEditLocationRoute extends PageRouteInfo<AddEditLocationRouteArgs> {
+  AddEditLocationRoute({
+    required String orgId,
+    WorkLocation? existingLocation,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          AddEditLocationRoute.name,
+          args: AddEditLocationRouteArgs(
+            orgId: orgId,
+            existingLocation: existingLocation,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'AddEditLocationRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<AddEditLocationRouteArgs>();
+      return AddEditLocationPage(
+        orgId: args.orgId,
+        existingLocation: args.existingLocation,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class AddEditLocationRouteArgs {
+  const AddEditLocationRouteArgs({
+    required this.orgId,
+    this.existingLocation,
+    this.key,
+  });
+
+  final String orgId;
+
+  final WorkLocation? existingLocation;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'AddEditLocationRouteArgs{orgId: $orgId, existingLocation: $existingLocation, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AddEditLocationRouteArgs) return false;
+    return orgId == other.orgId &&
+        existingLocation == other.existingLocation &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ existingLocation.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [CreateOrgModal]
 class CreateOrgRoute extends PageRouteInfo<void> {
   const CreateOrgRoute({List<PageRouteInfo>? children})
@@ -173,31 +237,34 @@ class MainRouterRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [MembersPage]
-class MembersRoute extends PageRouteInfo<MembersRouteArgs> {
-  MembersRoute({required String orgId, Key? key, List<PageRouteInfo>? children})
-      : super(
-          MembersRoute.name,
-          args: MembersRouteArgs(orgId: orgId, key: key),
+class OrgMembersRoute extends PageRouteInfo<OrgMembersRouteArgs> {
+  OrgMembersRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          OrgMembersRoute.name,
+          args: OrgMembersRouteArgs(orgId: orgId, key: key),
           rawPathParams: {'orgId': orgId},
           initialChildren: children,
         );
 
-  static const String name = 'MembersRoute';
+  static const String name = 'OrgMembersRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
-      final args = data.argsAs<MembersRouteArgs>(
-        orElse: () => MembersRouteArgs(orgId: pathParams.getString('orgId')),
+      final args = data.argsAs<OrgMembersRouteArgs>(
+        orElse: () => OrgMembersRouteArgs(orgId: pathParams.getString('orgId')),
       );
       return MembersPage(orgId: args.orgId, key: args.key);
     },
   );
 }
 
-class MembersRouteArgs {
-  const MembersRouteArgs({required this.orgId, this.key});
+class OrgMembersRouteArgs {
+  const OrgMembersRouteArgs({required this.orgId, this.key});
 
   final String orgId;
 
@@ -205,13 +272,13 @@ class MembersRouteArgs {
 
   @override
   String toString() {
-    return 'MembersRouteArgs{orgId: $orgId, key: $key}';
+    return 'OrgMembersRouteArgs{orgId: $orgId, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! MembersRouteArgs) return false;
+    if (other is! OrgMembersRouteArgs) return false;
     return orgId == other.orgId && key == other.key;
   }
 
@@ -581,6 +648,38 @@ class ShiftTrackerRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const ShiftTrackerPage();
+    },
+  );
+}
+
+/// generated route for
+/// [SuperAdminPage]
+class SuperAdminRoute extends PageRouteInfo<void> {
+  const SuperAdminRoute({List<PageRouteInfo>? children})
+      : super(SuperAdminRoute.name, initialChildren: children);
+
+  static const String name = 'SuperAdminRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SuperAdminPage();
+    },
+  );
+}
+
+/// generated route for
+/// [SuperAdminTabPage]
+class SuperAdminTab extends PageRouteInfo<void> {
+  const SuperAdminTab({List<PageRouteInfo>? children})
+      : super(SuperAdminTab.name, initialChildren: children);
+
+  static const String name = 'SuperAdminTab';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SuperAdminTabPage();
     },
   );
 }
