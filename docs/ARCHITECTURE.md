@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-06 (фаза 5)
+Последнее обновление: 2026-04-07 (фаза 6)
 
 ---
 
@@ -72,7 +72,15 @@ lib/
     │   ├── cubit/                 # ShiftDetailCubit + State
     │   ├── view/                  # ShiftDetailPage
     │   └── widgets/               # _DetailInfoSection, _DetailPauseList
-    ├── profile/                   # Профиль (Tab 3)
+    ├── organizations/             # Список организаций (Tab 3)
+    │   ├── cubit/                 # OrganizationsCubit + State
+    │   ├── view/                  # OrganizationsPage
+    │   └── widgets/               # _OrgListCard, CreateOrgModal, JoinOrgModal
+    ├── organization_detail/       # Детали организации (push)
+    │   ├── cubit/                 # OrganizationDetailCubit + State
+    │   ├── view/                  # OrganizationDetailPage
+    │   └── widgets/               # _OrgHeader, _OrgMembersSection, _OrgInviteSection, _OrgActionsSection
+    ├── profile/                   # Профиль (Tab 4)
     │   ├── cubit/                 # ProfileCubit + State
     │   ├── view/                  # ProfilePage
     │   └── widgets/               # _ProfileHeader, _PersonalInfoSection, _OrganizationsSection, _SettingsSection, EditProfileModal
@@ -89,7 +97,7 @@ lib/
 | `AuthToken` | `domain/auth/models/auth_token.dart` | access_token + refresh_token |
 | `AuthState` | `domain/auth/models/auth_state.dart` | Sealed: Authenticated / Unauthenticated / Unknown |
 | `RegisterResult` | `domain/auth/models/register_result.dart` | userId + message |
-| `User` | `domain/user/models/user.dart` | id, email, name, phone, isVerified, createdAt |
+| `User` | `domain/user/models/user.dart` | id, email, name, phone, isVerified, role (UserRole: superAdmin/user), createdAt |
 | `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt |
 | `Member` | `domain/organization/models/member.dart` | id, orgId, userId, userName, userEmail, role (enum), joinedAt |
 | `OrgSettings` | `domain/organization/models/org_settings.dart` | geoCheck, autoFinish, pauseLimits |
@@ -141,6 +149,8 @@ lib/
 | `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, дата) |
 | `ShiftStatsCubit` | Готов | Статистика смен (день/неделя/месяц) |
 | `ShiftDetailCubit` | Готов | Детали одной смены |
+| `OrganizationsCubit` | Готов | Список организаций, создание, присоединение, текущий юзер |
+| `OrganizationDetailCubit` | Готов | Детали орг: участники, инвайт, покинуть, удалить |
 | `ProfileCubit` | Готов | Профиль: загрузка юзера, организаций, обновление, logout |
 
 ---
@@ -156,7 +166,11 @@ lib/
 | `ShiftTrackerRoute` | `/shift` | Трекер смены (Tab 1) |
 | `ShiftHistoryRoute` | `/history` | История смен (Tab 2) |
 | `ShiftDetailRoute` | `/history/detail` | Детали смены (push) |
-| `ProfileRoute` | `/profile` | Экран профиля (Tab 3) |
+| `OrganizationsRoute` | `/organizations` | Список организаций (Tab 3) |
+| `OrganizationDetailRoute` | `/organizations/detail/:orgId` | Детали организации (push) |
+| `CreateOrgRoute` | `/organizations/create` | Модалка создания орг (CustomRoute) |
+| `JoinOrgRoute` | `/organizations/join` | Модалка присоединения (CustomRoute) |
+| `ProfileRoute` | `/profile` | Экран профиля (Tab 4) |
 | `EditProfileRoute` | `/profile/edit` | Модалка редактирования профиля (CustomRoute) |
 
 **Guard**: Если не авторизован → редирект на `LoginRoute`
