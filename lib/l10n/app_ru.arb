@@ -155,5 +155,61 @@
     "theme": "Тема",
     "roleOwner": "Владелец",
     "roleMember": "Участник",
-    "nameRequired": "Имя не может быть пустым"
+    "nameRequired": "Имя не может быть пустым",
+
+    "organizationsTitle": "Организации",
+    "organizationsEmpty": "Вы не состоите ни в одной организации",
+    "organizationsCreate": "Создать организацию",
+    "organizationsJoin": "Присоединиться",
+    "organizationsJoinByCode": "Присоединиться по коду",
+
+    "createOrgTitle": "Новая организация",
+    "createOrgNameLabel": "Название организации",
+    "createOrgNameHint": "Введите название",
+    "createOrgNameRequired": "Название не может быть пустым",
+    "createOrgSuccess": "Организация создана",
+
+    "joinOrgTitle": "Присоединиться к организации",
+    "joinOrgCodeLabel": "Инвайт-код",
+    "joinOrgCodeHint": "Введите 8-значный код",
+    "joinOrgCodeRequired": "Код не может быть пустым",
+    "joinOrgSuccess": "Вы присоединились к {orgName}",
+    "@joinOrgSuccess": {
+        "placeholders": {
+            "orgName": {"type": "String"}
+        }
+    },
+
+    "orgDetailTitle": "Организация",
+    "orgDetailMembers": "Участники",
+    "orgDetailMembersCount": "{count} участников",
+    "@orgDetailMembersCount": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "orgDetailInviteCode": "Инвайт-код",
+    "orgDetailInviteCopied": "Код скопирован",
+    "orgDetailRotateInvite": "Обновить код",
+    "orgDetailRotateConfirm": "Старый код перестанет работать. Обновить?",
+    "orgDetailLeave": "Покинуть организацию",
+    "orgDetailLeaveConfirm": "Вы уверены, что хотите покинуть организацию?",
+    "orgDetailDelete": "Удалить организацию",
+    "orgDetailDeleteConfirm": "Организация будет удалена безвозвратно. Продолжить?",
+    "orgDetailDeleted": "Организация удалена",
+    "orgDetailLeft": "Вы покинули организацию",
+    "orgDetailSettings": "Настройки",
+    "orgDetailShifts": "Смены сотрудников",
+    "orgDetailStats": "Статистика",
+
+    "roleOwnerFull": "Владелец",
+    "roleAdmin": "Администратор",
+    "roleEmployee": "Сотрудник",
+
+    "memberSinceDate": "С {date}",
+    "@memberSinceDate": {
+        "placeholders": {
+            "date": {"type": "String"}
+        }
+    }
 }
