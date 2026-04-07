@@ -7,3 +7,4 @@ export 'package_info.dart';
 export 'shared_preferences.dart';
 export 'talker.dart';
 export 'theme_local_storage_service.dart';
+export 'yandex_mapkit.dart';

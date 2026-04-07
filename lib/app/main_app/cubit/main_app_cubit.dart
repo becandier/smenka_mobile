@@ -12,6 +12,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smenka_mobile/app/_app.dart';
 import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
+import 'package:smenka_mobile/core/deep_link/deep_link_service.dart';
+import 'package:smenka_mobile/core/deep_link/pending_invite_storage.dart';
 import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
@@ -103,8 +105,23 @@ class MainAppCubit extends Cubit<MainAppState> {
       await _initService(OrganizationRepositoryInitializer(dio: dio));
       await _initService(LocationRepositoryInitializer(dio: dio));
 
+      // Фаза 5.5: Deep Links
+      final deepLinkService = DeepLinkService();
+      await deepLinkService.init();
+      _serviceLocator.register<DeepLinkService>(deepLinkService);
+
+      final pendingInviteStorage = PendingInviteStorage(
+        prefs: _serviceLocator.get<SharedPreferences>(),
+      );
+      _serviceLocator.register<PendingInviteStorage>(pendingInviteStorage);
+
       // Фаза 6: Сервисы с зависимостями на SharedPreferences
       await _initService(ThemeModeServiceInitializer());
+
+      // Фаза 7: Яндекс.Карты
+      await _initService(
+        YandexMapKitInitializer(appConfig: _serviceLocator.get()),
+      );
 
       // Проверяем авторизацию при старте
       if (_serviceLocator.isRegistered<AuthRepository>()) {
@@ -127,6 +144,8 @@ class MainAppCubit extends Cubit<MainAppState> {
           organizationRepository: _serviceLocator.get<OrganizationRepository>(),
           userRepository: _serviceLocator.get<UserRepository>(),
           locationRepository: _serviceLocator.get<LocationRepository>(),
+          deepLinkService: _serviceLocator.get<DeepLinkService>(),
+          pendingInviteStorage: _serviceLocator.get<PendingInviteStorage>(),
         ),
       );
     } catch (e, stackTrace) {

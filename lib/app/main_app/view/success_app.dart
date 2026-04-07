@@ -15,6 +15,8 @@ class _SuccessApp extends StatefulWidget {
     required this.organizationRepository,
     required this.userRepository,
     required this.locationRepository,
+    required this.deepLinkService,
+    required this.pendingInviteStorage,
   });
   final AppConfig appConfig;
   final SharedPreferences sharedPreferences;
@@ -29,6 +31,8 @@ class _SuccessApp extends StatefulWidget {
   final OrganizationRepository organizationRepository;
   final UserRepository userRepository;
   final LocationRepository locationRepository;
+  final DeepLinkService deepLinkService;
+  final PendingInviteStorage pendingInviteStorage;
 
   @override
   State<_SuccessApp> createState() => _SuccessAppState();
@@ -40,11 +44,52 @@ class _SuccessAppState extends State<_SuccessApp> {
 
   // Router
   late AppRouter _router;
+
+  StreamSubscription<String>? _deepLinkSubscription;
+
   @override
   void initState() {
     super.initState();
     _deviceLocale = PlatformDispatcher.instance.locale;
     _router = AppRouter(authNotifier: widget.authNotifier);
+    _deepLinkSubscription = widget.deepLinkService.inviteCodeStream.listen(
+      _handleInviteCode,
+    );
+  }
+
+  @override
+  void dispose() {
+    _deepLinkSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _handleInviteCode(String code) async {
+    if (!widget.authNotifier.isAuthenticated) {
+      await widget.pendingInviteStorage.save(code);
+      return;
+    }
+    await _joinByInviteCode(code);
+  }
+
+  Future<void> _joinByInviteCode(String code) async {
+    final result = await widget.organizationRepository.join(code);
+    if (!mounted) return;
+
+    final context = _router.navigatorKey.currentContext;
+    if (context == null) return;
+
+    result.fold(
+      onSuccess: (JoinResult joinResult) {
+        context.modals.showSuccess(
+          context.l10n.deepLinkJoinSuccess(joinResult.organizationName),
+        );
+      },
+      onFailure: (_) {
+        context.modals.showError(
+          context.l10n.deepLinkJoinError,
+        );
+      },
+    );
   }
 
   @override
@@ -98,9 +143,18 @@ class _SuccessAppState extends State<_SuccessApp> {
             ),
           ),
         ],
-        child: BlocBuilder<ThemeCubit, ThemeMode>(
-          builder: (context, state) {
-            return MaterialApp.router(
+        child: BlocListener<AuthCubit, AuthCubitState>(
+          listener: (context, authState) async {
+            if (authState is AuthCubitAuthenticated) {
+              final code = await widget.pendingInviteStorage.consume();
+              if (code != null) {
+                await _joinByInviteCode(code);
+              }
+            }
+          },
+          child: BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, state) {
+              return MaterialApp.router(
               /// Theme
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
@@ -147,7 +201,8 @@ class _SuccessAppState extends State<_SuccessApp> {
                 );
               },
             );
-          },
+            },
+          ),
         ),
       ),
     );

@@ -684,4 +684,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get orgDetailLocations => 'Рабочие точки';
+
+  @override
+  String deepLinkJoinSuccess(String orgName) {
+    return 'Вы присоединились к $orgName по ссылке';
+  }
+
+  @override
+  String get deepLinkJoinError => 'Не удалось присоединиться по ссылке';
 }
