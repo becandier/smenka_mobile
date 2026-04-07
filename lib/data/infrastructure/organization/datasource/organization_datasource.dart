@@ -134,6 +134,29 @@ class OrganizationDataSource {
     return PaginatedShiftsDto.fromJson(response.data!);
   }
 
+  Future<List<OrganizationDto>> getAllOrganizations() async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/organizations/all',
+    );
+    final items = response.data!['items'] as List<dynamic>;
+    return items
+        .cast<Map<String, dynamic>>()
+        .map(OrganizationDto.fromJson)
+        .toList();
+  }
+
+  Future<MemberDto> updateMemberRole(
+    String orgId,
+    String userId, {
+    required String role,
+  }) async {
+    final response = await _dio.patch<Map<String, dynamic>>(
+      '/organizations/$orgId/members/$userId/role',
+      data: {'role': role},
+    );
+    return MemberDto.fromJson(response.data!);
+  }
+
   Future<OrgStatsDto> getStats(String orgId, {required String period}) async {
     final response = await _dio.get<Map<String, dynamic>>(
       '/organizations/$orgId/stats',
