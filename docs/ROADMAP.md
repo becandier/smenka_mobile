@@ -83,14 +83,17 @@
 ---
 
 ## Фаза 6 — Организации `[ ]`
+- [ ] Обновить User domain модель — добавить `role` (enum: superAdmin, user)
+- [ ] Обновить UserDto + маппинг (role приходит из GET /users/me)
 - [ ] **OrganizationsList** — список организаций пользователя
 - [ ] Карточки: название, роль (owner/admin/employee), дата создания
-- [ ] **CreateOrganization** — модалка с вводом названия
-- [ ] **JoinOrganization** — модалка с вводом 8-значного инвайт-кода
+- [ ] **CreateOrganization** — модалка с вводом названия (только для super_admin, скрыта для обычных)
+- [ ] **JoinOrganization** — модалка с вводом 8-значного инвайт-кода (для всех пользователей)
 - [ ] **OrganizationDetail** — экран организации (контент по роли)
 - [ ] Для employee: название, мои смены, кнопка "Покинуть"
 - [ ] Для admin: + список сотрудников, локации, смены всех, статистика
 - [ ] Для owner: + редактирование, настройки, инвайт-код, удаление орг, удаление сотрудников
+- [ ] Защита UI по глобальной роли: кнопка "Создать организацию" видна только super_admin
 - [ ] Кубиты: OrganizationsCubit, OrganizationDetailCubit, CreateOrgCubit, JoinOrgCubit
 - [ ] Интеграция с OrganizationRepository (getAll, create, join, getById, update, delete, rotateInvite)
 - [ ] Локализация
@@ -99,14 +102,17 @@
 
 ## Фаза 7 — Управление организацией `[ ]`
 - [ ] **MembersList** — список участников (имя, email, роль, дата)
-- [ ] Удаление участника (owner)
+- [ ] Удаление участника (owner/admin)
+- [ ] Назначение/снятие роли admin у участника (owner/super_admin) — PATCH /organizations/{id}/members/{user_id}/role
+- [ ] **SuperAdminPanel** — экран super_admin: список ВСЕХ организаций системы (GET /organizations/all)
+- [ ] Переход из панели в конкретную организацию — управление ролями, участниками, настройками
 - [ ] **OrgSettings** — настройки организации (owner only)
 - [ ] Toggle geo_check, auto_finish_hours, max_pause_minutes, max_pauses_per_shift
 - [ ] **WorkLocations** — список рабочих точек + карта с маркерами и радиусами
 - [ ] **AddEditLocation** — карта с выбором точки, название, радиус
 - [ ] **OrgShifts** — смены сотрудников (admin/owner), фильтры, пагинация
 - [ ] **OrgStats** — статистика организации + per_employee таблица
-- [ ] Кубиты: MembersCubit, OrgSettingsCubit, LocationsCubit, OrgShiftsCubit, OrgStatsCubit
+- [ ] Кубиты: MembersCubit, OrgSettingsCubit, LocationsCubit, OrgShiftsCubit, OrgStatsCubit, SuperAdminCubit
 - [ ] Интеграция с OrganizationRepository, LocationRepository
 - [ ] Локализация
 
