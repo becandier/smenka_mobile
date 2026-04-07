@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
-import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/location/models/_models.dart';
 import 'package:smenka_mobile/data/domain/location/repositories/location_repository.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -58,17 +57,11 @@ class _WorkLocationsView extends StatelessWidget {
         onRetry: () => context.read<LocationsCubit>().loadLocations(),
         contentBuilder: (locations) {
           if (locations.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  l10n.workLocationsEmpty,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: context.appColors.secondary,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            return AppEmptyState(
+              icon: Icons.location_off_outlined,
+              title: l10n.workLocationsEmpty,
+              actionLabel: l10n.workLocationsAdd,
+              onAction: () => _navigateToAddLocation(context),
             );
           }
 

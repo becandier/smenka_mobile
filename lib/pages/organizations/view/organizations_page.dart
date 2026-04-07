@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
-import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/user/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -54,7 +53,12 @@ class OrganizationsPage extends StatelessWidget {
         onRetry: () => context.read<OrganizationsCubit>().loadOrganizations(),
         contentBuilder: (orgs) {
           if (orgs.isEmpty) {
-            return const _EmptyState();
+            return AppEmptyState(
+              icon: Icons.business_outlined,
+              title: l10n.organizationsEmpty,
+              actionLabel: l10n.organizationsJoinByCode,
+              onAction: () => context.router.push(const JoinOrgRoute()),
+            );
           }
 
           return RefreshIndicator.adaptive(
@@ -70,48 +74,6 @@ class OrganizationsPage extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final appColors = context.appColors;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.business_outlined,
-              size: 64,
-              color: appColors.secondary.withValues(alpha: 0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.organizationsEmpty,
-              style: textTheme.bodyLarge?.copyWith(
-                color: appColors.secondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            AppButton(
-              onPressed: () =>
-                  context.router.push(const JoinOrgRoute()),
-              label: l10n.organizationsJoinByCode,
-              isOutlined: true,
-            ),
-          ],
-        ),
       ),
     );
   }

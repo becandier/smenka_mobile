@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
-import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
@@ -52,7 +51,10 @@ class _MembersView extends StatelessWidget {
         onRetry: () => context.read<MembersCubit>().loadMembers(),
         contentBuilder: (members) {
           if (members.isEmpty) {
-            return Center(child: Text(l10n.membersEmpty));
+            return AppEmptyState(
+              icon: Icons.people_outlined,
+              title: l10n.membersEmpty,
+            );
           }
 
           return RefreshIndicator.adaptive(

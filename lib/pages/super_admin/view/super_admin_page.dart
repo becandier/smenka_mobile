@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
-import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -34,8 +33,6 @@ class _SuperAdminView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final appColors = context.appColors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -48,28 +45,9 @@ class _SuperAdminView extends StatelessWidget {
         onRetry: () => context.read<SuperAdminCubit>().loadOrganizations(),
         contentBuilder: (orgs) {
           if (orgs.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.business_outlined,
-                      size: 64,
-                      color: appColors.secondary.withValues(alpha: 0.5),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.superAdminEmpty,
-                      style: textTheme.bodyLarge?.copyWith(
-                        color: appColors.secondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
+            return AppEmptyState(
+              icon: Icons.business_outlined,
+              title: l10n.superAdminEmpty,
             );
           }
 
