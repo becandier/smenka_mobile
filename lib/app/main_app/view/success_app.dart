@@ -126,6 +126,7 @@ class _SuccessAppState extends State<_SuccessApp> {
             create: (_) => AuthCubit(
               authRepository: widget.authRepository,
               authNotifier: widget.authNotifier,
+              organizationRepository: widget.organizationRepository,
             ),
           ),
           BlocProvider(
