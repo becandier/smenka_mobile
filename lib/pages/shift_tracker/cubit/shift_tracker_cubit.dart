@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
@@ -16,17 +17,25 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   })  : _shiftRepository = shiftRepository,
         _organizationRepository = organizationRepository,
         super(const ShiftTrackerState()) {
+    _orgSubscription = _organizationRepository
+        .watchMyOrganizations()
+        .listen((orgs) {
+      emit(state.copyWith(
+        organizations: state.organizations.toSuccess(orgs),
+      ),);
+    });
     _init();
   }
 
   final ShiftRepository _shiftRepository;
   final OrganizationRepository _organizationRepository;
   Timer? _timer;
+  StreamSubscription<List<Organization>>? _orgSubscription;
 
   Future<void> _init() async {
     await Future.wait([
       _loadActiveShift(),
-      _loadOrganizations(),
+      _organizationRepository.fetchMyOrganizations(),
     ]);
   }
 
@@ -80,27 +89,6 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         },
       );
     }
-  }
-
-  Future<void> _loadOrganizations() async {
-    emit(state.copyWith(organizations: state.organizations.toLoading()));
-
-    final result = await _organizationRepository.getAll();
-
-    result.fold(
-      onSuccess: (orgs) {
-        emit(
-          state.copyWith(organizations: state.organizations.toSuccess(orgs)),
-        );
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            organizations: state.organizations.toError(error.message),
-          ),
-        );
-      },
-    );
   }
 
   void selectOrganization(String? organizationId) {
@@ -228,7 +216,10 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }
 
   Future<void> refresh() async {
-    await _init();
+    await Future.wait([
+      _loadActiveShift(),
+      _organizationRepository.fetchMyOrganizations(),
+    ]);
   }
 
   void _startTimer(Shift shift) {
@@ -262,6 +253,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   @override
   Future<void> close() {
     _stopTimer();
+    _orgSubscription?.cancel();
     return super.close();
   }
 }
