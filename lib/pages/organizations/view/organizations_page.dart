@@ -5,6 +5,7 @@ import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/user/models/_models.dart';
+import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/organizations/cubit/organizations_cubit.dart';
 import 'package:smenka_mobile/pages/organizations/cubit/organizations_state.dart';
@@ -31,21 +32,6 @@ class OrganizationsPage extends StatelessWidget {
             onPressed: () => context.router.push(const JoinOrgRoute()),
           ),
         ],
-      ),
-      floatingActionButton: BlocSelector<OrganizationsCubit,
-          OrganizationsState, SectionData<User>>(
-        selector: (state) => state.currentUser,
-        builder: (context, userSection) {
-          final user = userSection.data;
-          if (user == null || user.role != UserRole.superAdmin) {
-            return const SizedBox.shrink();
-          }
-          return FloatingActionButton.extended(
-            onPressed: () => context.router.push(const CreateOrgRoute()),
-            icon: const Icon(Icons.add),
-            label: Text(l10n.organizationsCreate),
-          );
-        },
       ),
       body: SectionDataWrapper<OrganizationsCubit, OrganizationsState,
           List<Organization>>(

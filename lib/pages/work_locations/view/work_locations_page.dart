@@ -7,6 +7,7 @@ import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/data/domain/location/models/_models.dart';
 import 'package:smenka_mobile/data/domain/location/repositories/location_repository.dart';
+import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/work_locations/cubit/locations_cubit.dart';
 import 'package:smenka_mobile/pages/work_locations/cubit/locations_state.dart';

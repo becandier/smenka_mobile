@@ -14,7 +14,7 @@ class LocationDataSource {
     int radiusMeters = 100,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/organizations/$orgId/locations/',
+      '/organizations/$orgId/locations',
       data: {
         'name': name,
         'latitude': latitude,
@@ -27,7 +27,7 @@ class LocationDataSource {
 
   Future<List<WorkLocationDto>> getAll(String orgId) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/organizations/$orgId/locations/',
+      '/organizations/$orgId/locations',
     );
     final items = response.data!['items'] as List<dynamic>;
     return items

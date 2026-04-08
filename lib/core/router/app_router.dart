@@ -24,9 +24,16 @@ class AppRouter extends RootStackRouter {
   @override
   late final List<AutoRouteGuard> guards = [
     AutoRouteGuard.simple((resolver, router) {
-      if (authNotifier.isAuthenticated ||
-          resolver.routeName == LoginRoute.name ||
-          resolver.routeName == VerifyRoute.name) {
+      final isAuthRoute = resolver.routeName == LoginRoute.name ||
+          resolver.routeName == VerifyRoute.name;
+
+      if (authNotifier.isAuthenticated) {
+        if (isAuthRoute) {
+          resolver.next(false);
+        } else {
+          resolver.next();
+        }
+      } else if (isAuthRoute) {
         resolver.next();
       } else {
         resolver.redirectUntil(
@@ -160,6 +167,11 @@ class AppRouter extends RootStackRouter {
                   initial: true,
                   page: SuperAdminRoute.page,
                 ),
+                CustomRoute<void>(
+                  path: 'create-org',
+                  page: CreateOrgRoute.page,
+                  customRouteBuilder: _modalBottomSheetBuilder,
+                ),
                 AutoRoute(
                   path: 'org-detail/:orgId',
                   page: OrganizationDetailRoute.page,
@@ -243,6 +255,7 @@ Route<T> _modalBottomSheetBuilder<T>(
     builder: (_) => child,
     isScrollControlled: true,
     useSafeArea: true,
+    showDragHandle: false,
     settings: page,
   );
 }

@@ -9,7 +9,7 @@ class OrganizationDataSource {
 
   Future<OrganizationDto> create({required String name}) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/organizations/',
+      '/organizations',
       data: {'name': name},
     );
     return OrganizationDto.fromJson(response.data!);
@@ -17,7 +17,7 @@ class OrganizationDataSource {
 
   Future<List<OrganizationDto>> getAll() async {
     final response = await _dio.get<Map<String, dynamic>>(
-      '/organizations/',
+      '/organizations',
     );
     final items = response.data!['items'] as List<dynamic>;
     return items

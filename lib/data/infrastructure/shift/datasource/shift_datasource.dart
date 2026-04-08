@@ -26,7 +26,7 @@ class ShiftDataSource {
     }
 
     final response = await _dio.get<Map<String, dynamic>>(
-      '/shifts/',
+      '/shifts',
       queryParameters: queryParameters,
     );
     return PaginatedShiftsDto.fromJson(response.data!);

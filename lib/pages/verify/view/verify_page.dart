@@ -43,7 +43,6 @@ class _VerifyView extends StatefulWidget {
 
 class _VerifyViewState extends State<_VerifyView> {
   final _pinKey = GlobalKey<PinCodeFieldState>();
-  bool _prevIsResending = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,30 +50,33 @@ class _VerifyViewState extends State<_VerifyView> {
     final textTheme = Theme.of(context).textTheme;
     final colors = context.appColors;
 
-    return BlocListener<VerifyCubit, VerifyState>(
-      listener: (context, state) {
-        if (state.status == FeatureStatus.success) {
-          context.modals.showSuccess(l10n.success);
-          // Навигацию обрабатывает AuthStateNotifier guard
-        }
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<VerifyCubit, VerifyState>(
+          listenWhen: (prev, curr) => prev.status != curr.status,
+          listener: (context, state) {
+            if (state.status == FeatureStatus.success) {
+              context.modals.showSuccess(l10n.success);
+              // Навигацию обрабатывает reevaluateListenable + guard
+            }
 
-        if (state.status == FeatureStatus.error) {
-          final error = state.error;
-          if (error != null) {
-            context.modals.showError(error);
-          }
-          _pinKey.currentState?.clear();
-        }
-
-        // Показываем тост при успешном resend: isResending перешёл
-        // true → false и cooldown сбросился на 30
-        if (_prevIsResending &&
-            !state.isResending &&
-            state.cooldownSeconds == 30) {
-          context.modals.showInfo(l10n.authCodeResent);
-        }
-        _prevIsResending = state.isResending;
-      },
+            if (state.status == FeatureStatus.error) {
+              final error = state.error;
+              if (error != null) {
+                context.modals.showError(error);
+              }
+              _pinKey.currentState?.clear();
+            }
+          },
+        ),
+        BlocListener<VerifyCubit, VerifyState>(
+          listenWhen: (prev, curr) =>
+              prev.isResending && !curr.isResending && curr.cooldownSeconds == 30,
+          listener: (context, state) {
+            context.modals.showInfo(l10n.authCodeResent);
+          },
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           leading: BackButton(

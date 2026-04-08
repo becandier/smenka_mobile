@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
+import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/super_admin/cubit/super_admin_cubit.dart';
 import 'package:smenka_mobile/pages/super_admin/cubit/super_admin_state.dart';
@@ -38,6 +39,17 @@ class _SuperAdminView extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.superAdminTitle),
         centerTitle: true,
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final created =
+              await context.router.push<bool>(const CreateOrgRoute());
+          if (created == true && context.mounted) {
+            context.read<SuperAdminCubit>().loadOrganizations();
+          }
+        },
+        icon: const Icon(Icons.add),
+        label: Text(l10n.organizationsCreate),
       ),
       body: SectionDataWrapper<SuperAdminCubit, SuperAdminState,
           List<Organization>>(
