@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/organizations/cubit/organizations_state.dart';
@@ -12,15 +15,24 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
   })  : _organizationRepository = organizationRepository,
         _userRepository = userRepository,
         super(const OrganizationsState()) {
+    _orgSubscription = _organizationRepository
+        .watchMyOrganizations()
+        .listen((orgs) {
+      emit(state.copyWith(
+        organizations: state.organizations.toSuccess(orgs),
+      ),);
+    },);
     _init();
   }
 
   final OrganizationRepository _organizationRepository;
   final UserRepository _userRepository;
 
+  StreamSubscription<List<Organization>>? _orgSubscription;
+
   Future<void> _init() async {
     await Future.wait([
-      loadOrganizations(),
+      _organizationRepository.fetchMyOrganizations(),
       _loadCurrentUser(),
     ]);
   }
@@ -49,24 +61,7 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
 
   Future<void> loadOrganizations() async {
     emit(state.copyWith(organizations: state.organizations.toLoading()));
-    final result = await _organizationRepository.getAll();
-
-    result.fold(
-      onSuccess: (orgs) {
-        emit(
-          state.copyWith(
-            organizations: state.organizations.toSuccess(orgs),
-          ),
-        );
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            organizations: state.organizations.toError(error.message),
-          ),
-        );
-      },
-    );
+    await _organizationRepository.fetchMyOrganizations();
   }
 
   Future<void> createOrganization({required String name}) async {
@@ -81,7 +76,6 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
     result.fold(
       onSuccess: (_) {
         emit(state.copyWith(createStatus: FeatureStatus.success));
-        loadOrganizations();
       },
       onFailure: (error) {
         emit(
@@ -111,7 +105,6 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
             joinResult: joinResult,
           ),
         );
-        loadOrganizations();
       },
       onFailure: (error) {
         emit(
@@ -141,5 +134,11 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
         joinResult: null,
       ),
     );
+  }
+
+  @override
+  Future<void> close() {
+    _orgSubscription?.cancel();
+    return super.close();
   }
 }
