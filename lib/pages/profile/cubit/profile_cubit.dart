@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/profile/cubit/profile_state.dart';
@@ -15,6 +18,13 @@ class ProfileCubit extends Cubit<ProfileState> {
         _organizationRepository = organizationRepository,
         _authCubit = authCubit,
         super(const ProfileState()) {
+    _orgSubscription = _organizationRepository
+        .watchMyOrganizations()
+        .listen((orgs) {
+      emit(state.copyWith(
+        organizations: state.organizations.toSuccess(orgs),
+      ),);
+    },);
     _init();
   }
 
@@ -22,10 +32,12 @@ class ProfileCubit extends Cubit<ProfileState> {
   final OrganizationRepository _organizationRepository;
   final AuthCubit _authCubit;
 
+  StreamSubscription<List<Organization>>? _orgSubscription;
+
   Future<void> _init() async {
     await Future.wait([
       _loadUser(),
-      _loadOrganizations(),
+      _organizationRepository.fetchMyOrganizations(),
     ]);
   }
 
@@ -39,24 +51,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       onFailure: (error) {
         emit(state.copyWith(user: state.user.toError(error.message)));
-      },
-    );
-  }
-
-  Future<void> _loadOrganizations() async {
-    emit(state.copyWith(organizations: state.organizations.toLoading()));
-    final result = await _organizationRepository.getAll();
-
-    result.fold(
-      onSuccess: (orgs) {
-        emit(state.copyWith(
-          organizations: state.organizations.toSuccess(orgs),
-        ),);
-      },
-      onFailure: (error) {
-        emit(state.copyWith(
-          organizations: state.organizations.toError(error.message),
-        ),);
       },
     );
   }
@@ -91,11 +85,17 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> refresh() async {
     await Future.wait([
       _loadUser(),
-      _loadOrganizations(),
+      _organizationRepository.fetchMyOrganizations(),
     ]);
   }
 
   Future<void> logout() async {
     await _authCubit.logout();
+  }
+
+  @override
+  Future<void> close() {
+    _orgSubscription?.cancel();
+    return super.close();
   }
 }
