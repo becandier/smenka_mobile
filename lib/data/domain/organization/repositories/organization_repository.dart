@@ -41,4 +41,8 @@ abstract class OrganizationRepository {
     String userId, {
     required MemberRole role,
   });
+
+  Stream<List<Organization>> watchMyOrganizations();
+  Future<void> fetchMyOrganizations();
+  void clearCache();
 }

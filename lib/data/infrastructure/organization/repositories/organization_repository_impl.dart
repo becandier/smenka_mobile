@@ -1,3 +1,4 @@
+import 'package:rxdart/subjects.dart';
 import 'package:smenka_mobile/core/models/default_paginator.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/network/task_handler.dart';
@@ -15,11 +16,32 @@ class OrganizationRepositoryImpl
 
   final OrganizationDataSource _dataSource;
 
+  final BehaviorSubject<List<Organization>> _myOrganizations =
+      BehaviorSubject<List<Organization>>();
+
+  @override
+  Stream<List<Organization>> watchMyOrganizations() =>
+      _myOrganizations.stream;
+
+  @override
+  Future<void> fetchMyOrganizations() async {
+    final dtos = await _dataSource.getAll();
+    final orgs = dtos.map((d) => d.toDomain()).toList();
+    _myOrganizations.add(orgs);
+  }
+
+  @override
+  void clearCache() {
+    _myOrganizations.add([]);
+  }
+
   @override
   Future<Task<Organization>> create({required String name}) {
     return execute(() async {
       final dto = await _dataSource.create(name: name);
-      return dto.toDomain();
+      final org = dto.toDomain();
+      await fetchMyOrganizations();
+      return org;
     });
   }
 
@@ -27,7 +49,9 @@ class OrganizationRepositoryImpl
   Future<Task<List<Organization>>> getAll() {
     return execute(() async {
       final dtos = await _dataSource.getAll();
-      return dtos.map((d) => d.toDomain()).toList();
+      final orgs = dtos.map((d) => d.toDomain()).toList();
+      _myOrganizations.add(orgs);
+      return orgs;
     });
   }
 
@@ -43,13 +67,18 @@ class OrganizationRepositoryImpl
   Future<Task<Organization>> update(String orgId, {required String name}) {
     return execute(() async {
       final dto = await _dataSource.update(orgId, name: name);
-      return dto.toDomain();
+      final org = dto.toDomain();
+      await fetchMyOrganizations();
+      return org;
     });
   }
 
   @override
   Future<Task<void>> delete(String orgId) {
-    return executeVoid(() => _dataSource.delete(orgId));
+    return executeVoid(() async {
+      await _dataSource.delete(orgId);
+      await fetchMyOrganizations();
+    });
   }
 
   @override
@@ -61,7 +90,9 @@ class OrganizationRepositoryImpl
   Future<Task<JoinResult>> join(String inviteCode) {
     return execute(() async {
       final dto = await _dataSource.join(inviteCode);
-      return dto.toDomain();
+      final result = dto.toDomain();
+      await fetchMyOrganizations();
+      return result;
     });
   }
 
