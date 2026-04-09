@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smenka_mobile/app/config/app_config.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
@@ -11,9 +10,8 @@ import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/add_edit_location/cubit/add_edit_location_cubit.dart';
 import 'package:smenka_mobile/pages/add_edit_location/cubit/add_edit_location_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
-import 'package:yandex_maps_mapkit_lite/init.dart' as yandex_init;
+import 'package:smenka_mobile/widgets/flutter_map_widget.dart';
 import 'package:yandex_maps_mapkit_lite/mapkit.dart' hide Icon;
-import 'package:yandex_maps_mapkit_lite/yandex_map.dart';
 
 part '../widgets/_center_marker.dart';
 part '../widgets/_location_form.dart';
@@ -158,9 +156,8 @@ class _AddEditLocationViewState extends State<_AddEditLocationView>
         body: Stack(
           children: [
             // Карта Yandex
-            _YandexMapWidget(
+            FlutterMapWidget(
               onMapCreated: _onMapCreated,
-              apiKey: context.read<AppConfig>().yandexMapsApiKey,
             ),
             // Маркер по центру
             const _CenterMarker(),
@@ -197,75 +194,6 @@ class _AddEditLocationViewState extends State<_AddEditLocationView>
           ],
         ),
       ),
-    );
-  }
-}
-
-class _YandexMapWidget extends StatefulWidget {
-  const _YandexMapWidget({
-    required this.onMapCreated,
-    required this.apiKey,
-  });
-
-  final void Function(MapWindow) onMapCreated;
-  final String apiKey;
-
-  @override
-  State<_YandexMapWidget> createState() => _YandexMapWidgetState();
-}
-
-class _YandexMapWidgetState extends State<_YandexMapWidget> {
-  bool _sdkInitialized = false;
-  String? _initError;
-
-  @override
-  void initState() {
-    super.initState();
-    _initSdk();
-  }
-
-  Future<void> _initSdk() async {
-    try {
-      await yandex_init.initMapkit(apiKey: widget.apiKey);
-      if (mounted) {
-        setState(() {
-          _sdkInitialized = true;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _initError = e.toString();
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_initError != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            _initError ?? '',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: context.appColors.error,
-                ),
-          ),
-        ),
-      );
-    }
-
-    if (!_sdkInitialized) {
-      return const Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-    }
-
-    return YandexMap(
-      onMapCreated: widget.onMapCreated,
     );
   }
 }

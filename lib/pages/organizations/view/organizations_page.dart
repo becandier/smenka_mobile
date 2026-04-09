@@ -1,11 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
-import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
-import 'package:smenka_mobile/data/domain/user/models/_models.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/organizations/cubit/organizations_cubit.dart';
 import 'package:smenka_mobile/pages/organizations/cubit/organizations_state.dart';

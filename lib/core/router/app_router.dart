@@ -98,44 +98,12 @@ class AppRouter extends RootStackRouter {
                   initial: true,
                   page: OrganizationsRoute.page,
                 ),
-                AutoRoute(
-                  path: 'detail/:orgId',
-                  page: OrganizationDetailRoute.page,
-                ),
-                CustomRoute<void>(
-                  path: 'create',
-                  page: CreateOrgRoute.page,
-                  customRouteBuilder: _modalBottomSheetBuilder,
-                ),
                 CustomRoute<void>(
                   path: 'join',
                   page: JoinOrgRoute.page,
                   customRouteBuilder: _modalBottomSheetBuilder,
                 ),
-                AutoRoute(
-                  path: 'detail/:orgId/members',
-                  page: OrgMembersRoute.page,
-                ),
-                AutoRoute(
-                  path: 'detail/:orgId/settings',
-                  page: OrgSettingsRoute.page,
-                ),
-                AutoRoute(
-                  path: 'detail/:orgId/locations',
-                  page: WorkLocationsRoute.page,
-                ),
-                AutoRoute(
-                  path: 'detail/:orgId/locations/add',
-                  page: AddEditLocationRoute.page,
-                ),
-                AutoRoute(
-                  path: 'detail/:orgId/shifts',
-                  page: OrgShiftsRoute.page,
-                ),
-                AutoRoute(
-                  path: 'detail/:orgId/stats',
-                  page: OrgStatsRoute.page,
-                ),
+                ..._orgDetailRoutes('detail/:orgId'),
               ],
             ),
             AutoRoute(
@@ -152,10 +120,7 @@ class AppRouter extends RootStackRouter {
                   page: EditProfileRoute.page,
                   customRouteBuilder: _modalBottomSheetBuilder,
                 ),
-                AutoRoute(
-                  path: 'org-detail/:orgId',
-                  page: OrganizationDetailRoute.page,
-                ),
+                ..._orgDetailRoutes('org-detail/:orgId'),
               ],
             ),
             AutoRoute(
@@ -172,16 +137,27 @@ class AppRouter extends RootStackRouter {
                   page: CreateOrgRoute.page,
                   customRouteBuilder: _modalBottomSheetBuilder,
                 ),
-                AutoRoute(
-                  path: 'org-detail/:orgId',
-                  page: OrganizationDetailRoute.page,
-                ),
+                ..._orgDetailRoutes('org-detail/:orgId'),
               ],
             ),
           ],
         ),
       ];
 }
+
+/// Общие роуты организации, переиспользуемые в нескольких табах.
+List<AutoRoute> _orgDetailRoutes(String basePath) => [
+      AutoRoute(path: basePath, page: OrganizationDetailRoute.page),
+      AutoRoute(path: '$basePath/members', page: OrgMembersRoute.page),
+      AutoRoute(path: '$basePath/settings', page: OrgSettingsRoute.page),
+      AutoRoute(path: '$basePath/locations', page: WorkLocationsRoute.page),
+      AutoRoute(
+        path: '$basePath/locations/add',
+        page: AddEditLocationRoute.page,
+      ),
+      AutoRoute(path: '$basePath/shifts', page: OrgShiftsRoute.page),
+      AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),
+    ];
 
 @RoutePage(name: 'ShiftTab')
 

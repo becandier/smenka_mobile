@@ -30,6 +30,11 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   final ShiftRepository _shiftRepository;
   final OrganizationRepository _organizationRepository;
   Timer? _timer;
+
+  @override
+  void emit(ShiftTrackerState state) {
+    if (!isClosed) super.emit(state);
+  }
   StreamSubscription<List<Organization>>? _orgSubscription;
 
   Future<void> _init() async {
