@@ -3,9 +3,10 @@ lib/firebase_options.dart
 **/GoogleService-Info.plist
 **/google-services.json
 
-# AI / Claude
+# AI / IDE configs
 CLAUDE.md
 .claude/
+.windsurf/
 docs/superpowers/
 
 # Miscellaneous
