@@ -1,3 +1,8 @@
+# AI / Claude
+CLAUDE.md
+.claude/
+docs/superpowers/
+
 # Miscellaneous
 *.class
 *.log
