@@ -1,3 +1,8 @@
+# Firebase secrets
+lib/firebase_options.dart
+**/GoogleService-Info.plist
+**/google-services.json
+
 # AI / Claude
 CLAUDE.md
 .claude/
