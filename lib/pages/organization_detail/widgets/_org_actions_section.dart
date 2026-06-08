@@ -9,51 +9,55 @@ class _OrgActionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final appColors = context.appColors;
-    final cubit = context.read<OrganizationDetailCubit>();
-    final isOwner = cubit.isOwner;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          if (!isOwner)
-            OutlinedButton.icon(
-              onPressed: () => _confirmLeave(context),
-              icon: Icon(Icons.exit_to_app, color: appColors.warning),
-              label: Text(
-                l10n.orgDetailLeave,
-                style: TextStyle(color: appColors.warning),
-              ),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(
-                  color: appColors.warning.withValues(alpha: 0.5),
+    return BlocSelector<OrganizationDetailCubit, OrganizationDetailState,
+        bool>(
+      selector: (state) => context.read<OrganizationDetailCubit>().isOwner,
+      builder: (context, isOwner) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              if (!isOwner)
+                OutlinedButton.icon(
+                  onPressed: () => _confirmLeave(context),
+                  icon: Icon(Icons.exit_to_app, color: appColors.warning),
+                  label: Text(
+                    l10n.orgDetailLeave,
+                    style: TextStyle(color: appColors.warning),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: appColors.warning.withValues(alpha: 0.5),
+                    ),
+                    minimumSize: const Size(double.infinity, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              if (isOwner)
+                OutlinedButton.icon(
+                  onPressed: () => _confirmDelete(context),
+                  icon: Icon(Icons.delete_outline, color: appColors.error),
+                  label: Text(
+                    l10n.orgDetailDelete,
+                    style: TextStyle(color: appColors.error),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: appColors.error.withValues(alpha: 0.5),
+                    ),
+                    minimumSize: const Size(double.infinity, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          if (isOwner)
-            OutlinedButton.icon(
-              onPressed: () => _confirmDelete(context),
-              icon: Icon(Icons.delete_outline, color: appColors.error),
-              label: Text(
-                l10n.orgDetailDelete,
-                style: TextStyle(color: appColors.error),
-              ),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(
-                  color: appColors.error.withValues(alpha: 0.5),
-                ),
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-        ],
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 

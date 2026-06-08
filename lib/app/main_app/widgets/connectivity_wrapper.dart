@@ -7,6 +7,10 @@ import 'package:smenka_mobile/l10n/localization_extension.dart';
 Используйте альтернативный подход для обработки подключения.
 ''')
 class ConnectivityWrapper extends StatefulWidget {
+  @Deprecated('''
+Есть баг с context ScaffoldMessenger. 
+Используйте альтернативный подход для обработки подключения.
+''')
   const ConnectivityWrapper({
     required this.child,
     super.key,

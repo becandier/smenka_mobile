@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
-import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/members/cubit/members_state.dart';
@@ -21,21 +20,30 @@ class MembersCubit extends Cubit<MembersState> {
   final String _orgId;
   final OrganizationRepository _organizationRepository;
   final UserRepository _userRepository;
-  String _currentUserId = '';
 
-  String get currentUserId => _currentUserId;
+  String get orgId => _orgId;
+  String get currentUserId => state.currentUserId;
 
   Future<void> _init() async {
     await Future.wait([
-      loadMembers(),
       _loadCurrentUser(),
+      _loadViewerRole(),
+      loadMembers(),
     ]);
   }
 
   Future<void> _loadCurrentUser() async {
     final result = await _userRepository.getMe();
     result.fold(
-      onSuccess: (user) => _currentUserId = user.id,
+      onSuccess: (user) => emit(state.copyWith(currentUserId: user.id)),
+      onFailure: (_) {},
+    );
+  }
+
+  Future<void> _loadViewerRole() async {
+    final result = await _organizationRepository.getById(_orgId);
+    result.fold(
+      onSuccess: (org) => emit(state.copyWith(viewerRole: org.myRole)),
       onFailure: (_) {},
     );
   }
@@ -58,36 +66,6 @@ class MembersCubit extends Cubit<MembersState> {
       state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
     final result = await _organizationRepository.removeMember(_orgId, userId);
-    return result.fold(
-      onSuccess: (_) {
-        emit(state.copyWith(actionStatus: FeatureStatus.success));
-        loadMembers();
-        return true;
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            actionStatus: FeatureStatus.error,
-            actionError: error.message,
-          ),
-        );
-        return false;
-      },
-    );
-  }
-
-  Future<bool> updateMemberRole(
-    String userId, {
-    required MemberRole role,
-  }) async {
-    emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
-    );
-    final result = await _organizationRepository.updateMemberRole(
-      _orgId,
-      userId,
-      role: role,
-    );
     return result.fold(
       onSuccess: (_) {
         emit(state.copyWith(actionStatus: FeatureStatus.success));

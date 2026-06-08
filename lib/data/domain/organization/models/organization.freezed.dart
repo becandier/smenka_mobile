@@ -20,6 +20,9 @@ mixin _$Organization {
   String get inviteCode;
   bool get isDeleted;
   DateTime get createdAt;
+  bool get geoCheckEnabled;
+  OrgMembershipRole? get myRole;
+  OrganizationRole? get myCustomRole;
 
   /// Create a copy of Organization
   /// with the given fields replaced by the non-null parameter values.
@@ -42,16 +45,21 @@ mixin _$Organization {
             (identical(other.isDeleted, isDeleted) ||
                 other.isDeleted == isDeleted) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.geoCheckEnabled, geoCheckEnabled) ||
+                other.geoCheckEnabled == geoCheckEnabled) &&
+            (identical(other.myRole, myRole) || other.myRole == myRole) &&
+            (identical(other.myCustomRole, myCustomRole) ||
+                other.myCustomRole == myCustomRole));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, ownerId, inviteCode, isDeleted, createdAt);
+  int get hashCode => Object.hash(runtimeType, id, name, ownerId, inviteCode,
+      isDeleted, createdAt, geoCheckEnabled, myRole, myCustomRole);
 
   @override
   String toString() {
-    return 'Organization(id: $id, name: $name, ownerId: $ownerId, inviteCode: $inviteCode, isDeleted: $isDeleted, createdAt: $createdAt)';
+    return 'Organization(id: $id, name: $name, ownerId: $ownerId, inviteCode: $inviteCode, isDeleted: $isDeleted, createdAt: $createdAt, geoCheckEnabled: $geoCheckEnabled, myRole: $myRole, myCustomRole: $myCustomRole)';
   }
 }
 
@@ -67,7 +75,12 @@ abstract mixin class $OrganizationCopyWith<$Res> {
       String ownerId,
       String inviteCode,
       bool isDeleted,
-      DateTime createdAt});
+      DateTime createdAt,
+      bool geoCheckEnabled,
+      OrgMembershipRole? myRole,
+      OrganizationRole? myCustomRole});
+
+  $OrganizationRoleCopyWith<$Res>? get myCustomRole;
 }
 
 /// @nodoc
@@ -88,6 +101,9 @@ class _$OrganizationCopyWithImpl<$Res> implements $OrganizationCopyWith<$Res> {
     Object? inviteCode = null,
     Object? isDeleted = null,
     Object? createdAt = null,
+    Object? geoCheckEnabled = null,
+    Object? myRole = freezed,
+    Object? myCustomRole = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -114,7 +130,33 @@ class _$OrganizationCopyWithImpl<$Res> implements $OrganizationCopyWith<$Res> {
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      geoCheckEnabled: null == geoCheckEnabled
+          ? _self.geoCheckEnabled
+          : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      myRole: freezed == myRole
+          ? _self.myRole
+          : myRole // ignore: cast_nullable_to_non_nullable
+              as OrgMembershipRole?,
+      myCustomRole: freezed == myCustomRole
+          ? _self.myCustomRole
+          : myCustomRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRole?,
     ));
+  }
+
+  /// Create a copy of Organization
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OrganizationRoleCopyWith<$Res>? get myCustomRole {
+    if (_self.myCustomRole == null) {
+      return null;
+    }
+
+    return $OrganizationRoleCopyWith<$Res>(_self.myCustomRole!, (value) {
+      return _then(_self.copyWith(myCustomRole: value));
+    });
   }
 }
 
@@ -211,16 +253,32 @@ extension OrganizationPatterns on Organization {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String id, String name, String ownerId, String inviteCode,
-            bool isDeleted, DateTime createdAt)?
+    TResult Function(
+            String id,
+            String name,
+            String ownerId,
+            String inviteCode,
+            bool isDeleted,
+            DateTime createdAt,
+            bool geoCheckEnabled,
+            OrgMembershipRole? myRole,
+            OrganizationRole? myCustomRole)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Organization() when $default != null:
-        return $default(_that.id, _that.name, _that.ownerId, _that.inviteCode,
-            _that.isDeleted, _that.createdAt);
+        return $default(
+            _that.id,
+            _that.name,
+            _that.ownerId,
+            _that.inviteCode,
+            _that.isDeleted,
+            _that.createdAt,
+            _that.geoCheckEnabled,
+            _that.myRole,
+            _that.myCustomRole);
       case _:
         return orElse();
     }
@@ -241,15 +299,31 @@ extension OrganizationPatterns on Organization {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String id, String name, String ownerId, String inviteCode,
-            bool isDeleted, DateTime createdAt)
+    TResult Function(
+            String id,
+            String name,
+            String ownerId,
+            String inviteCode,
+            bool isDeleted,
+            DateTime createdAt,
+            bool geoCheckEnabled,
+            OrgMembershipRole? myRole,
+            OrganizationRole? myCustomRole)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Organization():
-        return $default(_that.id, _that.name, _that.ownerId, _that.inviteCode,
-            _that.isDeleted, _that.createdAt);
+        return $default(
+            _that.id,
+            _that.name,
+            _that.ownerId,
+            _that.inviteCode,
+            _that.isDeleted,
+            _that.createdAt,
+            _that.geoCheckEnabled,
+            _that.myRole,
+            _that.myCustomRole);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -269,15 +343,31 @@ extension OrganizationPatterns on Organization {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String id, String name, String ownerId, String inviteCode,
-            bool isDeleted, DateTime createdAt)?
+    TResult? Function(
+            String id,
+            String name,
+            String ownerId,
+            String inviteCode,
+            bool isDeleted,
+            DateTime createdAt,
+            bool geoCheckEnabled,
+            OrgMembershipRole? myRole,
+            OrganizationRole? myCustomRole)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Organization() when $default != null:
-        return $default(_that.id, _that.name, _that.ownerId, _that.inviteCode,
-            _that.isDeleted, _that.createdAt);
+        return $default(
+            _that.id,
+            _that.name,
+            _that.ownerId,
+            _that.inviteCode,
+            _that.isDeleted,
+            _that.createdAt,
+            _that.geoCheckEnabled,
+            _that.myRole,
+            _that.myCustomRole);
       case _:
         return null;
     }
@@ -293,7 +383,10 @@ class _Organization implements Organization {
       required this.ownerId,
       required this.inviteCode,
       required this.isDeleted,
-      required this.createdAt});
+      required this.createdAt,
+      this.geoCheckEnabled = false,
+      this.myRole,
+      this.myCustomRole});
 
   @override
   final String id;
@@ -307,6 +400,13 @@ class _Organization implements Organization {
   final bool isDeleted;
   @override
   final DateTime createdAt;
+  @override
+  @JsonKey()
+  final bool geoCheckEnabled;
+  @override
+  final OrgMembershipRole? myRole;
+  @override
+  final OrganizationRole? myCustomRole;
 
   /// Create a copy of Organization
   /// with the given fields replaced by the non-null parameter values.
@@ -329,16 +429,21 @@ class _Organization implements Organization {
             (identical(other.isDeleted, isDeleted) ||
                 other.isDeleted == isDeleted) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.geoCheckEnabled, geoCheckEnabled) ||
+                other.geoCheckEnabled == geoCheckEnabled) &&
+            (identical(other.myRole, myRole) || other.myRole == myRole) &&
+            (identical(other.myCustomRole, myCustomRole) ||
+                other.myCustomRole == myCustomRole));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, ownerId, inviteCode, isDeleted, createdAt);
+  int get hashCode => Object.hash(runtimeType, id, name, ownerId, inviteCode,
+      isDeleted, createdAt, geoCheckEnabled, myRole, myCustomRole);
 
   @override
   String toString() {
-    return 'Organization(id: $id, name: $name, ownerId: $ownerId, inviteCode: $inviteCode, isDeleted: $isDeleted, createdAt: $createdAt)';
+    return 'Organization(id: $id, name: $name, ownerId: $ownerId, inviteCode: $inviteCode, isDeleted: $isDeleted, createdAt: $createdAt, geoCheckEnabled: $geoCheckEnabled, myRole: $myRole, myCustomRole: $myCustomRole)';
   }
 }
 
@@ -356,7 +461,13 @@ abstract mixin class _$OrganizationCopyWith<$Res>
       String ownerId,
       String inviteCode,
       bool isDeleted,
-      DateTime createdAt});
+      DateTime createdAt,
+      bool geoCheckEnabled,
+      OrgMembershipRole? myRole,
+      OrganizationRole? myCustomRole});
+
+  @override
+  $OrganizationRoleCopyWith<$Res>? get myCustomRole;
 }
 
 /// @nodoc
@@ -378,6 +489,9 @@ class __$OrganizationCopyWithImpl<$Res>
     Object? inviteCode = null,
     Object? isDeleted = null,
     Object? createdAt = null,
+    Object? geoCheckEnabled = null,
+    Object? myRole = freezed,
+    Object? myCustomRole = freezed,
   }) {
     return _then(_Organization(
       id: null == id
@@ -404,7 +518,33 @@ class __$OrganizationCopyWithImpl<$Res>
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      geoCheckEnabled: null == geoCheckEnabled
+          ? _self.geoCheckEnabled
+          : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      myRole: freezed == myRole
+          ? _self.myRole
+          : myRole // ignore: cast_nullable_to_non_nullable
+              as OrgMembershipRole?,
+      myCustomRole: freezed == myCustomRole
+          ? _self.myCustomRole
+          : myCustomRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRole?,
     ));
+  }
+
+  /// Create a copy of Organization
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OrganizationRoleCopyWith<$Res>? get myCustomRole {
+    if (_self.myCustomRole == null) {
+      return null;
+    }
+
+    return $OrganizationRoleCopyWith<$Res>(_self.myCustomRole!, (value) {
+      return _then(_self.copyWith(myCustomRole: value));
+    });
   }
 }
 

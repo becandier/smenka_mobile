@@ -22,29 +22,22 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
   final String _orgId;
   final OrganizationRepository _organizationRepository;
   final UserRepository _userRepository;
-  String _currentUserId = '';
-  MemberRole? _currentMemberRole;
-  UserRole _currentUserRole = UserRole.user;
-
-  String get currentUserId => _currentUserId;
-  MemberRole? get currentMemberRole => _currentMemberRole;
-  UserRole get currentUserRole => _currentUserRole;
 
   bool get isOwner {
     final org = state.organization.data;
-    return org != null && org.ownerId == _currentUserId;
+    return org != null && org.ownerId == state.currentUserId;
   }
 
   bool get isAdminOrOwner =>
       isOwner ||
-      _currentMemberRole == MemberRole.admin ||
-      _currentUserRole == UserRole.superAdmin;
+      state.currentMemberRole == MemberRole.admin ||
+      state.currentUserRole == UserRole.superAdmin;
 
   Future<void> _init() async {
+    await _loadCurrentUser();
     await Future.wait([
       _loadOrganization(),
       _loadMembers(),
-      _loadCurrentUser(),
     ]);
   }
 
@@ -52,8 +45,10 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
     final result = await _userRepository.getMe();
     result.fold(
       onSuccess: (user) {
-        _currentUserId = user.id;
-        _currentUserRole = user.role;
+        emit(state.copyWith(
+          currentUserId: user.id,
+          currentUserRole: user.role,
+        ),);
       },
       onFailure: (_) {},
     );
@@ -84,11 +79,16 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
 
     result.fold(
       onSuccess: (members) {
-        emit(state.copyWith(members: state.members.toSuccess(members)));
-        final myMembership = members.where((m) => m.userId == _currentUserId);
+        MemberRole? myRole;
+        final myMembership =
+            members.where((m) => m.userId == state.currentUserId);
         if (myMembership.isNotEmpty) {
-          _currentMemberRole = myMembership.first.role;
+          myRole = myMembership.first.role;
         }
+        emit(state.copyWith(
+          members: state.members.toSuccess(members),
+          currentMemberRole: myRole,
+        ),);
       },
       onFailure: (error) {
         emit(state.copyWith(members: state.members.toError(error.message)));
@@ -131,8 +131,10 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
       actionStatus: FeatureStatus.loading,
       actionError: null,
     ),);
-    final result =
-        await _organizationRepository.removeMember(_orgId, _currentUserId);
+    final result = await _organizationRepository.removeMember(
+      _orgId,
+      state.currentUserId,
+    );
 
     return result.fold(
       onSuccess: (_) {

@@ -10,7 +10,7 @@ _OrgSettingsDto _$OrgSettingsDtoFromJson(Map<String, dynamic> json) =>
     _OrgSettingsDto(
       organizationId: json['organization_id'] as String,
       geoCheckEnabled: json['geo_check_enabled'] as bool,
-      autoFinishHours: (json['auto_finish_hours'] as num).toInt(),
+      autoFinishHours: (json['auto_finish_hours'] as num?)?.toInt(),
       maxPauseMinutes: (json['max_pause_minutes'] as num?)?.toInt(),
       maxPausesPerShift: (json['max_pauses_per_shift'] as num?)?.toInt(),
     );

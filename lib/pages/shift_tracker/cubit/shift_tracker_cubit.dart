@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -14,8 +15,10 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   ShiftTrackerCubit({
     required ShiftRepository shiftRepository,
     required OrganizationRepository organizationRepository,
+    required GeoService geoService,
   })  : _shiftRepository = shiftRepository,
         _organizationRepository = organizationRepository,
+        _geoService = geoService,
         super(const ShiftTrackerState()) {
     _orgSubscription = _organizationRepository
         .watchMyOrganizations()
@@ -29,12 +32,14 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
   final ShiftRepository _shiftRepository;
   final OrganizationRepository _organizationRepository;
+  final GeoService _geoService;
   Timer? _timer;
 
   @override
   void emit(ShiftTrackerState state) {
     if (!isClosed) super.emit(state);
   }
+
   StreamSubscription<List<Organization>>? _orgSubscription;
 
   Future<void> _init() async {
@@ -100,18 +105,49 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     emit(state.copyWith(selectedOrganizationId: organizationId));
   }
 
-  Future<StartShiftResult> startShift({
-    double? latitude,
-    double? longitude,
-  }) async {
+  Future<StartShiftResult> startShift() async {
     emit(
       state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
 
+    final org = state.selectedOrganization;
+    final needsGeo = org != null && org.geoCheckEnabled;
+
+    double? lat;
+    double? lng;
+
+    if (needsGeo) {
+      final geoResult = await _geoService.getCurrentPosition();
+
+      switch (geoResult) {
+        case GeoSuccess():
+          lat = geoResult.latitude;
+          lng = geoResult.longitude;
+          if (geoResult.lowAccuracy) {
+            emit(state.copyWith(showLowAccuracyWarning: true));
+          }
+        case GeoServiceDisabled():
+          emit(state.copyWith(actionStatus: FeatureStatus.initial));
+          return StartShiftResult.geoServiceDisabled;
+        case GeoDenied():
+          emit(state.copyWith(actionStatus: FeatureStatus.initial));
+          return StartShiftResult.geoDenied;
+        case GeoDeniedForever():
+          emit(state.copyWith(actionStatus: FeatureStatus.initial));
+          return StartShiftResult.geoDeniedForever;
+        case GeoError():
+          emit(state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: geoResult.message,
+          ),);
+          return StartShiftResult.error;
+      }
+    }
+
     final result = await _shiftRepository.startShift(
       organizationId: state.selectedOrganizationId,
-      latitude: latitude,
-      longitude: longitude,
+      latitude: lat,
+      longitude: lng,
     );
 
     return result.fold(
@@ -131,6 +167,10 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         return StartShiftResult.error;
       },
     );
+  }
+
+  void clearLowAccuracyWarning() {
+    emit(state.copyWith(showLowAccuracyWarning: false));
   }
 
   Future<bool> pauseShift() async {
@@ -263,4 +303,10 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }
 }
 
-enum StartShiftResult { success, error }
+enum StartShiftResult {
+  success,
+  error,
+  geoServiceDisabled,
+  geoDenied,
+  geoDeniedForever,
+}

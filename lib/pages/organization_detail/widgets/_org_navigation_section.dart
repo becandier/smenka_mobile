@@ -6,74 +6,102 @@ class _OrgNavigationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<OrganizationDetailCubit>();
-    final orgId = cubit.state.organization.data?.id ?? '';
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.orgDetailTitle,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-          const SizedBox(height: 12),
-          BlocSelector<OrganizationDetailCubit, OrganizationDetailState,
-              SectionData<List<Member>>>(
-            selector: (state) => state.members,
-            builder: (context, membersSection) {
-              final count = membersSection.data?.length ?? 0;
-              return _NavItem(
+    return BlocSelector<OrganizationDetailCubit, OrganizationDetailState,
+        ({
+      SectionData<List<Member>> members,
+      bool isAdminOrOwner,
+      bool isOwner,
+      String orgId,
+    })>(
+      selector: (state) {
+        final cubit = context.read<OrganizationDetailCubit>();
+        return (
+          members: state.members,
+          isAdminOrOwner: cubit.isAdminOrOwner,
+          isOwner: cubit.isOwner,
+          orgId: state.organization.data?.id ?? '',
+        );
+      },
+      builder: (context, data) {
+        final count = data.members.data?.length ?? 0;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.orgDetailTitle,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              const SizedBox(height: 12),
+              _NavItem(
                 icon: Icons.people_outline,
                 title: l10n.orgDetailMembers,
                 trailing: _CountBadge(count: count),
                 onTap: () => context.router.push(
-                  OrgMembersRoute(orgId: orgId),
+                  OrgMembersRoute(orgId: data.orgId),
                 ),
-              );
-            },
+              ),
+              if (data.isAdminOrOwner) ...[
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.location_on_outlined,
+                  title: l10n.orgDetailLocations,
+                  onTap: () => context.router.push(
+                    WorkLocationsRoute(orgId: data.orgId),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.badge_outlined,
+                  title: l10n.orgDetailRoles,
+                  onTap: () => context.router.push(
+                    RolesRoute(orgId: data.orgId),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.checklist,
+                  title: l10n.orgDetailChecklists,
+                  onTap: () => context.router.push(
+                    ChecklistTemplatesRoute(orgId: data.orgId),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.schedule_outlined,
+                  title: l10n.orgDetailShifts,
+                  onTap: () => context.router.push(
+                    OrgShiftsRoute(orgId: data.orgId),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.bar_chart_outlined,
+                  title: l10n.orgDetailStats,
+                  onTap: () => context.router.push(
+                    OrgStatsRoute(orgId: data.orgId),
+                  ),
+                ),
+              ],
+              if (data.isAdminOrOwner) ...[
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.settings_outlined,
+                  title: l10n.orgDetailSettings,
+                  onTap: () => context.router.push(
+                    OrgSettingsRoute(orgId: data.orgId),
+                  ),
+                ),
+              ],
+            ],
           ),
-          if (cubit.isAdminOrOwner) ...[
-            const SizedBox(height: 8),
-            _NavItem(
-              icon: Icons.location_on_outlined,
-              title: l10n.orgDetailLocations,
-              onTap: () => context.router.push(
-                WorkLocationsRoute(orgId: orgId),
-              ),
-            ),
-            const SizedBox(height: 8),
-            _NavItem(
-              icon: Icons.schedule_outlined,
-              title: l10n.orgDetailShifts,
-              onTap: () => context.router.push(
-                OrgShiftsRoute(orgId: orgId),
-              ),
-            ),
-            const SizedBox(height: 8),
-            _NavItem(
-              icon: Icons.bar_chart_outlined,
-              title: l10n.orgDetailStats,
-              onTap: () => context.router.push(
-                OrgStatsRoute(orgId: orgId),
-              ),
-            ),
-          ],
-          if (cubit.isOwner) ...[
-            const SizedBox(height: 8),
-            _NavItem(
-              icon: Icons.settings_outlined,
-              title: l10n.orgDetailSettings,
-              onTap: () => context.router.push(
-                OrgSettingsRoute(orgId: orgId),
-              ),
-            ),
-          ],
-        ],
-      ),
+        );
+      },
     );
   }
 }

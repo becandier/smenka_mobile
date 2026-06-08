@@ -13,6 +13,8 @@ class _SuccessApp extends StatefulWidget {
     required this.authRepository,
     required this.shiftRepository,
     required this.organizationRepository,
+    required this.organizationRoleRepository,
+    required this.checklistRepository,
     required this.userRepository,
     required this.locationRepository,
     required this.deepLinkService,
@@ -29,6 +31,8 @@ class _SuccessApp extends StatefulWidget {
   final AuthRepository authRepository;
   final ShiftRepository shiftRepository;
   final OrganizationRepository organizationRepository;
+  final OrganizationRoleRepository organizationRoleRepository;
+  final ChecklistRepository checklistRepository;
   final UserRepository userRepository;
   final LocationRepository locationRepository;
   final DeepLinkService deepLinkService;
@@ -112,6 +116,12 @@ class _SuccessAppState extends State<_SuccessApp> {
         ),
         RepositoryProvider<OrganizationRepository>.value(
           value: widget.organizationRepository,
+        ),
+        RepositoryProvider<OrganizationRoleRepository>.value(
+          value: widget.organizationRoleRepository,
+        ),
+        RepositoryProvider<ChecklistRepository>.value(
+          value: widget.checklistRepository,
         ),
         RepositoryProvider<UserRepository>.value(
           value: widget.userRepository,

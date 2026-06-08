@@ -16,10 +16,12 @@ import 'package:smenka_mobile/core/deep_link/deep_link_service.dart';
 import 'package:smenka_mobile/core/deep_link/pending_invite_storage.dart';
 import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
-import 'package:smenka_mobile/data/domain/shift/_shift.dart';
-import 'package:smenka_mobile/data/domain/organization/_organization.dart';
-import 'package:smenka_mobile/data/domain/user/_user.dart';
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/location/_location.dart';
+import 'package:smenka_mobile/data/domain/organization/_organization.dart';
+import 'package:smenka_mobile/data/domain/organization_role/_organization_role.dart';
+import 'package:smenka_mobile/data/domain/shift/_shift.dart';
+import 'package:smenka_mobile/data/domain/user/_user.dart';
 import 'package:smenka_mobile/pages/debug/data/repository/_repository.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -103,6 +105,8 @@ class MainAppCubit extends Cubit<MainAppState> {
       await _initService(UserRepositoryInitializer(dio: dio));
       await _initService(ShiftRepositoryInitializer(dio: dio));
       await _initService(OrganizationRepositoryInitializer(dio: dio));
+      await _initService(OrganizationRoleRepositoryInitializer(dio: dio));
+      await _initService(ChecklistRepositoryInitializer(dio: dio));
       await _initService(LocationRepositoryInitializer(dio: dio));
 
       // Фаза 5.5: Deep Links
@@ -142,6 +146,9 @@ class MainAppCubit extends Cubit<MainAppState> {
           authRepository: _serviceLocator.get<AuthRepository>(),
           shiftRepository: _serviceLocator.get<ShiftRepository>(),
           organizationRepository: _serviceLocator.get<OrganizationRepository>(),
+          organizationRoleRepository:
+              _serviceLocator.get<OrganizationRoleRepository>(),
+          checklistRepository: _serviceLocator.get<ChecklistRepository>(),
           userRepository: _serviceLocator.get<UserRepository>(),
           locationRepository: _serviceLocator.get<LocationRepository>(),
           deepLinkService: _serviceLocator.get<DeepLinkService>(),

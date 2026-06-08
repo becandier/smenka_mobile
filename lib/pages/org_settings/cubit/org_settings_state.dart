@@ -11,6 +11,7 @@ abstract class OrgSettingsState with _$OrgSettingsState {
     @Default(SectionData<OrgSettings>()) SectionData<OrgSettings> settings,
     @Default(FeatureStatus.initial) FeatureStatus saveStatus,
     @Default(false) bool geoCheckEnabled,
+    @Default(false) bool autoFinishEnabled,
     int? autoFinishHours,
     int? maxPauseMinutes,
     int? maxPausesPerShift,

@@ -92,7 +92,7 @@ class OrganizationDataSource {
   }) async {
     final data = <String, dynamic>{};
     if (geoCheckEnabled != null) data['geo_check_enabled'] = geoCheckEnabled;
-    if (autoFinishHours != null) data['auto_finish_hours'] = autoFinishHours;
+    data['auto_finish_hours'] = autoFinishHours;
     if (maxPauseMinutes != null) data['max_pause_minutes'] = maxPauseMinutes;
     if (maxPausesPerShift != null) {
       data['max_pauses_per_shift'] = maxPausesPerShift;

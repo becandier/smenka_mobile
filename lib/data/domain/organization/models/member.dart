@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:smenka_mobile/data/domain/organization_role/models/_models.dart';
 
 part 'member.freezed.dart';
 
@@ -13,6 +14,7 @@ abstract class Member with _$Member {
     required String userName,
     required String userEmail,
     required MemberRole role,
+    OrganizationRole? customRole,
     required DateTime joinedAt,
   }) = _Member;
 }

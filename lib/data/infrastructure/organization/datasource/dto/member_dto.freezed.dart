@@ -20,6 +20,7 @@ mixin _$MemberDto {
   String get userName;
   String get userEmail;
   String get role;
+  OrganizationRoleDto? get customRole;
   DateTime get joinedAt;
 
   /// Create a copy of MemberDto
@@ -46,6 +47,8 @@ mixin _$MemberDto {
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRole, customRole) ||
+                other.customRole == customRole) &&
             (identical(other.joinedAt, joinedAt) ||
                 other.joinedAt == joinedAt));
   }
@@ -53,11 +56,11 @@ mixin _$MemberDto {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, joinedAt);
+      userName, userEmail, role, customRole, joinedAt);
 
   @override
   String toString() {
-    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt)';
+    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, customRole: $customRole, joinedAt: $joinedAt)';
   }
 }
 
@@ -73,7 +76,10 @@ abstract mixin class $MemberDtoCopyWith<$Res> {
       String userName,
       String userEmail,
       String role,
+      OrganizationRoleDto? customRole,
       DateTime joinedAt});
+
+  $OrganizationRoleDtoCopyWith<$Res>? get customRole;
 }
 
 /// @nodoc
@@ -94,6 +100,7 @@ class _$MemberDtoCopyWithImpl<$Res> implements $MemberDtoCopyWith<$Res> {
     Object? userName = null,
     Object? userEmail = null,
     Object? role = null,
+    Object? customRole = freezed,
     Object? joinedAt = null,
   }) {
     return _then(_self.copyWith(
@@ -121,11 +128,29 @@ class _$MemberDtoCopyWithImpl<$Res> implements $MemberDtoCopyWith<$Res> {
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as String,
+      customRole: freezed == customRole
+          ? _self.customRole
+          : customRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRoleDto?,
       joinedAt: null == joinedAt
           ? _self.joinedAt
           : joinedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
     ));
+  }
+
+  /// Create a copy of MemberDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OrganizationRoleDtoCopyWith<$Res>? get customRole {
+    if (_self.customRole == null) {
+      return null;
+    }
+
+    return $OrganizationRoleDtoCopyWith<$Res>(_self.customRole!, (value) {
+      return _then(_self.copyWith(customRole: value));
+    });
   }
 }
 
@@ -222,16 +247,30 @@ extension MemberDtoPatterns on MemberDto {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String id, String organizationId, String userId,
-            String userName, String userEmail, String role, DateTime joinedAt)?
+    TResult Function(
+            String id,
+            String organizationId,
+            String userId,
+            String userName,
+            String userEmail,
+            String role,
+            OrganizationRoleDto? customRole,
+            DateTime joinedAt)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _MemberDto() when $default != null:
-        return $default(_that.id, _that.organizationId, _that.userId,
-            _that.userName, _that.userEmail, _that.role, _that.joinedAt);
+        return $default(
+            _that.id,
+            _that.organizationId,
+            _that.userId,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRole,
+            _that.joinedAt);
       case _:
         return orElse();
     }
@@ -252,15 +291,29 @@ extension MemberDtoPatterns on MemberDto {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String id, String organizationId, String userId,
-            String userName, String userEmail, String role, DateTime joinedAt)
+    TResult Function(
+            String id,
+            String organizationId,
+            String userId,
+            String userName,
+            String userEmail,
+            String role,
+            OrganizationRoleDto? customRole,
+            DateTime joinedAt)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MemberDto():
-        return $default(_that.id, _that.organizationId, _that.userId,
-            _that.userName, _that.userEmail, _that.role, _that.joinedAt);
+        return $default(
+            _that.id,
+            _that.organizationId,
+            _that.userId,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRole,
+            _that.joinedAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -280,15 +333,29 @@ extension MemberDtoPatterns on MemberDto {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String id, String organizationId, String userId,
-            String userName, String userEmail, String role, DateTime joinedAt)?
+    TResult? Function(
+            String id,
+            String organizationId,
+            String userId,
+            String userName,
+            String userEmail,
+            String role,
+            OrganizationRoleDto? customRole,
+            DateTime joinedAt)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MemberDto() when $default != null:
-        return $default(_that.id, _that.organizationId, _that.userId,
-            _that.userName, _that.userEmail, _that.role, _that.joinedAt);
+        return $default(
+            _that.id,
+            _that.organizationId,
+            _that.userId,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRole,
+            _that.joinedAt);
       case _:
         return null;
     }
@@ -306,6 +373,7 @@ class _MemberDto implements MemberDto {
       required this.userName,
       required this.userEmail,
       required this.role,
+      this.customRole,
       required this.joinedAt});
   factory _MemberDto.fromJson(Map<String, dynamic> json) =>
       _$MemberDtoFromJson(json);
@@ -322,6 +390,8 @@ class _MemberDto implements MemberDto {
   final String userEmail;
   @override
   final String role;
+  @override
+  final OrganizationRoleDto? customRole;
   @override
   final DateTime joinedAt;
 
@@ -354,6 +424,8 @@ class _MemberDto implements MemberDto {
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRole, customRole) ||
+                other.customRole == customRole) &&
             (identical(other.joinedAt, joinedAt) ||
                 other.joinedAt == joinedAt));
   }
@@ -361,11 +433,11 @@ class _MemberDto implements MemberDto {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, joinedAt);
+      userName, userEmail, role, customRole, joinedAt);
 
   @override
   String toString() {
-    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt)';
+    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, customRole: $customRole, joinedAt: $joinedAt)';
   }
 }
 
@@ -384,7 +456,11 @@ abstract mixin class _$MemberDtoCopyWith<$Res>
       String userName,
       String userEmail,
       String role,
+      OrganizationRoleDto? customRole,
       DateTime joinedAt});
+
+  @override
+  $OrganizationRoleDtoCopyWith<$Res>? get customRole;
 }
 
 /// @nodoc
@@ -405,6 +481,7 @@ class __$MemberDtoCopyWithImpl<$Res> implements _$MemberDtoCopyWith<$Res> {
     Object? userName = null,
     Object? userEmail = null,
     Object? role = null,
+    Object? customRole = freezed,
     Object? joinedAt = null,
   }) {
     return _then(_MemberDto(
@@ -432,11 +509,29 @@ class __$MemberDtoCopyWithImpl<$Res> implements _$MemberDtoCopyWith<$Res> {
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as String,
+      customRole: freezed == customRole
+          ? _self.customRole
+          : customRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRoleDto?,
       joinedAt: null == joinedAt
           ? _self.joinedAt
           : joinedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
     ));
+  }
+
+  /// Create a copy of MemberDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OrganizationRoleDtoCopyWith<$Res>? get customRole {
+    if (_self.customRole == null) {
+      return null;
+    }
+
+    return $OrganizationRoleDtoCopyWith<$Res>(_self.customRole!, (value) {
+      return _then(_self.copyWith(customRole: value));
+    });
   }
 }
 

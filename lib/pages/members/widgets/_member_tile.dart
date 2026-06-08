@@ -10,18 +10,16 @@ class _MemberTile extends StatelessWidget {
     final l10n = context.l10n;
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
-    final cubit = context.read<MembersCubit>();
-    final isSelf = member.userId == cubit.currentUserId;
-
-    final roleLabel = switch (member.role) {
-      MemberRole.admin => l10n.roleAdmin,
-      MemberRole.employee => l10n.roleEmployee,
-    };
-
-    final roleColor = switch (member.role) {
-      MemberRole.admin => appColors.primary,
-      MemberRole.employee => appColors.secondary,
-    };
+    final data = context
+        .select<MembersCubit, ({bool isSelf, bool canManage, String orgId})>(
+      (cubit) => (
+        isSelf: member.userId == cubit.state.currentUserId,
+        canManage: cubit.state.canManage,
+        orgId: cubit.orgId,
+      ),
+    );
+    final isSelf = data.isSelf;
+    final canManage = data.canManage;
 
     final joinedDate =
         '${member.joinedAt.day.toString().padLeft(2, '0')}.'
@@ -33,7 +31,7 @@ class _MemberTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onLongPress: isSelf ? null : () => _showActions(context),
+        onTap: isSelf ? null : () => _openDetail(context, data.orgId),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
@@ -79,22 +77,9 @@ class _MemberTile extends StatelessWidget {
                   ],
                 ),
               ),
-              Material(
-                color: roleColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  child: Text(
-                    roleLabel,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: roleColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              MemberRoleBadges(
+                systemRole: member.role,
+                customRole: member.customRole,
               ),
             ],
           ),
@@ -102,7 +87,7 @@ class _MemberTile extends StatelessWidget {
       ),
     );
 
-    if (!isSelf) {
+    if (!isSelf && canManage) {
       tile = Dismissible(
         key: ValueKey(member.id),
         direction: DismissDirection.endToStart,
@@ -123,6 +108,10 @@ class _MemberTile extends StatelessWidget {
     }
 
     return tile;
+  }
+
+  void _openDetail(BuildContext context, String orgId) {
+    context.router.push(MemberDetailRoute(orgId: orgId, member: member));
   }
 
   Future<bool> _confirmRemove(BuildContext context) async {
@@ -156,62 +145,5 @@ class _MemberTile extends StatelessWidget {
     }
 
     return didRemove;
-  }
-
-  void _showActions(BuildContext context) {
-    final l10n = context.l10n;
-    final appColors = context.appColors;
-    final cubit = context.read<MembersCubit>();
-
-    final isAdmin = member.role == MemberRole.admin;
-
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (sheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(
-                  isAdmin ? Icons.person_outline : Icons.admin_panel_settings,
-                  color: appColors.primary,
-                ),
-                title: Text(
-                  isAdmin ? l10n.membersMakeEmployee : l10n.membersMakeAdmin,
-                ),
-                onTap: () async {
-                  Navigator.of(sheetContext).pop();
-                  final newRole =
-                      isAdmin ? MemberRole.employee : MemberRole.admin;
-                  final didUpdate = await cubit.updateMemberRole(
-                    member.userId,
-                    role: newRole,
-                  );
-                  if (didUpdate && context.mounted) {
-                    context.modals.showSuccess(l10n.membersRoleChanged);
-                  }
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.delete_outline,
-                  color: appColors.error,
-                ),
-                title: Text(
-                  l10n.membersRemove,
-                  style: TextStyle(color: appColors.error),
-                ),
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  _confirmRemove(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

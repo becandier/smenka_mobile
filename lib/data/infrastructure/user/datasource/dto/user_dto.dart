@@ -10,10 +10,10 @@ abstract class UserDto with _$UserDto {
     required String id,
     required String email,
     required String name,
-    String? phone,
     required bool isVerified,
     required String role,
     required DateTime createdAt,
+    String? phone,
   }) = _UserDto;
 
   factory UserDto.fromJson(Map<String, dynamic> json) =>

@@ -89,12 +89,21 @@ class _OrgSettingsForm extends StatelessWidget {
                 onChanged: cubit.setGeoCheck,
               ),
               const SizedBox(height: 16),
-              _NumberField(
-                label: l10n.orgSettingsAutoFinish,
+              _GeoCheckTile(
+                title: l10n.orgSettingsAutoFinish,
                 description: l10n.orgSettingsAutoFinishDesc,
-                value: state.autoFinishHours,
-                onChanged: cubit.setAutoFinishHours,
+                value: state.autoFinishEnabled,
+                onChanged: cubit.setAutoFinishEnabled,
               ),
+              if (state.autoFinishEnabled) ...[
+                const SizedBox(height: 12),
+                _NumberField(
+                  label: l10n.orgSettingsAutoFinishHours,
+                  description: l10n.orgSettingsAutoFinishHoursDesc,
+                  value: state.autoFinishHours,
+                  onChanged: cubit.setAutoFinishHours,
+                ),
+              ],
               const SizedBox(height: 12),
               _NumberField(
                 label: l10n.orgSettingsMaxPause,
@@ -128,10 +137,14 @@ class _GeoCheckTile extends StatelessWidget {
   const _GeoCheckTile({
     required this.value,
     required this.onChanged,
+    this.title,
+    this.description,
   });
 
   final bool value;
   final ValueChanged<bool> onChanged;
+  final String? title;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -144,11 +157,11 @@ class _GeoCheckTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: SwitchListTile.adaptive(
         title: Text(
-          l10n.orgSettingsGeoCheck,
+          title ?? l10n.orgSettingsGeoCheck,
           style: textTheme.titleSmall,
         ),
         subtitle: Text(
-          l10n.orgSettingsGeoCheckDesc,
+          description ?? l10n.orgSettingsGeoCheckDesc,
           style: textTheme.bodySmall?.copyWith(
             color: textTheme.bodySmall?.color?.withValues(alpha: 0.6),
           ),

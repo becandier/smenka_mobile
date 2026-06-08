@@ -53,17 +53,8 @@ class _OrganizationsSection extends StatelessWidget {
                 );
               }
 
-              return BlocSelector<ProfileCubit, ProfileState,
-                  SectionData<User>>(
-                selector: (state) => state.user,
-                builder: (context, userSection) {
-                  final userId = userSection.data?.id;
-                  return Column(
-                    children: orgs
-                        .map((org) => _OrgCard(org: org, userId: userId))
-                        .toList(),
-                  );
-                },
+              return Column(
+                children: orgs.map((org) => _OrgCard(org: org)).toList(),
               );
             },
           ),
@@ -74,18 +65,17 @@ class _OrganizationsSection extends StatelessWidget {
 }
 
 class _OrgCard extends StatelessWidget {
-  const _OrgCard({required this.org, this.userId});
+  const _OrgCard({required this.org});
 
   final Organization org;
-  final String? userId;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
-    final isOwner = userId != null && org.ownerId == userId;
-    final roleLabel = isOwner ? l10n.roleOwner : l10n.roleMember;
+
+    final isOwner = org.myRole.isOwner;
+    final systemRole = org.myRole.asSystemRole;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -125,26 +115,12 @@ class _OrgCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Material(
-                  color: isOwner
-                      ? appColors.primary.withValues(alpha: 0.1)
-                      : appColors.secondary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    child: Text(
-                      roleLabel,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: isOwner
-                            ? appColors.primary
-                            : appColors.secondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                MemberRoleBadges(
+                  isOwner: isOwner,
+                  systemRole: systemRole,
+                  customRole: org.myCustomRole,
+                  direction: Axis.horizontal,
+                  compact: true,
                 ),
               ],
             ),

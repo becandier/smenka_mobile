@@ -15,8 +15,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MembersState {
   SectionData<List<Member>> get members;
+  OrgMembershipRole? get viewerRole;
   FeatureStatus get actionStatus;
   String? get actionError;
+  String get currentUserId;
 
   /// Create a copy of MembersState
   /// with the given fields replaced by the non-null parameter values.
@@ -32,19 +34,23 @@ mixin _$MembersState {
         (other.runtimeType == runtimeType &&
             other is MembersState &&
             (identical(other.members, members) || other.members == members) &&
+            (identical(other.viewerRole, viewerRole) ||
+                other.viewerRole == viewerRole) &&
             (identical(other.actionStatus, actionStatus) ||
                 other.actionStatus == actionStatus) &&
             (identical(other.actionError, actionError) ||
-                other.actionError == actionError));
+                other.actionError == actionError) &&
+            (identical(other.currentUserId, currentUserId) ||
+                other.currentUserId == currentUserId));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, members, actionStatus, actionError);
+  int get hashCode => Object.hash(runtimeType, members, viewerRole,
+      actionStatus, actionError, currentUserId);
 
   @override
   String toString() {
-    return 'MembersState(members: $members, actionStatus: $actionStatus, actionError: $actionError)';
+    return 'MembersState(members: $members, viewerRole: $viewerRole, actionStatus: $actionStatus, actionError: $actionError, currentUserId: $currentUserId)';
   }
 }
 
@@ -56,8 +62,10 @@ abstract mixin class $MembersStateCopyWith<$Res> {
   @useResult
   $Res call(
       {SectionData<List<Member>> members,
+      OrgMembershipRole? viewerRole,
       FeatureStatus actionStatus,
-      String? actionError});
+      String? actionError,
+      String currentUserId});
 
   $SectionDataCopyWith<List<Member>, $Res> get members;
 }
@@ -75,14 +83,20 @@ class _$MembersStateCopyWithImpl<$Res> implements $MembersStateCopyWith<$Res> {
   @override
   $Res call({
     Object? members = null,
+    Object? viewerRole = freezed,
     Object? actionStatus = null,
     Object? actionError = freezed,
+    Object? currentUserId = null,
   }) {
     return _then(_self.copyWith(
       members: null == members
           ? _self.members
           : members // ignore: cast_nullable_to_non_nullable
               as SectionData<List<Member>>,
+      viewerRole: freezed == viewerRole
+          ? _self.viewerRole
+          : viewerRole // ignore: cast_nullable_to_non_nullable
+              as OrgMembershipRole?,
       actionStatus: null == actionStatus
           ? _self.actionStatus
           : actionStatus // ignore: cast_nullable_to_non_nullable
@@ -91,6 +105,10 @@ class _$MembersStateCopyWithImpl<$Res> implements $MembersStateCopyWith<$Res> {
           ? _self.actionError
           : actionError // ignore: cast_nullable_to_non_nullable
               as String?,
+      currentUserId: null == currentUserId
+          ? _self.currentUserId
+          : currentUserId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 
@@ -198,15 +216,20 @@ extension MembersStatePatterns on MembersState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SectionData<List<Member>> members,
-            FeatureStatus actionStatus, String? actionError)?
+    TResult Function(
+            SectionData<List<Member>> members,
+            OrgMembershipRole? viewerRole,
+            FeatureStatus actionStatus,
+            String? actionError,
+            String currentUserId)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _MembersState() when $default != null:
-        return $default(_that.members, _that.actionStatus, _that.actionError);
+        return $default(_that.members, _that.viewerRole, _that.actionStatus,
+            _that.actionError, _that.currentUserId);
       case _:
         return orElse();
     }
@@ -227,14 +250,19 @@ extension MembersStatePatterns on MembersState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SectionData<List<Member>> members,
-            FeatureStatus actionStatus, String? actionError)
+    TResult Function(
+            SectionData<List<Member>> members,
+            OrgMembershipRole? viewerRole,
+            FeatureStatus actionStatus,
+            String? actionError,
+            String currentUserId)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MembersState():
-        return $default(_that.members, _that.actionStatus, _that.actionError);
+        return $default(_that.members, _that.viewerRole, _that.actionStatus,
+            _that.actionError, _that.currentUserId);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -254,14 +282,19 @@ extension MembersStatePatterns on MembersState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(SectionData<List<Member>> members,
-            FeatureStatus actionStatus, String? actionError)?
+    TResult? Function(
+            SectionData<List<Member>> members,
+            OrgMembershipRole? viewerRole,
+            FeatureStatus actionStatus,
+            String? actionError,
+            String currentUserId)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MembersState() when $default != null:
-        return $default(_that.members, _that.actionStatus, _that.actionError);
+        return $default(_that.members, _that.viewerRole, _that.actionStatus,
+            _that.actionError, _that.currentUserId);
       case _:
         return null;
     }
@@ -270,20 +303,28 @@ extension MembersStatePatterns on MembersState {
 
 /// @nodoc
 
-class _MembersState implements MembersState {
+class _MembersState extends MembersState {
   const _MembersState(
       {this.members = const SectionData<List<Member>>(),
+      this.viewerRole,
       this.actionStatus = FeatureStatus.initial,
-      this.actionError});
+      this.actionError,
+      this.currentUserId = ''})
+      : super._();
 
   @override
   @JsonKey()
   final SectionData<List<Member>> members;
   @override
+  final OrgMembershipRole? viewerRole;
+  @override
   @JsonKey()
   final FeatureStatus actionStatus;
   @override
   final String? actionError;
+  @override
+  @JsonKey()
+  final String currentUserId;
 
   /// Create a copy of MembersState
   /// with the given fields replaced by the non-null parameter values.
@@ -299,19 +340,23 @@ class _MembersState implements MembersState {
         (other.runtimeType == runtimeType &&
             other is _MembersState &&
             (identical(other.members, members) || other.members == members) &&
+            (identical(other.viewerRole, viewerRole) ||
+                other.viewerRole == viewerRole) &&
             (identical(other.actionStatus, actionStatus) ||
                 other.actionStatus == actionStatus) &&
             (identical(other.actionError, actionError) ||
-                other.actionError == actionError));
+                other.actionError == actionError) &&
+            (identical(other.currentUserId, currentUserId) ||
+                other.currentUserId == currentUserId));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, members, actionStatus, actionError);
+  int get hashCode => Object.hash(runtimeType, members, viewerRole,
+      actionStatus, actionError, currentUserId);
 
   @override
   String toString() {
-    return 'MembersState(members: $members, actionStatus: $actionStatus, actionError: $actionError)';
+    return 'MembersState(members: $members, viewerRole: $viewerRole, actionStatus: $actionStatus, actionError: $actionError, currentUserId: $currentUserId)';
   }
 }
 
@@ -325,8 +370,10 @@ abstract mixin class _$MembersStateCopyWith<$Res>
   @useResult
   $Res call(
       {SectionData<List<Member>> members,
+      OrgMembershipRole? viewerRole,
       FeatureStatus actionStatus,
-      String? actionError});
+      String? actionError,
+      String currentUserId});
 
   @override
   $SectionDataCopyWith<List<Member>, $Res> get members;
@@ -346,14 +393,20 @@ class __$MembersStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? members = null,
+    Object? viewerRole = freezed,
     Object? actionStatus = null,
     Object? actionError = freezed,
+    Object? currentUserId = null,
   }) {
     return _then(_MembersState(
       members: null == members
           ? _self.members
           : members // ignore: cast_nullable_to_non_nullable
               as SectionData<List<Member>>,
+      viewerRole: freezed == viewerRole
+          ? _self.viewerRole
+          : viewerRole // ignore: cast_nullable_to_non_nullable
+              as OrgMembershipRole?,
       actionStatus: null == actionStatus
           ? _self.actionStatus
           : actionStatus // ignore: cast_nullable_to_non_nullable
@@ -362,6 +415,10 @@ class __$MembersStateCopyWithImpl<$Res>
           ? _self.actionError
           : actionError // ignore: cast_nullable_to_non_nullable
               as String?,
+      currentUserId: null == currentUserId
+          ? _self.currentUserId
+          : currentUserId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 

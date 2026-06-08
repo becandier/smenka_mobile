@@ -1,3 +1,6 @@
+//
+//ignore_for_file: unintended_html_in_doc_comment
+
 import 'package:dio/dio.dart';
 import 'package:smenka_mobile/core/network/api_exceptions.dart';
 import 'package:smenka_mobile/core/network/task.dart';

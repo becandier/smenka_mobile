@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$OrgSettingsDto {
   String get organizationId;
   bool get geoCheckEnabled;
-  int get autoFinishHours;
+  int? get autoFinishHours;
   int? get maxPauseMinutes;
   int? get maxPausesPerShift;
 
@@ -68,7 +68,7 @@ abstract mixin class $OrgSettingsDtoCopyWith<$Res> {
   $Res call(
       {String organizationId,
       bool geoCheckEnabled,
-      int autoFinishHours,
+      int? autoFinishHours,
       int? maxPauseMinutes,
       int? maxPausesPerShift});
 }
@@ -88,7 +88,7 @@ class _$OrgSettingsDtoCopyWithImpl<$Res>
   $Res call({
     Object? organizationId = null,
     Object? geoCheckEnabled = null,
-    Object? autoFinishHours = null,
+    Object? autoFinishHours = freezed,
     Object? maxPauseMinutes = freezed,
     Object? maxPausesPerShift = freezed,
   }) {
@@ -101,10 +101,10 @@ class _$OrgSettingsDtoCopyWithImpl<$Res>
           ? _self.geoCheckEnabled
           : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
-      autoFinishHours: null == autoFinishHours
+      autoFinishHours: freezed == autoFinishHours
           ? _self.autoFinishHours
           : autoFinishHours // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       maxPauseMinutes: freezed == maxPauseMinutes
           ? _self.maxPauseMinutes
           : maxPauseMinutes // ignore: cast_nullable_to_non_nullable
@@ -211,7 +211,7 @@ extension OrgSettingsDtoPatterns on OrgSettingsDto {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String organizationId, bool geoCheckEnabled,
-            int autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
+            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
         $default, {
     required TResult orElse(),
   }) {
@@ -245,7 +245,7 @@ extension OrgSettingsDtoPatterns on OrgSettingsDto {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String organizationId, bool geoCheckEnabled,
-            int autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)
+            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)
         $default,
   ) {
     final _that = this;
@@ -277,7 +277,7 @@ extension OrgSettingsDtoPatterns on OrgSettingsDto {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(String organizationId, bool geoCheckEnabled,
-            int autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
+            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
         $default,
   ) {
     final _that = this;
@@ -302,7 +302,7 @@ class _OrgSettingsDto implements OrgSettingsDto {
   const _OrgSettingsDto(
       {required this.organizationId,
       required this.geoCheckEnabled,
-      required this.autoFinishHours,
+      this.autoFinishHours,
       this.maxPauseMinutes,
       this.maxPausesPerShift});
   factory _OrgSettingsDto.fromJson(Map<String, dynamic> json) =>
@@ -313,7 +313,7 @@ class _OrgSettingsDto implements OrgSettingsDto {
   @override
   final bool geoCheckEnabled;
   @override
-  final int autoFinishHours;
+  final int? autoFinishHours;
   @override
   final int? maxPauseMinutes;
   @override
@@ -373,7 +373,7 @@ abstract mixin class _$OrgSettingsDtoCopyWith<$Res>
   $Res call(
       {String organizationId,
       bool geoCheckEnabled,
-      int autoFinishHours,
+      int? autoFinishHours,
       int? maxPauseMinutes,
       int? maxPausesPerShift});
 }
@@ -393,7 +393,7 @@ class __$OrgSettingsDtoCopyWithImpl<$Res>
   $Res call({
     Object? organizationId = null,
     Object? geoCheckEnabled = null,
-    Object? autoFinishHours = null,
+    Object? autoFinishHours = freezed,
     Object? maxPauseMinutes = freezed,
     Object? maxPausesPerShift = freezed,
   }) {
@@ -406,10 +406,10 @@ class __$OrgSettingsDtoCopyWithImpl<$Res>
           ? _self.geoCheckEnabled
           : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
-      autoFinishHours: null == autoFinishHours
+      autoFinishHours: freezed == autoFinishHours
           ? _self.autoFinishHours
           : autoFinishHours // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       maxPauseMinutes: freezed == maxPauseMinutes
           ? _self.maxPauseMinutes
           : maxPauseMinutes // ignore: cast_nullable_to_non_nullable

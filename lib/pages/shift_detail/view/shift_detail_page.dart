@@ -2,7 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/shift_detail/cubit/shift_detail_cubit.dart';
@@ -10,6 +13,7 @@ import 'package:smenka_mobile/pages/shift_detail/cubit/shift_detail_state.dart';
 
 part '../widgets/detail_info_section.dart';
 part '../widgets/detail_pause_list.dart';
+part '../widgets/detail_checklists_section.dart';
 
 @RoutePage()
 class ShiftDetailPage extends StatelessWidget {
@@ -42,6 +46,10 @@ class _ShiftDetailView extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             children: [
               _DetailInfoSection(shift: state.shift),
+              if (state.shift.organizationId != null) ...[
+                const SizedBox(height: 24),
+                _DetailChecklistsSection(shift: state.shift),
+              ],
               const SizedBox(height: 24),
               _DetailPauseList(pauses: state.shift.pauses),
             ],

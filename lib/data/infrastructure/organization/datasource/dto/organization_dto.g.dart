@@ -14,6 +14,12 @@ _OrganizationDto _$OrganizationDtoFromJson(Map<String, dynamic> json) =>
       inviteCode: json['invite_code'] as String,
       isDeleted: json['is_deleted'] as bool,
       createdAt: DateTime.parse(json['created_at'] as String),
+      geoCheckEnabled: json['geo_check_enabled'] as bool? ?? false,
+      myRole: json['my_role'] as String?,
+      myCustomRole: json['my_custom_role'] == null
+          ? null
+          : OrganizationRoleDto.fromJson(
+              json['my_custom_role'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$OrganizationDtoToJson(_OrganizationDto instance) =>
@@ -24,4 +30,7 @@ Map<String, dynamic> _$OrganizationDtoToJson(_OrganizationDto instance) =>
       'invite_code': instance.inviteCode,
       'is_deleted': instance.isDeleted,
       'created_at': instance.createdAt.toIso8601String(),
+      'geo_check_enabled': instance.geoCheckEnabled,
+      'my_role': instance.myRole,
+      'my_custom_role': instance.myCustomRole,
     };

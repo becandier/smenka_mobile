@@ -1,10 +1,9 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
-import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 /// Инициализатор логгера Talker
 class TalkerInitializer implements ServiceInitializer {
@@ -21,9 +20,6 @@ class TalkerInitializer implements ServiceInitializer {
     locator.register<Talker>(talker);
     Bloc.observer = TalkerBlocObserver(
       talker: talker,
-      settings: const TalkerBlocLoggerSettings(
-        printChanges: true,
-      ),
     );
     // Устанавливаем обработчик ошибок Flutter с использованием Talker
     FlutterError.onError = (errorDetails) {

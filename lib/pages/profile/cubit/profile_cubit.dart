@@ -18,13 +18,12 @@ class ProfileCubit extends Cubit<ProfileState> {
         _organizationRepository = organizationRepository,
         _authCubit = authCubit,
         super(const ProfileState()) {
-    _orgSubscription = _organizationRepository
-        .watchMyOrganizations()
-        .listen((orgs) {
+    _orgSubscription =
+        _organizationRepository.watchMyOrganizations().listen((orgs) {
       emit(state.copyWith(
         organizations: state.organizations.toSuccess(orgs),
       ),);
-    },);
+    });
     _init();
   }
 

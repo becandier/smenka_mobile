@@ -250,6 +250,34 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вы находитесь за пределами рабочей зоны';
 
   @override
+  String get geoPermissionDenied =>
+      'Для начала смены необходим доступ к геолокации';
+
+  @override
+  String get geoPermissionDeniedForeverTitle => 'Геолокация недоступна';
+
+  @override
+  String get geoPermissionDeniedForeverMessage =>
+      'Вы запретили доступ к геолокации. Откройте настройки приложения и разрешите доступ к местоположению.';
+
+  @override
+  String get geoOpenAppSettings => 'Открыть настройки';
+
+  @override
+  String get geoServiceDisabledTitle => 'Геолокация выключена';
+
+  @override
+  String get geoServiceDisabledMessage =>
+      'Включите геолокацию на устройстве для начала смены.';
+
+  @override
+  String get geoOpenSettings => 'Включить';
+
+  @override
+  String get geoLowAccuracy =>
+      'Низкая точность GPS — координаты могут быть неточными';
+
+  @override
   String get shiftConfirmFinish => 'Завершить смену?';
 
   @override
@@ -560,11 +588,17 @@ class AppLocalizationsRu extends AppLocalizations {
       'Проверять местоположение при начале смены';
 
   @override
-  String get orgSettingsAutoFinish => 'Автозавершение (часы)';
+  String get orgSettingsAutoFinish => 'Автозавершение';
 
   @override
   String get orgSettingsAutoFinishDesc =>
-      'Автоматически завершать смену через N часов';
+      'Автоматически завершать смену через заданное время';
+
+  @override
+  String get orgSettingsAutoFinishHours => 'Часы до завершения';
+
+  @override
+  String get orgSettingsAutoFinishHoursDesc => 'Количество часов (1–48)';
 
   @override
   String get orgSettingsMaxPause => 'Макс. пауза (минуты)';
@@ -684,6 +718,332 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get orgDetailLocations => 'Рабочие точки';
+
+  @override
+  String get orgDetailRoles => 'Роли';
+
+  @override
+  String get orgDetailChecklists => 'Чек-листы';
+
+  @override
+  String get rolesTitle => 'Роли';
+
+  @override
+  String get rolesEmpty => 'Ролей пока нет';
+
+  @override
+  String get rolesAdd => 'Новая роль';
+
+  @override
+  String get rolesCreate => 'Создать роль';
+
+  @override
+  String get rolesRename => 'Переименовать';
+
+  @override
+  String get rolesDelete => 'Удалить роль';
+
+  @override
+  String rolesDeleteConfirm(String name) {
+    return 'Удалить роль \"$name\"? У сотрудников с этой ролью она будет снята.';
+  }
+
+  @override
+  String get rolesNameLabel => 'Название роли';
+
+  @override
+  String get rolesNameHint => 'Например: Бариста';
+
+  @override
+  String get rolesNameRequired => 'Укажите название';
+
+  @override
+  String get rolesCreated => 'Роль создана';
+
+  @override
+  String get rolesRenamed => 'Роль переименована';
+
+  @override
+  String get rolesDeleted => 'Роль удалена';
+
+  @override
+  String get rolesSaveAction => 'Сохранить';
+
+  @override
+  String get rolesCreateAction => 'Создать';
+
+  @override
+  String get membersCustomRoleNone => 'Без роли';
+
+  @override
+  String get membersAssignRole => 'Назначить роль';
+
+  @override
+  String get membersAssignRoleTitle => 'Кастомная роль';
+
+  @override
+  String get membersCustomRoleAssigned => 'Роль назначена';
+
+  @override
+  String get membersCustomRoleCleared => 'Роль снята';
+
+  @override
+  String get memberDetailTitle => 'Сотрудник';
+
+  @override
+  String get memberDetailSystemRole => 'Системная роль';
+
+  @override
+  String get memberDetailCustomRole => 'Кастомная роль';
+
+  @override
+  String get memberDetailEffectiveSection => 'Эффективные чек-листы';
+
+  @override
+  String get memberDetailEffectiveHint =>
+      'Что получит сотрудник при старте смены';
+
+  @override
+  String get memberDetailEffectiveEmpty => 'Нет активных чек-листов';
+
+  @override
+  String get memberDetailSourceRole => 'От роли';
+
+  @override
+  String get memberDetailSourcePersonal => 'Персонально';
+
+  @override
+  String get memberDetailOverridesSection => 'Персональные исключения';
+
+  @override
+  String get memberDetailOverridesHint =>
+      'Добавленные поверх роли (+) или исключённые из роли (−) шаблоны';
+
+  @override
+  String get memberDetailOverridesEmpty => 'Нет персональных переопределений';
+
+  @override
+  String get memberDetailOverrideAction => 'Действия';
+
+  @override
+  String get memberDetailOverrideAdd => '+';
+
+  @override
+  String get memberDetailOverrideRemove => '−';
+
+  @override
+  String get memberDetailOverrideSwitchAdd => 'Добавить поверх роли';
+
+  @override
+  String get memberDetailOverrideSwitchRemove => 'Исключить из роли';
+
+  @override
+  String get memberDetailOverrideClear => 'Снять переопределение';
+
+  @override
+  String get checklistTemplatesTitle => 'Шаблоны чек-листов';
+
+  @override
+  String get checklistTemplatesEmpty => 'Шаблонов пока нет';
+
+  @override
+  String get checklistTemplatesAdd => 'Новый шаблон';
+
+  @override
+  String get checklistTemplatesCreate => 'Создать шаблон';
+
+  @override
+  String get checklistTemplatesShiftStart => 'При начале смены';
+
+  @override
+  String get checklistTemplatesShiftEnd => 'При завершении смены';
+
+  @override
+  String get checklistTemplatesRequired => 'Обязательный';
+
+  @override
+  String get checklistTemplatesNotRequired => 'Необязательный';
+
+  @override
+  String get checklistTemplatesArchived => 'Архив';
+
+  @override
+  String checklistTemplatesItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count пункта',
+      many: '$count пунктов',
+      few: '$count пункта',
+      one: '$count пункт',
+      zero: 'нет пунктов',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get checklistTemplateNameLabel => 'Название шаблона';
+
+  @override
+  String get checklistTemplateNameHint => 'Например: Открытие кафе';
+
+  @override
+  String get checklistTemplateNameRequired => 'Укажите название';
+
+  @override
+  String get checklistTemplateTypeLabel => 'Тип';
+
+  @override
+  String get checklistTemplateIsRequiredLabel => 'Обязательный для всех';
+
+  @override
+  String get checklistTemplateIsRequiredDesc =>
+      'Пункты обязательны к выполнению';
+
+  @override
+  String get checklistTemplateCreated => 'Шаблон создан';
+
+  @override
+  String get checklistTemplateUpdated => 'Шаблон обновлён';
+
+  @override
+  String get checklistTemplateArchive => 'Архивировать';
+
+  @override
+  String checklistTemplateArchiveConfirm(String name) {
+    return 'Архивировать шаблон \"$name\"? Новые смены не будут получать этот чек-лист.';
+  }
+
+  @override
+  String get checklistTemplateArchived => 'Шаблон в архиве';
+
+  @override
+  String get checklistTemplateShowArchived => 'Показать архив';
+
+  @override
+  String get checklistTemplateDetailTitle => 'Шаблон чек-листа';
+
+  @override
+  String get checklistTemplateItemsSection => 'Пункты';
+
+  @override
+  String get checklistTemplateItemsEmpty => 'Пунктов пока нет';
+
+  @override
+  String get checklistTemplateItemAdd => 'Добавить пункт';
+
+  @override
+  String get checklistTemplateItemTextLabel => 'Текст пункта';
+
+  @override
+  String get checklistTemplateItemTextHint =>
+      'Например: Проверить температуру холодильника';
+
+  @override
+  String get checklistTemplateItemRequiredLabel => 'Обязательный';
+
+  @override
+  String get checklistTemplateItemAdded => 'Пункт добавлен';
+
+  @override
+  String get checklistTemplateItemUpdated => 'Пункт обновлён';
+
+  @override
+  String get checklistTemplateItemDeleted => 'Пункт удалён';
+
+  @override
+  String get checklistTemplateItemDeleteConfirm => 'Удалить пункт?';
+
+  @override
+  String get checklistTemplateItemReorderHint =>
+      'Зажмите и перетащите пункт для изменения порядка';
+
+  @override
+  String get checklistTemplateRolesSection => 'Роли';
+
+  @override
+  String get checklistTemplateRolesEmpty => 'Шаблон не назначен ни одной роли';
+
+  @override
+  String get checklistTemplateAssignRoles => 'Назначить ролям';
+
+  @override
+  String get checklistTemplateRolesAssigned => 'Назначение сохранено';
+
+  @override
+  String get checklistTemplatePersonalSection => 'Персональные назначения';
+
+  @override
+  String get checklistTemplatePersonalHint =>
+      'Назначьте шаблон поверх роли (+) или исключите из роли (−) для конкретного сотрудника';
+
+  @override
+  String get checklistTemplateArchiveEditError =>
+      'Шаблон в архиве — персональные назначения менять нельзя';
+
+  @override
+  String get checklistOverrideDefault => '—';
+
+  @override
+  String get checklistOverrideAdd => '+';
+
+  @override
+  String get checklistOverrideRemove => '−';
+
+  @override
+  String get shiftChecklistsTitle => 'Чек-листы смены';
+
+  @override
+  String get shiftChecklistsEmpty => 'Чек-листов нет';
+
+  @override
+  String get shiftChecklistsStartGroup => 'При начале смены';
+
+  @override
+  String get shiftChecklistsEndGroup => 'При завершении смены';
+
+  @override
+  String shiftChecklistProgress(int completed, int total) {
+    return '$completed из $total';
+  }
+
+  @override
+  String get shiftChecklistStatusPending => 'В процессе';
+
+  @override
+  String get shiftChecklistStatusCompleted => 'Выполнен';
+
+  @override
+  String get shiftChecklistStatusIncomplete => 'Не выполнен';
+
+  @override
+  String get shiftChecklistRequiredBadge => 'Обязательный';
+
+  @override
+  String get checklistFillTitle => 'Заполнение чек-листа';
+
+  @override
+  String get checklistFillCommentHint => 'Комментарий (необязательно)';
+
+  @override
+  String get checklistFillReadOnly =>
+      'Смена завершена, редактирование недоступно';
+
+  @override
+  String get checklistFillSaving => 'Сохранение...';
+
+  @override
+  String get checklistFillSaved => 'Сохранено';
+
+  @override
+  String get checklistFillSaveError => 'Не удалось сохранить';
+
+  @override
+  String get shiftFinishIncompleteWarning =>
+      'Есть незаполненные обязательные чек-листы';
+
+  @override
+  String get shiftIncompleteRequiredBadge => 'Чек-листы не выполнены';
 
   @override
   String deepLinkJoinSuccess(String orgName) {

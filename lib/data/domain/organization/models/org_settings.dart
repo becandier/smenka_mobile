@@ -7,7 +7,7 @@ abstract class OrgSettings with _$OrgSettings {
   const factory OrgSettings({
     required String organizationId,
     required bool geoCheckEnabled,
-    required int autoFinishHours,
+    int? autoFinishHours,
     int? maxPauseMinutes,
     int? maxPausesPerShift,
   }) = _OrgSettings;

@@ -29,6 +29,7 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
         emit(state.copyWith(
           settings: state.settings.toSuccess(settings),
           geoCheckEnabled: settings.geoCheckEnabled,
+          autoFinishEnabled: settings.autoFinishHours != null,
           autoFinishHours: settings.autoFinishHours,
           maxPauseMinutes: settings.maxPauseMinutes,
           maxPausesPerShift: settings.maxPausesPerShift,
@@ -45,6 +46,14 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
 
   void setGeoCheck(bool value) {
     emit(state.copyWith(geoCheckEnabled: value));
+    _checkChanges();
+  }
+
+  void setAutoFinishEnabled(bool value) {
+    emit(state.copyWith(
+      autoFinishEnabled: value,
+      autoFinishHours: value ? (state.autoFinishHours ?? 8) : null,
+    ),);
     _checkChanges();
   }
 
@@ -67,8 +76,10 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
     final original = _original;
     if (original == null) return;
 
+    final effectiveAutoFinish =
+        state.autoFinishEnabled ? state.autoFinishHours : null;
     final hasChanges = state.geoCheckEnabled != original.geoCheckEnabled ||
-        state.autoFinishHours != original.autoFinishHours ||
+        effectiveAutoFinish != original.autoFinishHours ||
         state.maxPauseMinutes != original.maxPauseMinutes ||
         state.maxPausesPerShift != original.maxPausesPerShift;
 
@@ -81,7 +92,7 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
     final result = await _organizationRepository.updateSettings(
       _orgId,
       geoCheckEnabled: state.geoCheckEnabled,
-      autoFinishHours: state.autoFinishHours,
+      autoFinishHours: state.autoFinishEnabled ? state.autoFinishHours : null,
       maxPauseMinutes: state.maxPauseMinutes,
       maxPausesPerShift: state.maxPausesPerShift,
     );
@@ -93,6 +104,7 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
           saveStatus: FeatureStatus.success,
           settings: state.settings.toSuccess(settings),
           geoCheckEnabled: settings.geoCheckEnabled,
+          autoFinishEnabled: settings.autoFinishHours != null,
           autoFinishHours: settings.autoFinishHours,
           maxPauseMinutes: settings.maxPauseMinutes,
           maxPausesPerShift: settings.maxPausesPerShift,

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$OrgSettings {
   String get organizationId;
   bool get geoCheckEnabled;
-  int get autoFinishHours;
+  int? get autoFinishHours;
   int? get maxPauseMinutes;
   int? get maxPausesPerShift;
 
@@ -63,7 +63,7 @@ abstract mixin class $OrgSettingsCopyWith<$Res> {
   $Res call(
       {String organizationId,
       bool geoCheckEnabled,
-      int autoFinishHours,
+      int? autoFinishHours,
       int? maxPauseMinutes,
       int? maxPausesPerShift});
 }
@@ -82,7 +82,7 @@ class _$OrgSettingsCopyWithImpl<$Res> implements $OrgSettingsCopyWith<$Res> {
   $Res call({
     Object? organizationId = null,
     Object? geoCheckEnabled = null,
-    Object? autoFinishHours = null,
+    Object? autoFinishHours = freezed,
     Object? maxPauseMinutes = freezed,
     Object? maxPausesPerShift = freezed,
   }) {
@@ -95,10 +95,10 @@ class _$OrgSettingsCopyWithImpl<$Res> implements $OrgSettingsCopyWith<$Res> {
           ? _self.geoCheckEnabled
           : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
-      autoFinishHours: null == autoFinishHours
+      autoFinishHours: freezed == autoFinishHours
           ? _self.autoFinishHours
           : autoFinishHours // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       maxPauseMinutes: freezed == maxPauseMinutes
           ? _self.maxPauseMinutes
           : maxPauseMinutes // ignore: cast_nullable_to_non_nullable
@@ -205,7 +205,7 @@ extension OrgSettingsPatterns on OrgSettings {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String organizationId, bool geoCheckEnabled,
-            int autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
+            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
         $default, {
     required TResult orElse(),
   }) {
@@ -239,7 +239,7 @@ extension OrgSettingsPatterns on OrgSettings {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String organizationId, bool geoCheckEnabled,
-            int autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)
+            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)
         $default,
   ) {
     final _that = this;
@@ -271,7 +271,7 @@ extension OrgSettingsPatterns on OrgSettings {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(String organizationId, bool geoCheckEnabled,
-            int autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
+            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
         $default,
   ) {
     final _that = this;
@@ -295,7 +295,7 @@ class _OrgSettings implements OrgSettings {
   const _OrgSettings(
       {required this.organizationId,
       required this.geoCheckEnabled,
-      required this.autoFinishHours,
+      this.autoFinishHours,
       this.maxPauseMinutes,
       this.maxPausesPerShift});
 
@@ -304,7 +304,7 @@ class _OrgSettings implements OrgSettings {
   @override
   final bool geoCheckEnabled;
   @override
-  final int autoFinishHours;
+  final int? autoFinishHours;
   @override
   final int? maxPauseMinutes;
   @override
@@ -356,7 +356,7 @@ abstract mixin class _$OrgSettingsCopyWith<$Res>
   $Res call(
       {String organizationId,
       bool geoCheckEnabled,
-      int autoFinishHours,
+      int? autoFinishHours,
       int? maxPauseMinutes,
       int? maxPausesPerShift});
 }
@@ -375,7 +375,7 @@ class __$OrgSettingsCopyWithImpl<$Res> implements _$OrgSettingsCopyWith<$Res> {
   $Res call({
     Object? organizationId = null,
     Object? geoCheckEnabled = null,
-    Object? autoFinishHours = null,
+    Object? autoFinishHours = freezed,
     Object? maxPauseMinutes = freezed,
     Object? maxPausesPerShift = freezed,
   }) {
@@ -388,10 +388,10 @@ class __$OrgSettingsCopyWithImpl<$Res> implements _$OrgSettingsCopyWith<$Res> {
           ? _self.geoCheckEnabled
           : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
-      autoFinishHours: null == autoFinishHours
+      autoFinishHours: freezed == autoFinishHours
           ? _self.autoFinishHours
           : autoFinishHours // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       maxPauseMinutes: freezed == maxPauseMinutes
           ? _self.maxPauseMinutes
           : maxPauseMinutes // ignore: cast_nullable_to_non_nullable

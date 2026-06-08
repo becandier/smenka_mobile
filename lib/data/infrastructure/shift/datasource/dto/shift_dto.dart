@@ -29,6 +29,7 @@ abstract class ShiftDto with _$ShiftDto {
     required String status,
     required List<PauseDto> pauses,
     required int workedSeconds,
+    @Default(false) bool hasIncompleteRequiredChecklists,
   }) = _ShiftDto;
 
   factory ShiftDto.fromJson(Map<String, dynamic> json) =>

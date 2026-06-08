@@ -17,6 +17,7 @@ mixin _$OrgSettingsState {
   SectionData<OrgSettings> get settings;
   FeatureStatus get saveStatus;
   bool get geoCheckEnabled;
+  bool get autoFinishEnabled;
   int? get autoFinishHours;
   int? get maxPauseMinutes;
   int? get maxPausesPerShift;
@@ -41,6 +42,8 @@ mixin _$OrgSettingsState {
                 other.saveStatus == saveStatus) &&
             (identical(other.geoCheckEnabled, geoCheckEnabled) ||
                 other.geoCheckEnabled == geoCheckEnabled) &&
+            (identical(other.autoFinishEnabled, autoFinishEnabled) ||
+                other.autoFinishEnabled == autoFinishEnabled) &&
             (identical(other.autoFinishHours, autoFinishHours) ||
                 other.autoFinishHours == autoFinishHours) &&
             (identical(other.maxPauseMinutes, maxPauseMinutes) ||
@@ -57,6 +60,7 @@ mixin _$OrgSettingsState {
       settings,
       saveStatus,
       geoCheckEnabled,
+      autoFinishEnabled,
       autoFinishHours,
       maxPauseMinutes,
       maxPausesPerShift,
@@ -64,7 +68,7 @@ mixin _$OrgSettingsState {
 
   @override
   String toString() {
-    return 'OrgSettingsState(settings: $settings, saveStatus: $saveStatus, geoCheckEnabled: $geoCheckEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift, hasChanges: $hasChanges)';
+    return 'OrgSettingsState(settings: $settings, saveStatus: $saveStatus, geoCheckEnabled: $geoCheckEnabled, autoFinishEnabled: $autoFinishEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift, hasChanges: $hasChanges)';
   }
 }
 
@@ -78,6 +82,7 @@ abstract mixin class $OrgSettingsStateCopyWith<$Res> {
       {SectionData<OrgSettings> settings,
       FeatureStatus saveStatus,
       bool geoCheckEnabled,
+      bool autoFinishEnabled,
       int? autoFinishHours,
       int? maxPauseMinutes,
       int? maxPausesPerShift,
@@ -102,6 +107,7 @@ class _$OrgSettingsStateCopyWithImpl<$Res>
     Object? settings = null,
     Object? saveStatus = null,
     Object? geoCheckEnabled = null,
+    Object? autoFinishEnabled = null,
     Object? autoFinishHours = freezed,
     Object? maxPauseMinutes = freezed,
     Object? maxPausesPerShift = freezed,
@@ -119,6 +125,10 @@ class _$OrgSettingsStateCopyWithImpl<$Res>
       geoCheckEnabled: null == geoCheckEnabled
           ? _self.geoCheckEnabled
           : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      autoFinishEnabled: null == autoFinishEnabled
+          ? _self.autoFinishEnabled
+          : autoFinishEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
       autoFinishHours: freezed == autoFinishHours
           ? _self.autoFinishHours
@@ -247,6 +257,7 @@ extension OrgSettingsStatePatterns on OrgSettingsState {
             SectionData<OrgSettings> settings,
             FeatureStatus saveStatus,
             bool geoCheckEnabled,
+            bool autoFinishEnabled,
             int? autoFinishHours,
             int? maxPauseMinutes,
             int? maxPausesPerShift,
@@ -261,6 +272,7 @@ extension OrgSettingsStatePatterns on OrgSettingsState {
             _that.settings,
             _that.saveStatus,
             _that.geoCheckEnabled,
+            _that.autoFinishEnabled,
             _that.autoFinishHours,
             _that.maxPauseMinutes,
             _that.maxPausesPerShift,
@@ -289,6 +301,7 @@ extension OrgSettingsStatePatterns on OrgSettingsState {
             SectionData<OrgSettings> settings,
             FeatureStatus saveStatus,
             bool geoCheckEnabled,
+            bool autoFinishEnabled,
             int? autoFinishHours,
             int? maxPauseMinutes,
             int? maxPausesPerShift,
@@ -302,6 +315,7 @@ extension OrgSettingsStatePatterns on OrgSettingsState {
             _that.settings,
             _that.saveStatus,
             _that.geoCheckEnabled,
+            _that.autoFinishEnabled,
             _that.autoFinishHours,
             _that.maxPauseMinutes,
             _that.maxPausesPerShift,
@@ -329,6 +343,7 @@ extension OrgSettingsStatePatterns on OrgSettingsState {
             SectionData<OrgSettings> settings,
             FeatureStatus saveStatus,
             bool geoCheckEnabled,
+            bool autoFinishEnabled,
             int? autoFinishHours,
             int? maxPauseMinutes,
             int? maxPausesPerShift,
@@ -342,6 +357,7 @@ extension OrgSettingsStatePatterns on OrgSettingsState {
             _that.settings,
             _that.saveStatus,
             _that.geoCheckEnabled,
+            _that.autoFinishEnabled,
             _that.autoFinishHours,
             _that.maxPauseMinutes,
             _that.maxPausesPerShift,
@@ -359,6 +375,7 @@ class _OrgSettingsState implements OrgSettingsState {
       {this.settings = const SectionData<OrgSettings>(),
       this.saveStatus = FeatureStatus.initial,
       this.geoCheckEnabled = false,
+      this.autoFinishEnabled = false,
       this.autoFinishHours,
       this.maxPauseMinutes,
       this.maxPausesPerShift,
@@ -373,6 +390,9 @@ class _OrgSettingsState implements OrgSettingsState {
   @override
   @JsonKey()
   final bool geoCheckEnabled;
+  @override
+  @JsonKey()
+  final bool autoFinishEnabled;
   @override
   final int? autoFinishHours;
   @override
@@ -402,6 +422,8 @@ class _OrgSettingsState implements OrgSettingsState {
                 other.saveStatus == saveStatus) &&
             (identical(other.geoCheckEnabled, geoCheckEnabled) ||
                 other.geoCheckEnabled == geoCheckEnabled) &&
+            (identical(other.autoFinishEnabled, autoFinishEnabled) ||
+                other.autoFinishEnabled == autoFinishEnabled) &&
             (identical(other.autoFinishHours, autoFinishHours) ||
                 other.autoFinishHours == autoFinishHours) &&
             (identical(other.maxPauseMinutes, maxPauseMinutes) ||
@@ -418,6 +440,7 @@ class _OrgSettingsState implements OrgSettingsState {
       settings,
       saveStatus,
       geoCheckEnabled,
+      autoFinishEnabled,
       autoFinishHours,
       maxPauseMinutes,
       maxPausesPerShift,
@@ -425,7 +448,7 @@ class _OrgSettingsState implements OrgSettingsState {
 
   @override
   String toString() {
-    return 'OrgSettingsState(settings: $settings, saveStatus: $saveStatus, geoCheckEnabled: $geoCheckEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift, hasChanges: $hasChanges)';
+    return 'OrgSettingsState(settings: $settings, saveStatus: $saveStatus, geoCheckEnabled: $geoCheckEnabled, autoFinishEnabled: $autoFinishEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift, hasChanges: $hasChanges)';
   }
 }
 
@@ -441,6 +464,7 @@ abstract mixin class _$OrgSettingsStateCopyWith<$Res>
       {SectionData<OrgSettings> settings,
       FeatureStatus saveStatus,
       bool geoCheckEnabled,
+      bool autoFinishEnabled,
       int? autoFinishHours,
       int? maxPauseMinutes,
       int? maxPausesPerShift,
@@ -466,6 +490,7 @@ class __$OrgSettingsStateCopyWithImpl<$Res>
     Object? settings = null,
     Object? saveStatus = null,
     Object? geoCheckEnabled = null,
+    Object? autoFinishEnabled = null,
     Object? autoFinishHours = freezed,
     Object? maxPauseMinutes = freezed,
     Object? maxPausesPerShift = freezed,
@@ -483,6 +508,10 @@ class __$OrgSettingsStateCopyWithImpl<$Res>
       geoCheckEnabled: null == geoCheckEnabled
           ? _self.geoCheckEnabled
           : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      autoFinishEnabled: null == autoFinishEnabled
+          ? _self.autoFinishEnabled
+          : autoFinishEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
       autoFinishHours: freezed == autoFinishHours
           ? _self.autoFinishHours

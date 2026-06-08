@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:smenka_mobile/data/infrastructure/organization_role/datasource/dto/_dto.dart';
 
 part 'organization_dto.freezed.dart';
 part 'organization_dto.g.dart';
@@ -13,6 +14,9 @@ abstract class OrganizationDto with _$OrganizationDto {
     required String inviteCode,
     required bool isDeleted,
     required DateTime createdAt,
+    @Default(false) bool geoCheckEnabled,
+    String? myRole,
+    OrganizationRoleDto? myCustomRole,
   }) = _OrganizationDto;
 
   factory OrganizationDto.fromJson(Map<String, dynamic> json) =>

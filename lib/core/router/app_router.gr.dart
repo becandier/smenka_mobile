@@ -75,6 +75,202 @@ class AddEditLocationRouteArgs {
 }
 
 /// generated route for
+/// [ChecklistFillPage]
+class ChecklistFillRoute extends PageRouteInfo<ChecklistFillRouteArgs> {
+  ChecklistFillRoute({
+    required String shiftId,
+    required String instanceId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ChecklistFillRoute.name,
+          args: ChecklistFillRouteArgs(
+            shiftId: shiftId,
+            instanceId: instanceId,
+            key: key,
+          ),
+          rawPathParams: {'shiftId': shiftId, 'instanceId': instanceId},
+          initialChildren: children,
+        );
+
+  static const String name = 'ChecklistFillRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<ChecklistFillRouteArgs>(
+        orElse: () => ChecklistFillRouteArgs(
+          shiftId: pathParams.getString('shiftId'),
+          instanceId: pathParams.getString('instanceId'),
+        ),
+      );
+      return ChecklistFillPage(
+        shiftId: args.shiftId,
+        instanceId: args.instanceId,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class ChecklistFillRouteArgs {
+  const ChecklistFillRouteArgs({
+    required this.shiftId,
+    required this.instanceId,
+    this.key,
+  });
+
+  final String shiftId;
+
+  final String instanceId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ChecklistFillRouteArgs{shiftId: $shiftId, instanceId: $instanceId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChecklistFillRouteArgs) return false;
+    return shiftId == other.shiftId &&
+        instanceId == other.instanceId &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode => shiftId.hashCode ^ instanceId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [ChecklistTemplateDetailPage]
+class ChecklistTemplateDetailRoute
+    extends PageRouteInfo<ChecklistTemplateDetailRouteArgs> {
+  ChecklistTemplateDetailRoute({
+    required String orgId,
+    required String templateId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ChecklistTemplateDetailRoute.name,
+          args: ChecklistTemplateDetailRouteArgs(
+            orgId: orgId,
+            templateId: templateId,
+            key: key,
+          ),
+          rawPathParams: {'orgId': orgId, 'templateId': templateId},
+          initialChildren: children,
+        );
+
+  static const String name = 'ChecklistTemplateDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<ChecklistTemplateDetailRouteArgs>(
+        orElse: () => ChecklistTemplateDetailRouteArgs(
+          orgId: pathParams.getString('orgId'),
+          templateId: pathParams.getString('templateId'),
+        ),
+      );
+      return ChecklistTemplateDetailPage(
+        orgId: args.orgId,
+        templateId: args.templateId,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class ChecklistTemplateDetailRouteArgs {
+  const ChecklistTemplateDetailRouteArgs({
+    required this.orgId,
+    required this.templateId,
+    this.key,
+  });
+
+  final String orgId;
+
+  final String templateId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ChecklistTemplateDetailRouteArgs{orgId: $orgId, templateId: $templateId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChecklistTemplateDetailRouteArgs) return false;
+    return orgId == other.orgId &&
+        templateId == other.templateId &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ templateId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [ChecklistTemplatesPage]
+class ChecklistTemplatesRoute
+    extends PageRouteInfo<ChecklistTemplatesRouteArgs> {
+  ChecklistTemplatesRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ChecklistTemplatesRoute.name,
+          args: ChecklistTemplatesRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'ChecklistTemplatesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<ChecklistTemplatesRouteArgs>(
+        orElse: () =>
+            ChecklistTemplatesRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return ChecklistTemplatesPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class ChecklistTemplatesRouteArgs {
+  const ChecklistTemplatesRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ChecklistTemplatesRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChecklistTemplatesRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [CreateOrgModal]
 class CreateOrgRoute extends PageRouteInfo<void> {
   const CreateOrgRoute({List<PageRouteInfo>? children})
@@ -233,6 +429,64 @@ class MainRouterRoute extends PageRouteInfo<void> {
       return const MainRouterPage();
     },
   );
+}
+
+/// generated route for
+/// [MemberDetailPage]
+class MemberDetailRoute extends PageRouteInfo<MemberDetailRouteArgs> {
+  MemberDetailRoute({
+    required String orgId,
+    required Member member,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MemberDetailRoute.name,
+          args: MemberDetailRouteArgs(orgId: orgId, member: member, key: key),
+          initialChildren: children,
+        );
+
+  static const String name = 'MemberDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<MemberDetailRouteArgs>();
+      return MemberDetailPage(
+        orgId: args.orgId,
+        member: args.member,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class MemberDetailRouteArgs {
+  const MemberDetailRouteArgs({
+    required this.orgId,
+    required this.member,
+    this.key,
+  });
+
+  final String orgId;
+
+  final Member member;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'MemberDetailRouteArgs{orgId: $orgId, member: $member, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MemberDetailRouteArgs) return false;
+    return orgId == other.orgId && member == other.member && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ member.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -555,6 +809,106 @@ class ProfileTab extends PageRouteInfo<void> {
       return const ProfileTabPage();
     },
   );
+}
+
+/// generated route for
+/// [RolesPage]
+class RolesRoute extends PageRouteInfo<RolesRouteArgs> {
+  RolesRoute({required String orgId, Key? key, List<PageRouteInfo>? children})
+      : super(
+          RolesRoute.name,
+          args: RolesRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'RolesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<RolesRouteArgs>(
+        orElse: () => RolesRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return RolesPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class RolesRouteArgs {
+  const RolesRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'RolesRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RolesRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [ShiftChecklistsPage]
+class ShiftChecklistsRoute extends PageRouteInfo<ShiftChecklistsRouteArgs> {
+  ShiftChecklistsRoute({
+    required String shiftId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ShiftChecklistsRoute.name,
+          args: ShiftChecklistsRouteArgs(shiftId: shiftId, key: key),
+          rawPathParams: {'shiftId': shiftId},
+          initialChildren: children,
+        );
+
+  static const String name = 'ShiftChecklistsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<ShiftChecklistsRouteArgs>(
+        orElse: () =>
+            ShiftChecklistsRouteArgs(shiftId: pathParams.getString('shiftId')),
+      );
+      return ShiftChecklistsPage(shiftId: args.shiftId, key: args.key);
+    },
+  );
+}
+
+class ShiftChecklistsRouteArgs {
+  const ShiftChecklistsRouteArgs({required this.shiftId, this.key});
+
+  final String shiftId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ShiftChecklistsRouteArgs{shiftId: $shiftId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ShiftChecklistsRouteArgs) return false;
+    return shiftId == other.shiftId && key == other.key;
+  }
+
+  @override
+  int get hashCode => shiftId.hashCode ^ key.hashCode;
 }
 
 /// generated route for

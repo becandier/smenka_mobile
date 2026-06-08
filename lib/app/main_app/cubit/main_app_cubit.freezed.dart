@@ -160,6 +160,8 @@ extension MainAppStatePatterns on MainAppState {
             AuthRepository authRepository,
             ShiftRepository shiftRepository,
             OrganizationRepository organizationRepository,
+            OrganizationRoleRepository organizationRoleRepository,
+            ChecklistRepository checklistRepository,
             UserRepository userRepository,
             LocationRepository locationRepository,
             DeepLinkService deepLinkService,
@@ -184,6 +186,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.authRepository,
             _that.shiftRepository,
             _that.organizationRepository,
+            _that.organizationRoleRepository,
+            _that.checklistRepository,
             _that.userRepository,
             _that.locationRepository,
             _that.deepLinkService,
@@ -224,6 +228,8 @@ extension MainAppStatePatterns on MainAppState {
             AuthRepository authRepository,
             ShiftRepository shiftRepository,
             OrganizationRepository organizationRepository,
+            OrganizationRoleRepository organizationRoleRepository,
+            ChecklistRepository checklistRepository,
             UserRepository userRepository,
             LocationRepository locationRepository,
             DeepLinkService deepLinkService,
@@ -247,6 +253,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.authRepository,
             _that.shiftRepository,
             _that.organizationRepository,
+            _that.organizationRoleRepository,
+            _that.checklistRepository,
             _that.userRepository,
             _that.locationRepository,
             _that.deepLinkService,
@@ -284,6 +292,8 @@ extension MainAppStatePatterns on MainAppState {
             AuthRepository authRepository,
             ShiftRepository shiftRepository,
             OrganizationRepository organizationRepository,
+            OrganizationRoleRepository organizationRoleRepository,
+            ChecklistRepository checklistRepository,
             UserRepository userRepository,
             LocationRepository locationRepository,
             DeepLinkService deepLinkService,
@@ -307,6 +317,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.authRepository,
             _that.shiftRepository,
             _that.organizationRepository,
+            _that.organizationRoleRepository,
+            _that.checklistRepository,
             _that.userRepository,
             _that.locationRepository,
             _that.deepLinkService,
@@ -336,6 +348,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       required this.authRepository,
       required this.shiftRepository,
       required this.organizationRepository,
+      required this.organizationRoleRepository,
+      required this.checklistRepository,
       required this.userRepository,
       required this.locationRepository,
       required this.deepLinkService,
@@ -353,6 +367,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   final AuthRepository authRepository;
   final ShiftRepository shiftRepository;
   final OrganizationRepository organizationRepository;
+  final OrganizationRoleRepository organizationRoleRepository;
+  final ChecklistRepository checklistRepository;
   final UserRepository userRepository;
   final LocationRepository locationRepository;
   final DeepLinkService deepLinkService;
@@ -381,6 +397,9 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('shiftRepository', shiftRepository))
       ..add(
           DiagnosticsProperty('organizationRepository', organizationRepository))
+      ..add(DiagnosticsProperty(
+          'organizationRoleRepository', organizationRoleRepository))
+      ..add(DiagnosticsProperty('checklistRepository', checklistRepository))
       ..add(DiagnosticsProperty('userRepository', userRepository))
       ..add(DiagnosticsProperty('locationRepository', locationRepository))
       ..add(DiagnosticsProperty('deepLinkService', deepLinkService))
@@ -412,6 +431,12 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
                 other.shiftRepository == shiftRepository) &&
             (identical(other.organizationRepository, organizationRepository) ||
                 other.organizationRepository == organizationRepository) &&
+            (identical(other.organizationRoleRepository,
+                    organizationRoleRepository) ||
+                other.organizationRoleRepository ==
+                    organizationRoleRepository) &&
+            (identical(other.checklistRepository, checklistRepository) ||
+                other.checklistRepository == checklistRepository) &&
             (identical(other.userRepository, userRepository) ||
                 other.userRepository == userRepository) &&
             (identical(other.locationRepository, locationRepository) ||
@@ -436,6 +461,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       authRepository,
       shiftRepository,
       organizationRepository,
+      organizationRoleRepository,
+      checklistRepository,
       userRepository,
       locationRepository,
       deepLinkService,
@@ -443,7 +470,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, userRepository: $userRepository, locationRepository: $locationRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage)';
+    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, organizationRoleRepository: $organizationRoleRepository, checklistRepository: $checklistRepository, userRepository: $userRepository, locationRepository: $locationRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage)';
   }
 }
 
@@ -466,6 +493,8 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res>
       AuthRepository authRepository,
       ShiftRepository shiftRepository,
       OrganizationRepository organizationRepository,
+      OrganizationRoleRepository organizationRoleRepository,
+      ChecklistRepository checklistRepository,
       UserRepository userRepository,
       LocationRepository locationRepository,
       DeepLinkService deepLinkService,
@@ -495,6 +524,8 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? authRepository = null,
     Object? shiftRepository = null,
     Object? organizationRepository = null,
+    Object? organizationRoleRepository = null,
+    Object? checklistRepository = null,
     Object? userRepository = null,
     Object? locationRepository = null,
     Object? deepLinkService = null,
@@ -545,6 +576,14 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.organizationRepository
           : organizationRepository // ignore: cast_nullable_to_non_nullable
               as OrganizationRepository,
+      organizationRoleRepository: null == organizationRoleRepository
+          ? _self.organizationRoleRepository
+          : organizationRoleRepository // ignore: cast_nullable_to_non_nullable
+              as OrganizationRoleRepository,
+      checklistRepository: null == checklistRepository
+          ? _self.checklistRepository
+          : checklistRepository // ignore: cast_nullable_to_non_nullable
+              as ChecklistRepository,
       userRepository: null == userRepository
           ? _self.userRepository
           : userRepository // ignore: cast_nullable_to_non_nullable

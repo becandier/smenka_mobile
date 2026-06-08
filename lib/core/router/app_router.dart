@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
 import 'package:smenka_mobile/data/domain/location/models/_models.dart';
+import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
@@ -72,6 +73,14 @@ class AppRouter extends RootStackRouter {
                   initial: true,
                   page: ShiftTrackerRoute.page,
                 ),
+                AutoRoute(
+                  path: 'shifts/:shiftId/checklists',
+                  page: ShiftChecklistsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'shifts/:shiftId/checklists/:instanceId',
+                  page: ChecklistFillRoute.page,
+                ),
               ],
             ),
             AutoRoute(
@@ -86,6 +95,14 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(
                   path: 'detail',
                   page: ShiftDetailRoute.page,
+                ),
+                AutoRoute(
+                  path: 'shifts/:shiftId/checklists',
+                  page: ShiftChecklistsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'shifts/:shiftId/checklists/:instanceId',
+                  page: ChecklistFillRoute.page,
                 ),
               ],
             ),
@@ -149,11 +166,24 @@ class AppRouter extends RootStackRouter {
 List<AutoRoute> _orgDetailRoutes(String basePath) => [
       AutoRoute(path: basePath, page: OrganizationDetailRoute.page),
       AutoRoute(path: '$basePath/members', page: OrgMembersRoute.page),
+      AutoRoute(
+        path: '$basePath/members/:userId',
+        page: MemberDetailRoute.page,
+      ),
       AutoRoute(path: '$basePath/settings', page: OrgSettingsRoute.page),
       AutoRoute(path: '$basePath/locations', page: WorkLocationsRoute.page),
       AutoRoute(
         path: '$basePath/locations/add',
         page: AddEditLocationRoute.page,
+      ),
+      AutoRoute(path: '$basePath/roles', page: RolesRoute.page),
+      AutoRoute(
+        path: '$basePath/checklist-templates',
+        page: ChecklistTemplatesRoute.page,
+      ),
+      AutoRoute(
+        path: '$basePath/checklist-templates/:templateId',
+        page: ChecklistTemplateDetailRoute.page,
       ),
       AutoRoute(path: '$basePath/shifts', page: OrgShiftsRoute.page),
       AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),

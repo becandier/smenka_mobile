@@ -17,6 +17,8 @@ sealed class MainAppState with _$MainAppState {
     required AuthRepository authRepository,
     required ShiftRepository shiftRepository,
     required OrganizationRepository organizationRepository,
+    required OrganizationRoleRepository organizationRoleRepository,
+    required ChecklistRepository checklistRepository,
     required UserRepository userRepository,
     required LocationRepository locationRepository,
     required DeepLinkService deepLinkService,

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:smenka_mobile/data/infrastructure/organization_role/datasource/dto/_dto.dart';
 
 part 'member_dto.freezed.dart';
 part 'member_dto.g.dart';
@@ -13,6 +14,7 @@ abstract class MemberDto with _$MemberDto {
     required String userName,
     required String userEmail,
     required String role,
+    OrganizationRoleDto? customRole,
     required DateTime joinedAt,
   }) = _MemberDto;
 

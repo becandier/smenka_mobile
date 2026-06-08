@@ -25,5 +25,6 @@ abstract class Shift with _$Shift {
     required ShiftStatus status,
     required List<Pause> pauses,
     required int workedSeconds,
+    @Default(false) bool hasIncompleteRequiredChecklists,
   }) = _Shift;
 }

@@ -23,6 +23,7 @@ extension ShiftMapper on ShiftDto {
       status: ShiftStatus.values.byName(status),
       pauses: pauses.map((p) => p.toDomain()).toList(),
       workedSeconds: workedSeconds,
+      hasIncompleteRequiredChecklists: hasIncompleteRequiredChecklists,
     );
   }
 }

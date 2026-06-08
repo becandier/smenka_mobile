@@ -20,6 +20,7 @@ mixin _$Member {
   String get userName;
   String get userEmail;
   MemberRole get role;
+  OrganizationRole? get customRole;
   DateTime get joinedAt;
 
   /// Create a copy of Member
@@ -43,17 +44,19 @@ mixin _$Member {
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRole, customRole) ||
+                other.customRole == customRole) &&
             (identical(other.joinedAt, joinedAt) ||
                 other.joinedAt == joinedAt));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, joinedAt);
+      userName, userEmail, role, customRole, joinedAt);
 
   @override
   String toString() {
-    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt)';
+    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, customRole: $customRole, joinedAt: $joinedAt)';
   }
 }
 
@@ -69,7 +72,10 @@ abstract mixin class $MemberCopyWith<$Res> {
       String userName,
       String userEmail,
       MemberRole role,
+      OrganizationRole? customRole,
       DateTime joinedAt});
+
+  $OrganizationRoleCopyWith<$Res>? get customRole;
 }
 
 /// @nodoc
@@ -90,6 +96,7 @@ class _$MemberCopyWithImpl<$Res> implements $MemberCopyWith<$Res> {
     Object? userName = null,
     Object? userEmail = null,
     Object? role = null,
+    Object? customRole = freezed,
     Object? joinedAt = null,
   }) {
     return _then(_self.copyWith(
@@ -117,11 +124,29 @@ class _$MemberCopyWithImpl<$Res> implements $MemberCopyWith<$Res> {
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as MemberRole,
+      customRole: freezed == customRole
+          ? _self.customRole
+          : customRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRole?,
       joinedAt: null == joinedAt
           ? _self.joinedAt
           : joinedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
     ));
+  }
+
+  /// Create a copy of Member
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OrganizationRoleCopyWith<$Res>? get customRole {
+    if (_self.customRole == null) {
+      return null;
+    }
+
+    return $OrganizationRoleCopyWith<$Res>(_self.customRole!, (value) {
+      return _then(_self.copyWith(customRole: value));
+    });
   }
 }
 
@@ -225,6 +250,7 @@ extension MemberPatterns on Member {
             String userName,
             String userEmail,
             MemberRole role,
+            OrganizationRole? customRole,
             DateTime joinedAt)?
         $default, {
     required TResult orElse(),
@@ -232,8 +258,15 @@ extension MemberPatterns on Member {
     final _that = this;
     switch (_that) {
       case _Member() when $default != null:
-        return $default(_that.id, _that.organizationId, _that.userId,
-            _that.userName, _that.userEmail, _that.role, _that.joinedAt);
+        return $default(
+            _that.id,
+            _that.organizationId,
+            _that.userId,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRole,
+            _that.joinedAt);
       case _:
         return orElse();
     }
@@ -261,14 +294,22 @@ extension MemberPatterns on Member {
             String userName,
             String userEmail,
             MemberRole role,
+            OrganizationRole? customRole,
             DateTime joinedAt)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Member():
-        return $default(_that.id, _that.organizationId, _that.userId,
-            _that.userName, _that.userEmail, _that.role, _that.joinedAt);
+        return $default(
+            _that.id,
+            _that.organizationId,
+            _that.userId,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRole,
+            _that.joinedAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -295,14 +336,22 @@ extension MemberPatterns on Member {
             String userName,
             String userEmail,
             MemberRole role,
+            OrganizationRole? customRole,
             DateTime joinedAt)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Member() when $default != null:
-        return $default(_that.id, _that.organizationId, _that.userId,
-            _that.userName, _that.userEmail, _that.role, _that.joinedAt);
+        return $default(
+            _that.id,
+            _that.organizationId,
+            _that.userId,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRole,
+            _that.joinedAt);
       case _:
         return null;
     }
@@ -319,6 +368,7 @@ class _Member implements Member {
       required this.userName,
       required this.userEmail,
       required this.role,
+      this.customRole,
       required this.joinedAt});
 
   @override
@@ -333,6 +383,8 @@ class _Member implements Member {
   final String userEmail;
   @override
   final MemberRole role;
+  @override
+  final OrganizationRole? customRole;
   @override
   final DateTime joinedAt;
 
@@ -358,17 +410,19 @@ class _Member implements Member {
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRole, customRole) ||
+                other.customRole == customRole) &&
             (identical(other.joinedAt, joinedAt) ||
                 other.joinedAt == joinedAt));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, joinedAt);
+      userName, userEmail, role, customRole, joinedAt);
 
   @override
   String toString() {
-    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt)';
+    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, customRole: $customRole, joinedAt: $joinedAt)';
   }
 }
 
@@ -385,7 +439,11 @@ abstract mixin class _$MemberCopyWith<$Res> implements $MemberCopyWith<$Res> {
       String userName,
       String userEmail,
       MemberRole role,
+      OrganizationRole? customRole,
       DateTime joinedAt});
+
+  @override
+  $OrganizationRoleCopyWith<$Res>? get customRole;
 }
 
 /// @nodoc
@@ -406,6 +464,7 @@ class __$MemberCopyWithImpl<$Res> implements _$MemberCopyWith<$Res> {
     Object? userName = null,
     Object? userEmail = null,
     Object? role = null,
+    Object? customRole = freezed,
     Object? joinedAt = null,
   }) {
     return _then(_Member(
@@ -433,11 +492,29 @@ class __$MemberCopyWithImpl<$Res> implements _$MemberCopyWith<$Res> {
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as MemberRole,
+      customRole: freezed == customRole
+          ? _self.customRole
+          : customRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRole?,
       joinedAt: null == joinedAt
           ? _self.joinedAt
           : joinedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
     ));
+  }
+
+  /// Create a copy of Member
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OrganizationRoleCopyWith<$Res>? get customRole {
+    if (_self.customRole == null) {
+      return null;
+    }
+
+    return $OrganizationRoleCopyWith<$Res>(_self.customRole!, (value) {
+      return _then(_self.copyWith(customRole: value));
+    });
   }
 }
 

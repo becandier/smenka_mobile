@@ -93,7 +93,11 @@ class _ActiveShiftContent extends StatelessWidget {
             isOutlined: true,
             onPressed: () => _onFinishShift(context),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
+
+          // Checklists for org shifts
+          if (shift.organizationId != null)
+            _ShiftChecklistsTile(shiftId: shift.id),
 
           // Pauses list
           if (shift.pauses.isNotEmpty || isPaused)
@@ -105,11 +109,54 @@ class _ActiveShiftContent extends StatelessWidget {
 
   Future<void> _onFinishShift(BuildContext context) async {
     final l10n = context.l10n;
+    final shift = state.activeShift.data;
+
+    var hasIncompleteRequired = false;
+    if (shift != null && shift.organizationId != null) {
+      final task = await context
+          .read<ChecklistRepository>()
+          .getShiftChecklists(shift.id);
+      hasIncompleteRequired = task.fold(
+        onSuccess: (items) => items.any(
+          (i) =>
+              i.isRequired && i.status != ChecklistInstanceStatus.completed,
+        ),
+        onFailure: (_) => false,
+      );
+    }
+
+    if (!context.mounted) return;
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.shiftConfirmFinish),
-        content: Text(l10n.shiftConfirmFinishBody),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.shiftConfirmFinishBody),
+            if (hasIncompleteRequired) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    color: ctx.appColors.error,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.shiftFinishIncompleteWarning,
+                      style: TextStyle(color: ctx.appColors.error),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),

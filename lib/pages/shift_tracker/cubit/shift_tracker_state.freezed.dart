@@ -30,6 +30,9 @@ mixin _$ShiftTrackerState {
   FeatureStatus get actionStatus;
   String? get actionError;
 
+  /// Предупреждение о низкой точности GPS
+  bool get showLowAccuracyWarning;
+
   /// Create a copy of ShiftTrackerState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,16 +57,25 @@ mixin _$ShiftTrackerState {
             (identical(other.actionStatus, actionStatus) ||
                 other.actionStatus == actionStatus) &&
             (identical(other.actionError, actionError) ||
-                other.actionError == actionError));
+                other.actionError == actionError) &&
+            (identical(other.showLowAccuracyWarning, showLowAccuracyWarning) ||
+                other.showLowAccuracyWarning == showLowAccuracyWarning));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, activeShift, organizations,
-      selectedOrganizationId, elapsedSeconds, actionStatus, actionError);
+  int get hashCode => Object.hash(
+      runtimeType,
+      activeShift,
+      organizations,
+      selectedOrganizationId,
+      elapsedSeconds,
+      actionStatus,
+      actionError,
+      showLowAccuracyWarning);
 
   @override
   String toString() {
-    return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError)';
+    return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, showLowAccuracyWarning: $showLowAccuracyWarning)';
   }
 }
 
@@ -79,7 +91,8 @@ abstract mixin class $ShiftTrackerStateCopyWith<$Res> {
       String? selectedOrganizationId,
       int elapsedSeconds,
       FeatureStatus actionStatus,
-      String? actionError});
+      String? actionError,
+      bool showLowAccuracyWarning});
 
   $SectionDataCopyWith<Shift, $Res> get activeShift;
   $SectionDataCopyWith<List<Organization>, $Res> get organizations;
@@ -104,6 +117,7 @@ class _$ShiftTrackerStateCopyWithImpl<$Res>
     Object? elapsedSeconds = null,
     Object? actionStatus = null,
     Object? actionError = freezed,
+    Object? showLowAccuracyWarning = null,
   }) {
     return _then(_self.copyWith(
       activeShift: null == activeShift
@@ -130,6 +144,10 @@ class _$ShiftTrackerStateCopyWithImpl<$Res>
           ? _self.actionError
           : actionError // ignore: cast_nullable_to_non_nullable
               as String?,
+      showLowAccuracyWarning: null == showLowAccuracyWarning
+          ? _self.showLowAccuracyWarning
+          : showLowAccuracyWarning // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 
@@ -254,7 +272,8 @@ extension ShiftTrackerStatePatterns on ShiftTrackerState {
             String? selectedOrganizationId,
             int elapsedSeconds,
             FeatureStatus actionStatus,
-            String? actionError)?
+            String? actionError,
+            bool showLowAccuracyWarning)?
         $default, {
     required TResult orElse(),
   }) {
@@ -267,7 +286,8 @@ extension ShiftTrackerStatePatterns on ShiftTrackerState {
             _that.selectedOrganizationId,
             _that.elapsedSeconds,
             _that.actionStatus,
-            _that.actionError);
+            _that.actionError,
+            _that.showLowAccuracyWarning);
       case _:
         return orElse();
     }
@@ -294,7 +314,8 @@ extension ShiftTrackerStatePatterns on ShiftTrackerState {
             String? selectedOrganizationId,
             int elapsedSeconds,
             FeatureStatus actionStatus,
-            String? actionError)
+            String? actionError,
+            bool showLowAccuracyWarning)
         $default,
   ) {
     final _that = this;
@@ -306,7 +327,8 @@ extension ShiftTrackerStatePatterns on ShiftTrackerState {
             _that.selectedOrganizationId,
             _that.elapsedSeconds,
             _that.actionStatus,
-            _that.actionError);
+            _that.actionError,
+            _that.showLowAccuracyWarning);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -332,7 +354,8 @@ extension ShiftTrackerStatePatterns on ShiftTrackerState {
             String? selectedOrganizationId,
             int elapsedSeconds,
             FeatureStatus actionStatus,
-            String? actionError)?
+            String? actionError,
+            bool showLowAccuracyWarning)?
         $default,
   ) {
     final _that = this;
@@ -344,7 +367,8 @@ extension ShiftTrackerStatePatterns on ShiftTrackerState {
             _that.selectedOrganizationId,
             _that.elapsedSeconds,
             _that.actionStatus,
-            _that.actionError);
+            _that.actionError,
+            _that.showLowAccuracyWarning);
       case _:
         return null;
     }
@@ -360,7 +384,8 @@ class _ShiftTrackerState extends ShiftTrackerState {
       this.selectedOrganizationId,
       this.elapsedSeconds = 0,
       this.actionStatus = FeatureStatus.initial,
-      this.actionError})
+      this.actionError,
+      this.showLowAccuracyWarning = false})
       : super._();
 
   /// Активная смена (SectionData — loading/error на init, success при наличии)
@@ -389,6 +414,11 @@ class _ShiftTrackerState extends ShiftTrackerState {
   @override
   final String? actionError;
 
+  /// Предупреждение о низкой точности GPS
+  @override
+  @JsonKey()
+  final bool showLowAccuracyWarning;
+
   /// Create a copy of ShiftTrackerState
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -413,16 +443,25 @@ class _ShiftTrackerState extends ShiftTrackerState {
             (identical(other.actionStatus, actionStatus) ||
                 other.actionStatus == actionStatus) &&
             (identical(other.actionError, actionError) ||
-                other.actionError == actionError));
+                other.actionError == actionError) &&
+            (identical(other.showLowAccuracyWarning, showLowAccuracyWarning) ||
+                other.showLowAccuracyWarning == showLowAccuracyWarning));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, activeShift, organizations,
-      selectedOrganizationId, elapsedSeconds, actionStatus, actionError);
+  int get hashCode => Object.hash(
+      runtimeType,
+      activeShift,
+      organizations,
+      selectedOrganizationId,
+      elapsedSeconds,
+      actionStatus,
+      actionError,
+      showLowAccuracyWarning);
 
   @override
   String toString() {
-    return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError)';
+    return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, showLowAccuracyWarning: $showLowAccuracyWarning)';
   }
 }
 
@@ -440,7 +479,8 @@ abstract mixin class _$ShiftTrackerStateCopyWith<$Res>
       String? selectedOrganizationId,
       int elapsedSeconds,
       FeatureStatus actionStatus,
-      String? actionError});
+      String? actionError,
+      bool showLowAccuracyWarning});
 
   @override
   $SectionDataCopyWith<Shift, $Res> get activeShift;
@@ -467,6 +507,7 @@ class __$ShiftTrackerStateCopyWithImpl<$Res>
     Object? elapsedSeconds = null,
     Object? actionStatus = null,
     Object? actionError = freezed,
+    Object? showLowAccuracyWarning = null,
   }) {
     return _then(_ShiftTrackerState(
       activeShift: null == activeShift
@@ -493,6 +534,10 @@ class __$ShiftTrackerStateCopyWithImpl<$Res>
           ? _self.actionError
           : actionError // ignore: cast_nullable_to_non_nullable
               as String?,
+      showLowAccuracyWarning: null == showLowAccuracyWarning
+          ? _self.showLowAccuracyWarning
+          : showLowAccuracyWarning // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 

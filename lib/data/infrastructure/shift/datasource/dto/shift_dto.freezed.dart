@@ -385,6 +385,7 @@ mixin _$ShiftDto {
   String get status;
   List<PauseDto> get pauses;
   int get workedSeconds;
+  bool get hasIncompleteRequiredChecklists;
 
   /// Create a copy of ShiftDto
   /// with the given fields replaced by the non-null parameter values.
@@ -412,7 +413,11 @@ mixin _$ShiftDto {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other.pauses, pauses) &&
             (identical(other.workedSeconds, workedSeconds) ||
-                other.workedSeconds == workedSeconds));
+                other.workedSeconds == workedSeconds) &&
+            (identical(other.hasIncompleteRequiredChecklists,
+                    hasIncompleteRequiredChecklists) ||
+                other.hasIncompleteRequiredChecklists ==
+                    hasIncompleteRequiredChecklists));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -426,11 +431,12 @@ mixin _$ShiftDto {
       finishedAt,
       status,
       const DeepCollectionEquality().hash(pauses),
-      workedSeconds);
+      workedSeconds,
+      hasIncompleteRequiredChecklists);
 
   @override
   String toString() {
-    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds)';
+    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists)';
   }
 }
 
@@ -447,7 +453,8 @@ abstract mixin class $ShiftDtoCopyWith<$Res> {
       DateTime? finishedAt,
       String status,
       List<PauseDto> pauses,
-      int workedSeconds});
+      int workedSeconds,
+      bool hasIncompleteRequiredChecklists});
 }
 
 /// @nodoc
@@ -470,6 +477,7 @@ class _$ShiftDtoCopyWithImpl<$Res> implements $ShiftDtoCopyWith<$Res> {
     Object? status = null,
     Object? pauses = null,
     Object? workedSeconds = null,
+    Object? hasIncompleteRequiredChecklists = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -504,6 +512,10 @@ class _$ShiftDtoCopyWithImpl<$Res> implements $ShiftDtoCopyWith<$Res> {
           ? _self.workedSeconds
           : workedSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      hasIncompleteRequiredChecklists: null == hasIncompleteRequiredChecklists
+          ? _self.hasIncompleteRequiredChecklists
+          : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -609,7 +621,8 @@ extension ShiftDtoPatterns on ShiftDto {
             DateTime? finishedAt,
             String status,
             List<PauseDto> pauses,
-            int workedSeconds)?
+            int workedSeconds,
+            bool hasIncompleteRequiredChecklists)?
         $default, {
     required TResult orElse(),
   }) {
@@ -624,7 +637,8 @@ extension ShiftDtoPatterns on ShiftDto {
             _that.finishedAt,
             _that.status,
             _that.pauses,
-            _that.workedSeconds);
+            _that.workedSeconds,
+            _that.hasIncompleteRequiredChecklists);
       case _:
         return orElse();
     }
@@ -653,7 +667,8 @@ extension ShiftDtoPatterns on ShiftDto {
             DateTime? finishedAt,
             String status,
             List<PauseDto> pauses,
-            int workedSeconds)
+            int workedSeconds,
+            bool hasIncompleteRequiredChecklists)
         $default,
   ) {
     final _that = this;
@@ -667,7 +682,8 @@ extension ShiftDtoPatterns on ShiftDto {
             _that.finishedAt,
             _that.status,
             _that.pauses,
-            _that.workedSeconds);
+            _that.workedSeconds,
+            _that.hasIncompleteRequiredChecklists);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -695,7 +711,8 @@ extension ShiftDtoPatterns on ShiftDto {
             DateTime? finishedAt,
             String status,
             List<PauseDto> pauses,
-            int workedSeconds)?
+            int workedSeconds,
+            bool hasIncompleteRequiredChecklists)?
         $default,
   ) {
     final _that = this;
@@ -709,7 +726,8 @@ extension ShiftDtoPatterns on ShiftDto {
             _that.finishedAt,
             _that.status,
             _that.pauses,
-            _that.workedSeconds);
+            _that.workedSeconds,
+            _that.hasIncompleteRequiredChecklists);
       case _:
         return null;
     }
@@ -728,7 +746,8 @@ class _ShiftDto implements ShiftDto {
       this.finishedAt,
       required this.status,
       required final List<PauseDto> pauses,
-      required this.workedSeconds})
+      required this.workedSeconds,
+      this.hasIncompleteRequiredChecklists = false})
       : _pauses = pauses;
   factory _ShiftDto.fromJson(Map<String, dynamic> json) =>
       _$ShiftDtoFromJson(json);
@@ -755,6 +774,9 @@ class _ShiftDto implements ShiftDto {
 
   @override
   final int workedSeconds;
+  @override
+  @JsonKey()
+  final bool hasIncompleteRequiredChecklists;
 
   /// Create a copy of ShiftDto
   /// with the given fields replaced by the non-null parameter values.
@@ -787,7 +809,11 @@ class _ShiftDto implements ShiftDto {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other._pauses, _pauses) &&
             (identical(other.workedSeconds, workedSeconds) ||
-                other.workedSeconds == workedSeconds));
+                other.workedSeconds == workedSeconds) &&
+            (identical(other.hasIncompleteRequiredChecklists,
+                    hasIncompleteRequiredChecklists) ||
+                other.hasIncompleteRequiredChecklists ==
+                    hasIncompleteRequiredChecklists));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -801,11 +827,12 @@ class _ShiftDto implements ShiftDto {
       finishedAt,
       status,
       const DeepCollectionEquality().hash(_pauses),
-      workedSeconds);
+      workedSeconds,
+      hasIncompleteRequiredChecklists);
 
   @override
   String toString() {
-    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds)';
+    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists)';
   }
 }
 
@@ -824,7 +851,8 @@ abstract mixin class _$ShiftDtoCopyWith<$Res>
       DateTime? finishedAt,
       String status,
       List<PauseDto> pauses,
-      int workedSeconds});
+      int workedSeconds,
+      bool hasIncompleteRequiredChecklists});
 }
 
 /// @nodoc
@@ -847,6 +875,7 @@ class __$ShiftDtoCopyWithImpl<$Res> implements _$ShiftDtoCopyWith<$Res> {
     Object? status = null,
     Object? pauses = null,
     Object? workedSeconds = null,
+    Object? hasIncompleteRequiredChecklists = null,
   }) {
     return _then(_ShiftDto(
       id: null == id
@@ -881,6 +910,10 @@ class __$ShiftDtoCopyWithImpl<$Res> implements _$ShiftDtoCopyWith<$Res> {
           ? _self.workedSeconds
           : workedSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      hasIncompleteRequiredChecklists: null == hasIncompleteRequiredChecklists
+          ? _self.hasIncompleteRequiredChecklists
+          : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

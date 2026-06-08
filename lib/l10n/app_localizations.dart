@@ -550,6 +550,54 @@ abstract class AppLocalizations {
   /// **'Вы находитесь за пределами рабочей зоны'**
   String get shiftLocationOutOfRange;
 
+  /// No description provided for @geoPermissionDenied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Для начала смены необходим доступ к геолокации'**
+  String get geoPermissionDenied;
+
+  /// No description provided for @geoPermissionDeniedForeverTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация недоступна'**
+  String get geoPermissionDeniedForeverTitle;
+
+  /// No description provided for @geoPermissionDeniedForeverMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы запретили доступ к геолокации. Откройте настройки приложения и разрешите доступ к местоположению.'**
+  String get geoPermissionDeniedForeverMessage;
+
+  /// No description provided for @geoOpenAppSettings.
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть настройки'**
+  String get geoOpenAppSettings;
+
+  /// No description provided for @geoServiceDisabledTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация выключена'**
+  String get geoServiceDisabledTitle;
+
+  /// No description provided for @geoServiceDisabledMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Включите геолокацию на устройстве для начала смены.'**
+  String get geoServiceDisabledMessage;
+
+  /// No description provided for @geoOpenSettings.
+  ///
+  /// In ru, this message translates to:
+  /// **'Включить'**
+  String get geoOpenSettings;
+
+  /// No description provided for @geoLowAccuracy.
+  ///
+  /// In ru, this message translates to:
+  /// **'Низкая точность GPS — координаты могут быть неточными'**
+  String get geoLowAccuracy;
+
   /// No description provided for @shiftConfirmFinish.
   ///
   /// In ru, this message translates to:
@@ -1135,14 +1183,26 @@ abstract class AppLocalizations {
   /// No description provided for @orgSettingsAutoFinish.
   ///
   /// In ru, this message translates to:
-  /// **'Автозавершение (часы)'**
+  /// **'Автозавершение'**
   String get orgSettingsAutoFinish;
 
   /// No description provided for @orgSettingsAutoFinishDesc.
   ///
   /// In ru, this message translates to:
-  /// **'Автоматически завершать смену через N часов'**
+  /// **'Автоматически завершать смену через заданное время'**
   String get orgSettingsAutoFinishDesc;
+
+  /// No description provided for @orgSettingsAutoFinishHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'Часы до завершения'**
+  String get orgSettingsAutoFinishHours;
+
+  /// No description provided for @orgSettingsAutoFinishHoursDesc.
+  ///
+  /// In ru, this message translates to:
+  /// **'Количество часов (1–48)'**
+  String get orgSettingsAutoFinishHoursDesc;
 
   /// No description provided for @orgSettingsMaxPause.
   ///
@@ -1365,6 +1425,606 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Рабочие точки'**
   String get orgDetailLocations;
+
+  /// No description provided for @orgDetailRoles.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роли'**
+  String get orgDetailRoles;
+
+  /// No description provided for @orgDetailChecklists.
+  ///
+  /// In ru, this message translates to:
+  /// **'Чек-листы'**
+  String get orgDetailChecklists;
+
+  /// No description provided for @rolesTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роли'**
+  String get rolesTitle;
+
+  /// No description provided for @rolesEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ролей пока нет'**
+  String get rolesEmpty;
+
+  /// No description provided for @rolesAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая роль'**
+  String get rolesAdd;
+
+  /// No description provided for @rolesCreate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать роль'**
+  String get rolesCreate;
+
+  /// No description provided for @rolesRename.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переименовать'**
+  String get rolesRename;
+
+  /// No description provided for @rolesDelete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить роль'**
+  String get rolesDelete;
+
+  /// No description provided for @rolesDeleteConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить роль \"{name}\"? У сотрудников с этой ролью она будет снята.'**
+  String rolesDeleteConfirm(String name);
+
+  /// No description provided for @rolesNameLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Название роли'**
+  String get rolesNameLabel;
+
+  /// No description provided for @rolesNameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Бариста'**
+  String get rolesNameHint;
+
+  /// No description provided for @rolesNameRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите название'**
+  String get rolesNameRequired;
+
+  /// No description provided for @rolesCreated.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роль создана'**
+  String get rolesCreated;
+
+  /// No description provided for @rolesRenamed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роль переименована'**
+  String get rolesRenamed;
+
+  /// No description provided for @rolesDeleted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роль удалена'**
+  String get rolesDeleted;
+
+  /// No description provided for @rolesSaveAction.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить'**
+  String get rolesSaveAction;
+
+  /// No description provided for @rolesCreateAction.
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать'**
+  String get rolesCreateAction;
+
+  /// No description provided for @membersCustomRoleNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Без роли'**
+  String get membersCustomRoleNone;
+
+  /// No description provided for @membersAssignRole.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначить роль'**
+  String get membersAssignRole;
+
+  /// No description provided for @membersAssignRoleTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Кастомная роль'**
+  String get membersAssignRoleTitle;
+
+  /// No description provided for @membersCustomRoleAssigned.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роль назначена'**
+  String get membersCustomRoleAssigned;
+
+  /// No description provided for @membersCustomRoleCleared.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роль снята'**
+  String get membersCustomRoleCleared;
+
+  /// No description provided for @memberDetailTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сотрудник'**
+  String get memberDetailTitle;
+
+  /// No description provided for @memberDetailSystemRole.
+  ///
+  /// In ru, this message translates to:
+  /// **'Системная роль'**
+  String get memberDetailSystemRole;
+
+  /// No description provided for @memberDetailCustomRole.
+  ///
+  /// In ru, this message translates to:
+  /// **'Кастомная роль'**
+  String get memberDetailCustomRole;
+
+  /// No description provided for @memberDetailEffectiveSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Эффективные чек-листы'**
+  String get memberDetailEffectiveSection;
+
+  /// No description provided for @memberDetailEffectiveHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Что получит сотрудник при старте смены'**
+  String get memberDetailEffectiveHint;
+
+  /// No description provided for @memberDetailEffectiveEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет активных чек-листов'**
+  String get memberDetailEffectiveEmpty;
+
+  /// No description provided for @memberDetailSourceRole.
+  ///
+  /// In ru, this message translates to:
+  /// **'От роли'**
+  String get memberDetailSourceRole;
+
+  /// No description provided for @memberDetailSourcePersonal.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персонально'**
+  String get memberDetailSourcePersonal;
+
+  /// No description provided for @memberDetailOverridesSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персональные исключения'**
+  String get memberDetailOverridesSection;
+
+  /// No description provided for @memberDetailOverridesHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавленные поверх роли (+) или исключённые из роли (−) шаблоны'**
+  String get memberDetailOverridesHint;
+
+  /// No description provided for @memberDetailOverridesEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет персональных переопределений'**
+  String get memberDetailOverridesEmpty;
+
+  /// No description provided for @memberDetailOverrideAction.
+  ///
+  /// In ru, this message translates to:
+  /// **'Действия'**
+  String get memberDetailOverrideAction;
+
+  /// No description provided for @memberDetailOverrideAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'+'**
+  String get memberDetailOverrideAdd;
+
+  /// No description provided for @memberDetailOverrideRemove.
+  ///
+  /// In ru, this message translates to:
+  /// **'−'**
+  String get memberDetailOverrideRemove;
+
+  /// No description provided for @memberDetailOverrideSwitchAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить поверх роли'**
+  String get memberDetailOverrideSwitchAdd;
+
+  /// No description provided for @memberDetailOverrideSwitchRemove.
+  ///
+  /// In ru, this message translates to:
+  /// **'Исключить из роли'**
+  String get memberDetailOverrideSwitchRemove;
+
+  /// No description provided for @memberDetailOverrideClear.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять переопределение'**
+  String get memberDetailOverrideClear;
+
+  /// No description provided for @checklistTemplatesTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблоны чек-листов'**
+  String get checklistTemplatesTitle;
+
+  /// No description provided for @checklistTemplatesEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблонов пока нет'**
+  String get checklistTemplatesEmpty;
+
+  /// No description provided for @checklistTemplatesAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новый шаблон'**
+  String get checklistTemplatesAdd;
+
+  /// No description provided for @checklistTemplatesCreate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Создать шаблон'**
+  String get checklistTemplatesCreate;
+
+  /// No description provided for @checklistTemplatesShiftStart.
+  ///
+  /// In ru, this message translates to:
+  /// **'При начале смены'**
+  String get checklistTemplatesShiftStart;
+
+  /// No description provided for @checklistTemplatesShiftEnd.
+  ///
+  /// In ru, this message translates to:
+  /// **'При завершении смены'**
+  String get checklistTemplatesShiftEnd;
+
+  /// No description provided for @checklistTemplatesRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обязательный'**
+  String get checklistTemplatesRequired;
+
+  /// No description provided for @checklistTemplatesNotRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Необязательный'**
+  String get checklistTemplatesNotRequired;
+
+  /// No description provided for @checklistTemplatesArchived.
+  ///
+  /// In ru, this message translates to:
+  /// **'Архив'**
+  String get checklistTemplatesArchived;
+
+  /// No description provided for @checklistTemplatesItemsCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, =0{нет пунктов} =1{{count} пункт} few{{count} пункта} many{{count} пунктов} other{{count} пункта}}'**
+  String checklistTemplatesItemsCount(int count);
+
+  /// No description provided for @checklistTemplateNameLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Название шаблона'**
+  String get checklistTemplateNameLabel;
+
+  /// No description provided for @checklistTemplateNameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Открытие кафе'**
+  String get checklistTemplateNameHint;
+
+  /// No description provided for @checklistTemplateNameRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите название'**
+  String get checklistTemplateNameRequired;
+
+  /// No description provided for @checklistTemplateTypeLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тип'**
+  String get checklistTemplateTypeLabel;
+
+  /// No description provided for @checklistTemplateIsRequiredLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обязательный для всех'**
+  String get checklistTemplateIsRequiredLabel;
+
+  /// No description provided for @checklistTemplateIsRequiredDesc.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пункты обязательны к выполнению'**
+  String get checklistTemplateIsRequiredDesc;
+
+  /// No description provided for @checklistTemplateCreated.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон создан'**
+  String get checklistTemplateCreated;
+
+  /// No description provided for @checklistTemplateUpdated.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон обновлён'**
+  String get checklistTemplateUpdated;
+
+  /// No description provided for @checklistTemplateArchive.
+  ///
+  /// In ru, this message translates to:
+  /// **'Архивировать'**
+  String get checklistTemplateArchive;
+
+  /// No description provided for @checklistTemplateArchiveConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Архивировать шаблон \"{name}\"? Новые смены не будут получать этот чек-лист.'**
+  String checklistTemplateArchiveConfirm(String name);
+
+  /// No description provided for @checklistTemplateArchived.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон в архиве'**
+  String get checklistTemplateArchived;
+
+  /// No description provided for @checklistTemplateShowArchived.
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать архив'**
+  String get checklistTemplateShowArchived;
+
+  /// No description provided for @checklistTemplateDetailTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон чек-листа'**
+  String get checklistTemplateDetailTitle;
+
+  /// No description provided for @checklistTemplateItemsSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пункты'**
+  String get checklistTemplateItemsSection;
+
+  /// No description provided for @checklistTemplateItemsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пунктов пока нет'**
+  String get checklistTemplateItemsEmpty;
+
+  /// No description provided for @checklistTemplateItemAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить пункт'**
+  String get checklistTemplateItemAdd;
+
+  /// No description provided for @checklistTemplateItemTextLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текст пункта'**
+  String get checklistTemplateItemTextLabel;
+
+  /// No description provided for @checklistTemplateItemTextHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Например: Проверить температуру холодильника'**
+  String get checklistTemplateItemTextHint;
+
+  /// No description provided for @checklistTemplateItemRequiredLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обязательный'**
+  String get checklistTemplateItemRequiredLabel;
+
+  /// No description provided for @checklistTemplateItemAdded.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пункт добавлен'**
+  String get checklistTemplateItemAdded;
+
+  /// No description provided for @checklistTemplateItemUpdated.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пункт обновлён'**
+  String get checklistTemplateItemUpdated;
+
+  /// No description provided for @checklistTemplateItemDeleted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пункт удалён'**
+  String get checklistTemplateItemDeleted;
+
+  /// No description provided for @checklistTemplateItemDeleteConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить пункт?'**
+  String get checklistTemplateItemDeleteConfirm;
+
+  /// No description provided for @checklistTemplateItemReorderHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Зажмите и перетащите пункт для изменения порядка'**
+  String get checklistTemplateItemReorderHint;
+
+  /// No description provided for @checklistTemplateRolesSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Роли'**
+  String get checklistTemplateRolesSection;
+
+  /// No description provided for @checklistTemplateRolesEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон не назначен ни одной роли'**
+  String get checklistTemplateRolesEmpty;
+
+  /// No description provided for @checklistTemplateAssignRoles.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначить ролям'**
+  String get checklistTemplateAssignRoles;
+
+  /// No description provided for @checklistTemplateRolesAssigned.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначение сохранено'**
+  String get checklistTemplateRolesAssigned;
+
+  /// No description provided for @checklistTemplatePersonalSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персональные назначения'**
+  String get checklistTemplatePersonalSection;
+
+  /// No description provided for @checklistTemplatePersonalHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначьте шаблон поверх роли (+) или исключите из роли (−) для конкретного сотрудника'**
+  String get checklistTemplatePersonalHint;
+
+  /// No description provided for @checklistTemplateArchiveEditError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон в архиве — персональные назначения менять нельзя'**
+  String get checklistTemplateArchiveEditError;
+
+  /// No description provided for @checklistOverrideDefault.
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get checklistOverrideDefault;
+
+  /// No description provided for @checklistOverrideAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'+'**
+  String get checklistOverrideAdd;
+
+  /// No description provided for @checklistOverrideRemove.
+  ///
+  /// In ru, this message translates to:
+  /// **'−'**
+  String get checklistOverrideRemove;
+
+  /// No description provided for @shiftChecklistsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Чек-листы смены'**
+  String get shiftChecklistsTitle;
+
+  /// No description provided for @shiftChecklistsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Чек-листов нет'**
+  String get shiftChecklistsEmpty;
+
+  /// No description provided for @shiftChecklistsStartGroup.
+  ///
+  /// In ru, this message translates to:
+  /// **'При начале смены'**
+  String get shiftChecklistsStartGroup;
+
+  /// No description provided for @shiftChecklistsEndGroup.
+  ///
+  /// In ru, this message translates to:
+  /// **'При завершении смены'**
+  String get shiftChecklistsEndGroup;
+
+  /// No description provided for @shiftChecklistProgress.
+  ///
+  /// In ru, this message translates to:
+  /// **'{completed} из {total}'**
+  String shiftChecklistProgress(int completed, int total);
+
+  /// No description provided for @shiftChecklistStatusPending.
+  ///
+  /// In ru, this message translates to:
+  /// **'В процессе'**
+  String get shiftChecklistStatusPending;
+
+  /// No description provided for @shiftChecklistStatusCompleted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выполнен'**
+  String get shiftChecklistStatusCompleted;
+
+  /// No description provided for @shiftChecklistStatusIncomplete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не выполнен'**
+  String get shiftChecklistStatusIncomplete;
+
+  /// No description provided for @shiftChecklistRequiredBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обязательный'**
+  String get shiftChecklistRequiredBadge;
+
+  /// No description provided for @checklistFillTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заполнение чек-листа'**
+  String get checklistFillTitle;
+
+  /// No description provided for @checklistFillCommentHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Комментарий (необязательно)'**
+  String get checklistFillCommentHint;
+
+  /// No description provided for @checklistFillReadOnly.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена завершена, редактирование недоступно'**
+  String get checklistFillReadOnly;
+
+  /// No description provided for @checklistFillSaving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранение...'**
+  String get checklistFillSaving;
+
+  /// No description provided for @checklistFillSaved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранено'**
+  String get checklistFillSaved;
+
+  /// No description provided for @checklistFillSaveError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить'**
+  String get checklistFillSaveError;
+
+  /// No description provided for @shiftFinishIncompleteWarning.
+  ///
+  /// In ru, this message translates to:
+  /// **'Есть незаполненные обязательные чек-листы'**
+  String get shiftFinishIncompleteWarning;
+
+  /// No description provided for @shiftIncompleteRequiredBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Чек-листы не выполнены'**
+  String get shiftIncompleteRequiredBadge;
 
   /// No description provided for @deepLinkJoinSuccess.
   ///

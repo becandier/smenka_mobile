@@ -7,9 +7,17 @@ part 'members_state.freezed.dart';
 
 @freezed
 abstract class MembersState with _$MembersState {
+  const MembersState._();
+
   const factory MembersState({
     @Default(SectionData<List<Member>>()) SectionData<List<Member>> members,
+    OrgMembershipRole? viewerRole,
     @Default(FeatureStatus.initial) FeatureStatus actionStatus,
     String? actionError,
+    @Default('') String currentUserId,
   }) = _MembersState;
+
+  bool get canManage =>
+      viewerRole == OrgMembershipRole.owner ||
+      viewerRole == OrgMembershipRole.admin;
 }

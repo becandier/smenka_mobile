@@ -25,6 +25,9 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
     /// Статус действия (start/pause/resume/finish) — transient
     @Default(FeatureStatus.initial) FeatureStatus actionStatus,
     String? actionError,
+
+    /// Предупреждение о низкой точности GPS
+    @Default(false) bool showLowAccuracyWarning,
   }) = _ShiftTrackerState;
   const ShiftTrackerState._();
 

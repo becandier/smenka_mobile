@@ -43,6 +43,17 @@ class _OrgShiftCard extends StatelessWidget {
                 ],
               ),
             ),
+            if (shift.hasIncompleteRequiredChecklists) ...[
+              Tooltip(
+                message: context.l10n.shiftIncompleteRequiredBadge,
+                child: Icon(
+                  Icons.error_outline,
+                  color: colors.error,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
             DecoratedBox(
               decoration: BoxDecoration(
                 color: statusColor.withValues(alpha: 0.15),

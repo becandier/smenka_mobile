@@ -9,7 +9,7 @@ abstract class OrgSettingsDto with _$OrgSettingsDto {
   const factory OrgSettingsDto({
     required String organizationId,
     required bool geoCheckEnabled,
-    required int autoFinishHours,
+    int? autoFinishHours,
     int? maxPauseMinutes,
     int? maxPausesPerShift,
   }) = _OrgSettingsDto;

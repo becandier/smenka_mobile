@@ -55,8 +55,67 @@ class _IdleShiftContent extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    if (result == StartShiftResult.success) {
-      context.modals.showSuccess(context.l10n.shiftStarted);
+    switch (result) {
+      case StartShiftResult.success:
+        context.modals.showSuccess(context.l10n.shiftStarted);
+      case StartShiftResult.geoServiceDisabled:
+        _showGeoServiceDialog(context);
+      case StartShiftResult.geoDenied:
+        context.modals.showError(context.l10n.geoPermissionDenied);
+      case StartShiftResult.geoDeniedForever:
+        _showOpenSettingsDialog(context);
+      case StartShiftResult.error:
+        break; // Обрабатывается BlocListener
     }
+  }
+
+  void _showGeoServiceDialog(BuildContext context) {
+    final l10n = context.l10n;
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.geoServiceDisabledTitle),
+        content: Text(l10n.geoServiceDisabledMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              GeoService().openLocationSettings();
+            },
+            child: Text(l10n.geoOpenSettings),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showOpenSettingsDialog(BuildContext context) {
+    final l10n = context.l10n;
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.geoPermissionDeniedForeverTitle),
+        content: Text(l10n.geoPermissionDeniedForeverMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              GeoService().openAppSettings();
+            },
+            child: Text(l10n.geoOpenAppSettings),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -58,24 +58,34 @@ class _OrganizationDetailView extends StatelessWidget {
         selector: (state) => state.organization,
         onRetry: () => context.read<OrganizationDetailCubit>().refresh(),
         contentBuilder: (org) {
-          final cubit = context.read<OrganizationDetailCubit>();
-
           return RefreshIndicator.adaptive(
             onRefresh: () =>
                 context.read<OrganizationDetailCubit>().refresh(),
-            child: ListView(
-              padding: const EdgeInsets.only(bottom: 32),
-              children: [
-                _OrgHeader(organization: org),
-                const SizedBox(height: 24),
-                const _OrgNavigationSection(),
-                const SizedBox(height: 24),
-                if (cubit.isOwner) ...[
-                  _OrgInviteSection(organization: org),
-                  const SizedBox(height: 24),
-                ],
-                _OrgActionsSection(organization: org),
-              ],
+            child: BlocSelector<OrganizationDetailCubit,
+                OrganizationDetailState, ({bool isOwner, bool isAdminOrOwner})>(
+              selector: (state) {
+                final cubit = context.read<OrganizationDetailCubit>();
+                return (
+                  isOwner: cubit.isOwner,
+                  isAdminOrOwner: cubit.isAdminOrOwner,
+                );
+              },
+              builder: (context, permissions) {
+                return ListView(
+                  padding: const EdgeInsets.only(bottom: 32),
+                  children: [
+                    _OrgHeader(organization: org),
+                    const SizedBox(height: 24),
+                    const _OrgNavigationSection(),
+                    const SizedBox(height: 24),
+                    if (permissions.isOwner) ...[
+                      _OrgInviteSection(organization: org),
+                      const SizedBox(height: 24),
+                    ],
+                    _OrgActionsSection(organization: org),
+                  ],
+                );
+              },
             ),
           );
         },
