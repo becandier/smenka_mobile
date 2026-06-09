@@ -46,6 +46,9 @@ class _FillItemTileState extends State<_FillItemTile> {
     final status = context.select<ChecklistFillCubit, FeatureStatus?>(
       (cubit) => cubit.state.itemStatuses[widget.item.id],
     );
+    final readOnly = context.select<ChecklistFillCubit, bool>(
+      (cubit) => cubit.state.readOnly,
+    );
 
     return Material(
       color: appColors.surface,
@@ -60,9 +63,11 @@ class _FillItemTileState extends State<_FillItemTile> {
               children: [
                 Checkbox(
                   value: widget.item.isCompleted,
-                  onChanged: (_) => context
-                      .read<ChecklistFillCubit>()
-                      .toggleItem(widget.item),
+                  onChanged: readOnly
+                      ? null
+                      : (_) => context
+                          .read<ChecklistFillCubit>()
+                          .toggleItem(widget.item),
                 ),
                 const SizedBox(width: 4),
                 Expanded(
@@ -101,53 +106,64 @@ class _FillItemTileState extends State<_FillItemTile> {
                   ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 44, right: 4, top: 8),
-              child: Material(
-                color: appColors.background,
-                borderRadius: BorderRadius.circular(10),
-                child: TextField(
-                  controller: _commentController,
-                  style: textTheme.bodyMedium,
-                  minLines: 3,
-                  maxLines: 8,
-                  textInputAction: TextInputAction.newline,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                    hintText: l10n.checklistFillCommentHint,
-                    hintStyle: textTheme.bodyMedium?.copyWith(
-                      color: appColors.secondary.withValues(alpha: 0.7),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: appColors.secondary.withValues(alpha: 0.2),
+            if (!readOnly)
+              Padding(
+                padding: const EdgeInsets.only(left: 44, right: 4, top: 8),
+                child: Material(
+                  color: appColors.background,
+                  borderRadius: BorderRadius.circular(10),
+                  child: TextField(
+                    controller: _commentController,
+                    style: textTheme.bodyMedium,
+                    minLines: 3,
+                    maxLines: 8,
+                    textInputAction: TextInputAction.newline,
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      hintText: l10n.checklistFillCommentHint,
+                      hintStyle: textTheme.bodyMedium?.copyWith(
+                        color: appColors.secondary.withValues(alpha: 0.7),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: appColors.secondary.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: appColors.secondary.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: appColors.primary),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
                       ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: appColors.secondary.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: appColors.primary),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
+                    onChanged: (value) {
+                      context.read<ChecklistFillCubit>().scheduleCommentUpdate(
+                            widget.item,
+                            value.isEmpty ? null : value,
+                          );
+                    },
                   ),
-                  onChanged: (value) {
-                    context.read<ChecklistFillCubit>().scheduleCommentUpdate(
-                          widget.item,
-                          value.isEmpty ? null : value,
-                        );
-                  },
+                ),
+              )
+            else if ((widget.item.comment ?? '').isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(left: 44, right: 4, top: 8),
+                child: Text(
+                  widget.item.comment ?? '',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: appColors.secondary,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

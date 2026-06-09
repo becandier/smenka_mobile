@@ -183,7 +183,9 @@ lib/
 | `OrgSettingsCubit` | Готов | Настройки организации |
 | `LocationsCubit` | Готов | Рабочие точки: список, удаление |
 | `AddEditLocationCubit` | Готов | Добавление/редактирование рабочей точки (Yandex Map) |
-| `OrgShiftsCubit` | Готов | Смены сотрудников (пагинация + фильтры) |
+| `OrgShiftsCubit` | Готов | Смены сотрудников (пагинация + фильтры: статус, дата, **сотрудник `?user_id`**) |
+| `OrgShiftDetailCubit` | Готов | Деталь чужой орг-смены (owner/admin, read-only); ошибки по `error.code` |
+| `EmployeePickerCubit` | Готов | Список участников для модалки фильтра по сотруднику |
 | `OrgStatsCubit` | Готов | Статистика организации (период + chart) |
 | `SuperAdminCubit` | Готов | Все организации системы (super_admin) |
 
@@ -248,6 +250,10 @@ lib/
 - `PinCodeField` — поле ввода PIN/кода подтверждения (файл: `lib/widgets/pin_code_field.dart`)
 - `AppEmptyState` — переиспользуемый empty state (иконка + заголовок + опц. подзаголовок + опц. кнопка) (файл: `lib/widgets/app_empty_state.dart`)
 - `AppShimmerLoader` — shimmer placeholder для загрузки списков (файл: `lib/widgets/app_shimmer_loader.dart`)
+- `MemberRoleBadges` — бейджи системной + кастомной роли (поддерживает плоский `customRoleName`) (файл: `lib/widgets/member_role_badges.dart`)
+- `ShiftAuthorBlock` — шапка автора орг-смены: имя/почта/бейджи ролей или «Бывший сотрудник» (карточка списка + деталь) (файл: `lib/widgets/shift_author_block.dart`)
+- `ShiftPauseList` — список пауз смены (переиспользуется в персональной и орг-детали) (файл: `lib/widgets/shift_pause_list.dart`)
+- `ChecklistInstanceTile` — плитка экземпляра чек-листа с `onTap` (список чек-листов + read-only блок на детали) (файл: `lib/widgets/checklist_instance_tile.dart`)
 - Barrel file: `lib/widgets/_widgets.dart`
 
 ### Toast-уведомления

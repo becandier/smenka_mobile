@@ -18,6 +18,10 @@ mixin _$SectionData<T> {
   FeatureStatus get status;
   String? get error;
 
+  /// Машинный код ошибки (`error.code`) — для маппинга в локализованный
+  /// текст на UI-слое. Логику строим по нему, а не по [error] (message).
+  String? get errorCode;
+
   /// Create a copy of SectionData
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,16 +37,18 @@ mixin _$SectionData<T> {
             other is SectionData<T> &&
             const DeepCollectionEquality().equals(other.data, data) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.errorCode, errorCode) ||
+                other.errorCode == errorCode));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(data), status, error);
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(data), status, error, errorCode);
 
   @override
   String toString() {
-    return 'SectionData<$T>(data: $data, status: $status, error: $error)';
+    return 'SectionData<$T>(data: $data, status: $status, error: $error, errorCode: $errorCode)';
   }
 }
 
@@ -52,7 +58,7 @@ abstract mixin class $SectionDataCopyWith<T, $Res> {
           SectionData<T> value, $Res Function(SectionData<T>) _then) =
       _$SectionDataCopyWithImpl;
   @useResult
-  $Res call({T? data, FeatureStatus status, String? error});
+  $Res call({T? data, FeatureStatus status, String? error, String? errorCode});
 }
 
 /// @nodoc
@@ -71,6 +77,7 @@ class _$SectionDataCopyWithImpl<T, $Res>
     Object? data = freezed,
     Object? status = null,
     Object? error = freezed,
+    Object? errorCode = freezed,
   }) {
     return _then(_self.copyWith(
       data: freezed == data
@@ -84,6 +91,10 @@ class _$SectionDataCopyWithImpl<T, $Res>
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+      errorCode: freezed == errorCode
+          ? _self.errorCode
+          : errorCode // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -182,13 +193,15 @@ extension SectionDataPatterns<T> on SectionData<T> {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(T? data, FeatureStatus status, String? error)? $default, {
+    TResult Function(
+            T? data, FeatureStatus status, String? error, String? errorCode)?
+        $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SectionData() when $default != null:
-        return $default(_that.data, _that.status, _that.error);
+        return $default(_that.data, _that.status, _that.error, _that.errorCode);
       case _:
         return orElse();
     }
@@ -209,12 +222,14 @@ extension SectionDataPatterns<T> on SectionData<T> {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(T? data, FeatureStatus status, String? error) $default,
+    TResult Function(
+            T? data, FeatureStatus status, String? error, String? errorCode)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SectionData():
-        return $default(_that.data, _that.status, _that.error);
+        return $default(_that.data, _that.status, _that.error, _that.errorCode);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -234,12 +249,14 @@ extension SectionDataPatterns<T> on SectionData<T> {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(T? data, FeatureStatus status, String? error)? $default,
+    TResult? Function(
+            T? data, FeatureStatus status, String? error, String? errorCode)?
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SectionData() when $default != null:
-        return $default(_that.data, _that.status, _that.error);
+        return $default(_that.data, _that.status, _that.error, _that.errorCode);
       case _:
         return null;
     }
@@ -250,7 +267,10 @@ extension SectionDataPatterns<T> on SectionData<T> {
 
 class _SectionData<T> extends SectionData<T> {
   const _SectionData(
-      {this.data, this.status = FeatureStatus.initial, this.error})
+      {this.data,
+      this.status = FeatureStatus.initial,
+      this.error,
+      this.errorCode})
       : super._();
 
   @override
@@ -260,6 +280,11 @@ class _SectionData<T> extends SectionData<T> {
   final FeatureStatus status;
   @override
   final String? error;
+
+  /// Машинный код ошибки (`error.code`) — для маппинга в локализованный
+  /// текст на UI-слое. Логику строим по нему, а не по [error] (message).
+  @override
+  final String? errorCode;
 
   /// Create a copy of SectionData
   /// with the given fields replaced by the non-null parameter values.
@@ -276,16 +301,18 @@ class _SectionData<T> extends SectionData<T> {
             other is _SectionData<T> &&
             const DeepCollectionEquality().equals(other.data, data) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.errorCode, errorCode) ||
+                other.errorCode == errorCode));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(data), status, error);
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(data), status, error, errorCode);
 
   @override
   String toString() {
-    return 'SectionData<$T>(data: $data, status: $status, error: $error)';
+    return 'SectionData<$T>(data: $data, status: $status, error: $error, errorCode: $errorCode)';
   }
 }
 
@@ -297,7 +324,7 @@ abstract mixin class _$SectionDataCopyWith<T, $Res>
       __$SectionDataCopyWithImpl;
   @override
   @useResult
-  $Res call({T? data, FeatureStatus status, String? error});
+  $Res call({T? data, FeatureStatus status, String? error, String? errorCode});
 }
 
 /// @nodoc
@@ -316,6 +343,7 @@ class __$SectionDataCopyWithImpl<T, $Res>
     Object? data = freezed,
     Object? status = null,
     Object? error = freezed,
+    Object? errorCode = freezed,
   }) {
     return _then(_SectionData<T>(
       data: freezed == data
@@ -329,6 +357,10 @@ class __$SectionDataCopyWithImpl<T, $Res>
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+      errorCode: freezed == errorCode
+          ? _self.errorCode
+          : errorCode // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

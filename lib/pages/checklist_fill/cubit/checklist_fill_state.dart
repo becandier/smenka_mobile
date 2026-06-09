@@ -10,8 +10,11 @@ abstract class ChecklistFillState with _$ChecklistFillState {
   const factory ChecklistFillState({
     @Default(SectionData<ChecklistInstanceDetail>())
     SectionData<ChecklistInstanceDetail> instance,
-    @Default(<String, FeatureStatus>{})
-    Map<String, FeatureStatus> itemStatuses,
+    @Default(<String, FeatureStatus>{}) Map<String, FeatureStatus> itemStatuses,
     String? saveError,
+
+    /// Только чтение — редактирование пунктов недоступно (просмотр чужой
+    /// смены owner/admin). Чекбоксы и комментарии показываются неактивными.
+    @Default(false) bool readOnly,
   }) = _ChecklistFillState;
 }

@@ -71,6 +71,7 @@ mixin PaginationMixin<S> on Cubit<S> {
             section.copyWith(
               status: isRefresh ? FeatureStatus.error : section.status,
               error: error.message,
+              errorCode: error.code,
             ),
           ),
         );
@@ -132,6 +133,7 @@ mixin PaginationMixin<S> on Cubit<S> {
             section.copyWith(
               status: isRefresh ? FeatureStatus.error : section.status,
               error: error.message,
+              errorCode: error.code,
             ),
           ),
         );

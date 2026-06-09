@@ -1,7 +1,13 @@
-part of '../view/shift_detail_page.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
 
-class _DetailPauseList extends StatelessWidget {
-  const _DetailPauseList({required this.pauses});
+/// Список пауз смены: заголовок + карточки пауз с длительностью.
+/// Переиспользуется на экране детали персональной и чужой (орг) смены.
+class ShiftPauseList extends StatelessWidget {
+  const ShiftPauseList({required this.pauses, super.key});
 
   final List<Pause> pauses;
 
@@ -33,18 +39,15 @@ class _DetailPauseList extends StatelessWidget {
           )
         else
           ...List.generate(pauses.length, (index) {
-            return _DetailPauseCard(pause: pauses[index], index: index + 1);
+            return _PauseCard(pause: pauses[index], index: index + 1);
           }),
       ],
     );
   }
 }
 
-class _DetailPauseCard extends StatelessWidget {
-  const _DetailPauseCard({
-    required this.pause,
-    required this.index,
-  });
+class _PauseCard extends StatelessWidget {
+  const _PauseCard({required this.pause, required this.index});
 
   final Pause pause;
   final int index;
@@ -72,9 +75,7 @@ class _DetailPauseCard extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    isActive
-                        ? Icons.pause_circle
-                        : Icons.pause_circle_outlined,
+                    isActive ? Icons.pause_circle : Icons.pause_circle_outlined,
                     color: isActive ? colors.warning : colors.secondary,
                     size: 20,
                   ),
@@ -97,30 +98,19 @@ class _DetailPauseCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Text(
-                    '${l10n.detailStarted}: '
-                    '${_formatDateTime(pause.startedAt)}',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.secondary,
-                    ),
-                  ),
-                ],
+              Text(
+                '${l10n.detailStarted}: ${_formatDateTime(pause.startedAt)}',
+                style: textTheme.bodySmall?.copyWith(color: colors.secondary),
               ),
               const SizedBox(height: 4),
-              Row(
-                children: [
-                  Text(
-                    '${l10n.detailFinished}: ${switch (pause.finishedAt) {
-                      final dt? => _formatDateTime(dt),
-                      null => l10n.detailInProgress,
-                    }}',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: isActive ? colors.warning : colors.secondary,
-                    ),
-                  ),
-                ],
+              Text(
+                '${l10n.detailFinished}: ${switch (pause.finishedAt) {
+                  final dt? => _formatDateTime(dt),
+                  null => l10n.detailInProgress,
+                }}',
+                style: textTheme.bodySmall?.copyWith(
+                  color: isActive ? colors.warning : colors.secondary,
+                ),
               ),
             ],
           ),
@@ -128,4 +118,8 @@ class _DetailPauseCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatDateTime(DateTime dt) {
+  return DateFormat('dd.MM.yyyy, HH:mm').format(dt);
 }

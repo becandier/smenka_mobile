@@ -126,3 +126,16 @@
 - [ ] Обработка потери сети (отложено)
 - [x] Deep links (инвайт-код) — `smenka://invite/{code}`
 - [x] Финальная проверка локализации
+
+---
+
+## Фича — Видимость владельца смены `[x]` (`../docs/tasks/shift_owner_visibility/mobile.md`)
+- [x] Модель `Shift` + DTO/маппер: additive nullable-поля `userName` / `userEmail` / `role` / `customRoleName` (плоская строка); персональный `GET /shifts` не затронут
+- [x] DataSource/Repository: метод детали `GET /organizations/{org_id}/shifts/{shift_id}`; проброс `?user_id` в список
+- [x] **OrgShifts**: карточка показывает автора (`ShiftAuthorBlock`), фолбэк имени, «Бывший сотрудник» при `role==null && custom_role_name==null`; карточка кликабельна → деталь
+- [x] **Фильтр по сотруднику** — модалка `EmployeePicker` (CustomRoute) → `?user_id`; отдельный empty-текст `orgShiftsEmptyForEmployee`
+- [x] **OrgShiftDetail** (новый экран): шапка автора, инфо (статус/время/`worked` ч:м), паузы (`ShiftPauseList`), блок чек-листов отдельным запросом; ошибки по `error.code` (`SHIFT_NOT_FOUND`/`ORG_NOT_FOUND`/`FORBIDDEN`) + «Назад к списку»
+- [x] Чек-листы на детали — read-only (`ChecklistFillRoute(readOnly: true)`); никаких действий над чужой сменой
+- [x] `error.code` → локализованный текст (`lib/l10n/error_localization.dart`); `SectionData`/`PaginatedSectionData` несут `errorCode`
+- [x] Реюз-виджеты: `ShiftAuthorBlock`, `ChecklistInstanceTile`, `ShiftPauseList`; `MemberRoleBadges` поддерживает `customRoleName`
+- [x] Локализация; `make check` зелёный (analyze без ошибок/предупреждений)

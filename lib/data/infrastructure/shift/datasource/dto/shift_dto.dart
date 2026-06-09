@@ -30,6 +30,12 @@ abstract class ShiftDto with _$ShiftDto {
     required List<PauseDto> pauses,
     required int workedSeconds,
     @Default(false) bool hasIncompleteRequiredChecklists,
+
+    /// Additive-поля автора смены (орг-ответ). В персональном — `null`.
+    String? userName,
+    String? userEmail,
+    String? role,
+    String? customRoleName,
   }) = _ShiftDto;
 
   factory ShiftDto.fromJson(Map<String, dynamic> json) =>

@@ -16,11 +16,15 @@ class ChecklistFillPage extends StatelessWidget {
   const ChecklistFillPage({
     @pathParam required this.shiftId,
     @pathParam required this.instanceId,
+    this.readOnly = false,
     super.key,
   });
 
   final String shiftId;
   final String instanceId;
+
+  /// Только просмотр (без редактирования пунктов) — для детали чужой смены.
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +32,7 @@ class ChecklistFillPage extends StatelessWidget {
       create: (_) => ChecklistFillCubit(
         shiftId: shiftId,
         instanceId: instanceId,
+        readOnly: readOnly,
         checklistRepository: context.read<ChecklistRepository>(),
       ),
       child: const _ChecklistFillView(),
@@ -60,8 +65,7 @@ class _ChecklistFillView extends StatelessWidget {
         contentBuilder: (detail) {
           final sorted = [...detail.items]
             ..sort((a, b) => a.position.compareTo(b.position));
-          final completed =
-              sorted.where((i) => i.isCompleted).length;
+          final completed = sorted.where((i) => i.isCompleted).length;
 
           return Column(
             children: [

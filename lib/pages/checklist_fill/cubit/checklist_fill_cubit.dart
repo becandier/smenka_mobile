@@ -11,10 +11,11 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     required String shiftId,
     required String instanceId,
     required ChecklistRepository checklistRepository,
+    bool readOnly = false,
   })  : _shiftId = shiftId,
         _instanceId = instanceId,
         _checklistRepository = checklistRepository,
-        super(const ChecklistFillState()) {
+        super(ChecklistFillState(readOnly: readOnly)) {
     loadInstance();
   }
 
@@ -50,10 +51,12 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
   }
 
   Future<void> toggleItem(ChecklistInstanceItem item) async {
+    if (state.readOnly) return;
     await _update(item, isCompleted: !item.isCompleted, comment: item.comment);
   }
 
   void scheduleCommentUpdate(ChecklistInstanceItem item, String? comment) {
+    if (state.readOnly) return;
     _commentDebouncers[item.id]?.cancel();
     _commentDebouncers[item.id] = Timer(const Duration(milliseconds: 600), () {
       _update(item, isCompleted: item.isCompleted, comment: comment);
@@ -87,12 +90,14 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
           final newItems = detail.items
               .map((i) => i.id == updated.id ? updated : i)
               .toList();
-          emit(state.copyWith(
-            instance: state.instance.toSuccess(
-              detail.copyWith(items: newItems),
+          emit(
+            state.copyWith(
+              instance: state.instance.toSuccess(
+                detail.copyWith(items: newItems),
+              ),
+              itemStatuses: newStatuses,
             ),
-            itemStatuses: newStatuses,
-          ),);
+          );
         } else {
           emit(state.copyWith(itemStatuses: newStatuses));
         }
@@ -102,10 +107,12 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
       onFailure: (error) {
         final newStatuses = {...state.itemStatuses};
         newStatuses[item.id] = FeatureStatus.error;
-        emit(state.copyWith(
-          itemStatuses: newStatuses,
-          saveError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            itemStatuses: newStatuses,
+            saveError: error.message,
+          ),
+        );
       },
     );
   }

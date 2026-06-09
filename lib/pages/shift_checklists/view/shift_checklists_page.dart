@@ -2,14 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
-import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/shift_checklists/cubit/shift_checklists_cubit.dart';
 import 'package:smenka_mobile/pages/shift_checklists/cubit/shift_checklists_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
-
-part '../widgets/_instance_tile.dart';
 
 @RoutePage()
 class ShiftChecklistsPage extends StatelessWidget {
@@ -56,12 +53,10 @@ class _ShiftChecklistsView extends StatelessWidget {
             );
           }
 
-          final start = items
-              .where((i) => i.type == ChecklistType.shiftStart)
-              .toList();
-          final end = items
-              .where((i) => i.type == ChecklistType.shiftEnd)
-              .toList();
+          final start =
+              items.where((i) => i.type == ChecklistType.shiftStart).toList();
+          final end =
+              items.where((i) => i.type == ChecklistType.shiftEnd).toList();
 
           return RefreshIndicator.adaptive(
             onRefresh: () =>
@@ -71,12 +66,22 @@ class _ShiftChecklistsView extends StatelessWidget {
               children: [
                 if (start.isNotEmpty) ...[
                   _SectionHeader(text: l10n.shiftChecklistsStartGroup),
-                  ...start.map((i) => _InstanceTile(instance: i)),
+                  ...start.map(
+                    (i) => ChecklistInstanceTile(
+                      instance: i,
+                      onTap: () => _openInstance(context, i),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                 ],
                 if (end.isNotEmpty) ...[
                   _SectionHeader(text: l10n.shiftChecklistsEndGroup),
-                  ...end.map((i) => _InstanceTile(instance: i)),
+                  ...end.map(
+                    (i) => ChecklistInstanceTile(
+                      instance: i,
+                      onTap: () => _openInstance(context, i),
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -84,6 +89,17 @@ class _ShiftChecklistsView extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _openInstance(
+    BuildContext context,
+    ChecklistInstance instance,
+  ) async {
+    final cubit = context.read<ShiftChecklistsCubit>();
+    await context.router.push(
+      ChecklistFillRoute(shiftId: cubit.shiftId, instanceId: instance.id),
+    );
+    await cubit.loadChecklists();
   }
 }
 

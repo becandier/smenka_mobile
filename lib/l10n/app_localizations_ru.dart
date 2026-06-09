@@ -675,10 +675,49 @@ class AppLocalizationsRu extends AppLocalizations {
   String get orgShiftsEmpty => 'Нет смен';
 
   @override
+  String get orgShiftsEmptyForEmployee => 'У сотрудника нет смен за период';
+
+  @override
   String get orgShiftsFilterEmployee => 'Сотрудник';
 
   @override
   String get orgShiftsAllEmployees => 'Все сотрудники';
+
+  @override
+  String get shiftFilterByEmployee => 'Фильтр по сотруднику';
+
+  @override
+  String get shiftFilterReset => 'Сбросить фильтр';
+
+  @override
+  String get shiftEmployeePickerTitle => 'Выбор сотрудника';
+
+  @override
+  String get shiftEmployeePickerEmpty => 'Сотрудников нет';
+
+  @override
+  String get shiftAuthorFormerEmployee => 'Бывший сотрудник';
+
+  @override
+  String get shiftDetailTitle => 'Смена сотрудника';
+
+  @override
+  String get shiftDetailBackToList => 'Назад к списку';
+
+  @override
+  String get shiftChecklistsSection => 'Чек-листы';
+
+  @override
+  String get errorShiftNotFound => 'Смена не найдена';
+
+  @override
+  String get errorOrgNotFound => 'Организация не найдена';
+
+  @override
+  String get errorForbiddenShift => 'Нет доступа к этой смене';
+
+  @override
+  String get errorInvalidStatusFilter => 'Неверный статус-фильтр';
 
   @override
   String get orgStatsTitle => 'Статистика организации';

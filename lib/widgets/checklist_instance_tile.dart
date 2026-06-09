@@ -1,9 +1,21 @@
-part of '../view/shift_checklists_page.dart';
+import 'package:flutter/material.dart';
+import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
 
-class _InstanceTile extends StatelessWidget {
-  const _InstanceTile({required this.instance});
+/// Плитка экземпляра чек-листа смены: имя, статус, прогресс, бейдж
+/// «Обязательный». Навигация задаётся через [onTap] — виджет переиспользуется
+/// и в редактируемом списке (`shift_checklists`), и в режиме только-чтение на
+/// экране детали чужой смены.
+class ChecklistInstanceTile extends StatelessWidget {
+  const ChecklistInstanceTile({
+    required this.instance,
+    required this.onTap,
+    super.key,
+  });
 
   final ChecklistInstance instance;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +46,7 @@ class _InstanceTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () async {
-            final cubit = context.read<ShiftChecklistsCubit>();
-            await context.router.push(
-              ChecklistFillRoute(
-                shiftId: cubit.shiftId,
-                instanceId: instance.id,
-              ),
-            );
-            await cubit.loadChecklists();
-          },
+          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Column(

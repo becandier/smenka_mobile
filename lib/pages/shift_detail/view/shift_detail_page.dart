@@ -10,9 +10,9 @@ import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/shift_detail/cubit/shift_detail_cubit.dart';
 import 'package:smenka_mobile/pages/shift_detail/cubit/shift_detail_state.dart';
+import 'package:smenka_mobile/widgets/_widgets.dart';
 
 part '../widgets/detail_info_section.dart';
-part '../widgets/detail_pause_list.dart';
 part '../widgets/detail_checklists_section.dart';
 
 @RoutePage()
@@ -51,7 +51,7 @@ class _ShiftDetailView extends StatelessWidget {
                 _DetailChecklistsSection(shift: state.shift),
               ],
               const SizedBox(height: 24),
-              _DetailPauseList(pauses: state.shift.pauses),
+              ShiftPauseList(pauses: state.shift.pauses),
             ],
           ),
         );

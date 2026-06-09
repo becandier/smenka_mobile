@@ -2,10 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/employee_picker/_employee_picker.dart';
 import 'package:smenka_mobile/pages/org_shifts/cubit/org_shifts_cubit.dart';
 import 'package:smenka_mobile/pages/org_shifts/cubit/org_shifts_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
@@ -29,13 +31,15 @@ class OrgShiftsPage extends StatelessWidget {
         orgId: orgId,
         organizationRepository: context.read<OrganizationRepository>(),
       ),
-      child: const _OrgShiftsView(),
+      child: _OrgShiftsView(orgId: orgId),
     );
   }
 }
 
 class _OrgShiftsView extends StatelessWidget {
-  const _OrgShiftsView();
+  const _OrgShiftsView({required this.orgId});
+
+  final String orgId;
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +57,20 @@ class _OrgShiftsView extends StatelessWidget {
             child:
                 PaginatedSectionDataList<OrgShiftsCubit, OrgShiftsState, Shift>(
               selector: (state) => state.shifts,
-              itemBuilder: (context, shift, index) =>
-                  _OrgShiftCard(shift: shift),
-              onLoadMore: () => context
-                  .read<OrgShiftsCubit>()
-                  .loadShifts(isRefresh: false),
+              itemBuilder: (context, shift, index) => _OrgShiftCard(
+                shift: shift,
+                onTap: () => context.router.push(
+                  OrgShiftDetailRoute(orgId: orgId, shiftId: shift.id),
+                ),
+              ),
+              onLoadMore: () =>
+                  context.read<OrgShiftsCubit>().loadShifts(isRefresh: false),
               onRefresh: () => context.read<OrgShiftsCubit>().loadShifts(),
               emptyBuilder: () => AppEmptyState(
                 icon: Icons.work_history_outlined,
-                title: l10n.orgShiftsEmpty,
+                title: context.read<OrgShiftsCubit>().state.hasEmployeeFilter
+                    ? l10n.orgShiftsEmptyForEmployee
+                    : l10n.orgShiftsEmpty,
               ),
             ),
           ),

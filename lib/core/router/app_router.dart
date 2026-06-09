@@ -186,6 +186,21 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
         page: ChecklistTemplateDetailRoute.page,
       ),
       AutoRoute(path: '$basePath/shifts', page: OrgShiftsRoute.page),
+      AutoRoute(
+        path: '$basePath/shifts/:shiftId',
+        page: OrgShiftDetailRoute.page,
+      ),
+      // Чек-листы чужой смены (read-only) — доступны из детали орг-смены
+      // в тех же табах (organizations/profile/admin).
+      AutoRoute(
+        path: '$basePath/shifts/:shiftId/checklists/:instanceId',
+        page: ChecklistFillRoute.page,
+      ),
+      CustomRoute<EmployeePickerResult?>(
+        path: '$basePath/employee-picker',
+        page: EmployeePickerRoute.page,
+        customRouteBuilder: _modalBottomSheetBuilder,
+      ),
       AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),
     ];
 

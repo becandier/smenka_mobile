@@ -371,6 +371,19 @@ mixin _$Shift {
   int get workedSeconds;
   bool get hasIncompleteRequiredChecklists;
 
+  /// Данные автора смены. Заполняются только в орг-ответах
+  /// (`GET /organizations/{org_id}/shifts[/{shift_id}]`); в персональном
+  /// трекере (`GET /shifts`) всегда `null`.
+  String? get userName;
+  String? get userEmail;
+
+  /// Системная роль автора в этой организации: `admin` | `employee`.
+  /// `null`, если участник исключён из org или персональный контекст.
+  String? get role;
+
+  /// Плоское имя кастомной роли (НЕ объект). `null`, если не назначена.
+  String? get customRoleName;
+
   /// Create a copy of Shift
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -398,7 +411,14 @@ mixin _$Shift {
             (identical(other.hasIncompleteRequiredChecklists,
                     hasIncompleteRequiredChecklists) ||
                 other.hasIncompleteRequiredChecklists ==
-                    hasIncompleteRequiredChecklists));
+                    hasIncompleteRequiredChecklists) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.userEmail, userEmail) ||
+                other.userEmail == userEmail) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRoleName, customRoleName) ||
+                other.customRoleName == customRoleName));
   }
 
   @override
@@ -412,11 +432,15 @@ mixin _$Shift {
       status,
       const DeepCollectionEquality().hash(pauses),
       workedSeconds,
-      hasIncompleteRequiredChecklists);
+      hasIncompleteRequiredChecklists,
+      userName,
+      userEmail,
+      role,
+      customRoleName);
 
   @override
   String toString() {
-    return 'Shift(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists)';
+    return 'Shift(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
   }
 }
 
@@ -434,7 +458,11 @@ abstract mixin class $ShiftCopyWith<$Res> {
       ShiftStatus status,
       List<Pause> pauses,
       int workedSeconds,
-      bool hasIncompleteRequiredChecklists});
+      bool hasIncompleteRequiredChecklists,
+      String? userName,
+      String? userEmail,
+      String? role,
+      String? customRoleName});
 }
 
 /// @nodoc
@@ -458,6 +486,10 @@ class _$ShiftCopyWithImpl<$Res> implements $ShiftCopyWith<$Res> {
     Object? pauses = null,
     Object? workedSeconds = null,
     Object? hasIncompleteRequiredChecklists = null,
+    Object? userName = freezed,
+    Object? userEmail = freezed,
+    Object? role = freezed,
+    Object? customRoleName = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -496,6 +528,22 @@ class _$ShiftCopyWithImpl<$Res> implements $ShiftCopyWith<$Res> {
           ? _self.hasIncompleteRequiredChecklists
           : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
               as bool,
+      userName: freezed == userName
+          ? _self.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userEmail: freezed == userEmail
+          ? _self.userEmail
+          : userEmail // ignore: cast_nullable_to_non_nullable
+              as String?,
+      role: freezed == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customRoleName: freezed == customRoleName
+          ? _self.customRoleName
+          : customRoleName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -602,7 +650,11 @@ extension ShiftPatterns on Shift {
             ShiftStatus status,
             List<Pause> pauses,
             int workedSeconds,
-            bool hasIncompleteRequiredChecklists)?
+            bool hasIncompleteRequiredChecklists,
+            String? userName,
+            String? userEmail,
+            String? role,
+            String? customRoleName)?
         $default, {
     required TResult orElse(),
   }) {
@@ -618,7 +670,11 @@ extension ShiftPatterns on Shift {
             _that.status,
             _that.pauses,
             _that.workedSeconds,
-            _that.hasIncompleteRequiredChecklists);
+            _that.hasIncompleteRequiredChecklists,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRoleName);
       case _:
         return orElse();
     }
@@ -648,7 +704,11 @@ extension ShiftPatterns on Shift {
             ShiftStatus status,
             List<Pause> pauses,
             int workedSeconds,
-            bool hasIncompleteRequiredChecklists)
+            bool hasIncompleteRequiredChecklists,
+            String? userName,
+            String? userEmail,
+            String? role,
+            String? customRoleName)
         $default,
   ) {
     final _that = this;
@@ -663,7 +723,11 @@ extension ShiftPatterns on Shift {
             _that.status,
             _that.pauses,
             _that.workedSeconds,
-            _that.hasIncompleteRequiredChecklists);
+            _that.hasIncompleteRequiredChecklists,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRoleName);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -692,7 +756,11 @@ extension ShiftPatterns on Shift {
             ShiftStatus status,
             List<Pause> pauses,
             int workedSeconds,
-            bool hasIncompleteRequiredChecklists)?
+            bool hasIncompleteRequiredChecklists,
+            String? userName,
+            String? userEmail,
+            String? role,
+            String? customRoleName)?
         $default,
   ) {
     final _that = this;
@@ -707,7 +775,11 @@ extension ShiftPatterns on Shift {
             _that.status,
             _that.pauses,
             _that.workedSeconds,
-            _that.hasIncompleteRequiredChecklists);
+            _that.hasIncompleteRequiredChecklists,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRoleName);
       case _:
         return null;
     }
@@ -726,7 +798,11 @@ class _Shift implements Shift {
       required this.status,
       required final List<Pause> pauses,
       required this.workedSeconds,
-      this.hasIncompleteRequiredChecklists = false})
+      this.hasIncompleteRequiredChecklists = false,
+      this.userName,
+      this.userEmail,
+      this.role,
+      this.customRoleName})
       : _pauses = pauses;
 
   @override
@@ -754,6 +830,23 @@ class _Shift implements Shift {
   @override
   @JsonKey()
   final bool hasIncompleteRequiredChecklists;
+
+  /// Данные автора смены. Заполняются только в орг-ответах
+  /// (`GET /organizations/{org_id}/shifts[/{shift_id}]`); в персональном
+  /// трекере (`GET /shifts`) всегда `null`.
+  @override
+  final String? userName;
+  @override
+  final String? userEmail;
+
+  /// Системная роль автора в этой организации: `admin` | `employee`.
+  /// `null`, если участник исключён из org или персональный контекст.
+  @override
+  final String? role;
+
+  /// Плоское имя кастомной роли (НЕ объект). `null`, если не назначена.
+  @override
+  final String? customRoleName;
 
   /// Create a copy of Shift
   /// with the given fields replaced by the non-null parameter values.
@@ -783,7 +876,14 @@ class _Shift implements Shift {
             (identical(other.hasIncompleteRequiredChecklists,
                     hasIncompleteRequiredChecklists) ||
                 other.hasIncompleteRequiredChecklists ==
-                    hasIncompleteRequiredChecklists));
+                    hasIncompleteRequiredChecklists) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.userEmail, userEmail) ||
+                other.userEmail == userEmail) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRoleName, customRoleName) ||
+                other.customRoleName == customRoleName));
   }
 
   @override
@@ -797,11 +897,15 @@ class _Shift implements Shift {
       status,
       const DeepCollectionEquality().hash(_pauses),
       workedSeconds,
-      hasIncompleteRequiredChecklists);
+      hasIncompleteRequiredChecklists,
+      userName,
+      userEmail,
+      role,
+      customRoleName);
 
   @override
   String toString() {
-    return 'Shift(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists)';
+    return 'Shift(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
   }
 }
 
@@ -820,7 +924,11 @@ abstract mixin class _$ShiftCopyWith<$Res> implements $ShiftCopyWith<$Res> {
       ShiftStatus status,
       List<Pause> pauses,
       int workedSeconds,
-      bool hasIncompleteRequiredChecklists});
+      bool hasIncompleteRequiredChecklists,
+      String? userName,
+      String? userEmail,
+      String? role,
+      String? customRoleName});
 }
 
 /// @nodoc
@@ -844,6 +952,10 @@ class __$ShiftCopyWithImpl<$Res> implements _$ShiftCopyWith<$Res> {
     Object? pauses = null,
     Object? workedSeconds = null,
     Object? hasIncompleteRequiredChecklists = null,
+    Object? userName = freezed,
+    Object? userEmail = freezed,
+    Object? role = freezed,
+    Object? customRoleName = freezed,
   }) {
     return _then(_Shift(
       id: null == id
@@ -882,6 +994,22 @@ class __$ShiftCopyWithImpl<$Res> implements _$ShiftCopyWith<$Res> {
           ? _self.hasIncompleteRequiredChecklists
           : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
               as bool,
+      userName: freezed == userName
+          ? _self.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userEmail: freezed == userEmail
+          ? _self.userEmail
+          : userEmail // ignore: cast_nullable_to_non_nullable
+              as String?,
+      role: freezed == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customRoleName: freezed == customRoleName
+          ? _self.customRoleName
+          : customRoleName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

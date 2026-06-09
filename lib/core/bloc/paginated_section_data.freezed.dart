@@ -22,6 +22,10 @@ mixin _$PaginatedSectionData<T> {
   FeatureStatus get status;
   String? get error;
 
+  /// Машинный код ошибки (`error.code`) — для маппинга в локализованный
+  /// текст на UI-слое.
+  String? get errorCode;
+
   /// Create a copy of PaginatedSectionData
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -42,7 +46,9 @@ mixin _$PaginatedSectionData<T> {
                 other.currentPage == currentPage) &&
             (identical(other.perPage, perPage) || other.perPage == perPage) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.errorCode, errorCode) ||
+                other.errorCode == errorCode));
   }
 
   @override
@@ -54,11 +60,12 @@ mixin _$PaginatedSectionData<T> {
       currentPage,
       perPage,
       status,
-      error);
+      error,
+      errorCode);
 
   @override
   String toString() {
-    return 'PaginatedSectionData<$T>(data: $data, hasMore: $hasMore, total: $total, currentPage: $currentPage, perPage: $perPage, status: $status, error: $error)';
+    return 'PaginatedSectionData<$T>(data: $data, hasMore: $hasMore, total: $total, currentPage: $currentPage, perPage: $perPage, status: $status, error: $error, errorCode: $errorCode)';
   }
 }
 
@@ -75,7 +82,8 @@ abstract mixin class $PaginatedSectionDataCopyWith<T, $Res> {
       int currentPage,
       int perPage,
       FeatureStatus status,
-      String? error});
+      String? error,
+      String? errorCode});
 }
 
 /// @nodoc
@@ -98,6 +106,7 @@ class _$PaginatedSectionDataCopyWithImpl<T, $Res>
     Object? perPage = null,
     Object? status = null,
     Object? error = freezed,
+    Object? errorCode = freezed,
   }) {
     return _then(_self.copyWith(
       data: null == data
@@ -127,6 +136,10 @@ class _$PaginatedSectionDataCopyWithImpl<T, $Res>
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+      errorCode: freezed == errorCode
+          ? _self.errorCode
+          : errorCode // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -225,16 +238,30 @@ extension PaginatedSectionDataPatterns<T> on PaginatedSectionData<T> {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(List<T> data, bool hasMore, int? total, int currentPage,
-            int perPage, FeatureStatus status, String? error)?
+    TResult Function(
+            List<T> data,
+            bool hasMore,
+            int? total,
+            int currentPage,
+            int perPage,
+            FeatureStatus status,
+            String? error,
+            String? errorCode)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _PaginatedSectionData() when $default != null:
-        return $default(_that.data, _that.hasMore, _that.total,
-            _that.currentPage, _that.perPage, _that.status, _that.error);
+        return $default(
+            _that.data,
+            _that.hasMore,
+            _that.total,
+            _that.currentPage,
+            _that.perPage,
+            _that.status,
+            _that.error,
+            _that.errorCode);
       case _:
         return orElse();
     }
@@ -256,14 +283,21 @@ extension PaginatedSectionDataPatterns<T> on PaginatedSectionData<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(List<T> data, bool hasMore, int? total, int currentPage,
-            int perPage, FeatureStatus status, String? error)
+            int perPage, FeatureStatus status, String? error, String? errorCode)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PaginatedSectionData():
-        return $default(_that.data, _that.hasMore, _that.total,
-            _that.currentPage, _that.perPage, _that.status, _that.error);
+        return $default(
+            _that.data,
+            _that.hasMore,
+            _that.total,
+            _that.currentPage,
+            _that.perPage,
+            _that.status,
+            _that.error,
+            _that.errorCode);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -283,15 +317,29 @@ extension PaginatedSectionDataPatterns<T> on PaginatedSectionData<T> {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(List<T> data, bool hasMore, int? total, int currentPage,
-            int perPage, FeatureStatus status, String? error)?
+    TResult? Function(
+            List<T> data,
+            bool hasMore,
+            int? total,
+            int currentPage,
+            int perPage,
+            FeatureStatus status,
+            String? error,
+            String? errorCode)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PaginatedSectionData() when $default != null:
-        return $default(_that.data, _that.hasMore, _that.total,
-            _that.currentPage, _that.perPage, _that.status, _that.error);
+        return $default(
+            _that.data,
+            _that.hasMore,
+            _that.total,
+            _that.currentPage,
+            _that.perPage,
+            _that.status,
+            _that.error,
+            _that.errorCode);
       case _:
         return null;
     }
@@ -308,7 +356,8 @@ class _PaginatedSectionData<T> extends PaginatedSectionData<T> {
       this.currentPage = 1,
       this.perPage = 20,
       this.status = FeatureStatus.initial,
-      this.error})
+      this.error,
+      this.errorCode})
       : _data = data,
         super._();
 
@@ -338,6 +387,11 @@ class _PaginatedSectionData<T> extends PaginatedSectionData<T> {
   @override
   final String? error;
 
+  /// Машинный код ошибки (`error.code`) — для маппинга в локализованный
+  /// текст на UI-слое.
+  @override
+  final String? errorCode;
+
   /// Create a copy of PaginatedSectionData
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -359,7 +413,9 @@ class _PaginatedSectionData<T> extends PaginatedSectionData<T> {
                 other.currentPage == currentPage) &&
             (identical(other.perPage, perPage) || other.perPage == perPage) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.errorCode, errorCode) ||
+                other.errorCode == errorCode));
   }
 
   @override
@@ -371,11 +427,12 @@ class _PaginatedSectionData<T> extends PaginatedSectionData<T> {
       currentPage,
       perPage,
       status,
-      error);
+      error,
+      errorCode);
 
   @override
   String toString() {
-    return 'PaginatedSectionData<$T>(data: $data, hasMore: $hasMore, total: $total, currentPage: $currentPage, perPage: $perPage, status: $status, error: $error)';
+    return 'PaginatedSectionData<$T>(data: $data, hasMore: $hasMore, total: $total, currentPage: $currentPage, perPage: $perPage, status: $status, error: $error, errorCode: $errorCode)';
   }
 }
 
@@ -394,7 +451,8 @@ abstract mixin class _$PaginatedSectionDataCopyWith<T, $Res>
       int currentPage,
       int perPage,
       FeatureStatus status,
-      String? error});
+      String? error,
+      String? errorCode});
 }
 
 /// @nodoc
@@ -417,6 +475,7 @@ class __$PaginatedSectionDataCopyWithImpl<T, $Res>
     Object? perPage = null,
     Object? status = null,
     Object? error = freezed,
+    Object? errorCode = freezed,
   }) {
     return _then(_PaginatedSectionData<T>(
       data: null == data
@@ -446,6 +505,10 @@ class __$PaginatedSectionDataCopyWithImpl<T, $Res>
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+      errorCode: freezed == errorCode
+          ? _self.errorCode
+          : errorCode // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

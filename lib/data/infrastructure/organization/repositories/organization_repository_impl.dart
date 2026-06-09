@@ -20,8 +20,7 @@ class OrganizationRepositoryImpl
       BehaviorSubject<List<Organization>>();
 
   @override
-  Stream<List<Organization>> watchMyOrganizations() =>
-      _myOrganizations.stream;
+  Stream<List<Organization>> watchMyOrganizations() => _myOrganizations.stream;
 
   @override
   Future<void> fetchMyOrganizations() async {
@@ -157,6 +156,14 @@ class OrganizationRepositoryImpl
         limit: limit,
         offset: offset,
       );
+      return dto.toDomain();
+    });
+  }
+
+  @override
+  Future<Task<Shift>> getShiftDetail(String orgId, String shiftId) {
+    return execute(() async {
+      final dto = await _dataSource.getShiftDetail(orgId, shiftId);
       return dto.toDomain();
     });
   }

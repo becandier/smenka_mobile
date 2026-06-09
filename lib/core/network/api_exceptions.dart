@@ -46,4 +46,14 @@ extension ApiExceptionX on ApiException {
       ValidationException(:final message) => message,
     };
   }
+
+  /// Машинный код ошибки (`error.code`), если бэкенд его прислал.
+  String? get code {
+    return switch (this) {
+      ServerException(:final code) => code,
+      NetworkException(:final code) => code,
+      UnauthorizedException(:final code) => code,
+      ValidationException(:final code) => code,
+    };
+  }
 }

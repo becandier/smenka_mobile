@@ -37,6 +37,10 @@ _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
       workedSeconds: (json['worked_seconds'] as num).toInt(),
       hasIncompleteRequiredChecklists:
           json['has_incomplete_required_checklists'] as bool? ?? false,
+      userName: json['user_name'] as String?,
+      userEmail: json['user_email'] as String?,
+      role: json['role'] as String?,
+      customRoleName: json['custom_role_name'] as String?,
     );
 
 Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
@@ -50,4 +54,8 @@ Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
       'worked_seconds': instance.workedSeconds,
       'has_incomplete_required_checklists':
           instance.hasIncompleteRequiredChecklists,
+      'user_name': instance.userName,
+      'user_email': instance.userEmail,
+      'role': instance.role,
+      'custom_role_name': instance.customRoleName,
     };

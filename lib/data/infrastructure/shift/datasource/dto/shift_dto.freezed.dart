@@ -387,6 +387,12 @@ mixin _$ShiftDto {
   int get workedSeconds;
   bool get hasIncompleteRequiredChecklists;
 
+  /// Additive-поля автора смены (орг-ответ). В персональном — `null`.
+  String? get userName;
+  String? get userEmail;
+  String? get role;
+  String? get customRoleName;
+
   /// Create a copy of ShiftDto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -417,7 +423,14 @@ mixin _$ShiftDto {
             (identical(other.hasIncompleteRequiredChecklists,
                     hasIncompleteRequiredChecklists) ||
                 other.hasIncompleteRequiredChecklists ==
-                    hasIncompleteRequiredChecklists));
+                    hasIncompleteRequiredChecklists) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.userEmail, userEmail) ||
+                other.userEmail == userEmail) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRoleName, customRoleName) ||
+                other.customRoleName == customRoleName));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -432,11 +445,15 @@ mixin _$ShiftDto {
       status,
       const DeepCollectionEquality().hash(pauses),
       workedSeconds,
-      hasIncompleteRequiredChecklists);
+      hasIncompleteRequiredChecklists,
+      userName,
+      userEmail,
+      role,
+      customRoleName);
 
   @override
   String toString() {
-    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists)';
+    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
   }
 }
 
@@ -454,7 +471,11 @@ abstract mixin class $ShiftDtoCopyWith<$Res> {
       String status,
       List<PauseDto> pauses,
       int workedSeconds,
-      bool hasIncompleteRequiredChecklists});
+      bool hasIncompleteRequiredChecklists,
+      String? userName,
+      String? userEmail,
+      String? role,
+      String? customRoleName});
 }
 
 /// @nodoc
@@ -478,6 +499,10 @@ class _$ShiftDtoCopyWithImpl<$Res> implements $ShiftDtoCopyWith<$Res> {
     Object? pauses = null,
     Object? workedSeconds = null,
     Object? hasIncompleteRequiredChecklists = null,
+    Object? userName = freezed,
+    Object? userEmail = freezed,
+    Object? role = freezed,
+    Object? customRoleName = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -516,6 +541,22 @@ class _$ShiftDtoCopyWithImpl<$Res> implements $ShiftDtoCopyWith<$Res> {
           ? _self.hasIncompleteRequiredChecklists
           : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
               as bool,
+      userName: freezed == userName
+          ? _self.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userEmail: freezed == userEmail
+          ? _self.userEmail
+          : userEmail // ignore: cast_nullable_to_non_nullable
+              as String?,
+      role: freezed == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customRoleName: freezed == customRoleName
+          ? _self.customRoleName
+          : customRoleName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -622,7 +663,11 @@ extension ShiftDtoPatterns on ShiftDto {
             String status,
             List<PauseDto> pauses,
             int workedSeconds,
-            bool hasIncompleteRequiredChecklists)?
+            bool hasIncompleteRequiredChecklists,
+            String? userName,
+            String? userEmail,
+            String? role,
+            String? customRoleName)?
         $default, {
     required TResult orElse(),
   }) {
@@ -638,7 +683,11 @@ extension ShiftDtoPatterns on ShiftDto {
             _that.status,
             _that.pauses,
             _that.workedSeconds,
-            _that.hasIncompleteRequiredChecklists);
+            _that.hasIncompleteRequiredChecklists,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRoleName);
       case _:
         return orElse();
     }
@@ -668,7 +717,11 @@ extension ShiftDtoPatterns on ShiftDto {
             String status,
             List<PauseDto> pauses,
             int workedSeconds,
-            bool hasIncompleteRequiredChecklists)
+            bool hasIncompleteRequiredChecklists,
+            String? userName,
+            String? userEmail,
+            String? role,
+            String? customRoleName)
         $default,
   ) {
     final _that = this;
@@ -683,7 +736,11 @@ extension ShiftDtoPatterns on ShiftDto {
             _that.status,
             _that.pauses,
             _that.workedSeconds,
-            _that.hasIncompleteRequiredChecklists);
+            _that.hasIncompleteRequiredChecklists,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRoleName);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -712,7 +769,11 @@ extension ShiftDtoPatterns on ShiftDto {
             String status,
             List<PauseDto> pauses,
             int workedSeconds,
-            bool hasIncompleteRequiredChecklists)?
+            bool hasIncompleteRequiredChecklists,
+            String? userName,
+            String? userEmail,
+            String? role,
+            String? customRoleName)?
         $default,
   ) {
     final _that = this;
@@ -727,7 +788,11 @@ extension ShiftDtoPatterns on ShiftDto {
             _that.status,
             _that.pauses,
             _that.workedSeconds,
-            _that.hasIncompleteRequiredChecklists);
+            _that.hasIncompleteRequiredChecklists,
+            _that.userName,
+            _that.userEmail,
+            _that.role,
+            _that.customRoleName);
       case _:
         return null;
     }
@@ -747,7 +812,11 @@ class _ShiftDto implements ShiftDto {
       required this.status,
       required final List<PauseDto> pauses,
       required this.workedSeconds,
-      this.hasIncompleteRequiredChecklists = false})
+      this.hasIncompleteRequiredChecklists = false,
+      this.userName,
+      this.userEmail,
+      this.role,
+      this.customRoleName})
       : _pauses = pauses;
   factory _ShiftDto.fromJson(Map<String, dynamic> json) =>
       _$ShiftDtoFromJson(json);
@@ -777,6 +846,16 @@ class _ShiftDto implements ShiftDto {
   @override
   @JsonKey()
   final bool hasIncompleteRequiredChecklists;
+
+  /// Additive-поля автора смены (орг-ответ). В персональном — `null`.
+  @override
+  final String? userName;
+  @override
+  final String? userEmail;
+  @override
+  final String? role;
+  @override
+  final String? customRoleName;
 
   /// Create a copy of ShiftDto
   /// with the given fields replaced by the non-null parameter values.
@@ -813,7 +892,14 @@ class _ShiftDto implements ShiftDto {
             (identical(other.hasIncompleteRequiredChecklists,
                     hasIncompleteRequiredChecklists) ||
                 other.hasIncompleteRequiredChecklists ==
-                    hasIncompleteRequiredChecklists));
+                    hasIncompleteRequiredChecklists) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.userEmail, userEmail) ||
+                other.userEmail == userEmail) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.customRoleName, customRoleName) ||
+                other.customRoleName == customRoleName));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -828,11 +914,15 @@ class _ShiftDto implements ShiftDto {
       status,
       const DeepCollectionEquality().hash(_pauses),
       workedSeconds,
-      hasIncompleteRequiredChecklists);
+      hasIncompleteRequiredChecklists,
+      userName,
+      userEmail,
+      role,
+      customRoleName);
 
   @override
   String toString() {
-    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists)';
+    return 'ShiftDto(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
   }
 }
 
@@ -852,7 +942,11 @@ abstract mixin class _$ShiftDtoCopyWith<$Res>
       String status,
       List<PauseDto> pauses,
       int workedSeconds,
-      bool hasIncompleteRequiredChecklists});
+      bool hasIncompleteRequiredChecklists,
+      String? userName,
+      String? userEmail,
+      String? role,
+      String? customRoleName});
 }
 
 /// @nodoc
@@ -876,6 +970,10 @@ class __$ShiftDtoCopyWithImpl<$Res> implements _$ShiftDtoCopyWith<$Res> {
     Object? pauses = null,
     Object? workedSeconds = null,
     Object? hasIncompleteRequiredChecklists = null,
+    Object? userName = freezed,
+    Object? userEmail = freezed,
+    Object? role = freezed,
+    Object? customRoleName = freezed,
   }) {
     return _then(_ShiftDto(
       id: null == id
@@ -914,6 +1012,22 @@ class __$ShiftDtoCopyWithImpl<$Res> implements _$ShiftDtoCopyWith<$Res> {
           ? _self.hasIncompleteRequiredChecklists
           : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
               as bool,
+      userName: freezed == userName
+          ? _self.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userEmail: freezed == userEmail
+          ? _self.userEmail
+          : userEmail // ignore: cast_nullable_to_non_nullable
+              as String?,
+      role: freezed == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customRoleName: freezed == customRoleName
+          ? _self.customRoleName
+          : customRoleName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
