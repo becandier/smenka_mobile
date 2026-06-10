@@ -165,7 +165,8 @@ extension MainAppStatePatterns on MainAppState {
             UserRepository userRepository,
             LocationRepository locationRepository,
             DeepLinkService deepLinkService,
-            PendingInviteStorage pendingInviteStorage)?
+            PendingInviteStorage pendingInviteStorage,
+            ShiftContextStorage shiftContextStorage)?
         success,
     TResult Function()? loading,
     TResult Function(Object? error, StackTrace? stackTrace)? error,
@@ -191,7 +192,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.userRepository,
             _that.locationRepository,
             _that.deepLinkService,
-            _that.pendingInviteStorage);
+            _that.pendingInviteStorage,
+            _that.shiftContextStorage);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -233,7 +235,8 @@ extension MainAppStatePatterns on MainAppState {
             UserRepository userRepository,
             LocationRepository locationRepository,
             DeepLinkService deepLinkService,
-            PendingInviteStorage pendingInviteStorage)
+            PendingInviteStorage pendingInviteStorage,
+            ShiftContextStorage shiftContextStorage)
         success,
     required TResult Function() loading,
     required TResult Function(Object? error, StackTrace? stackTrace) error,
@@ -258,7 +261,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.userRepository,
             _that.locationRepository,
             _that.deepLinkService,
-            _that.pendingInviteStorage);
+            _that.pendingInviteStorage,
+            _that.shiftContextStorage);
       case MainAppStateLoading():
         return loading();
       case MainAppStateError():
@@ -297,7 +301,8 @@ extension MainAppStatePatterns on MainAppState {
             UserRepository userRepository,
             LocationRepository locationRepository,
             DeepLinkService deepLinkService,
-            PendingInviteStorage pendingInviteStorage)?
+            PendingInviteStorage pendingInviteStorage,
+            ShiftContextStorage shiftContextStorage)?
         success,
     TResult? Function()? loading,
     TResult? Function(Object? error, StackTrace? stackTrace)? error,
@@ -322,7 +327,8 @@ extension MainAppStatePatterns on MainAppState {
             _that.userRepository,
             _that.locationRepository,
             _that.deepLinkService,
-            _that.pendingInviteStorage);
+            _that.pendingInviteStorage,
+            _that.shiftContextStorage);
       case MainAppStateLoading() when loading != null:
         return loading();
       case MainAppStateError() when error != null:
@@ -353,7 +359,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       required this.userRepository,
       required this.locationRepository,
       required this.deepLinkService,
-      required this.pendingInviteStorage})
+      required this.pendingInviteStorage,
+      required this.shiftContextStorage})
       : super._();
 
   final AppConfig appConfig;
@@ -373,6 +380,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   final LocationRepository locationRepository;
   final DeepLinkService deepLinkService;
   final PendingInviteStorage pendingInviteStorage;
+  final ShiftContextStorage shiftContextStorage;
 
   /// Create a copy of MainAppState
   /// with the given fields replaced by the non-null parameter values.
@@ -403,7 +411,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('userRepository', userRepository))
       ..add(DiagnosticsProperty('locationRepository', locationRepository))
       ..add(DiagnosticsProperty('deepLinkService', deepLinkService))
-      ..add(DiagnosticsProperty('pendingInviteStorage', pendingInviteStorage));
+      ..add(DiagnosticsProperty('pendingInviteStorage', pendingInviteStorage))
+      ..add(DiagnosticsProperty('shiftContextStorage', shiftContextStorage));
   }
 
   @override
@@ -444,7 +453,9 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
             (identical(other.deepLinkService, deepLinkService) ||
                 other.deepLinkService == deepLinkService) &&
             (identical(other.pendingInviteStorage, pendingInviteStorage) ||
-                other.pendingInviteStorage == pendingInviteStorage));
+                other.pendingInviteStorage == pendingInviteStorage) &&
+            (identical(other.shiftContextStorage, shiftContextStorage) ||
+                other.shiftContextStorage == shiftContextStorage));
   }
 
   @override
@@ -466,11 +477,12 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       userRepository,
       locationRepository,
       deepLinkService,
-      pendingInviteStorage);
+      pendingInviteStorage,
+      shiftContextStorage);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, organizationRoleRepository: $organizationRoleRepository, checklistRepository: $checklistRepository, userRepository: $userRepository, locationRepository: $locationRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage)';
+    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, organizationRoleRepository: $organizationRoleRepository, checklistRepository: $checklistRepository, userRepository: $userRepository, locationRepository: $locationRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage, shiftContextStorage: $shiftContextStorage)';
   }
 }
 
@@ -498,7 +510,8 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res>
       UserRepository userRepository,
       LocationRepository locationRepository,
       DeepLinkService deepLinkService,
-      PendingInviteStorage pendingInviteStorage});
+      PendingInviteStorage pendingInviteStorage,
+      ShiftContextStorage shiftContextStorage});
 }
 
 /// @nodoc
@@ -530,6 +543,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? locationRepository = null,
     Object? deepLinkService = null,
     Object? pendingInviteStorage = null,
+    Object? shiftContextStorage = null,
   }) {
     return _then(MainAppStateSuccess(
       appConfig: null == appConfig
@@ -600,6 +614,10 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.pendingInviteStorage
           : pendingInviteStorage // ignore: cast_nullable_to_non_nullable
               as PendingInviteStorage,
+      shiftContextStorage: null == shiftContextStorage
+          ? _self.shiftContextStorage
+          : shiftContextStorage // ignore: cast_nullable_to_non_nullable
+              as ShiftContextStorage,
     ));
   }
 }

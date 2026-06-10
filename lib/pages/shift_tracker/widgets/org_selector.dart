@@ -25,6 +25,10 @@ class _OrgSelector extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String?>(
+          // initialValue применяется один раз при создании state формы:
+          // ValueKey пересоздаёт поле при внешней смене выбора
+          // (асинхронный предвыбор, сохранение контекста после finishShift)
+          key: ValueKey<String?>(selectedOrganizationId),
           initialValue: selectedOrganizationId,
           isExpanded: true,
           decoration: InputDecoration(

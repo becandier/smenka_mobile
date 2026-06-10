@@ -19,6 +19,7 @@ class _SuccessApp extends StatefulWidget {
     required this.locationRepository,
     required this.deepLinkService,
     required this.pendingInviteStorage,
+    required this.shiftContextStorage,
   });
   final AppConfig appConfig;
   final SharedPreferences sharedPreferences;
@@ -37,6 +38,7 @@ class _SuccessApp extends StatefulWidget {
   final LocationRepository locationRepository;
   final DeepLinkService deepLinkService;
   final PendingInviteStorage pendingInviteStorage;
+  final ShiftContextStorage shiftContextStorage;
 
   @override
   State<_SuccessApp> createState() => _SuccessAppState();
@@ -128,6 +130,9 @@ class _SuccessAppState extends State<_SuccessApp> {
         ),
         RepositoryProvider<LocationRepository>.value(
           value: widget.locationRepository,
+        ),
+        RepositoryProvider<ShiftContextStorage>.value(
+          value: widget.shiftContextStorage,
         ),
       ],
       child: MultiBlocProvider(

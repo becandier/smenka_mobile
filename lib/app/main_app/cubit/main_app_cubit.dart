@@ -15,6 +15,7 @@ import 'package:smenka_mobile/app/main_app/locator/_locator.dart';
 import 'package:smenka_mobile/core/deep_link/deep_link_service.dart';
 import 'package:smenka_mobile/core/deep_link/pending_invite_storage.dart';
 import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
+import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/location/_location.dart';
@@ -119,6 +120,12 @@ class MainAppCubit extends Cubit<MainAppState> {
       );
       _serviceLocator.register<PendingInviteStorage>(pendingInviteStorage);
 
+      // Фаза 5.6: Локальный стор последнего контекста смены
+      final shiftContextStorage = ShiftContextStorage(
+        prefs: _serviceLocator.get<SharedPreferences>(),
+      );
+      _serviceLocator.register<ShiftContextStorage>(shiftContextStorage);
+
       // Фаза 6: Сервисы с зависимостями на SharedPreferences
       await _initService(ThemeModeServiceInitializer());
 
@@ -153,6 +160,7 @@ class MainAppCubit extends Cubit<MainAppState> {
           locationRepository: _serviceLocator.get<LocationRepository>(),
           deepLinkService: _serviceLocator.get<DeepLinkService>(),
           pendingInviteStorage: _serviceLocator.get<PendingInviteStorage>(),
+          shiftContextStorage: _serviceLocator.get<ShiftContextStorage>(),
         ),
       );
     } catch (e, stackTrace) {
