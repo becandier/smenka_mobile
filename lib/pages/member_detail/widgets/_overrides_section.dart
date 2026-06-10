@@ -15,8 +15,7 @@ class _OverridesSection extends StatelessWidget {
           p.overrides.isLoading != c.overrides.isLoading ||
           p.pendingTemplateIds != c.pendingTemplateIds,
       builder: (context, state) {
-        final items =
-            state.overrides.data ?? const <MemberChecklistOverride>[];
+        final items = state.overrides.data ?? const <MemberChecklistOverride>[];
 
         return Material(
           color: appColors.surface,
@@ -56,15 +55,14 @@ class _OverridesSection extends StatelessWidget {
                       for (final item in items) ...[
                         _OverrideRow(
                           item: item,
-                          isPending:
-                              state.pendingTemplateIds.contains(item.templateId),
+                          isPending: state.pendingTemplateIds
+                              .contains(item.templateId),
                         ),
                         if (item != items.last)
                           Divider(
                             height: 1,
                             thickness: 0.5,
-                            color:
-                                appColors.secondary.withValues(alpha: 0.15),
+                            color: appColors.secondary.withValues(alpha: 0.15),
                           ),
                       ],
                     ],

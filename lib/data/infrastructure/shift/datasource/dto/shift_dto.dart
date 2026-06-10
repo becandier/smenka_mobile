@@ -23,12 +23,12 @@ abstract class ShiftDto with _$ShiftDto {
   const factory ShiftDto({
     required String id,
     required String userId,
-    String? organizationId,
     required DateTime startedAt,
-    DateTime? finishedAt,
     required String status,
     required List<PauseDto> pauses,
     required int workedSeconds,
+    String? organizationId,
+    DateTime? finishedAt,
     @Default(false) bool hasIncompleteRequiredChecklists,
 
     /// Additive-поля автора смены (орг-ответ). В персональном — `null`.

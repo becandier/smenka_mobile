@@ -101,10 +101,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
 
   Future<bool> updateSystemRole(MemberRole role) async {
     if (role == state.member.role) return true;
-    emit(state.copyWith(
-      actionStatus: FeatureStatus.loading,
-      actionError: null,
-    ),);
+    emit(
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+      ),
+    );
     final result = await _organizationRepository.updateMemberRole(
       _orgId,
       userId,
@@ -112,27 +114,33 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
     );
     return result.fold(
       onSuccess: (member) {
-        emit(state.copyWith(
-          member: member,
-          actionStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            member: member,
+            actionStatus: FeatureStatus.success,
+          ),
+        );
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
   }
 
   Future<bool> assignCustomRole(String? roleId) async {
-    emit(state.copyWith(
-      actionStatus: FeatureStatus.loading,
-      actionError: null,
-    ),);
+    emit(
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+      ),
+    );
     final result = await _roleRepository.assignRoleToMember(
       _orgId,
       userId,
@@ -156,10 +164,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -197,10 +207,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
     String templateId,
     Future<bool> Function() action,
   ) async {
-    emit(state.copyWith(
-      pendingTemplateIds: {...state.pendingTemplateIds, templateId},
-      actionError: null,
-    ),);
+    emit(
+      state.copyWith(
+        pendingTemplateIds: {...state.pendingTemplateIds, templateId},
+        actionError: null,
+      ),
+    );
     final ok = await action();
     final next = {...state.pendingTemplateIds}..remove(templateId);
     emit(state.copyWith(pendingTemplateIds: next));
@@ -213,10 +225,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
   // --- Destructive ---
 
   Future<bool> removeMember() async {
-    emit(state.copyWith(
-      actionStatus: FeatureStatus.loading,
-      actionError: null,
-    ),);
+    emit(
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+      ),
+    );
     final result = await _organizationRepository.removeMember(_orgId, userId);
     return result.fold(
       onSuccess: (_) {
@@ -224,10 +238,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );

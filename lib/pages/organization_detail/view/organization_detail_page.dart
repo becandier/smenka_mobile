@@ -8,16 +8,16 @@ import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
-import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
+import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_cubit.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
 
-part '../widgets/_org_header.dart';
-part '../widgets/_org_navigation_section.dart';
-part '../widgets/_org_invite_section.dart';
 part '../widgets/_org_actions_section.dart';
+part '../widgets/_org_header.dart';
+part '../widgets/_org_invite_section.dart';
+part '../widgets/_org_navigation_section.dart';
 
 @RoutePage()
 class OrganizationDetailPage extends StatelessWidget {
@@ -53,14 +53,13 @@ class _OrganizationDetailView extends StatelessWidget {
         title: Text(l10n.orgDetailTitle),
         centerTitle: true,
       ),
-      body: SectionDataWrapper<OrganizationDetailCubit,
-          OrganizationDetailState, Organization>(
+      body: SectionDataWrapper<OrganizationDetailCubit, OrganizationDetailState,
+          Organization>(
         selector: (state) => state.organization,
         onRetry: () => context.read<OrganizationDetailCubit>().refresh(),
         contentBuilder: (org) {
           return RefreshIndicator.adaptive(
-            onRefresh: () =>
-                context.read<OrganizationDetailCubit>().refresh(),
+            onRefresh: () => context.read<OrganizationDetailCubit>().refresh(),
             child: BlocSelector<OrganizationDetailCubit,
                 OrganizationDetailState, ({bool isOwner, bool isAdminOrOwner})>(
               selector: (state) {

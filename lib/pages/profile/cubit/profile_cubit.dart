@@ -20,9 +20,11 @@ class ProfileCubit extends Cubit<ProfileState> {
         super(const ProfileState()) {
     _orgSubscription =
         _organizationRepository.watchMyOrganizations().listen((orgs) {
-      emit(state.copyWith(
-        organizations: state.organizations.toSuccess(orgs),
-      ),);
+      emit(
+        state.copyWith(
+          organizations: state.organizations.toSuccess(orgs),
+        ),
+      );
     });
     _init();
   }
@@ -60,25 +62,31 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     result.fold(
       onSuccess: (user) {
-        emit(state.copyWith(
-          user: state.user.toSuccess(user),
-          updateStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            user: state.user.toSuccess(user),
+            updateStatus: FeatureStatus.success,
+          ),
+        );
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          updateStatus: FeatureStatus.error,
-          updateError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            updateStatus: FeatureStatus.error,
+            updateError: error.message,
+          ),
+        );
       },
     );
   }
 
   void resetUpdateStatus() {
-    emit(state.copyWith(
-      updateStatus: FeatureStatus.initial,
-      updateError: null,
-    ),);
+    emit(
+      state.copyWith(
+        updateStatus: FeatureStatus.initial,
+        updateError: null,
+      ),
+    );
   }
 
   Future<void> refresh() async {

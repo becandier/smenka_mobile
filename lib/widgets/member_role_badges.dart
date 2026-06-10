@@ -40,7 +40,7 @@ class MemberRoleBadges extends StatelessWidget {
     final l10n = context.l10n;
     final appColors = context.appColors;
 
-    final (String systemLabel, Color systemColor)? system = switch ((
+    final system = switch ((
       isOwner,
       systemRole,
     )) {

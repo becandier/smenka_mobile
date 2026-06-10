@@ -88,18 +88,14 @@ class _OrgCard extends StatelessWidget {
             OrganizationDetailRoute(orgId: org.id),
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor:
-                      appColors.primary.withValues(alpha: 0.1),
+                  backgroundColor: appColors.primary.withValues(alpha: 0.1),
                   child: Text(
-                    org.name.isNotEmpty
-                        ? org.name[0].toUpperCase()
-                        : '?',
+                    org.name.isNotEmpty ? org.name[0].toUpperCase() : '?',
                     style: textTheme.titleSmall?.copyWith(
                       color: appColors.primary,
                       fontWeight: FontWeight.w600,

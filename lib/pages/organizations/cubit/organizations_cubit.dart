@@ -15,13 +15,15 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
   })  : _organizationRepository = organizationRepository,
         _userRepository = userRepository,
         super(const OrganizationsState()) {
-    _orgSubscription = _organizationRepository
-        .watchMyOrganizations()
-        .listen((orgs) {
-      emit(state.copyWith(
-        organizations: state.organizations.toSuccess(orgs),
-      ),);
-    },);
+    _orgSubscription = _organizationRepository.watchMyOrganizations().listen(
+      (orgs) {
+        emit(
+          state.copyWith(
+            organizations: state.organizations.toSuccess(orgs),
+          ),
+        );
+      },
+    );
     _init();
   }
 

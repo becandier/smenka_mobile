@@ -68,8 +68,7 @@ class _RolesView extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               itemCount: roles.length,
               separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) =>
-                  _RoleTile(role: roles[index]),
+              itemBuilder: (context, index) => _RoleTile(role: roles[index]),
             ),
           );
         },

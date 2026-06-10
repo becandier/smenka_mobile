@@ -21,8 +21,7 @@ class _MemberTile extends StatelessWidget {
     final isSelf = data.isSelf;
     final canManage = data.canManage;
 
-    final joinedDate =
-        '${member.joinedAt.day.toString().padLeft(2, '0')}.'
+    final joinedDate = '${member.joinedAt.day.toString().padLeft(2, '0')}.'
         '${member.joinedAt.month.toString().padLeft(2, '0')}.'
         '${member.joinedAt.year}';
 
