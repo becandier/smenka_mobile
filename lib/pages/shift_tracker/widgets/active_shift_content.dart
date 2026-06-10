@@ -118,8 +118,7 @@ class _ActiveShiftContent extends StatelessWidget {
           .getShiftChecklists(shift.id);
       hasIncompleteRequired = task.fold(
         onSuccess: (items) => items.any(
-          (i) =>
-              i.isRequired && i.status != ChecklistInstanceStatus.completed,
+          (i) => i.isRequired && i.status != ChecklistInstanceStatus.completed,
         ),
         onFailure: (_) => false,
       );

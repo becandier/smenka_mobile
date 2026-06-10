@@ -1,5 +1,14 @@
 import 'dart:ui';
 
+import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart'
+    show AppColors;
+
+import 'package:smenka_mobile/core/theme/colors/dark_colors.dart'
+    show DarkColors;
+
+import 'package:smenka_mobile/core/theme/colors/light_colors.dart'
+    show LightColors;
+
 /// Abstract interface for app color palette.
 ///
 /// Implement this interface to create light/dark theme color sets.

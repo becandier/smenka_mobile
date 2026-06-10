@@ -341,8 +341,8 @@ mixin _$ChecklistInstanceDto {
   bool get isRequired;
   String get status;
   ChecklistItemsSummaryDto get itemsSummary;
-  DateTime? get completedAt;
   DateTime get createdAt;
+  DateTime? get completedAt;
 
   /// Create a copy of ChecklistInstanceDto
   /// with the given fields replaced by the non-null parameter values.
@@ -368,20 +368,20 @@ mixin _$ChecklistInstanceDto {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.itemsSummary, itemsSummary) ||
                 other.itemsSummary == itemsSummary) &&
-            (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.completedAt, completedAt) ||
+                other.completedAt == completedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, type, isRequired,
-      status, itemsSummary, completedAt, createdAt);
+      status, itemsSummary, createdAt, completedAt);
 
   @override
   String toString() {
-    return 'ChecklistInstanceDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, completedAt: $completedAt, createdAt: $createdAt)';
+    return 'ChecklistInstanceDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, createdAt: $createdAt, completedAt: $completedAt)';
   }
 }
 
@@ -398,8 +398,8 @@ abstract mixin class $ChecklistInstanceDtoCopyWith<$Res> {
       bool isRequired,
       String status,
       ChecklistItemsSummaryDto itemsSummary,
-      DateTime? completedAt,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime? completedAt});
 
   $ChecklistItemsSummaryDtoCopyWith<$Res> get itemsSummary;
 }
@@ -423,8 +423,8 @@ class _$ChecklistInstanceDtoCopyWithImpl<$Res>
     Object? isRequired = null,
     Object? status = null,
     Object? itemsSummary = null,
-    Object? completedAt = freezed,
     Object? createdAt = null,
+    Object? completedAt = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -451,14 +451,14 @@ class _$ChecklistInstanceDtoCopyWithImpl<$Res>
           ? _self.itemsSummary
           : itemsSummary // ignore: cast_nullable_to_non_nullable
               as ChecklistItemsSummaryDto,
-      completedAt: freezed == completedAt
-          ? _self.completedAt
-          : completedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      completedAt: freezed == completedAt
+          ? _self.completedAt
+          : completedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 
@@ -573,8 +573,8 @@ extension ChecklistInstanceDtoPatterns on ChecklistInstanceDto {
             bool isRequired,
             String status,
             ChecklistItemsSummaryDto itemsSummary,
-            DateTime? completedAt,
-            DateTime createdAt)?
+            DateTime createdAt,
+            DateTime? completedAt)?
         $default, {
     required TResult orElse(),
   }) {
@@ -588,8 +588,8 @@ extension ChecklistInstanceDtoPatterns on ChecklistInstanceDto {
             _that.isRequired,
             _that.status,
             _that.itemsSummary,
-            _that.completedAt,
-            _that.createdAt);
+            _that.createdAt,
+            _that.completedAt);
       case _:
         return orElse();
     }
@@ -617,8 +617,8 @@ extension ChecklistInstanceDtoPatterns on ChecklistInstanceDto {
             bool isRequired,
             String status,
             ChecklistItemsSummaryDto itemsSummary,
-            DateTime? completedAt,
-            DateTime createdAt)
+            DateTime createdAt,
+            DateTime? completedAt)
         $default,
   ) {
     final _that = this;
@@ -631,8 +631,8 @@ extension ChecklistInstanceDtoPatterns on ChecklistInstanceDto {
             _that.isRequired,
             _that.status,
             _that.itemsSummary,
-            _that.completedAt,
-            _that.createdAt);
+            _that.createdAt,
+            _that.completedAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -659,8 +659,8 @@ extension ChecklistInstanceDtoPatterns on ChecklistInstanceDto {
             bool isRequired,
             String status,
             ChecklistItemsSummaryDto itemsSummary,
-            DateTime? completedAt,
-            DateTime createdAt)?
+            DateTime createdAt,
+            DateTime? completedAt)?
         $default,
   ) {
     final _that = this;
@@ -673,8 +673,8 @@ extension ChecklistInstanceDtoPatterns on ChecklistInstanceDto {
             _that.isRequired,
             _that.status,
             _that.itemsSummary,
-            _that.completedAt,
-            _that.createdAt);
+            _that.createdAt,
+            _that.completedAt);
       case _:
         return null;
     }
@@ -692,8 +692,8 @@ class _ChecklistInstanceDto implements ChecklistInstanceDto {
       required this.isRequired,
       required this.status,
       required this.itemsSummary,
-      this.completedAt,
-      required this.createdAt});
+      required this.createdAt,
+      this.completedAt});
   factory _ChecklistInstanceDto.fromJson(Map<String, dynamic> json) =>
       _$ChecklistInstanceDtoFromJson(json);
 
@@ -710,9 +710,9 @@ class _ChecklistInstanceDto implements ChecklistInstanceDto {
   @override
   final ChecklistItemsSummaryDto itemsSummary;
   @override
-  final DateTime? completedAt;
-  @override
   final DateTime createdAt;
+  @override
+  final DateTime? completedAt;
 
   /// Create a copy of ChecklistInstanceDto
   /// with the given fields replaced by the non-null parameter values.
@@ -743,20 +743,20 @@ class _ChecklistInstanceDto implements ChecklistInstanceDto {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.itemsSummary, itemsSummary) ||
                 other.itemsSummary == itemsSummary) &&
-            (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.completedAt, completedAt) ||
+                other.completedAt == completedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, type, isRequired,
-      status, itemsSummary, completedAt, createdAt);
+      status, itemsSummary, createdAt, completedAt);
 
   @override
   String toString() {
-    return 'ChecklistInstanceDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, completedAt: $completedAt, createdAt: $createdAt)';
+    return 'ChecklistInstanceDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, createdAt: $createdAt, completedAt: $completedAt)';
   }
 }
 
@@ -775,8 +775,8 @@ abstract mixin class _$ChecklistInstanceDtoCopyWith<$Res>
       bool isRequired,
       String status,
       ChecklistItemsSummaryDto itemsSummary,
-      DateTime? completedAt,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime? completedAt});
 
   @override
   $ChecklistItemsSummaryDtoCopyWith<$Res> get itemsSummary;
@@ -801,8 +801,8 @@ class __$ChecklistInstanceDtoCopyWithImpl<$Res>
     Object? isRequired = null,
     Object? status = null,
     Object? itemsSummary = null,
-    Object? completedAt = freezed,
     Object? createdAt = null,
+    Object? completedAt = freezed,
   }) {
     return _then(_ChecklistInstanceDto(
       id: null == id
@@ -829,14 +829,14 @@ class __$ChecklistInstanceDtoCopyWithImpl<$Res>
           ? _self.itemsSummary
           : itemsSummary // ignore: cast_nullable_to_non_nullable
               as ChecklistItemsSummaryDto,
-      completedAt: freezed == completedAt
-          ? _self.completedAt
-          : completedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      completedAt: freezed == completedAt
+          ? _self.completedAt
+          : completedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 
@@ -858,9 +858,9 @@ mixin _$ChecklistInstanceDetailDto {
   String get type;
   bool get isRequired;
   String get status;
-  DateTime? get completedAt;
   DateTime get createdAt;
   List<ChecklistInstanceItemDto> get items;
+  DateTime? get completedAt;
 
   /// Create a copy of ChecklistInstanceDetailDto
   /// with the given fields replaced by the non-null parameter values.
@@ -885,11 +885,11 @@ mixin _$ChecklistInstanceDetailDto {
             (identical(other.isRequired, isRequired) ||
                 other.isRequired == isRequired) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            const DeepCollectionEquality().equals(other.items, items));
+            const DeepCollectionEquality().equals(other.items, items) &&
+            (identical(other.completedAt, completedAt) ||
+                other.completedAt == completedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -901,13 +901,13 @@ mixin _$ChecklistInstanceDetailDto {
       type,
       isRequired,
       status,
-      completedAt,
       createdAt,
-      const DeepCollectionEquality().hash(items));
+      const DeepCollectionEquality().hash(items),
+      completedAt);
 
   @override
   String toString() {
-    return 'ChecklistInstanceDetailDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, completedAt: $completedAt, createdAt: $createdAt, items: $items)';
+    return 'ChecklistInstanceDetailDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, createdAt: $createdAt, items: $items, completedAt: $completedAt)';
   }
 }
 
@@ -923,9 +923,9 @@ abstract mixin class $ChecklistInstanceDetailDtoCopyWith<$Res> {
       String type,
       bool isRequired,
       String status,
-      DateTime? completedAt,
       DateTime createdAt,
-      List<ChecklistInstanceItemDto> items});
+      List<ChecklistInstanceItemDto> items,
+      DateTime? completedAt});
 }
 
 /// @nodoc
@@ -946,9 +946,9 @@ class _$ChecklistInstanceDetailDtoCopyWithImpl<$Res>
     Object? type = null,
     Object? isRequired = null,
     Object? status = null,
-    Object? completedAt = freezed,
     Object? createdAt = null,
     Object? items = null,
+    Object? completedAt = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -971,10 +971,6 @@ class _$ChecklistInstanceDetailDtoCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
-      completedAt: freezed == completedAt
-          ? _self.completedAt
-          : completedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -983,6 +979,10 @@ class _$ChecklistInstanceDetailDtoCopyWithImpl<$Res>
           ? _self.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<ChecklistInstanceItemDto>,
+      completedAt: freezed == completedAt
+          ? _self.completedAt
+          : completedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -1086,9 +1086,9 @@ extension ChecklistInstanceDetailDtoPatterns on ChecklistInstanceDetailDto {
             String type,
             bool isRequired,
             String status,
-            DateTime? completedAt,
             DateTime createdAt,
-            List<ChecklistInstanceItemDto> items)?
+            List<ChecklistInstanceItemDto> items,
+            DateTime? completedAt)?
         $default, {
     required TResult orElse(),
   }) {
@@ -1096,7 +1096,7 @@ extension ChecklistInstanceDetailDtoPatterns on ChecklistInstanceDetailDto {
     switch (_that) {
       case _ChecklistInstanceDetailDto() when $default != null:
         return $default(_that.id, _that.name, _that.type, _that.isRequired,
-            _that.status, _that.completedAt, _that.createdAt, _that.items);
+            _that.status, _that.createdAt, _that.items, _that.completedAt);
       case _:
         return orElse();
     }
@@ -1123,16 +1123,16 @@ extension ChecklistInstanceDetailDtoPatterns on ChecklistInstanceDetailDto {
             String type,
             bool isRequired,
             String status,
-            DateTime? completedAt,
             DateTime createdAt,
-            List<ChecklistInstanceItemDto> items)
+            List<ChecklistInstanceItemDto> items,
+            DateTime? completedAt)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ChecklistInstanceDetailDto():
         return $default(_that.id, _that.name, _that.type, _that.isRequired,
-            _that.status, _that.completedAt, _that.createdAt, _that.items);
+            _that.status, _that.createdAt, _that.items, _that.completedAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1158,16 +1158,16 @@ extension ChecklistInstanceDetailDtoPatterns on ChecklistInstanceDetailDto {
             String type,
             bool isRequired,
             String status,
-            DateTime? completedAt,
             DateTime createdAt,
-            List<ChecklistInstanceItemDto> items)?
+            List<ChecklistInstanceItemDto> items,
+            DateTime? completedAt)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ChecklistInstanceDetailDto() when $default != null:
         return $default(_that.id, _that.name, _that.type, _that.isRequired,
-            _that.status, _that.completedAt, _that.createdAt, _that.items);
+            _that.status, _that.createdAt, _that.items, _that.completedAt);
       case _:
         return null;
     }
@@ -1184,9 +1184,9 @@ class _ChecklistInstanceDetailDto implements ChecklistInstanceDetailDto {
       required this.type,
       required this.isRequired,
       required this.status,
-      this.completedAt,
       required this.createdAt,
-      required final List<ChecklistInstanceItemDto> items})
+      required final List<ChecklistInstanceItemDto> items,
+      this.completedAt})
       : _items = items;
   factory _ChecklistInstanceDetailDto.fromJson(Map<String, dynamic> json) =>
       _$ChecklistInstanceDetailDtoFromJson(json);
@@ -1202,8 +1202,6 @@ class _ChecklistInstanceDetailDto implements ChecklistInstanceDetailDto {
   @override
   final String status;
   @override
-  final DateTime? completedAt;
-  @override
   final DateTime createdAt;
   final List<ChecklistInstanceItemDto> _items;
   @override
@@ -1212,6 +1210,9 @@ class _ChecklistInstanceDetailDto implements ChecklistInstanceDetailDto {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_items);
   }
+
+  @override
+  final DateTime? completedAt;
 
   /// Create a copy of ChecklistInstanceDetailDto
   /// with the given fields replaced by the non-null parameter values.
@@ -1240,11 +1241,11 @@ class _ChecklistInstanceDetailDto implements ChecklistInstanceDetailDto {
             (identical(other.isRequired, isRequired) ||
                 other.isRequired == isRequired) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            const DeepCollectionEquality().equals(other._items, _items) &&
+            (identical(other.completedAt, completedAt) ||
+                other.completedAt == completedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1256,13 +1257,13 @@ class _ChecklistInstanceDetailDto implements ChecklistInstanceDetailDto {
       type,
       isRequired,
       status,
-      completedAt,
       createdAt,
-      const DeepCollectionEquality().hash(_items));
+      const DeepCollectionEquality().hash(_items),
+      completedAt);
 
   @override
   String toString() {
-    return 'ChecklistInstanceDetailDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, completedAt: $completedAt, createdAt: $createdAt, items: $items)';
+    return 'ChecklistInstanceDetailDto(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, createdAt: $createdAt, items: $items, completedAt: $completedAt)';
   }
 }
 
@@ -1281,9 +1282,9 @@ abstract mixin class _$ChecklistInstanceDetailDtoCopyWith<$Res>
       String type,
       bool isRequired,
       String status,
-      DateTime? completedAt,
       DateTime createdAt,
-      List<ChecklistInstanceItemDto> items});
+      List<ChecklistInstanceItemDto> items,
+      DateTime? completedAt});
 }
 
 /// @nodoc
@@ -1304,9 +1305,9 @@ class __$ChecklistInstanceDetailDtoCopyWithImpl<$Res>
     Object? type = null,
     Object? isRequired = null,
     Object? status = null,
-    Object? completedAt = freezed,
     Object? createdAt = null,
     Object? items = null,
+    Object? completedAt = freezed,
   }) {
     return _then(_ChecklistInstanceDetailDto(
       id: null == id
@@ -1329,10 +1330,6 @@ class __$ChecklistInstanceDetailDtoCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
-      completedAt: freezed == completedAt
-          ? _self.completedAt
-          : completedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -1341,6 +1338,10 @@ class __$ChecklistInstanceDetailDtoCopyWithImpl<$Res>
           ? _self._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<ChecklistInstanceItemDto>,
+      completedAt: freezed == completedAt
+          ? _self.completedAt
+          : completedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -1352,9 +1353,9 @@ mixin _$ChecklistInstanceItemDto {
   bool get isRequired;
   int get position;
   bool get isCompleted;
+  int get changeCount;
   String? get comment;
   DateTime? get completedAt;
-  int get changeCount;
 
   /// Create a copy of ChecklistInstanceItemDto
   /// with the given fields replaced by the non-null parameter values.
@@ -1380,21 +1381,21 @@ mixin _$ChecklistInstanceItemDto {
                 other.position == position) &&
             (identical(other.isCompleted, isCompleted) ||
                 other.isCompleted == isCompleted) &&
+            (identical(other.changeCount, changeCount) ||
+                other.changeCount == changeCount) &&
             (identical(other.comment, comment) || other.comment == comment) &&
             (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt) &&
-            (identical(other.changeCount, changeCount) ||
-                other.changeCount == changeCount));
+                other.completedAt == completedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, text, isRequired, position,
-      isCompleted, comment, completedAt, changeCount);
+      isCompleted, changeCount, comment, completedAt);
 
   @override
   String toString() {
-    return 'ChecklistInstanceItemDto(id: $id, text: $text, isRequired: $isRequired, position: $position, isCompleted: $isCompleted, comment: $comment, completedAt: $completedAt, changeCount: $changeCount)';
+    return 'ChecklistInstanceItemDto(id: $id, text: $text, isRequired: $isRequired, position: $position, isCompleted: $isCompleted, changeCount: $changeCount, comment: $comment, completedAt: $completedAt)';
   }
 }
 
@@ -1410,9 +1411,9 @@ abstract mixin class $ChecklistInstanceItemDtoCopyWith<$Res> {
       bool isRequired,
       int position,
       bool isCompleted,
+      int changeCount,
       String? comment,
-      DateTime? completedAt,
-      int changeCount});
+      DateTime? completedAt});
 }
 
 /// @nodoc
@@ -1433,9 +1434,9 @@ class _$ChecklistInstanceItemDtoCopyWithImpl<$Res>
     Object? isRequired = null,
     Object? position = null,
     Object? isCompleted = null,
+    Object? changeCount = null,
     Object? comment = freezed,
     Object? completedAt = freezed,
-    Object? changeCount = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -1458,6 +1459,10 @@ class _$ChecklistInstanceItemDtoCopyWithImpl<$Res>
           ? _self.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      changeCount: null == changeCount
+          ? _self.changeCount
+          : changeCount // ignore: cast_nullable_to_non_nullable
+              as int,
       comment: freezed == comment
           ? _self.comment
           : comment // ignore: cast_nullable_to_non_nullable
@@ -1466,10 +1471,6 @@ class _$ChecklistInstanceItemDtoCopyWithImpl<$Res>
           ? _self.completedAt
           : completedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      changeCount: null == changeCount
-          ? _self.changeCount
-          : changeCount // ignore: cast_nullable_to_non_nullable
-              as int,
     ));
   }
 }
@@ -1573,9 +1574,9 @@ extension ChecklistInstanceItemDtoPatterns on ChecklistInstanceItemDto {
             bool isRequired,
             int position,
             bool isCompleted,
+            int changeCount,
             String? comment,
-            DateTime? completedAt,
-            int changeCount)?
+            DateTime? completedAt)?
         $default, {
     required TResult orElse(),
   }) {
@@ -1588,9 +1589,9 @@ extension ChecklistInstanceItemDtoPatterns on ChecklistInstanceItemDto {
             _that.isRequired,
             _that.position,
             _that.isCompleted,
+            _that.changeCount,
             _that.comment,
-            _that.completedAt,
-            _that.changeCount);
+            _that.completedAt);
       case _:
         return orElse();
     }
@@ -1617,9 +1618,9 @@ extension ChecklistInstanceItemDtoPatterns on ChecklistInstanceItemDto {
             bool isRequired,
             int position,
             bool isCompleted,
+            int changeCount,
             String? comment,
-            DateTime? completedAt,
-            int changeCount)
+            DateTime? completedAt)
         $default,
   ) {
     final _that = this;
@@ -1631,9 +1632,9 @@ extension ChecklistInstanceItemDtoPatterns on ChecklistInstanceItemDto {
             _that.isRequired,
             _that.position,
             _that.isCompleted,
+            _that.changeCount,
             _that.comment,
-            _that.completedAt,
-            _that.changeCount);
+            _that.completedAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1659,9 +1660,9 @@ extension ChecklistInstanceItemDtoPatterns on ChecklistInstanceItemDto {
             bool isRequired,
             int position,
             bool isCompleted,
+            int changeCount,
             String? comment,
-            DateTime? completedAt,
-            int changeCount)?
+            DateTime? completedAt)?
         $default,
   ) {
     final _that = this;
@@ -1673,9 +1674,9 @@ extension ChecklistInstanceItemDtoPatterns on ChecklistInstanceItemDto {
             _that.isRequired,
             _that.position,
             _that.isCompleted,
+            _that.changeCount,
             _that.comment,
-            _that.completedAt,
-            _that.changeCount);
+            _that.completedAt);
       case _:
         return null;
     }
@@ -1692,9 +1693,9 @@ class _ChecklistInstanceItemDto implements ChecklistInstanceItemDto {
       required this.isRequired,
       required this.position,
       required this.isCompleted,
+      required this.changeCount,
       this.comment,
-      this.completedAt,
-      required this.changeCount});
+      this.completedAt});
   factory _ChecklistInstanceItemDto.fromJson(Map<String, dynamic> json) =>
       _$ChecklistInstanceItemDtoFromJson(json);
 
@@ -1709,11 +1710,11 @@ class _ChecklistInstanceItemDto implements ChecklistInstanceItemDto {
   @override
   final bool isCompleted;
   @override
+  final int changeCount;
+  @override
   final String? comment;
   @override
   final DateTime? completedAt;
-  @override
-  final int changeCount;
 
   /// Create a copy of ChecklistInstanceItemDto
   /// with the given fields replaced by the non-null parameter values.
@@ -1744,21 +1745,21 @@ class _ChecklistInstanceItemDto implements ChecklistInstanceItemDto {
                 other.position == position) &&
             (identical(other.isCompleted, isCompleted) ||
                 other.isCompleted == isCompleted) &&
+            (identical(other.changeCount, changeCount) ||
+                other.changeCount == changeCount) &&
             (identical(other.comment, comment) || other.comment == comment) &&
             (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt) &&
-            (identical(other.changeCount, changeCount) ||
-                other.changeCount == changeCount));
+                other.completedAt == completedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, text, isRequired, position,
-      isCompleted, comment, completedAt, changeCount);
+      isCompleted, changeCount, comment, completedAt);
 
   @override
   String toString() {
-    return 'ChecklistInstanceItemDto(id: $id, text: $text, isRequired: $isRequired, position: $position, isCompleted: $isCompleted, comment: $comment, completedAt: $completedAt, changeCount: $changeCount)';
+    return 'ChecklistInstanceItemDto(id: $id, text: $text, isRequired: $isRequired, position: $position, isCompleted: $isCompleted, changeCount: $changeCount, comment: $comment, completedAt: $completedAt)';
   }
 }
 
@@ -1776,9 +1777,9 @@ abstract mixin class _$ChecklistInstanceItemDtoCopyWith<$Res>
       bool isRequired,
       int position,
       bool isCompleted,
+      int changeCount,
       String? comment,
-      DateTime? completedAt,
-      int changeCount});
+      DateTime? completedAt});
 }
 
 /// @nodoc
@@ -1799,9 +1800,9 @@ class __$ChecklistInstanceItemDtoCopyWithImpl<$Res>
     Object? isRequired = null,
     Object? position = null,
     Object? isCompleted = null,
+    Object? changeCount = null,
     Object? comment = freezed,
     Object? completedAt = freezed,
-    Object? changeCount = null,
   }) {
     return _then(_ChecklistInstanceItemDto(
       id: null == id
@@ -1824,6 +1825,10 @@ class __$ChecklistInstanceItemDtoCopyWithImpl<$Res>
           ? _self.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      changeCount: null == changeCount
+          ? _self.changeCount
+          : changeCount // ignore: cast_nullable_to_non_nullable
+              as int,
       comment: freezed == comment
           ? _self.comment
           : comment // ignore: cast_nullable_to_non_nullable
@@ -1832,10 +1837,6 @@ class __$ChecklistInstanceItemDtoCopyWithImpl<$Res>
           ? _self.completedAt
           : completedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      changeCount: null == changeCount
-          ? _self.changeCount
-          : changeCount // ignore: cast_nullable_to_non_nullable
-              as int,
     ));
   }
 }

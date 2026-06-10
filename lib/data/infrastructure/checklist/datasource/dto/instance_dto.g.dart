@@ -30,10 +30,10 @@ _ChecklistInstanceDto _$ChecklistInstanceDtoFromJson(
       status: json['status'] as String,
       itemsSummary: ChecklistItemsSummaryDto.fromJson(
           json['items_summary'] as Map<String, dynamic>),
+      createdAt: DateTime.parse(json['created_at'] as String),
       completedAt: json['completed_at'] == null
           ? null
           : DateTime.parse(json['completed_at'] as String),
-      createdAt: DateTime.parse(json['created_at'] as String),
     );
 
 Map<String, dynamic> _$ChecklistInstanceDtoToJson(
@@ -45,8 +45,8 @@ Map<String, dynamic> _$ChecklistInstanceDtoToJson(
       'is_required': instance.isRequired,
       'status': instance.status,
       'items_summary': instance.itemsSummary,
-      'completed_at': instance.completedAt?.toIso8601String(),
       'created_at': instance.createdAt.toIso8601String(),
+      'completed_at': instance.completedAt?.toIso8601String(),
     };
 
 _ChecklistInstanceDetailDto _$ChecklistInstanceDetailDtoFromJson(
@@ -57,14 +57,14 @@ _ChecklistInstanceDetailDto _$ChecklistInstanceDetailDtoFromJson(
       type: json['type'] as String,
       isRequired: json['is_required'] as bool,
       status: json['status'] as String,
-      completedAt: json['completed_at'] == null
-          ? null
-          : DateTime.parse(json['completed_at'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),
       items: (json['items'] as List<dynamic>)
           .map((e) =>
               ChecklistInstanceItemDto.fromJson(e as Map<String, dynamic>))
           .toList(),
+      completedAt: json['completed_at'] == null
+          ? null
+          : DateTime.parse(json['completed_at'] as String),
     );
 
 Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
@@ -75,9 +75,9 @@ Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
       'type': instance.type,
       'is_required': instance.isRequired,
       'status': instance.status,
-      'completed_at': instance.completedAt?.toIso8601String(),
       'created_at': instance.createdAt.toIso8601String(),
       'items': instance.items,
+      'completed_at': instance.completedAt?.toIso8601String(),
     };
 
 _ChecklistInstanceItemDto _$ChecklistInstanceItemDtoFromJson(
@@ -88,11 +88,11 @@ _ChecklistInstanceItemDto _$ChecklistInstanceItemDtoFromJson(
       isRequired: json['is_required'] as bool,
       position: (json['position'] as num).toInt(),
       isCompleted: json['is_completed'] as bool,
+      changeCount: (json['change_count'] as num).toInt(),
       comment: json['comment'] as String?,
       completedAt: json['completed_at'] == null
           ? null
           : DateTime.parse(json['completed_at'] as String),
-      changeCount: (json['change_count'] as num).toInt(),
     );
 
 Map<String, dynamic> _$ChecklistInstanceItemDtoToJson(
@@ -103,7 +103,7 @@ Map<String, dynamic> _$ChecklistInstanceItemDtoToJson(
       'is_required': instance.isRequired,
       'position': instance.position,
       'is_completed': instance.isCompleted,
+      'change_count': instance.changeCount,
       'comment': instance.comment,
       'completed_at': instance.completedAt?.toIso8601String(),
-      'change_count': instance.changeCount,
     };

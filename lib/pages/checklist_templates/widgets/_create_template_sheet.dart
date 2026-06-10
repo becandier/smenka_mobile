@@ -35,8 +35,10 @@ class _CreateTemplateSheetState extends State<_CreateTemplateSheet> {
             textInputAction: TextInputAction.done,
           ),
           const SizedBox(height: 16),
-          Text(l10n.checklistTemplateTypeLabel,
-              style: Theme.of(context).textTheme.labelLarge,),
+          Text(
+            l10n.checklistTemplateTypeLabel,
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
           const SizedBox(height: 6),
           SegmentedButton<ChecklistType>(
             segments: [
@@ -50,16 +52,14 @@ class _CreateTemplateSheetState extends State<_CreateTemplateSheet> {
               ),
             ],
             selected: {_type},
-            onSelectionChanged: _submitting
-                ? null
-                : (s) => setState(() => _type = s.first),
+            onSelectionChanged:
+                _submitting ? null : (s) => setState(() => _type = s.first),
           ),
           const SizedBox(height: 12),
           SwitchListTile.adaptive(
             value: _isRequired,
-            onChanged: _submitting
-                ? null
-                : (v) => setState(() => _isRequired = v),
+            onChanged:
+                _submitting ? null : (v) => setState(() => _isRequired = v),
             title: Text(l10n.checklistTemplateIsRequiredLabel),
             subtitle: Text(l10n.checklistTemplateIsRequiredDesc),
             contentPadding: EdgeInsets.zero,

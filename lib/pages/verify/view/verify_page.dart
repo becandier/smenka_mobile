@@ -71,7 +71,9 @@ class _VerifyViewState extends State<_VerifyView> {
         ),
         BlocListener<VerifyCubit, VerifyState>(
           listenWhen: (prev, curr) =>
-              prev.isResending && !curr.isResending && curr.cooldownSeconds == 30,
+              prev.isResending &&
+              !curr.isResending &&
+              curr.cooldownSeconds == 30,
           listener: (context, state) {
             context.modals.showInfo(l10n.authCodeResent);
           },
@@ -104,8 +106,7 @@ class _VerifyViewState extends State<_VerifyView> {
                       Text(
                         l10n.authVerifySubtitle(widget.email),
                         style: textTheme.bodyMedium?.copyWith(
-                          color: colors.secondary
-                              .withValues(alpha: 0.7),
+                          color: colors.secondary.withValues(alpha: 0.7),
                         ),
                         textAlign: TextAlign.center,
                       ),

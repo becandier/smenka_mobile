@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smenka_mobile/data/api/local/local_storage_api.dart';
+import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart'
+    show ThemeCubit;
 
 /// Local storage API for persisting theme mode preference.
 ///
@@ -10,7 +12,7 @@ import 'package:smenka_mobile/data/api/local/local_storage_api.dart';
 ///
 /// See also:
 /// - [ThemeCubit] for theme state management
-/// - [ThemeLocalStorageServiceInitializer] for DI setup
+/// - `ThemeLocalStorageServiceInitializer` for DI setup
 class ThemeLocalStorageApi extends LocalStorageApi<String> {
   ThemeLocalStorageApi({
     required super.key,

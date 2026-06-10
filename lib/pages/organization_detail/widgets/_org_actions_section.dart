@@ -10,8 +10,7 @@ class _OrgActionsSection extends StatelessWidget {
     final l10n = context.l10n;
     final appColors = context.appColors;
 
-    return BlocSelector<OrganizationDetailCubit, OrganizationDetailState,
-        bool>(
+    return BlocSelector<OrganizationDetailCubit, OrganizationDetailState, bool>(
       selector: (state) => context.read<OrganizationDetailCubit>().isOwner,
       builder: (context, isOwner) {
         return Padding(
@@ -80,7 +79,7 @@ class _OrgActionsSection extends StatelessWidget {
               final didLeave = await cubit.leaveOrganization();
               if (didLeave && context.mounted) {
                 context.modals.showSuccess(l10n.orgDetailLeft);
-                context.router.maybePop();
+                await context.router.maybePop();
               }
             },
             child: Text(l10n.confirm),
@@ -109,7 +108,7 @@ class _OrgActionsSection extends StatelessWidget {
               final didDelete = await cubit.deleteOrganization();
               if (didDelete && context.mounted) {
                 context.modals.showSuccess(l10n.orgDetailDeleted);
-                context.router.maybePop();
+                await context.router.maybePop();
               }
             },
             child: Text(l10n.confirm),

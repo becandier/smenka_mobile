@@ -448,7 +448,7 @@ class JoinOrgRoute extends PageRouteInfo<void> {
 class LoginRoute extends PageRouteInfo<LoginRouteArgs> {
   LoginRoute({
     Key? key,
-    void Function(bool)? onResult,
+    void Function({required bool didLogin})? onResult,
     List<PageRouteInfo>? children,
   }) : super(
           LoginRoute.name,
@@ -474,7 +474,7 @@ class LoginRouteArgs {
 
   final Key? key;
 
-  final void Function(bool)? onResult;
+  final void Function({required bool didLogin})? onResult;
 
   @override
   String toString() {

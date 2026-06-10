@@ -25,16 +25,16 @@ Map<String, dynamic> _$PauseDtoToJson(_PauseDto instance) => <String, dynamic>{
 _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
       id: json['id'] as String,
       userId: json['user_id'] as String,
-      organizationId: json['organization_id'] as String?,
       startedAt: DateTime.parse(json['started_at'] as String),
-      finishedAt: json['finished_at'] == null
-          ? null
-          : DateTime.parse(json['finished_at'] as String),
       status: json['status'] as String,
       pauses: (json['pauses'] as List<dynamic>)
           .map((e) => PauseDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       workedSeconds: (json['worked_seconds'] as num).toInt(),
+      organizationId: json['organization_id'] as String?,
+      finishedAt: json['finished_at'] == null
+          ? null
+          : DateTime.parse(json['finished_at'] as String),
       hasIncompleteRequiredChecklists:
           json['has_incomplete_required_checklists'] as bool? ?? false,
       userName: json['user_name'] as String?,
@@ -46,12 +46,12 @@ _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
 Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
       'id': instance.id,
       'user_id': instance.userId,
-      'organization_id': instance.organizationId,
       'started_at': instance.startedAt.toIso8601String(),
-      'finished_at': instance.finishedAt?.toIso8601String(),
       'status': instance.status,
       'pauses': instance.pauses,
       'worked_seconds': instance.workedSeconds,
+      'organization_id': instance.organizationId,
+      'finished_at': instance.finishedAt?.toIso8601String(),
       'has_incomplete_required_checklists':
           instance.hasIncompleteRequiredChecklists,
       'user_name': instance.userName,

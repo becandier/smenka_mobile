@@ -23,6 +23,7 @@ sealed class MainAppState with _$MainAppState {
     required LocationRepository locationRepository,
     required DeepLinkService deepLinkService,
     required PendingInviteStorage pendingInviteStorage,
+    required ShiftContextStorage shiftContextStorage,
   }) = MainAppStateSuccess;
   factory MainAppState.loading() = MainAppStateLoading;
   factory MainAppState.error({

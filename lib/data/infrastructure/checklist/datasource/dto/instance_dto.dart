@@ -25,8 +25,8 @@ abstract class ChecklistInstanceDto with _$ChecklistInstanceDto {
     required bool isRequired,
     required String status,
     required ChecklistItemsSummaryDto itemsSummary,
-    DateTime? completedAt,
     required DateTime createdAt,
+    DateTime? completedAt,
   }) = _ChecklistInstanceDto;
 
   factory ChecklistInstanceDto.fromJson(Map<String, dynamic> json) =>
@@ -42,9 +42,9 @@ abstract class ChecklistInstanceDetailDto with _$ChecklistInstanceDetailDto {
     required String type,
     required bool isRequired,
     required String status,
-    DateTime? completedAt,
     required DateTime createdAt,
     required List<ChecklistInstanceItemDto> items,
+    DateTime? completedAt,
   }) = _ChecklistInstanceDetailDto;
 
   factory ChecklistInstanceDetailDto.fromJson(Map<String, dynamic> json) =>
@@ -60,9 +60,9 @@ abstract class ChecklistInstanceItemDto with _$ChecklistInstanceItemDto {
     required bool isRequired,
     required int position,
     required bool isCompleted,
+    required int changeCount,
     String? comment,
     DateTime? completedAt,
-    required int changeCount,
   }) = _ChecklistInstanceItemDto;
 
   factory ChecklistInstanceItemDto.fromJson(Map<String, dynamic> json) =>

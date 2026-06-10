@@ -363,12 +363,12 @@ class __$PauseCopyWithImpl<$Res> implements _$PauseCopyWith<$Res> {
 mixin _$Shift {
   String get id;
   String get userId;
-  String? get organizationId;
   DateTime get startedAt;
-  DateTime? get finishedAt;
   ShiftStatus get status;
   List<Pause> get pauses;
   int get workedSeconds;
+  String? get organizationId;
+  DateTime? get finishedAt;
   bool get hasIncompleteRequiredChecklists;
 
   /// Данные автора смены. Заполняются только в орг-ответах
@@ -398,16 +398,16 @@ mixin _$Shift {
             other is Shift &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.organizationId, organizationId) ||
-                other.organizationId == organizationId) &&
             (identical(other.startedAt, startedAt) ||
                 other.startedAt == startedAt) &&
-            (identical(other.finishedAt, finishedAt) ||
-                other.finishedAt == finishedAt) &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other.pauses, pauses) &&
             (identical(other.workedSeconds, workedSeconds) ||
                 other.workedSeconds == workedSeconds) &&
+            (identical(other.organizationId, organizationId) ||
+                other.organizationId == organizationId) &&
+            (identical(other.finishedAt, finishedAt) ||
+                other.finishedAt == finishedAt) &&
             (identical(other.hasIncompleteRequiredChecklists,
                     hasIncompleteRequiredChecklists) ||
                 other.hasIncompleteRequiredChecklists ==
@@ -426,12 +426,12 @@ mixin _$Shift {
       runtimeType,
       id,
       userId,
-      organizationId,
       startedAt,
-      finishedAt,
       status,
       const DeepCollectionEquality().hash(pauses),
       workedSeconds,
+      organizationId,
+      finishedAt,
       hasIncompleteRequiredChecklists,
       userName,
       userEmail,
@@ -440,7 +440,7 @@ mixin _$Shift {
 
   @override
   String toString() {
-    return 'Shift(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
+    return 'Shift(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
   }
 }
 
@@ -452,12 +452,12 @@ abstract mixin class $ShiftCopyWith<$Res> {
   $Res call(
       {String id,
       String userId,
-      String? organizationId,
       DateTime startedAt,
-      DateTime? finishedAt,
       ShiftStatus status,
       List<Pause> pauses,
       int workedSeconds,
+      String? organizationId,
+      DateTime? finishedAt,
       bool hasIncompleteRequiredChecklists,
       String? userName,
       String? userEmail,
@@ -479,12 +479,12 @@ class _$ShiftCopyWithImpl<$Res> implements $ShiftCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? userId = null,
-    Object? organizationId = freezed,
     Object? startedAt = null,
-    Object? finishedAt = freezed,
     Object? status = null,
     Object? pauses = null,
     Object? workedSeconds = null,
+    Object? organizationId = freezed,
+    Object? finishedAt = freezed,
     Object? hasIncompleteRequiredChecklists = null,
     Object? userName = freezed,
     Object? userEmail = freezed,
@@ -500,18 +500,10 @@ class _$ShiftCopyWithImpl<$Res> implements $ShiftCopyWith<$Res> {
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String,
-      organizationId: freezed == organizationId
-          ? _self.organizationId
-          : organizationId // ignore: cast_nullable_to_non_nullable
-              as String?,
       startedAt: null == startedAt
           ? _self.startedAt
           : startedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      finishedAt: freezed == finishedAt
-          ? _self.finishedAt
-          : finishedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -524,6 +516,14 @@ class _$ShiftCopyWithImpl<$Res> implements $ShiftCopyWith<$Res> {
           ? _self.workedSeconds
           : workedSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      organizationId: freezed == organizationId
+          ? _self.organizationId
+          : organizationId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      finishedAt: freezed == finishedAt
+          ? _self.finishedAt
+          : finishedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       hasIncompleteRequiredChecklists: null == hasIncompleteRequiredChecklists
           ? _self.hasIncompleteRequiredChecklists
           : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
@@ -644,12 +644,12 @@ extension ShiftPatterns on Shift {
     TResult Function(
             String id,
             String userId,
-            String? organizationId,
             DateTime startedAt,
-            DateTime? finishedAt,
             ShiftStatus status,
             List<Pause> pauses,
             int workedSeconds,
+            String? organizationId,
+            DateTime? finishedAt,
             bool hasIncompleteRequiredChecklists,
             String? userName,
             String? userEmail,
@@ -664,12 +664,12 @@ extension ShiftPatterns on Shift {
         return $default(
             _that.id,
             _that.userId,
-            _that.organizationId,
             _that.startedAt,
-            _that.finishedAt,
             _that.status,
             _that.pauses,
             _that.workedSeconds,
+            _that.organizationId,
+            _that.finishedAt,
             _that.hasIncompleteRequiredChecklists,
             _that.userName,
             _that.userEmail,
@@ -698,12 +698,12 @@ extension ShiftPatterns on Shift {
     TResult Function(
             String id,
             String userId,
-            String? organizationId,
             DateTime startedAt,
-            DateTime? finishedAt,
             ShiftStatus status,
             List<Pause> pauses,
             int workedSeconds,
+            String? organizationId,
+            DateTime? finishedAt,
             bool hasIncompleteRequiredChecklists,
             String? userName,
             String? userEmail,
@@ -717,12 +717,12 @@ extension ShiftPatterns on Shift {
         return $default(
             _that.id,
             _that.userId,
-            _that.organizationId,
             _that.startedAt,
-            _that.finishedAt,
             _that.status,
             _that.pauses,
             _that.workedSeconds,
+            _that.organizationId,
+            _that.finishedAt,
             _that.hasIncompleteRequiredChecklists,
             _that.userName,
             _that.userEmail,
@@ -750,12 +750,12 @@ extension ShiftPatterns on Shift {
     TResult? Function(
             String id,
             String userId,
-            String? organizationId,
             DateTime startedAt,
-            DateTime? finishedAt,
             ShiftStatus status,
             List<Pause> pauses,
             int workedSeconds,
+            String? organizationId,
+            DateTime? finishedAt,
             bool hasIncompleteRequiredChecklists,
             String? userName,
             String? userEmail,
@@ -769,12 +769,12 @@ extension ShiftPatterns on Shift {
         return $default(
             _that.id,
             _that.userId,
-            _that.organizationId,
             _that.startedAt,
-            _that.finishedAt,
             _that.status,
             _that.pauses,
             _that.workedSeconds,
+            _that.organizationId,
+            _that.finishedAt,
             _that.hasIncompleteRequiredChecklists,
             _that.userName,
             _that.userEmail,
@@ -792,12 +792,12 @@ class _Shift implements Shift {
   const _Shift(
       {required this.id,
       required this.userId,
-      this.organizationId,
       required this.startedAt,
-      this.finishedAt,
       required this.status,
       required final List<Pause> pauses,
       required this.workedSeconds,
+      this.organizationId,
+      this.finishedAt,
       this.hasIncompleteRequiredChecklists = false,
       this.userName,
       this.userEmail,
@@ -810,11 +810,7 @@ class _Shift implements Shift {
   @override
   final String userId;
   @override
-  final String? organizationId;
-  @override
   final DateTime startedAt;
-  @override
-  final DateTime? finishedAt;
   @override
   final ShiftStatus status;
   final List<Pause> _pauses;
@@ -827,6 +823,10 @@ class _Shift implements Shift {
 
   @override
   final int workedSeconds;
+  @override
+  final String? organizationId;
+  @override
+  final DateTime? finishedAt;
   @override
   @JsonKey()
   final bool hasIncompleteRequiredChecklists;
@@ -863,16 +863,16 @@ class _Shift implements Shift {
             other is _Shift &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.organizationId, organizationId) ||
-                other.organizationId == organizationId) &&
             (identical(other.startedAt, startedAt) ||
                 other.startedAt == startedAt) &&
-            (identical(other.finishedAt, finishedAt) ||
-                other.finishedAt == finishedAt) &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other._pauses, _pauses) &&
             (identical(other.workedSeconds, workedSeconds) ||
                 other.workedSeconds == workedSeconds) &&
+            (identical(other.organizationId, organizationId) ||
+                other.organizationId == organizationId) &&
+            (identical(other.finishedAt, finishedAt) ||
+                other.finishedAt == finishedAt) &&
             (identical(other.hasIncompleteRequiredChecklists,
                     hasIncompleteRequiredChecklists) ||
                 other.hasIncompleteRequiredChecklists ==
@@ -891,12 +891,12 @@ class _Shift implements Shift {
       runtimeType,
       id,
       userId,
-      organizationId,
       startedAt,
-      finishedAt,
       status,
       const DeepCollectionEquality().hash(_pauses),
       workedSeconds,
+      organizationId,
+      finishedAt,
       hasIncompleteRequiredChecklists,
       userName,
       userEmail,
@@ -905,7 +905,7 @@ class _Shift implements Shift {
 
   @override
   String toString() {
-    return 'Shift(id: $id, userId: $userId, organizationId: $organizationId, startedAt: $startedAt, finishedAt: $finishedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
+    return 'Shift(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
   }
 }
 
@@ -918,12 +918,12 @@ abstract mixin class _$ShiftCopyWith<$Res> implements $ShiftCopyWith<$Res> {
   $Res call(
       {String id,
       String userId,
-      String? organizationId,
       DateTime startedAt,
-      DateTime? finishedAt,
       ShiftStatus status,
       List<Pause> pauses,
       int workedSeconds,
+      String? organizationId,
+      DateTime? finishedAt,
       bool hasIncompleteRequiredChecklists,
       String? userName,
       String? userEmail,
@@ -945,12 +945,12 @@ class __$ShiftCopyWithImpl<$Res> implements _$ShiftCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? userId = null,
-    Object? organizationId = freezed,
     Object? startedAt = null,
-    Object? finishedAt = freezed,
     Object? status = null,
     Object? pauses = null,
     Object? workedSeconds = null,
+    Object? organizationId = freezed,
+    Object? finishedAt = freezed,
     Object? hasIncompleteRequiredChecklists = null,
     Object? userName = freezed,
     Object? userEmail = freezed,
@@ -966,18 +966,10 @@ class __$ShiftCopyWithImpl<$Res> implements _$ShiftCopyWith<$Res> {
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String,
-      organizationId: freezed == organizationId
-          ? _self.organizationId
-          : organizationId // ignore: cast_nullable_to_non_nullable
-              as String?,
       startedAt: null == startedAt
           ? _self.startedAt
           : startedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      finishedAt: freezed == finishedAt
-          ? _self.finishedAt
-          : finishedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -990,6 +982,14 @@ class __$ShiftCopyWithImpl<$Res> implements _$ShiftCopyWith<$Res> {
           ? _self.workedSeconds
           : workedSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      organizationId: freezed == organizationId
+          ? _self.organizationId
+          : organizationId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      finishedAt: freezed == finishedAt
+          ? _self.finishedAt
+          : finishedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       hasIncompleteRequiredChecklists: null == hasIncompleteRequiredChecklists
           ? _self.hasIncompleteRequiredChecklists
           : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable

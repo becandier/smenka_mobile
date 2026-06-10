@@ -7,6 +7,7 @@ import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
@@ -34,6 +35,7 @@ class ShiftTrackerPage extends StatelessWidget {
         shiftRepository: context.read<ShiftRepository>(),
         organizationRepository: context.read<OrganizationRepository>(),
         geoService: GeoService(),
+        contextStorage: context.read<ShiftContextStorage>(),
       ),
       child: const _ShiftTrackerView(),
     );

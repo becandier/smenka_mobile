@@ -51,8 +51,7 @@ class _ShiftChecklistsTileState extends State<_ShiftChecklistsTile> {
         final incompleteRequired = items
             .where(
               (i) =>
-                  i.isRequired &&
-                  i.status != ChecklistInstanceStatus.completed,
+                  i.isRequired && i.status != ChecklistInstanceStatus.completed,
             )
             .length;
 

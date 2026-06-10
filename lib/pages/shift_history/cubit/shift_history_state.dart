@@ -7,8 +7,7 @@ part 'shift_history_state.freezed.dart';
 @freezed
 abstract class ShiftHistoryState with _$ShiftHistoryState {
   const factory ShiftHistoryState({
-    @Default(PaginatedSectionData<Shift>())
-    PaginatedSectionData<Shift> shifts,
+    @Default(PaginatedSectionData<Shift>()) PaginatedSectionData<Shift> shifts,
 
     /// Фильтр по статусу (null = все)
     ShiftStatus? filterStatus,

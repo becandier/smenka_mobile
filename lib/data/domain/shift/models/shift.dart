@@ -19,12 +19,12 @@ abstract class Shift with _$Shift {
   const factory Shift({
     required String id,
     required String userId,
-    String? organizationId,
     required DateTime startedAt,
-    DateTime? finishedAt,
     required ShiftStatus status,
     required List<Pause> pauses,
     required int workedSeconds,
+    String? organizationId,
+    DateTime? finishedAt,
     @Default(false) bool hasIncompleteRequiredChecklists,
 
     /// Данные автора смены. Заполняются только в орг-ответах
