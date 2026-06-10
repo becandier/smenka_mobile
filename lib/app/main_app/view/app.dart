@@ -15,6 +15,7 @@ import 'package:smenka_mobile/core/deep_link/deep_link_service.dart';
 import 'package:smenka_mobile/core/deep_link/pending_invite_storage.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/theme/app_theme.dart';
+import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
 import 'package:smenka_mobile/data/domain/auth/repositories/auth_repository.dart';
@@ -79,6 +80,7 @@ class _AppView extends StatelessWidget {
               locationRepository: state.locationRepository,
               deepLinkService: state.deepLinkService,
               pendingInviteStorage: state.pendingInviteStorage,
+              shiftContextStorage: state.shiftContextStorage,
             ),
           MainAppStateLoading() => const _LoadingApp(),
           MainAppStateError() => _ErrorApp(

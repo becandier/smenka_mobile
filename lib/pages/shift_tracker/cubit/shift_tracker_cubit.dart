@@ -5,6 +5,7 @@ import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
+import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -16,16 +17,20 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     required ShiftRepository shiftRepository,
     required OrganizationRepository organizationRepository,
     required GeoService geoService,
+    required ShiftContextStorage contextStorage,
   })  : _shiftRepository = shiftRepository,
         _organizationRepository = organizationRepository,
         _geoService = geoService,
+        _contextStorage = contextStorage,
         super(const ShiftTrackerState()) {
-    _orgSubscription = _organizationRepository
-        .watchMyOrganizations()
-        .listen((orgs) {
-      emit(state.copyWith(
-        organizations: state.organizations.toSuccess(orgs),
-      ),);
+    _orgSubscription =
+        _organizationRepository.watchMyOrganizations().listen((orgs) {
+      emit(
+        state.copyWith(
+          organizations: state.organizations.toSuccess(orgs),
+        ),
+      );
+      _maybePreselectContext();
     });
     _init();
   }
@@ -33,7 +38,17 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   final ShiftRepository _shiftRepository;
   final OrganizationRepository _organizationRepository;
   final GeoService _geoService;
+  final ShiftContextStorage _contextStorage;
   Timer? _timer;
+
+  /// Предвыбор контекста применяется ровно один раз
+  bool _contextPreselectApplied = false;
+
+  /// Пользователь вручную менял контекст в селекторе
+  bool _contextSelectedManually = false;
+
+  /// _init завершён — известно, есть ли активная/приостановленная смена
+  bool _initCompleted = false;
 
   @override
   void emit(ShiftTrackerState state) {
@@ -47,6 +62,42 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
       _loadActiveShift(),
       _organizationRepository.fetchMyOrganizations(),
     ]);
+    _initCompleted = true;
+    _maybePreselectContext();
+  }
+
+  /// Предвыбор контекста смены (shift_quick_start).
+  ///
+  /// Применяется один раз после завершения [_init], когда известно,
+  /// есть ли активная/приостановленная смена, и организации загружены.
+  /// Ручной выбор пользователя не перетирается; повторные эмиты
+  /// [OrganizationRepository.watchMyOrganizations] выбор не передёргивают.
+  void _maybePreselectContext() {
+    if (_contextPreselectApplied || _contextSelectedManually) return;
+    if (!_initCompleted || !state.organizations.isSuccess) return;
+
+    _contextPreselectApplied = true;
+
+    if (state.hasActiveShift || state.selectedOrganizationId != null) return;
+
+    final orgs = state.organizations.data ?? const <Organization>[];
+    final savedMarker = _contextStorage.read();
+
+    String? preselectedId;
+    if (savedMarker == ShiftContextStorage.personalMarker) {
+      // Личная смена — selectedOrganizationId остаётся null
+      preselectedId = null;
+    } else if (savedMarker != null &&
+        orgs.any((org) => org.id == savedMarker)) {
+      preselectedId = savedMarker;
+    } else if (orgs.length == 1) {
+      // Сохранённого валидного контекста нет, организация ровно одна
+      preselectedId = orgs.first.id;
+    }
+
+    if (preselectedId != null) {
+      emit(state.copyWith(selectedOrganizationId: preselectedId));
+    }
   }
 
   Future<void> _loadActiveShift() async {
@@ -68,9 +119,11 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         }
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toError(error.message),
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toError(error.message),
+          ),
+        );
       },
     );
 
@@ -102,7 +155,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }
 
   void selectOrganization(String? organizationId) {
+    _contextSelectedManually = true;
     emit(state.copyWith(selectedOrganizationId: organizationId));
+    unawaited(
+      _contextStorage.save(
+        organizationId ?? ShiftContextStorage.personalMarker,
+      ),
+    );
   }
 
   Future<StartShiftResult> startShift() async {
@@ -136,10 +195,12 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
           return StartShiftResult.geoDeniedForever;
         case GeoError():
-          emit(state.copyWith(
-            actionStatus: FeatureStatus.error,
-            actionError: geoResult.message,
-          ),);
+          emit(
+            state.copyWith(
+              actionStatus: FeatureStatus.error,
+              actionError: geoResult.message,
+            ),
+          );
           return StartShiftResult.error;
       }
     }
@@ -152,18 +213,22 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     return result.fold(
       onSuccess: (shift) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toSuccess(shift),
-          actionStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toSuccess(shift),
+            actionStatus: FeatureStatus.success,
+          ),
+        );
         _startTimer(shift);
         return StartShiftResult.success;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return StartShiftResult.error;
       },
     );
@@ -185,17 +250,21 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     return result.fold(
       onSuccess: (updatedShift) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toSuccess(updatedShift),
-          actionStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toSuccess(updatedShift),
+            actionStatus: FeatureStatus.success,
+          ),
+        );
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -213,17 +282,21 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     return result.fold(
       onSuccess: (updatedShift) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toSuccess(updatedShift),
-          actionStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toSuccess(updatedShift),
+            actionStatus: FeatureStatus.success,
+          ),
+        );
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -242,19 +315,24 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     return result.fold(
       onSuccess: (_) {
         _stopTimer();
-        emit(state.copyWith(
-          activeShift: const SectionData(),
-          actionStatus: FeatureStatus.success,
-          elapsedSeconds: 0,
-          selectedOrganizationId: null,
-        ),);
+        // selectedOrganizationId не сбрасываем — контекст сохраняется
+        // для следующего старта (shift_quick_start)
+        emit(
+          state.copyWith(
+            activeShift: const SectionData(),
+            actionStatus: FeatureStatus.success,
+            elapsedSeconds: 0,
+          ),
+        );
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
