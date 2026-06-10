@@ -33,6 +33,9 @@ abstract class OrganizationRepository {
     int offset = 0,
   });
 
+  /// Деталь конкретной (в т.ч. чужой) орг-смены для owner/admin.
+  Future<Task<Shift>> getShiftDetail(String orgId, String shiftId);
+
   Future<Task<OrgStats>> getStats(String orgId, {required String period});
 
   Future<Task<List<Organization>>> getAllOrganizations();

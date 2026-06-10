@@ -9,6 +9,10 @@ abstract class SectionData<T> with _$SectionData<T> {
     T? data,
     @Default(FeatureStatus.initial) FeatureStatus status,
     String? error,
+
+    /// Машинный код ошибки (`error.code`) — для маппинга в локализованный
+    /// текст на UI-слое. Логику строим по нему, а не по [error] (message).
+    String? errorCode,
   }) = _SectionData<T>;
   const SectionData._();
 
@@ -24,15 +28,18 @@ abstract class SectionData<T> with _$SectionData<T> {
         status: FeatureStatus.success,
         data: data,
         error: null,
+        errorCode: null,
       );
 
-  SectionData<T> toError(String? message) => copyWith(
+  SectionData<T> toError(String? message, {String? code}) => copyWith(
         status: FeatureStatus.error,
         error: message,
+        errorCode: code,
       );
 
   SectionData<T> toIdle() => copyWith(
         status: FeatureStatus.idle,
         error: null,
+        errorCode: null,
       );
 }

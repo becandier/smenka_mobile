@@ -13,6 +13,10 @@ abstract class PaginatedSectionData<T> with _$PaginatedSectionData<T> {
     @Default(20) int perPage,
     @Default(FeatureStatus.initial) FeatureStatus status,
     String? error,
+
+    /// Машинный код ошибки (`error.code`) — для маппинга в локализованный
+    /// текст на UI-слое.
+    String? errorCode,
   }) = _PaginatedSectionData<T>;
   const PaginatedSectionData._();
 

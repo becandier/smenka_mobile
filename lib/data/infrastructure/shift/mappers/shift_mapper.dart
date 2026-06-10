@@ -24,6 +24,10 @@ extension ShiftMapper on ShiftDto {
       pauses: pauses.map((p) => p.toDomain()).toList(),
       workedSeconds: workedSeconds,
       hasIncompleteRequiredChecklists: hasIncompleteRequiredChecklists,
+      userName: userName,
+      userEmail: userEmail,
+      role: role,
+      customRoleName: customRoleName,
     );
   }
 }

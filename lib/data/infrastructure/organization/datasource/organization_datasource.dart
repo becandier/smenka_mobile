@@ -64,10 +64,7 @@ class OrganizationDataSource {
       '/organizations/$orgId/members',
     );
     final items = response.data!['items'] as List<dynamic>;
-    return items
-        .cast<Map<String, dynamic>>()
-        .map(MemberDto.fromJson)
-        .toList();
+    return items.cast<Map<String, dynamic>>().map(MemberDto.fromJson).toList();
   }
 
   Future<void> removeMember(String orgId, String memberUserId) async {
@@ -132,6 +129,13 @@ class OrganizationDataSource {
       queryParameters: queryParameters,
     );
     return PaginatedShiftsDto.fromJson(response.data!);
+  }
+
+  Future<ShiftDto> getShiftDetail(String orgId, String shiftId) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/organizations/$orgId/shifts/$shiftId',
+    );
+    return ShiftDto.fromJson(response.data!);
   }
 
   Future<List<OrganizationDto>> getAllOrganizations() async {

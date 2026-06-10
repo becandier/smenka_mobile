@@ -289,8 +289,23 @@
 
     "orgShiftsTitle": "Смены сотрудников",
     "orgShiftsEmpty": "Нет смен",
+    "orgShiftsEmptyForEmployee": "У сотрудника нет смен за период",
     "orgShiftsFilterEmployee": "Сотрудник",
     "orgShiftsAllEmployees": "Все сотрудники",
+    "shiftFilterByEmployee": "Фильтр по сотруднику",
+    "shiftFilterReset": "Сбросить фильтр",
+    "shiftEmployeePickerTitle": "Выбор сотрудника",
+    "shiftEmployeePickerEmpty": "Сотрудников нет",
+    "shiftAuthorFormerEmployee": "Бывший сотрудник",
+
+    "shiftDetailTitle": "Смена сотрудника",
+    "shiftDetailBackToList": "Назад к списку",
+    "shiftChecklistsSection": "Чек-листы",
+
+    "errorShiftNotFound": "Смена не найдена",
+    "errorOrgNotFound": "Организация не найдена",
+    "errorForbiddenShift": "Нет доступа к этой смене",
+    "errorInvalidStatusFilter": "Неверный статус-фильтр",
 
     "orgStatsTitle": "Статистика организации",
     "orgStatsTotalHours": "Всего часов",

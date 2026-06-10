@@ -18,6 +18,10 @@ mixin _$ChecklistFillState {
   Map<String, FeatureStatus> get itemStatuses;
   String? get saveError;
 
+  /// Только чтение — редактирование пунктов недоступно (просмотр чужой
+  /// смены owner/admin). Чекбоксы и комментарии показываются неактивными.
+  bool get readOnly;
+
   /// Create a copy of ChecklistFillState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +40,18 @@ mixin _$ChecklistFillState {
             const DeepCollectionEquality()
                 .equals(other.itemStatuses, itemStatuses) &&
             (identical(other.saveError, saveError) ||
-                other.saveError == saveError));
+                other.saveError == saveError) &&
+            (identical(other.readOnly, readOnly) ||
+                other.readOnly == readOnly));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, instance,
-      const DeepCollectionEquality().hash(itemStatuses), saveError);
+      const DeepCollectionEquality().hash(itemStatuses), saveError, readOnly);
 
   @override
   String toString() {
-    return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError)';
+    return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError, readOnly: $readOnly)';
   }
 }
 
@@ -58,7 +64,8 @@ abstract mixin class $ChecklistFillStateCopyWith<$Res> {
   $Res call(
       {SectionData<ChecklistInstanceDetail> instance,
       Map<String, FeatureStatus> itemStatuses,
-      String? saveError});
+      String? saveError,
+      bool readOnly});
 
   $SectionDataCopyWith<ChecklistInstanceDetail, $Res> get instance;
 }
@@ -79,6 +86,7 @@ class _$ChecklistFillStateCopyWithImpl<$Res>
     Object? instance = null,
     Object? itemStatuses = null,
     Object? saveError = freezed,
+    Object? readOnly = null,
   }) {
     return _then(_self.copyWith(
       instance: null == instance
@@ -93,6 +101,10 @@ class _$ChecklistFillStateCopyWithImpl<$Res>
           ? _self.saveError
           : saveError // ignore: cast_nullable_to_non_nullable
               as String?,
+      readOnly: null == readOnly
+          ? _self.readOnly
+          : readOnly // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 
@@ -201,15 +213,19 @@ extension ChecklistFillStatePatterns on ChecklistFillState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SectionData<ChecklistInstanceDetail> instance,
-            Map<String, FeatureStatus> itemStatuses, String? saveError)?
+    TResult Function(
+            SectionData<ChecklistInstanceDetail> instance,
+            Map<String, FeatureStatus> itemStatuses,
+            String? saveError,
+            bool readOnly)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ChecklistFillState() when $default != null:
-        return $default(_that.instance, _that.itemStatuses, _that.saveError);
+        return $default(_that.instance, _that.itemStatuses, _that.saveError,
+            _that.readOnly);
       case _:
         return orElse();
     }
@@ -230,14 +246,18 @@ extension ChecklistFillStatePatterns on ChecklistFillState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SectionData<ChecklistInstanceDetail> instance,
-            Map<String, FeatureStatus> itemStatuses, String? saveError)
+    TResult Function(
+            SectionData<ChecklistInstanceDetail> instance,
+            Map<String, FeatureStatus> itemStatuses,
+            String? saveError,
+            bool readOnly)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ChecklistFillState():
-        return $default(_that.instance, _that.itemStatuses, _that.saveError);
+        return $default(_that.instance, _that.itemStatuses, _that.saveError,
+            _that.readOnly);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -257,14 +277,18 @@ extension ChecklistFillStatePatterns on ChecklistFillState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(SectionData<ChecklistInstanceDetail> instance,
-            Map<String, FeatureStatus> itemStatuses, String? saveError)?
+    TResult? Function(
+            SectionData<ChecklistInstanceDetail> instance,
+            Map<String, FeatureStatus> itemStatuses,
+            String? saveError,
+            bool readOnly)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ChecklistFillState() when $default != null:
-        return $default(_that.instance, _that.itemStatuses, _that.saveError);
+        return $default(_that.instance, _that.itemStatuses, _that.saveError,
+            _that.readOnly);
       case _:
         return null;
     }
@@ -278,7 +302,8 @@ class _ChecklistFillState implements ChecklistFillState {
       {this.instance = const SectionData<ChecklistInstanceDetail>(),
       final Map<String, FeatureStatus> itemStatuses =
           const <String, FeatureStatus>{},
-      this.saveError})
+      this.saveError,
+      this.readOnly = false})
       : _itemStatuses = itemStatuses;
 
   @override
@@ -295,6 +320,12 @@ class _ChecklistFillState implements ChecklistFillState {
 
   @override
   final String? saveError;
+
+  /// Только чтение — редактирование пунктов недоступно (просмотр чужой
+  /// смены owner/admin). Чекбоксы и комментарии показываются неактивными.
+  @override
+  @JsonKey()
+  final bool readOnly;
 
   /// Create a copy of ChecklistFillState
   /// with the given fields replaced by the non-null parameter values.
@@ -314,16 +345,18 @@ class _ChecklistFillState implements ChecklistFillState {
             const DeepCollectionEquality()
                 .equals(other._itemStatuses, _itemStatuses) &&
             (identical(other.saveError, saveError) ||
-                other.saveError == saveError));
+                other.saveError == saveError) &&
+            (identical(other.readOnly, readOnly) ||
+                other.readOnly == readOnly));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, instance,
-      const DeepCollectionEquality().hash(_itemStatuses), saveError);
+      const DeepCollectionEquality().hash(_itemStatuses), saveError, readOnly);
 
   @override
   String toString() {
-    return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError)';
+    return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError, readOnly: $readOnly)';
   }
 }
 
@@ -338,7 +371,8 @@ abstract mixin class _$ChecklistFillStateCopyWith<$Res>
   $Res call(
       {SectionData<ChecklistInstanceDetail> instance,
       Map<String, FeatureStatus> itemStatuses,
-      String? saveError});
+      String? saveError,
+      bool readOnly});
 
   @override
   $SectionDataCopyWith<ChecklistInstanceDetail, $Res> get instance;
@@ -360,6 +394,7 @@ class __$ChecklistFillStateCopyWithImpl<$Res>
     Object? instance = null,
     Object? itemStatuses = null,
     Object? saveError = freezed,
+    Object? readOnly = null,
   }) {
     return _then(_ChecklistFillState(
       instance: null == instance
@@ -374,6 +409,10 @@ class __$ChecklistFillStateCopyWithImpl<$Res>
           ? _self.saveError
           : saveError // ignore: cast_nullable_to_non_nullable
               as String?,
+      readOnly: null == readOnly
+          ? _self.readOnly
+          : readOnly // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 

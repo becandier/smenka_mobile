@@ -17,6 +17,7 @@ class MemberRoleBadges extends StatelessWidget {
   const MemberRoleBadges({
     required this.systemRole,
     this.customRole,
+    this.customRoleName,
     this.isOwner = false,
     this.direction = Axis.vertical,
     this.compact = false,
@@ -25,6 +26,11 @@ class MemberRoleBadges extends StatelessWidget {
 
   final MemberRole? systemRole;
   final OrganizationRole? customRole;
+
+  /// Плоское имя кастомной роли — используется, когда объект [customRole]
+  /// недоступен (напр. в карточке смены приходит только имя). Приоритет
+  /// у [customRole], если задан.
+  final String? customRoleName;
   final bool isOwner;
   final Axis direction;
   final bool compact;
@@ -44,6 +50,8 @@ class MemberRoleBadges extends StatelessWidget {
       (false, null) => null,
     };
 
+    final customLabel = customRole?.name ?? customRoleName;
+
     final badges = <Widget>[
       if (system != null)
         _RoleBadge(
@@ -51,9 +59,9 @@ class MemberRoleBadges extends StatelessWidget {
           color: system.$2,
           compact: compact,
         ),
-      if (customRole != null)
+      if (customLabel != null)
         _RoleBadge(
-          label: customRole!.name,
+          label: customLabel,
           color: appColors.success,
           compact: compact,
         ),

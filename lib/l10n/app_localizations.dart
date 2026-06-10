@@ -1336,6 +1336,12 @@ abstract class AppLocalizations {
   /// **'Нет смен'**
   String get orgShiftsEmpty;
 
+  /// No description provided for @orgShiftsEmptyForEmployee.
+  ///
+  /// In ru, this message translates to:
+  /// **'У сотрудника нет смен за период'**
+  String get orgShiftsEmptyForEmployee;
+
   /// No description provided for @orgShiftsFilterEmployee.
   ///
   /// In ru, this message translates to:
@@ -1347,6 +1353,78 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Все сотрудники'**
   String get orgShiftsAllEmployees;
+
+  /// No description provided for @shiftFilterByEmployee.
+  ///
+  /// In ru, this message translates to:
+  /// **'Фильтр по сотруднику'**
+  String get shiftFilterByEmployee;
+
+  /// No description provided for @shiftFilterReset.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сбросить фильтр'**
+  String get shiftFilterReset;
+
+  /// No description provided for @shiftEmployeePickerTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбор сотрудника'**
+  String get shiftEmployeePickerTitle;
+
+  /// No description provided for @shiftEmployeePickerEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сотрудников нет'**
+  String get shiftEmployeePickerEmpty;
+
+  /// No description provided for @shiftAuthorFormerEmployee.
+  ///
+  /// In ru, this message translates to:
+  /// **'Бывший сотрудник'**
+  String get shiftAuthorFormerEmployee;
+
+  /// No description provided for @shiftDetailTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена сотрудника'**
+  String get shiftDetailTitle;
+
+  /// No description provided for @shiftDetailBackToList.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад к списку'**
+  String get shiftDetailBackToList;
+
+  /// No description provided for @shiftChecklistsSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Чек-листы'**
+  String get shiftChecklistsSection;
+
+  /// No description provided for @errorShiftNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена не найдена'**
+  String get errorShiftNotFound;
+
+  /// No description provided for @errorOrgNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация не найдена'**
+  String get errorOrgNotFound;
+
+  /// No description provided for @errorForbiddenShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет доступа к этой смене'**
+  String get errorForbiddenShift;
+
+  /// No description provided for @errorInvalidStatusFilter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неверный статус-фильтр'**
+  String get errorInvalidStatusFilter;
 
   /// No description provided for @orgStatsTitle.
   ///

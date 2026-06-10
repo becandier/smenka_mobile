@@ -26,5 +26,18 @@ abstract class Shift with _$Shift {
     required List<Pause> pauses,
     required int workedSeconds,
     @Default(false) bool hasIncompleteRequiredChecklists,
+
+    /// Данные автора смены. Заполняются только в орг-ответах
+    /// (`GET /organizations/{org_id}/shifts[/{shift_id}]`); в персональном
+    /// трекере (`GET /shifts`) всегда `null`.
+    String? userName,
+    String? userEmail,
+
+    /// Системная роль автора в этой организации: `admin` | `employee`.
+    /// `null`, если участник исключён из org или персональный контекст.
+    String? role,
+
+    /// Плоское имя кастомной роли (НЕ объект). `null`, если не назначена.
+    String? customRoleName,
   }) = _Shift;
 }
