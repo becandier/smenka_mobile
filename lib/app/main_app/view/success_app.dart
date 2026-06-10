@@ -17,6 +17,7 @@ class _SuccessApp extends StatefulWidget {
     required this.checklistRepository,
     required this.userRepository,
     required this.locationRepository,
+    required this.payrollRepository,
     required this.deepLinkService,
     required this.pendingInviteStorage,
     required this.shiftContextStorage,
@@ -36,6 +37,7 @@ class _SuccessApp extends StatefulWidget {
   final ChecklistRepository checklistRepository;
   final UserRepository userRepository;
   final LocationRepository locationRepository;
+  final PayrollRepository payrollRepository;
   final DeepLinkService deepLinkService;
   final PendingInviteStorage pendingInviteStorage;
   final ShiftContextStorage shiftContextStorage;
@@ -130,6 +132,9 @@ class _SuccessAppState extends State<_SuccessApp> {
         ),
         RepositoryProvider<LocationRepository>.value(
           value: widget.locationRepository,
+        ),
+        RepositoryProvider<PayrollRepository>.value(
+          value: widget.payrollRepository,
         ),
         RepositoryProvider<ShiftContextStorage>.value(
           value: widget.shiftContextStorage,

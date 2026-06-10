@@ -14,6 +14,7 @@ class _OrgNavigationSection extends StatelessWidget {
           SectionData<List<Member>> members,
           bool isAdminOrOwner,
           bool isOwner,
+          bool isMember,
           String orgId,
         })>(
       selector: (state) {
@@ -22,6 +23,7 @@ class _OrgNavigationSection extends StatelessWidget {
           members: state.members,
           isAdminOrOwner: cubit.isAdminOrOwner,
           isOwner: cubit.isOwner,
+          isMember: state.currentMemberRole != null,
           orgId: state.organization.data?.id ?? '',
         );
       },
@@ -48,6 +50,17 @@ class _OrgNavigationSection extends StatelessWidget {
                   OrgMembersRoute(orgId: data.orgId),
                 ),
               ),
+              // «Мой заработок» — для участников (owner не member, ADR-001)
+              if (data.isMember) ...[
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.account_balance_wallet_outlined,
+                  title: l10n.payrollMyEarningsTitle,
+                  onTap: () => context.router.push(
+                    MyEarningsRoute(orgId: data.orgId),
+                  ),
+                ),
+              ],
               if (data.isAdminOrOwner) ...[
                 const SizedBox(height: 8),
                 _NavItem(
@@ -87,6 +100,14 @@ class _OrgNavigationSection extends StatelessWidget {
                   title: l10n.orgDetailStats,
                   onTap: () => context.router.push(
                     OrgStatsRoute(orgId: data.orgId),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.payments_outlined,
+                  title: l10n.payrollReportTitle,
+                  onTap: () => context.router.push(
+                    PayrollRoute(orgId: data.orgId),
                   ),
                 ),
               ],

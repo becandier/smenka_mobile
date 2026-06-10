@@ -212,6 +212,13 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
         customRouteBuilder: _modalBottomSheetBuilder,
       ),
       AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),
+      AutoRoute(path: '$basePath/my-earnings', page: MyEarningsRoute.page),
+      AutoRoute(path: '$basePath/payroll', page: PayrollRoute.page),
+      CustomRoute<bool?>(
+        path: '$basePath/rate-form',
+        page: RateFormRoute.page,
+        customRouteBuilder: _modalBottomSheetBuilder,
+      ),
     ];
 
 @RoutePage(name: 'ShiftTab')

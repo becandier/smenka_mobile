@@ -498,5 +498,49 @@
     "errorInvalidDateRange": "Дата начала позже даты окончания",
     "errorMissingStatsRange": "Не указан период статистики",
     "errorAmbiguousStatsRange": "Нельзя задать одновременно пресет и произвольный период",
-    "errorInvalidPeriod": "Некорректный период"
+    "errorInvalidPeriod": "Некорректный период",
+
+
+    "payrollMyEarningsTitle": "Мой заработок",
+    "payrollReportTitle": "Зарплата",
+    "payrollRateSectionTitle": "Ставка",
+    "payrollCurrentRateTitle": "Текущая ставка",
+    "payrollAccrued": "Начислено",
+    "payrollToPay": "К выплате",
+    "payrollWorked": "Отработано",
+    "payrollShiftsCount": "Смен",
+    "payrollRateHourly": "за час",
+    "payrollRatePerShift": "за смену",
+    "payrollRateEffectiveFrom": "Действует с {date}",
+    "@payrollRateEffectiveFrom": {
+        "placeholders": {
+            "date": {"type": "String"}
+        }
+    },
+    "payrollRateCurrent": "Действующая",
+    "payrollRateNotSet": "Ставка не задана",
+    "myEarningsNoRate": "Ставка ещё не задана",
+    "myEarningsMissingRateHint": "Некоторые смены не оплачены — для них не была задана ставка. Обратитесь к администратору.",
+    "payrollAddRate": "Добавить ставку",
+    "payrollEditRate": "Исправить запись",
+    "payrollDeleteRate": "Удалить",
+    "payrollDeleteRateConfirm": "Удалить запись о ставке? Действующая ставка для затронутых периодов может измениться.",
+    "payrollRateNoteHint": "Комментарий, напр. «повышение»",
+    "payrollEditRateHint": "Это исправление ошибки в истории. Для новой ставки используйте «Добавить ставку».",
+    "payrollRateAmountLabel": "Ставка, ₽",
+    "payrollRateDateLabel": "Действует с",
+    "payrollMissingRateBadge": "Есть смены без ставки",
+    "payrollUnpaidHint": "{count} смен / {hours} не оплачены: нет ставки на дату смены",
+    "@payrollUnpaidHint": {
+        "placeholders": {
+            "count": {"type": "int"},
+            "hours": {"type": "String"}
+        }
+    },
+    "payrollEmptyNoShifts": "Нет завершённых смен за период",
+    "payrollRatesEmpty": "Ставок пока нет",
+    "errorRateNotFound": "Запись о ставке не найдена",
+    "errorRateEffectiveFromTaken": "На эту дату у сотрудника уже есть ставка. Выберите другую дату или исправьте существующую.",
+    "errorMemberNotFound": "Сотрудник не найден",
+    "errorValidation": "Проверьте введённые данные"
 }

@@ -21,6 +21,10 @@ String localizedErrorMessage(
     'INVALID_DATE_RANGE' => l10n.errorInvalidDateRange,
     'MISSING_STATS_RANGE' => l10n.errorMissingStatsRange,
     'AMBIGUOUS_STATS_RANGE' => l10n.errorAmbiguousStatsRange,
+    'RATE_NOT_FOUND' => l10n.errorRateNotFound,
+    'RATE_EFFECTIVE_FROM_TAKEN' => l10n.errorRateEffectiveFromTaken,
+    'MEMBER_NOT_FOUND' => l10n.errorMemberNotFound,
+    'VALIDATION_ERROR' => l10n.errorValidation,
     _ => null,
   };
   return mapped ?? fallback ?? l10n.errorOccurred;
