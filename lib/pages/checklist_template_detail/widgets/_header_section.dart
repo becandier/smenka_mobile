@@ -50,8 +50,7 @@ class _HeaderSection extends StatelessWidget {
                 ),
               ],
               selected: {detail.type},
-              onSelectionChanged: (s) =>
-                  _updateType(context, s.first),
+              onSelectionChanged: (s) => _updateType(context, s.first),
             ),
             SwitchListTile.adaptive(
               value: detail.isRequired,

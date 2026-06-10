@@ -18,9 +18,8 @@ class _ShiftFilters extends StatelessWidget {
                 _FilterChip(
                   label: context.l10n.historyFilterAll,
                   isSelected: filterStatus == null,
-                  onSelected: () => context
-                      .read<ShiftHistoryCubit>()
-                      .setStatusFilter(null),
+                  onSelected: () =>
+                      context.read<ShiftHistoryCubit>().setStatusFilter(null),
                 ),
                 const SizedBox(width: 8),
                 _FilterChip(

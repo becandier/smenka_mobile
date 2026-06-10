@@ -50,8 +50,7 @@ class _SystemRoleSection extends StatelessWidget {
                               .read<MemberDetailCubit>()
                               .updateSystemRole(s.first);
                           if (ok && context.mounted) {
-                            context.modals
-                                .showSuccess(l10n.membersRoleChanged);
+                            context.modals.showSuccess(l10n.membersRoleChanged);
                           }
                         },
                 ),

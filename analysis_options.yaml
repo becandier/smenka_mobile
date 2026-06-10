@@ -4,6 +4,11 @@ linter:
     sort_pub_dependencies: false
     public_member_api_docs: false
 analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gr.dart"
+    - "lib/l10n/gen/**"
   errors:
     invalid_annotation_target: ignore
     avoid_catches_without_on_clauses: ignore

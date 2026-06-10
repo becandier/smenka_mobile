@@ -20,8 +20,8 @@ mixin _$Member {
   String get userName;
   String get userEmail;
   MemberRole get role;
-  OrganizationRole? get customRole;
   DateTime get joinedAt;
+  OrganizationRole? get customRole;
 
   /// Create a copy of Member
   /// with the given fields replaced by the non-null parameter values.
@@ -44,19 +44,19 @@ mixin _$Member {
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
             (identical(other.role, role) || other.role == role) &&
-            (identical(other.customRole, customRole) ||
-                other.customRole == customRole) &&
             (identical(other.joinedAt, joinedAt) ||
-                other.joinedAt == joinedAt));
+                other.joinedAt == joinedAt) &&
+            (identical(other.customRole, customRole) ||
+                other.customRole == customRole));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, customRole, joinedAt);
+      userName, userEmail, role, joinedAt, customRole);
 
   @override
   String toString() {
-    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, customRole: $customRole, joinedAt: $joinedAt)';
+    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole)';
   }
 }
 
@@ -72,8 +72,8 @@ abstract mixin class $MemberCopyWith<$Res> {
       String userName,
       String userEmail,
       MemberRole role,
-      OrganizationRole? customRole,
-      DateTime joinedAt});
+      DateTime joinedAt,
+      OrganizationRole? customRole});
 
   $OrganizationRoleCopyWith<$Res>? get customRole;
 }
@@ -96,8 +96,8 @@ class _$MemberCopyWithImpl<$Res> implements $MemberCopyWith<$Res> {
     Object? userName = null,
     Object? userEmail = null,
     Object? role = null,
-    Object? customRole = freezed,
     Object? joinedAt = null,
+    Object? customRole = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -124,14 +124,14 @@ class _$MemberCopyWithImpl<$Res> implements $MemberCopyWith<$Res> {
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as MemberRole,
-      customRole: freezed == customRole
-          ? _self.customRole
-          : customRole // ignore: cast_nullable_to_non_nullable
-              as OrganizationRole?,
       joinedAt: null == joinedAt
           ? _self.joinedAt
           : joinedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      customRole: freezed == customRole
+          ? _self.customRole
+          : customRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRole?,
     ));
   }
 
@@ -250,8 +250,8 @@ extension MemberPatterns on Member {
             String userName,
             String userEmail,
             MemberRole role,
-            OrganizationRole? customRole,
-            DateTime joinedAt)?
+            DateTime joinedAt,
+            OrganizationRole? customRole)?
         $default, {
     required TResult orElse(),
   }) {
@@ -265,8 +265,8 @@ extension MemberPatterns on Member {
             _that.userName,
             _that.userEmail,
             _that.role,
-            _that.customRole,
-            _that.joinedAt);
+            _that.joinedAt,
+            _that.customRole);
       case _:
         return orElse();
     }
@@ -294,8 +294,8 @@ extension MemberPatterns on Member {
             String userName,
             String userEmail,
             MemberRole role,
-            OrganizationRole? customRole,
-            DateTime joinedAt)
+            DateTime joinedAt,
+            OrganizationRole? customRole)
         $default,
   ) {
     final _that = this;
@@ -308,8 +308,8 @@ extension MemberPatterns on Member {
             _that.userName,
             _that.userEmail,
             _that.role,
-            _that.customRole,
-            _that.joinedAt);
+            _that.joinedAt,
+            _that.customRole);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -336,8 +336,8 @@ extension MemberPatterns on Member {
             String userName,
             String userEmail,
             MemberRole role,
-            OrganizationRole? customRole,
-            DateTime joinedAt)?
+            DateTime joinedAt,
+            OrganizationRole? customRole)?
         $default,
   ) {
     final _that = this;
@@ -350,8 +350,8 @@ extension MemberPatterns on Member {
             _that.userName,
             _that.userEmail,
             _that.role,
-            _that.customRole,
-            _that.joinedAt);
+            _that.joinedAt,
+            _that.customRole);
       case _:
         return null;
     }
@@ -368,8 +368,8 @@ class _Member implements Member {
       required this.userName,
       required this.userEmail,
       required this.role,
-      this.customRole,
-      required this.joinedAt});
+      required this.joinedAt,
+      this.customRole});
 
   @override
   final String id;
@@ -384,9 +384,9 @@ class _Member implements Member {
   @override
   final MemberRole role;
   @override
-  final OrganizationRole? customRole;
-  @override
   final DateTime joinedAt;
+  @override
+  final OrganizationRole? customRole;
 
   /// Create a copy of Member
   /// with the given fields replaced by the non-null parameter values.
@@ -410,19 +410,19 @@ class _Member implements Member {
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
             (identical(other.role, role) || other.role == role) &&
-            (identical(other.customRole, customRole) ||
-                other.customRole == customRole) &&
             (identical(other.joinedAt, joinedAt) ||
-                other.joinedAt == joinedAt));
+                other.joinedAt == joinedAt) &&
+            (identical(other.customRole, customRole) ||
+                other.customRole == customRole));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, customRole, joinedAt);
+      userName, userEmail, role, joinedAt, customRole);
 
   @override
   String toString() {
-    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, customRole: $customRole, joinedAt: $joinedAt)';
+    return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole)';
   }
 }
 
@@ -439,8 +439,8 @@ abstract mixin class _$MemberCopyWith<$Res> implements $MemberCopyWith<$Res> {
       String userName,
       String userEmail,
       MemberRole role,
-      OrganizationRole? customRole,
-      DateTime joinedAt});
+      DateTime joinedAt,
+      OrganizationRole? customRole});
 
   @override
   $OrganizationRoleCopyWith<$Res>? get customRole;
@@ -464,8 +464,8 @@ class __$MemberCopyWithImpl<$Res> implements _$MemberCopyWith<$Res> {
     Object? userName = null,
     Object? userEmail = null,
     Object? role = null,
-    Object? customRole = freezed,
     Object? joinedAt = null,
+    Object? customRole = freezed,
   }) {
     return _then(_Member(
       id: null == id
@@ -492,14 +492,14 @@ class __$MemberCopyWithImpl<$Res> implements _$MemberCopyWith<$Res> {
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
               as MemberRole,
-      customRole: freezed == customRole
-          ? _self.customRole
-          : customRole // ignore: cast_nullable_to_non_nullable
-              as OrganizationRole?,
       joinedAt: null == joinedAt
           ? _self.joinedAt
           : joinedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      customRole: freezed == customRole
+          ? _self.customRole
+          : customRole // ignore: cast_nullable_to_non_nullable
+              as OrganizationRole?,
     ));
   }
 

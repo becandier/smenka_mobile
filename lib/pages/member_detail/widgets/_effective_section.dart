@@ -16,12 +16,10 @@ class _EffectiveSection extends StatelessWidget {
       builder: (context, state) {
         final items =
             state.effective.data ?? const <EffectiveChecklistTemplate>[];
-        final start = items
-            .where((t) => t.type == ChecklistType.shiftStart)
-            .toList();
-        final end = items
-            .where((t) => t.type == ChecklistType.shiftEnd)
-            .toList();
+        final start =
+            items.where((t) => t.type == ChecklistType.shiftStart).toList();
+        final end =
+            items.where((t) => t.type == ChecklistType.shiftEnd).toList();
 
         return Material(
           color: appColors.surface,
@@ -107,8 +105,7 @@ class _EffectiveRow extends StatelessWidget {
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
     final sourceLabel = switch (template.source) {
-      ChecklistTemplateSource.role =>
-        context.l10n.memberDetailSourceRole,
+      ChecklistTemplateSource.role => context.l10n.memberDetailSourceRole,
       ChecklistTemplateSource.personalAdd =>
         context.l10n.memberDetailSourcePersonal,
     };
@@ -120,9 +117,7 @@ class _EffectiveRow extends StatelessWidget {
           Icon(
             template.isRequired ? Icons.star : Icons.check_circle_outline,
             size: 18,
-            color: template.isRequired
-                ? appColors.error
-                : appColors.primary,
+            color: template.isRequired ? appColors.error : appColors.primary,
           ),
           const SizedBox(width: 10),
           Expanded(

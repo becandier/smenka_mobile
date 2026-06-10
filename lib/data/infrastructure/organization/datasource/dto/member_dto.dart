@@ -14,8 +14,8 @@ abstract class MemberDto with _$MemberDto {
     required String userName,
     required String userEmail,
     required String role,
-    OrganizationRoleDto? customRole,
     required DateTime joinedAt,
+    OrganizationRoleDto? customRole,
   }) = _MemberDto;
 
   factory MemberDto.fromJson(Map<String, dynamic> json) =>

@@ -10,9 +10,9 @@ abstract class User with _$User {
     required String id,
     required String email,
     required String name,
-    String? phone,
     required bool isVerified,
     required UserRole role,
     required DateTime createdAt,
+    String? phone,
   }) = _User;
 }
