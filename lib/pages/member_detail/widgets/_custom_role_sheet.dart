@@ -40,36 +40,39 @@ class _CustomRoleSheetState extends State<_CustomRoleSheet> {
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Center(child: CircularProgressIndicator.adaptive()),
                 )
-              else ...[
-                RadioListTile<String?>(
-                  value: null,
+              else
+                RadioGroup<String?>(
                   groupValue: _selectedId,
-                  onChanged: _submitting
-                      ? null
-                      : (v) => setState(() => _selectedId = v),
-                  title: Text(l10n.membersCustomRoleNone),
-                ),
-                if (roles.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(
-                      l10n.rolesEmpty,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: appColors.secondary),
-                    ),
-                  )
-                else
-                  ...roles.map(
-                    (role) => RadioListTile<String?>(
-                      value: role.id,
-                      groupValue: _selectedId,
-                      onChanged: _submitting
-                          ? null
-                          : (v) => setState(() => _selectedId = v),
-                      title: Text(role.name),
-                    ),
+                  onChanged: (v) => setState(() => _selectedId = v),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      RadioListTile<String?>(
+                        value: null,
+                        enabled: !_submitting,
+                        title: Text(l10n.membersCustomRoleNone),
+                      ),
+                      if (roles.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Text(
+                            l10n.rolesEmpty,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: appColors.secondary),
+                          ),
+                        )
+                      else
+                        ...roles.map(
+                          (role) => RadioListTile<String?>(
+                            value: role.id,
+                            enabled: !_submitting,
+                            title: Text(role.name),
+                          ),
+                        ),
+                    ],
                   ),
-              ],
+                ),
               const SizedBox(height: 12),
               AppButton(
                 label: l10n.rolesSaveAction,

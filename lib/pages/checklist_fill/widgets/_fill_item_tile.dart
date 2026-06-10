@@ -23,8 +23,8 @@ class _FillItemTileState extends State<_FillItemTile> {
     super.didUpdateWidget(oldWidget);
     final newComment = widget.item.comment ?? '';
     if (_commentController.text != newComment) {
-      // Avoid overwriting while user is typing — only sync when server data differs
-      // and controller text doesn't match any pending edit.
+      // Avoid overwriting while user is typing — only sync when server
+      // data differs and controller text doesn't match any pending edit.
       if (_commentController.text == (oldWidget.item.comment ?? '')) {
         _commentController.text = newComment;
       }

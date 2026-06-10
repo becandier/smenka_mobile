@@ -86,14 +86,14 @@ class _OrgSettingsForm extends StatelessWidget {
             children: [
               _GeoCheckTile(
                 value: state.geoCheckEnabled,
-                onChanged: cubit.setGeoCheck,
+                onChanged: (value) => cubit.setGeoCheck(value: value),
               ),
               const SizedBox(height: 16),
               _GeoCheckTile(
                 title: l10n.orgSettingsAutoFinish,
                 description: l10n.orgSettingsAutoFinishDesc,
                 value: state.autoFinishEnabled,
-                onChanged: cubit.setAutoFinishEnabled,
+                onChanged: (value) => cubit.setAutoFinishEnabled(value: value),
               ),
               if (state.autoFinishEnabled) ...[
                 const SizedBox(height: 12),

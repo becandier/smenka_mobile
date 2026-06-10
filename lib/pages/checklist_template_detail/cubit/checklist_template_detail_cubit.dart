@@ -6,8 +6,7 @@ import 'package:smenka_mobile/data/domain/organization/_organization.dart';
 import 'package:smenka_mobile/data/domain/organization_role/_organization_role.dart';
 import 'package:smenka_mobile/pages/checklist_template_detail/cubit/checklist_template_detail_state.dart';
 
-class ChecklistTemplateDetailCubit
-    extends Cubit<ChecklistTemplateDetailState> {
+class ChecklistTemplateDetailCubit extends Cubit<ChecklistTemplateDetailState> {
   ChecklistTemplateDetailCubit({
     required String orgId,
     required String templateId,
@@ -91,7 +90,11 @@ class ChecklistTemplateDetailCubit
         emit(state.copyWith(assignments: state.assignments.toSuccess(a)));
       },
       onFailure: (error) {
-        emit(state.copyWith(assignments: state.assignments.toError(error.message)));
+        emit(
+          state.copyWith(
+            assignments: state.assignments.toError(error.message),
+          ),
+        );
       },
     );
   }
@@ -103,7 +106,9 @@ class ChecklistTemplateDetailCubit
     ChecklistType? type,
     bool? isRequired,
   }) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _checklistRepository.updateTemplate(
       _orgId,
       _templateId,
@@ -118,10 +123,12 @@ class ChecklistTemplateDetailCubit
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -130,7 +137,9 @@ class ChecklistTemplateDetailCubit
   // --- Items ---
 
   Future<bool> addItem({required String text, required bool isRequired}) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _checklistRepository.addItem(
       _orgId,
       _templateId,
@@ -144,10 +153,12 @@ class ChecklistTemplateDetailCubit
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -158,7 +169,9 @@ class ChecklistTemplateDetailCubit
     String? text,
     bool? isRequired,
   }) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _checklistRepository.updateItem(
       _orgId,
       _templateId,
@@ -173,17 +186,21 @@ class ChecklistTemplateDetailCubit
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
   }
 
   Future<bool> deleteItem(String itemId) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _checklistRepository.deleteItem(
       _orgId,
       _templateId,
@@ -196,10 +213,12 @@ class ChecklistTemplateDetailCubit
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -209,7 +228,8 @@ class ChecklistTemplateDetailCubit
     final detail = state.template.data;
     if (detail == null) return;
 
-    final items = [...detail.items]..sort((a, b) => a.position.compareTo(b.position));
+    final items = [...detail.items]
+      ..sort((a, b) => a.position.compareTo(b.position));
     final adjusted = oldIndex < newIndex ? newIndex - 1 : newIndex;
     final moved = items.removeAt(oldIndex);
     items.insert(adjusted, moved);
@@ -217,8 +237,7 @@ class ChecklistTemplateDetailCubit
     // Optimistic update
     final newDetail = detail.copyWith(
       items: [
-        for (var i = 0; i < items.length; i++)
-          items[i].copyWith(position: i),
+        for (var i = 0; i < items.length; i++) items[i].copyWith(position: i),
       ],
     );
     emit(state.copyWith(template: state.template.toSuccess(newDetail)));
@@ -229,7 +248,9 @@ class ChecklistTemplateDetailCubit
       itemIds: items.map((e) => e.id).toList(),
     );
     result.fold(
-      onSuccess: (_) => loadTemplate(),
+      onSuccess: (_) {
+        loadTemplate();
+      },
       onFailure: (error) {
         emit(state.copyWith(actionError: error.message));
         loadTemplate();
@@ -240,7 +261,9 @@ class ChecklistTemplateDetailCubit
   // --- Assignments ---
 
   Future<bool> assignToRoles(List<String> roleIds) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _checklistRepository.assignToRoles(
       _orgId,
       _templateId,
@@ -253,10 +276,12 @@ class ChecklistTemplateDetailCubit
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -311,8 +336,11 @@ class ChecklistTemplateDetailCubit
   // --- Archive ---
 
   Future<bool> archiveTemplate() async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
-    final result = await _checklistRepository.archiveTemplate(_orgId, _templateId);
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
+    final result =
+        await _checklistRepository.archiveTemplate(_orgId, _templateId);
     return result.fold(
       onSuccess: (_) {
         emit(state.copyWith(actionStatus: FeatureStatus.success));
@@ -320,10 +348,12 @@ class ChecklistTemplateDetailCubit
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );

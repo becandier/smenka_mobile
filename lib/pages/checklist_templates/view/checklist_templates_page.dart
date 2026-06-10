@@ -56,8 +56,9 @@ class _TemplatesView extends StatelessWidget {
                       ? Icons.inventory_2
                       : Icons.inventory_2_outlined,
                 ),
-                onPressed: () =>
-                    context.read<ChecklistTemplatesCubit>().toggleShowArchived(),
+                onPressed: () => context
+                    .read<ChecklistTemplatesCubit>()
+                    .toggleShowArchived(),
               );
             },
           ),
@@ -84,9 +85,8 @@ class _TemplatesView extends StatelessWidget {
           final startItems = templates
               .where((t) => t.type == ChecklistType.shiftStart)
               .toList();
-          final endItems = templates
-              .where((t) => t.type == ChecklistType.shiftEnd)
-              .toList();
+          final endItems =
+              templates.where((t) => t.type == ChecklistType.shiftEnd).toList();
 
           return RefreshIndicator.adaptive(
             onRefresh: () =>

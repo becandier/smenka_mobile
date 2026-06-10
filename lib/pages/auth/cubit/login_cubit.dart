@@ -13,11 +13,13 @@ class LoginCubit extends Cubit<LoginState> {
   final AuthRepository _authRepository;
 
   void toggleMode() {
-    emit(state.copyWith(
-      mode: state.isLogin ? AuthMode.register : AuthMode.login,
-      error: null,
-      status: FeatureStatus.initial,
-    ),);
+    emit(
+      state.copyWith(
+        mode: state.isLogin ? AuthMode.register : AuthMode.login,
+        error: null,
+        status: FeatureStatus.initial,
+      ),
+    );
   }
 
   void updateEmail(String value) =>
@@ -50,10 +52,12 @@ class LoginCubit extends Cubit<LoginState> {
           emit(state.copyWith(status: FeatureStatus.idle));
           return LoginResult.needsVerification;
         }
-        emit(state.copyWith(
-          status: FeatureStatus.error,
-          error: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            status: FeatureStatus.error,
+            error: error.message,
+          ),
+        );
         return LoginResult.error;
       },
     );
@@ -74,10 +78,12 @@ class LoginCubit extends Cubit<LoginState> {
         return LoginResult.needsVerification;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          status: FeatureStatus.error,
-          error: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            status: FeatureStatus.error,
+            error: error.message,
+          ),
+        );
         return LoginResult.error;
       },
     );

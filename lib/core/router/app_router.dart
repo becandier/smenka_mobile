@@ -39,7 +39,7 @@ class AppRouter extends RootStackRouter {
       } else {
         resolver.redirectUntil(
           LoginRoute(
-            onResult: (didLogin) => resolver.next(didLogin),
+            onResult: ({required bool didLogin}) => resolver.next(didLogin),
           ),
         );
       }

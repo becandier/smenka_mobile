@@ -6,7 +6,8 @@ import 'package:smenka_mobile/app/main_app/cubit/main_app_cubit.dart'
 import 'package:smenka_mobile/app/main_app/locator/service_locator.dart';
 import 'package:smenka_mobile/core/constants/prefs_keys.dart';
 import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
-import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart' show ThemeCubit;
+import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart'
+    show ThemeCubit;
 
 /// Service initializer for theme persistence.
 ///

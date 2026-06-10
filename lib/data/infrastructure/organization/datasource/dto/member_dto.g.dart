@@ -13,11 +13,11 @@ _MemberDto _$MemberDtoFromJson(Map<String, dynamic> json) => _MemberDto(
       userName: json['user_name'] as String,
       userEmail: json['user_email'] as String,
       role: json['role'] as String,
+      joinedAt: DateTime.parse(json['joined_at'] as String),
       customRole: json['custom_role'] == null
           ? null
           : OrganizationRoleDto.fromJson(
               json['custom_role'] as Map<String, dynamic>),
-      joinedAt: DateTime.parse(json['joined_at'] as String),
     );
 
 Map<String, dynamic> _$MemberDtoToJson(_MemberDto instance) =>
@@ -28,6 +28,6 @@ Map<String, dynamic> _$MemberDtoToJson(_MemberDto instance) =>
       'user_name': instance.userName,
       'user_email': instance.userEmail,
       'role': instance.role,
-      'custom_role': instance.customRole,
       'joined_at': instance.joinedAt.toIso8601String(),
+      'custom_role': instance.customRole,
     };

@@ -7,13 +7,15 @@ class _OrgNavigationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return BlocSelector<OrganizationDetailCubit, OrganizationDetailState,
+    return BlocSelector<
+        OrganizationDetailCubit,
+        OrganizationDetailState,
         ({
-      SectionData<List<Member>> members,
-      bool isAdminOrOwner,
-      bool isOwner,
-      String orgId,
-    })>(
+          SectionData<List<Member>> members,
+          bool isAdminOrOwner,
+          bool isOwner,
+          String orgId,
+        })>(
       selector: (state) {
         final cubit = context.read<OrganizationDetailCubit>();
         return (

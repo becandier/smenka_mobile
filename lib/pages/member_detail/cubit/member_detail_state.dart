@@ -9,8 +9,6 @@ part 'member_detail_state.freezed.dart';
 
 @freezed
 abstract class MemberDetailState with _$MemberDetailState {
-  const MemberDetailState._();
-
   const factory MemberDetailState({
     required Member member,
     OrgMembershipRole? viewerRole,
@@ -24,6 +22,7 @@ abstract class MemberDetailState with _$MemberDetailState {
     @Default(FeatureStatus.initial) FeatureStatus actionStatus,
     String? actionError,
   }) = _MemberDetailState;
+  const MemberDetailState._();
 
   bool get canManage =>
       viewerRole == OrgMembershipRole.owner ||

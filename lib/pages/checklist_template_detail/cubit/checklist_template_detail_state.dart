@@ -17,8 +17,7 @@ abstract class ChecklistTemplateDetailState
     SectionData<List<OrganizationRole>> roles,
     @Default(SectionData<ChecklistAssignment>())
     SectionData<ChecklistAssignment> assignments,
-    @Default(SectionData<List<Member>>())
-    SectionData<List<Member>> members,
+    @Default(SectionData<List<Member>>()) SectionData<List<Member>> members,
     @Default(<String>{}) Set<String> pendingMemberIds,
     @Default(FeatureStatus.initial) FeatureStatus actionStatus,
     String? actionError,

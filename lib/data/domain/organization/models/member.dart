@@ -14,7 +14,7 @@ abstract class Member with _$Member {
     required String userName,
     required String userEmail,
     required MemberRole role,
-    OrganizationRole? customRole,
     required DateTime joinedAt,
+    OrganizationRole? customRole,
   }) = _Member;
 }

@@ -45,7 +45,9 @@ class ChecklistTemplatesCubit extends Cubit<ChecklistTemplatesState> {
     required ChecklistType type,
     required bool isRequired,
   }) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _checklistRepository.createTemplate(
       _orgId,
       name: name,
@@ -59,17 +61,21 @@ class ChecklistTemplatesCubit extends Cubit<ChecklistTemplatesState> {
         return template;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return null;
       },
     );
   }
 
   Future<bool> archiveTemplate(String templateId) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _checklistRepository.archiveTemplate(
       _orgId,
       templateId,
@@ -81,10 +87,12 @@ class ChecklistTemplatesCubit extends Cubit<ChecklistTemplatesState> {
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );

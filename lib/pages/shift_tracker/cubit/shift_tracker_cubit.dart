@@ -20,12 +20,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         _organizationRepository = organizationRepository,
         _geoService = geoService,
         super(const ShiftTrackerState()) {
-    _orgSubscription = _organizationRepository
-        .watchMyOrganizations()
-        .listen((orgs) {
-      emit(state.copyWith(
-        organizations: state.organizations.toSuccess(orgs),
-      ),);
+    _orgSubscription =
+        _organizationRepository.watchMyOrganizations().listen((orgs) {
+      emit(
+        state.copyWith(
+          organizations: state.organizations.toSuccess(orgs),
+        ),
+      );
     });
     _init();
   }
@@ -68,9 +69,11 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         }
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toError(error.message),
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toError(error.message),
+          ),
+        );
       },
     );
 
@@ -136,10 +139,12 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
           return StartShiftResult.geoDeniedForever;
         case GeoError():
-          emit(state.copyWith(
-            actionStatus: FeatureStatus.error,
-            actionError: geoResult.message,
-          ),);
+          emit(
+            state.copyWith(
+              actionStatus: FeatureStatus.error,
+              actionError: geoResult.message,
+            ),
+          );
           return StartShiftResult.error;
       }
     }
@@ -152,18 +157,22 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     return result.fold(
       onSuccess: (shift) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toSuccess(shift),
-          actionStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toSuccess(shift),
+            actionStatus: FeatureStatus.success,
+          ),
+        );
         _startTimer(shift);
         return StartShiftResult.success;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return StartShiftResult.error;
       },
     );
@@ -185,17 +194,21 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     return result.fold(
       onSuccess: (updatedShift) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toSuccess(updatedShift),
-          actionStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toSuccess(updatedShift),
+            actionStatus: FeatureStatus.success,
+          ),
+        );
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -213,17 +226,21 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     return result.fold(
       onSuccess: (updatedShift) {
-        emit(state.copyWith(
-          activeShift: state.activeShift.toSuccess(updatedShift),
-          actionStatus: FeatureStatus.success,
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toSuccess(updatedShift),
+            actionStatus: FeatureStatus.success,
+          ),
+        );
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
@@ -242,19 +259,23 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     return result.fold(
       onSuccess: (_) {
         _stopTimer();
-        emit(state.copyWith(
-          activeShift: const SectionData(),
-          actionStatus: FeatureStatus.success,
-          elapsedSeconds: 0,
-          selectedOrganizationId: null,
-        ),);
+        emit(
+          state.copyWith(
+            activeShift: const SectionData(),
+            actionStatus: FeatureStatus.success,
+            elapsedSeconds: 0,
+            selectedOrganizationId: null,
+          ),
+        );
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );

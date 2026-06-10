@@ -26,34 +26,40 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
     result.fold(
       onSuccess: (settings) {
         _original = settings;
-        emit(state.copyWith(
-          settings: state.settings.toSuccess(settings),
-          geoCheckEnabled: settings.geoCheckEnabled,
-          autoFinishEnabled: settings.autoFinishHours != null,
-          autoFinishHours: settings.autoFinishHours,
-          maxPauseMinutes: settings.maxPauseMinutes,
-          maxPausesPerShift: settings.maxPausesPerShift,
-          hasChanges: false,
-        ),);
+        emit(
+          state.copyWith(
+            settings: state.settings.toSuccess(settings),
+            geoCheckEnabled: settings.geoCheckEnabled,
+            autoFinishEnabled: settings.autoFinishHours != null,
+            autoFinishHours: settings.autoFinishHours,
+            maxPauseMinutes: settings.maxPauseMinutes,
+            maxPausesPerShift: settings.maxPausesPerShift,
+            hasChanges: false,
+          ),
+        );
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          settings: state.settings.toError(error.message),
-        ),);
+        emit(
+          state.copyWith(
+            settings: state.settings.toError(error.message),
+          ),
+        );
       },
     );
   }
 
-  void setGeoCheck(bool value) {
+  void setGeoCheck({required bool value}) {
     emit(state.copyWith(geoCheckEnabled: value));
     _checkChanges();
   }
 
-  void setAutoFinishEnabled(bool value) {
-    emit(state.copyWith(
-      autoFinishEnabled: value,
-      autoFinishHours: value ? (state.autoFinishHours ?? 8) : null,
-    ),);
+  void setAutoFinishEnabled({required bool value}) {
+    emit(
+      state.copyWith(
+        autoFinishEnabled: value,
+        autoFinishHours: value ? (state.autoFinishHours ?? 8) : null,
+      ),
+    );
     _checkChanges();
   }
 
@@ -100,16 +106,18 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
     return result.fold(
       onSuccess: (settings) {
         _original = settings;
-        emit(state.copyWith(
-          saveStatus: FeatureStatus.success,
-          settings: state.settings.toSuccess(settings),
-          geoCheckEnabled: settings.geoCheckEnabled,
-          autoFinishEnabled: settings.autoFinishHours != null,
-          autoFinishHours: settings.autoFinishHours,
-          maxPauseMinutes: settings.maxPauseMinutes,
-          maxPausesPerShift: settings.maxPausesPerShift,
-          hasChanges: false,
-        ),);
+        emit(
+          state.copyWith(
+            saveStatus: FeatureStatus.success,
+            settings: state.settings.toSuccess(settings),
+            geoCheckEnabled: settings.geoCheckEnabled,
+            autoFinishEnabled: settings.autoFinishHours != null,
+            autoFinishHours: settings.autoFinishHours,
+            maxPauseMinutes: settings.maxPauseMinutes,
+            maxPausesPerShift: settings.maxPausesPerShift,
+            hasChanges: false,
+          ),
+        );
         return true;
       },
       onFailure: (error) {

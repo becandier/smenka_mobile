@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
   });
 
   /// Callback при успешной авторизации -- вызывается guard-ом
-  final void Function(bool didLogin)? onResult;
+  final void Function({required bool didLogin})? onResult;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
 class _LoginView extends StatefulWidget {
   const _LoginView({required this.onResult});
 
-  final void Function(bool didLogin)? onResult;
+  final void Function({required bool didLogin})? onResult;
 
   @override
   State<_LoginView> createState() => _LoginViewState();
@@ -97,7 +97,7 @@ class _LoginViewState extends State<_LoginView> {
 
     switch (result) {
       case LoginResult.success:
-        widget.onResult?.call(true);
+        widget.onResult?.call(didLogin: true);
       case LoginResult.needsVerification:
         final email = cubit.state.email.trim();
         final message = state.isLogin
@@ -227,9 +227,7 @@ class _LoginViewState extends State<_LoginView> {
 
   Widget _buildToggleButton(BuildContext context, LoginState state) {
     return TextButton(
-      onPressed: state.isLoading
-          ? null
-          : context.read<LoginCubit>().toggleMode,
+      onPressed: state.isLoading ? null : context.read<LoginCubit>().toggleMode,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
         child: Text(

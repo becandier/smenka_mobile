@@ -8,8 +8,7 @@ ChecklistTemplateSource _parseSource(String value) => switch (value) {
       _ => throw ArgumentError('Unknown checklist template source: $value'),
     };
 
-extension EffectiveChecklistTemplateDtoMapper
-    on EffectiveChecklistTemplateDto {
+extension EffectiveChecklistTemplateDtoMapper on EffectiveChecklistTemplateDto {
   EffectiveChecklistTemplate toDomain() => EffectiveChecklistTemplate(
         id: id,
         name: name,

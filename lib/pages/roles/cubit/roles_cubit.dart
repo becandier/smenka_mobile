@@ -33,7 +33,9 @@ class RolesCubit extends Cubit<RolesState> {
   }
 
   Future<bool> createRole(String name) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _roleRepository.createRole(_orgId, name: name);
     return result.fold(
       onSuccess: (_) {
@@ -42,17 +44,21 @@ class RolesCubit extends Cubit<RolesState> {
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
   }
 
   Future<bool> updateRole(String roleId, String name) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _roleRepository.updateRole(
       _orgId,
       roleId,
@@ -65,17 +71,21 @@ class RolesCubit extends Cubit<RolesState> {
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
   }
 
   Future<bool> deleteRole(String roleId) async {
-    emit(state.copyWith(actionStatus: FeatureStatus.loading, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+    );
     final result = await _roleRepository.deleteRole(_orgId, roleId);
     return result.fold(
       onSuccess: (_) {
@@ -84,16 +94,20 @@ class RolesCubit extends Cubit<RolesState> {
         return true;
       },
       onFailure: (error) {
-        emit(state.copyWith(
-          actionStatus: FeatureStatus.error,
-          actionError: error.message,
-        ),);
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+          ),
+        );
         return false;
       },
     );
   }
 
   void resetActionStatus() {
-    emit(state.copyWith(actionStatus: FeatureStatus.initial, actionError: null));
+    emit(
+      state.copyWith(actionStatus: FeatureStatus.initial, actionError: null),
+    );
   }
 }

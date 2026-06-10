@@ -97,8 +97,7 @@ class _InstanceRow extends StatelessWidget {
     final statusLabel = switch (item.status) {
       ChecklistInstanceStatus.pending => l10n.shiftChecklistStatusPending,
       ChecklistInstanceStatus.completed => l10n.shiftChecklistStatusCompleted,
-      ChecklistInstanceStatus.incomplete =>
-        l10n.shiftChecklistStatusIncomplete,
+      ChecklistInstanceStatus.incomplete => l10n.shiftChecklistStatusIncomplete,
     };
 
     return InkWell(
