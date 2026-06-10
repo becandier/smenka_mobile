@@ -3,6 +3,7 @@ export 'auth/_auth.dart';
 export 'checklist_fill/_checklist_fill.dart';
 export 'checklist_template_detail/_checklist_template_detail.dart';
 export 'checklist_templates/_checklist_templates.dart';
+export 'date_range_picker/_date_range_picker.dart';
 export 'debug/_debug.dart';
 export 'employee_picker/_employee_picker.dart';
 export 'home/_home.dart';

@@ -15,7 +15,15 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ShiftStatsState {
   SectionData<ShiftStats> get stats;
-  StatsPeriod get selectedPeriod;
+
+  /// Пресет окна; null — активен произвольный диапазон
+  /// ([customFrom]/[customTo]). Ровно один источник окна одновременно.
+  StatsPeriod? get selectedPeriod;
+
+  /// Границы произвольного окна (UTC); заданы только при
+  /// `selectedPeriod == null`, хотя бы одна из границ непуста.
+  DateTime? get customFrom;
+  DateTime? get customTo;
 
   /// Create a copy of ShiftStatsState
   /// with the given fields replaced by the non-null parameter values.
@@ -32,15 +40,20 @@ mixin _$ShiftStatsState {
             other is ShiftStatsState &&
             (identical(other.stats, stats) || other.stats == stats) &&
             (identical(other.selectedPeriod, selectedPeriod) ||
-                other.selectedPeriod == selectedPeriod));
+                other.selectedPeriod == selectedPeriod) &&
+            (identical(other.customFrom, customFrom) ||
+                other.customFrom == customFrom) &&
+            (identical(other.customTo, customTo) ||
+                other.customTo == customTo));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, stats, selectedPeriod);
+  int get hashCode =>
+      Object.hash(runtimeType, stats, selectedPeriod, customFrom, customTo);
 
   @override
   String toString() {
-    return 'ShiftStatsState(stats: $stats, selectedPeriod: $selectedPeriod)';
+    return 'ShiftStatsState(stats: $stats, selectedPeriod: $selectedPeriod, customFrom: $customFrom, customTo: $customTo)';
   }
 }
 
@@ -50,7 +63,11 @@ abstract mixin class $ShiftStatsStateCopyWith<$Res> {
           ShiftStatsState value, $Res Function(ShiftStatsState) _then) =
       _$ShiftStatsStateCopyWithImpl;
   @useResult
-  $Res call({SectionData<ShiftStats> stats, StatsPeriod selectedPeriod});
+  $Res call(
+      {SectionData<ShiftStats> stats,
+      StatsPeriod? selectedPeriod,
+      DateTime? customFrom,
+      DateTime? customTo});
 
   $SectionDataCopyWith<ShiftStats, $Res> get stats;
 }
@@ -69,17 +86,27 @@ class _$ShiftStatsStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? stats = null,
-    Object? selectedPeriod = null,
+    Object? selectedPeriod = freezed,
+    Object? customFrom = freezed,
+    Object? customTo = freezed,
   }) {
     return _then(_self.copyWith(
       stats: null == stats
           ? _self.stats
           : stats // ignore: cast_nullable_to_non_nullable
               as SectionData<ShiftStats>,
-      selectedPeriod: null == selectedPeriod
+      selectedPeriod: freezed == selectedPeriod
           ? _self.selectedPeriod
           : selectedPeriod // ignore: cast_nullable_to_non_nullable
-              as StatsPeriod,
+              as StatsPeriod?,
+      customFrom: freezed == customFrom
+          ? _self.customFrom
+          : customFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      customTo: freezed == customTo
+          ? _self.customTo
+          : customTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 
@@ -187,14 +214,16 @@ extension ShiftStatsStatePatterns on ShiftStatsState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SectionData<ShiftStats> stats, StatsPeriod selectedPeriod)?
+    TResult Function(SectionData<ShiftStats> stats, StatsPeriod? selectedPeriod,
+            DateTime? customFrom, DateTime? customTo)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ShiftStatsState() when $default != null:
-        return $default(_that.stats, _that.selectedPeriod);
+        return $default(_that.stats, _that.selectedPeriod, _that.customFrom,
+            _that.customTo);
       case _:
         return orElse();
     }
@@ -215,13 +244,15 @@ extension ShiftStatsStatePatterns on ShiftStatsState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SectionData<ShiftStats> stats, StatsPeriod selectedPeriod)
+    TResult Function(SectionData<ShiftStats> stats, StatsPeriod? selectedPeriod,
+            DateTime? customFrom, DateTime? customTo)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ShiftStatsState():
-        return $default(_that.stats, _that.selectedPeriod);
+        return $default(_that.stats, _that.selectedPeriod, _that.customFrom,
+            _that.customTo);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -242,13 +273,17 @@ extension ShiftStatsStatePatterns on ShiftStatsState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            SectionData<ShiftStats> stats, StatsPeriod selectedPeriod)?
+            SectionData<ShiftStats> stats,
+            StatsPeriod? selectedPeriod,
+            DateTime? customFrom,
+            DateTime? customTo)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ShiftStatsState() when $default != null:
-        return $default(_that.stats, _that.selectedPeriod);
+        return $default(_that.stats, _that.selectedPeriod, _that.customFrom,
+            _that.customTo);
       case _:
         return null;
     }
@@ -257,17 +292,30 @@ extension ShiftStatsStatePatterns on ShiftStatsState {
 
 /// @nodoc
 
-class _ShiftStatsState implements ShiftStatsState {
+class _ShiftStatsState extends ShiftStatsState {
   const _ShiftStatsState(
       {this.stats = const SectionData<ShiftStats>(),
-      this.selectedPeriod = StatsPeriod.day});
+      this.selectedPeriod = StatsPeriod.day,
+      this.customFrom,
+      this.customTo})
+      : super._();
 
   @override
   @JsonKey()
   final SectionData<ShiftStats> stats;
+
+  /// Пресет окна; null — активен произвольный диапазон
+  /// ([customFrom]/[customTo]). Ровно один источник окна одновременно.
   @override
   @JsonKey()
-  final StatsPeriod selectedPeriod;
+  final StatsPeriod? selectedPeriod;
+
+  /// Границы произвольного окна (UTC); заданы только при
+  /// `selectedPeriod == null`, хотя бы одна из границ непуста.
+  @override
+  final DateTime? customFrom;
+  @override
+  final DateTime? customTo;
 
   /// Create a copy of ShiftStatsState
   /// with the given fields replaced by the non-null parameter values.
@@ -284,15 +332,20 @@ class _ShiftStatsState implements ShiftStatsState {
             other is _ShiftStatsState &&
             (identical(other.stats, stats) || other.stats == stats) &&
             (identical(other.selectedPeriod, selectedPeriod) ||
-                other.selectedPeriod == selectedPeriod));
+                other.selectedPeriod == selectedPeriod) &&
+            (identical(other.customFrom, customFrom) ||
+                other.customFrom == customFrom) &&
+            (identical(other.customTo, customTo) ||
+                other.customTo == customTo));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, stats, selectedPeriod);
+  int get hashCode =>
+      Object.hash(runtimeType, stats, selectedPeriod, customFrom, customTo);
 
   @override
   String toString() {
-    return 'ShiftStatsState(stats: $stats, selectedPeriod: $selectedPeriod)';
+    return 'ShiftStatsState(stats: $stats, selectedPeriod: $selectedPeriod, customFrom: $customFrom, customTo: $customTo)';
   }
 }
 
@@ -304,7 +357,11 @@ abstract mixin class _$ShiftStatsStateCopyWith<$Res>
       __$ShiftStatsStateCopyWithImpl;
   @override
   @useResult
-  $Res call({SectionData<ShiftStats> stats, StatsPeriod selectedPeriod});
+  $Res call(
+      {SectionData<ShiftStats> stats,
+      StatsPeriod? selectedPeriod,
+      DateTime? customFrom,
+      DateTime? customTo});
 
   @override
   $SectionDataCopyWith<ShiftStats, $Res> get stats;
@@ -324,17 +381,27 @@ class __$ShiftStatsStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? stats = null,
-    Object? selectedPeriod = null,
+    Object? selectedPeriod = freezed,
+    Object? customFrom = freezed,
+    Object? customTo = freezed,
   }) {
     return _then(_ShiftStatsState(
       stats: null == stats
           ? _self.stats
           : stats // ignore: cast_nullable_to_non_nullable
               as SectionData<ShiftStats>,
-      selectedPeriod: null == selectedPeriod
+      selectedPeriod: freezed == selectedPeriod
           ? _self.selectedPeriod
           : selectedPeriod // ignore: cast_nullable_to_non_nullable
-              as StatsPeriod,
+              as StatsPeriod?,
+      customFrom: freezed == customFrom
+          ? _self.customFrom
+          : customFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      customTo: freezed == customTo
+          ? _self.customTo
+          : customTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 

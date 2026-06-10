@@ -14,10 +14,16 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$ShiftStats {
-  String get period;
   int get totalWorkedSeconds;
   int get shiftCount;
   int get averageShiftSeconds;
+
+  /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+  String? get period;
+
+  /// Фактически применённое окно статистики (UTC).
+  DateTime? get rangeFrom;
+  DateTime? get rangeTo;
 
   /// Create a copy of ShiftStats
   /// with the given fields replaced by the non-null parameter values.
@@ -31,22 +37,25 @@ mixin _$ShiftStats {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ShiftStats &&
-            (identical(other.period, period) || other.period == period) &&
             (identical(other.totalWorkedSeconds, totalWorkedSeconds) ||
                 other.totalWorkedSeconds == totalWorkedSeconds) &&
             (identical(other.shiftCount, shiftCount) ||
                 other.shiftCount == shiftCount) &&
             (identical(other.averageShiftSeconds, averageShiftSeconds) ||
-                other.averageShiftSeconds == averageShiftSeconds));
+                other.averageShiftSeconds == averageShiftSeconds) &&
+            (identical(other.period, period) || other.period == period) &&
+            (identical(other.rangeFrom, rangeFrom) ||
+                other.rangeFrom == rangeFrom) &&
+            (identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, period, totalWorkedSeconds, shiftCount, averageShiftSeconds);
+  int get hashCode => Object.hash(runtimeType, totalWorkedSeconds, shiftCount,
+      averageShiftSeconds, period, rangeFrom, rangeTo);
 
   @override
   String toString() {
-    return 'ShiftStats(period: $period, totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds)';
+    return 'ShiftStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
   }
 }
 
@@ -57,10 +66,12 @@ abstract mixin class $ShiftStatsCopyWith<$Res> {
       _$ShiftStatsCopyWithImpl;
   @useResult
   $Res call(
-      {String period,
-      int totalWorkedSeconds,
+      {int totalWorkedSeconds,
       int shiftCount,
-      int averageShiftSeconds});
+      int averageShiftSeconds,
+      String? period,
+      DateTime? rangeFrom,
+      DateTime? rangeTo});
 }
 
 /// @nodoc
@@ -75,16 +86,14 @@ class _$ShiftStatsCopyWithImpl<$Res> implements $ShiftStatsCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? period = null,
     Object? totalWorkedSeconds = null,
     Object? shiftCount = null,
     Object? averageShiftSeconds = null,
+    Object? period = freezed,
+    Object? rangeFrom = freezed,
+    Object? rangeTo = freezed,
   }) {
     return _then(_self.copyWith(
-      period: null == period
-          ? _self.period
-          : period // ignore: cast_nullable_to_non_nullable
-              as String,
       totalWorkedSeconds: null == totalWorkedSeconds
           ? _self.totalWorkedSeconds
           : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
@@ -97,6 +106,18 @@ class _$ShiftStatsCopyWithImpl<$Res> implements $ShiftStatsCopyWith<$Res> {
           ? _self.averageShiftSeconds
           : averageShiftSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      period: freezed == period
+          ? _self.period
+          : period // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rangeFrom: freezed == rangeFrom
+          ? _self.rangeFrom
+          : rangeFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      rangeTo: freezed == rangeTo
+          ? _self.rangeTo
+          : rangeTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -194,16 +215,26 @@ extension ShiftStatsPatterns on ShiftStats {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String period, int totalWorkedSeconds, int shiftCount,
-            int averageShiftSeconds)?
+    TResult Function(
+            int totalWorkedSeconds,
+            int shiftCount,
+            int averageShiftSeconds,
+            String? period,
+            DateTime? rangeFrom,
+            DateTime? rangeTo)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ShiftStats() when $default != null:
-        return $default(_that.period, _that.totalWorkedSeconds,
-            _that.shiftCount, _that.averageShiftSeconds);
+        return $default(
+            _that.totalWorkedSeconds,
+            _that.shiftCount,
+            _that.averageShiftSeconds,
+            _that.period,
+            _that.rangeFrom,
+            _that.rangeTo);
       case _:
         return orElse();
     }
@@ -224,15 +255,25 @@ extension ShiftStatsPatterns on ShiftStats {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String period, int totalWorkedSeconds, int shiftCount,
-            int averageShiftSeconds)
+    TResult Function(
+            int totalWorkedSeconds,
+            int shiftCount,
+            int averageShiftSeconds,
+            String? period,
+            DateTime? rangeFrom,
+            DateTime? rangeTo)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ShiftStats():
-        return $default(_that.period, _that.totalWorkedSeconds,
-            _that.shiftCount, _that.averageShiftSeconds);
+        return $default(
+            _that.totalWorkedSeconds,
+            _that.shiftCount,
+            _that.averageShiftSeconds,
+            _that.period,
+            _that.rangeFrom,
+            _that.rangeTo);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -252,15 +293,25 @@ extension ShiftStatsPatterns on ShiftStats {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String period, int totalWorkedSeconds, int shiftCount,
-            int averageShiftSeconds)?
+    TResult? Function(
+            int totalWorkedSeconds,
+            int shiftCount,
+            int averageShiftSeconds,
+            String? period,
+            DateTime? rangeFrom,
+            DateTime? rangeTo)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ShiftStats() when $default != null:
-        return $default(_that.period, _that.totalWorkedSeconds,
-            _that.shiftCount, _that.averageShiftSeconds);
+        return $default(
+            _that.totalWorkedSeconds,
+            _that.shiftCount,
+            _that.averageShiftSeconds,
+            _that.period,
+            _that.rangeFrom,
+            _that.rangeTo);
       case _:
         return null;
     }
@@ -271,19 +322,29 @@ extension ShiftStatsPatterns on ShiftStats {
 
 class _ShiftStats implements ShiftStats {
   const _ShiftStats(
-      {required this.period,
-      required this.totalWorkedSeconds,
+      {required this.totalWorkedSeconds,
       required this.shiftCount,
-      required this.averageShiftSeconds});
+      required this.averageShiftSeconds,
+      this.period,
+      this.rangeFrom,
+      this.rangeTo});
 
-  @override
-  final String period;
   @override
   final int totalWorkedSeconds;
   @override
   final int shiftCount;
   @override
   final int averageShiftSeconds;
+
+  /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+  @override
+  final String? period;
+
+  /// Фактически применённое окно статистики (UTC).
+  @override
+  final DateTime? rangeFrom;
+  @override
+  final DateTime? rangeTo;
 
   /// Create a copy of ShiftStats
   /// with the given fields replaced by the non-null parameter values.
@@ -298,22 +359,25 @@ class _ShiftStats implements ShiftStats {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ShiftStats &&
-            (identical(other.period, period) || other.period == period) &&
             (identical(other.totalWorkedSeconds, totalWorkedSeconds) ||
                 other.totalWorkedSeconds == totalWorkedSeconds) &&
             (identical(other.shiftCount, shiftCount) ||
                 other.shiftCount == shiftCount) &&
             (identical(other.averageShiftSeconds, averageShiftSeconds) ||
-                other.averageShiftSeconds == averageShiftSeconds));
+                other.averageShiftSeconds == averageShiftSeconds) &&
+            (identical(other.period, period) || other.period == period) &&
+            (identical(other.rangeFrom, rangeFrom) ||
+                other.rangeFrom == rangeFrom) &&
+            (identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, period, totalWorkedSeconds, shiftCount, averageShiftSeconds);
+  int get hashCode => Object.hash(runtimeType, totalWorkedSeconds, shiftCount,
+      averageShiftSeconds, period, rangeFrom, rangeTo);
 
   @override
   String toString() {
-    return 'ShiftStats(period: $period, totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds)';
+    return 'ShiftStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
   }
 }
 
@@ -326,10 +390,12 @@ abstract mixin class _$ShiftStatsCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String period,
-      int totalWorkedSeconds,
+      {int totalWorkedSeconds,
       int shiftCount,
-      int averageShiftSeconds});
+      int averageShiftSeconds,
+      String? period,
+      DateTime? rangeFrom,
+      DateTime? rangeTo});
 }
 
 /// @nodoc
@@ -344,16 +410,14 @@ class __$ShiftStatsCopyWithImpl<$Res> implements _$ShiftStatsCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? period = null,
     Object? totalWorkedSeconds = null,
     Object? shiftCount = null,
     Object? averageShiftSeconds = null,
+    Object? period = freezed,
+    Object? rangeFrom = freezed,
+    Object? rangeTo = freezed,
   }) {
     return _then(_ShiftStats(
-      period: null == period
-          ? _self.period
-          : period // ignore: cast_nullable_to_non_nullable
-              as String,
       totalWorkedSeconds: null == totalWorkedSeconds
           ? _self.totalWorkedSeconds
           : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
@@ -366,6 +430,18 @@ class __$ShiftStatsCopyWithImpl<$Res> implements _$ShiftStatsCopyWith<$Res> {
           ? _self.averageShiftSeconds
           : averageShiftSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      period: freezed == period
+          ? _self.period
+          : period // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rangeFrom: freezed == rangeFrom
+          ? _self.rangeFrom
+          : rangeFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      rangeTo: freezed == rangeTo
+          ? _self.rangeTo
+          : rangeTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }

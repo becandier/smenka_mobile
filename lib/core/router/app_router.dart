@@ -92,6 +92,11 @@ class AppRouter extends RootStackRouter {
                   initial: true,
                   page: ShiftHistoryRoute.page,
                 ),
+                CustomRoute<DateRangePickerResult?>(
+                  path: 'date-range',
+                  page: DateRangePickerRoute.page,
+                  customRouteBuilder: _modalBottomSheetBuilder,
+                ),
                 AutoRoute(
                   path: 'detail',
                   page: ShiftDetailRoute.page,
@@ -199,6 +204,11 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
       CustomRoute<EmployeePickerResult?>(
         path: '$basePath/employee-picker',
         page: EmployeePickerRoute.page,
+        customRouteBuilder: _modalBottomSheetBuilder,
+      ),
+      CustomRoute<DateRangePickerResult?>(
+        path: '$basePath/date-range',
+        page: DateRangePickerRoute.page,
         customRouteBuilder: _modalBottomSheetBuilder,
       ),
       AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),

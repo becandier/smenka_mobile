@@ -2,10 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/org_stats/cubit/org_stats_cubit.dart';
 import 'package:smenka_mobile/pages/org_stats/cubit/org_stats_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
@@ -38,6 +41,31 @@ class OrgStatsPage extends StatelessWidget {
 class _OrgStatsView extends StatelessWidget {
   const _OrgStatsView();
 
+  Future<void> _openDateRangePicker(BuildContext context) async {
+    final cubit = context.read<OrgStatsCubit>();
+    final result = await context.router.push<DateRangePickerResult?>(
+      DateRangePickerRoute(
+        initialFrom: cubit.state.customFrom?.toLocal(),
+        initialTo: cubit.state.customTo?.toLocal(),
+      ),
+    );
+    if (result != null) {
+      cubit.setCustomRange(result.fromUtc, result.toUtc);
+    }
+  }
+
+  /// Подпись фактически применённого окна из `range_from`/`range_to`.
+  String? _appliedRangeLabel(BuildContext context, OrgStats stats) {
+    final from = stats.rangeFrom;
+    final to = stats.rangeTo;
+    if (from == null || to == null) return null;
+    final format = DateFormat('dd.MM.yyyy');
+    return context.l10n.statsAppliedRange(
+      format.format(from.toLocal()),
+      format.format(to.toLocal()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -50,39 +78,66 @@ class _OrgStatsView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Period selector
+          // Источник окна: пресет ЛИБО произвольный диапазон
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-            child: BlocSelector<OrgStatsCubit, OrgStatsState, String>(
-              selector: (state) => state.period,
-              builder: (context, selectedPeriod) {
-                return SegmentedButton<String>(
-                  segments: [
-                    ButtonSegment(
-                      value: 'day',
-                      label: Text(l10n.statsPeriodDay),
+            child: BlocBuilder<OrgStatsCubit, OrgStatsState>(
+              buildWhen: (prev, curr) =>
+                  prev.period != curr.period ||
+                  prev.customFrom != curr.customFrom ||
+                  prev.customTo != curr.customTo,
+              builder: (context, state) {
+                final selectedPeriod = state.period;
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SegmentedButton<String>(
+                      segments: [
+                        ButtonSegment(
+                          value: 'day',
+                          label: Text(l10n.statsPeriodDay),
+                        ),
+                        ButtonSegment(
+                          value: 'week',
+                          label: Text(l10n.statsPeriodWeek),
+                        ),
+                        ButtonSegment(
+                          value: 'month',
+                          label: Text(l10n.statsPeriodMonth),
+                        ),
+                      ],
+                      selected: selectedPeriod == null
+                          ? const <String>{}
+                          : {selectedPeriod},
+                      emptySelectionAllowed: true,
+                      onSelectionChanged: (selection) {
+                        final period = selection.firstOrNull;
+                        if (period == null) return;
+                        context.read<OrgStatsCubit>().setPeriod(period);
+                      },
+                      showSelectedIcon: false,
+                      style: ButtonStyle(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        textStyle: WidgetStatePropertyAll(
+                          textTheme.labelMedium,
+                        ),
+                      ),
                     ),
-                    ButtonSegment(
-                      value: 'week',
-                      label: Text(l10n.statsPeriodWeek),
-                    ),
-                    ButtonSegment(
-                      value: 'month',
-                      label: Text(l10n.statsPeriodMonth),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: DateRangeFilterChip(
+                        from: state.customFrom,
+                        to: state.customTo,
+                        label: l10n.statsModeCustom,
+                        onTap: () => _openDateRangePicker(context),
+                        onClear: () =>
+                            context.read<OrgStatsCubit>().setPeriod('week'),
+                      ),
                     ),
                   ],
-                  selected: {selectedPeriod},
-                  onSelectionChanged: (selection) {
-                    context.read<OrgStatsCubit>().setPeriod(selection.first);
-                  },
-                  showSelectedIcon: false,
-                  style: ButtonStyle(
-                    visualDensity: VisualDensity.compact,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    textStyle: WidgetStatePropertyAll(
-                      textTheme.labelMedium,
-                    ),
-                  ),
                 );
               },
             ),
@@ -100,6 +155,22 @@ class _OrgStatsView extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.only(bottom: 32),
                     children: [
+                      if (_appliedRangeLabel(context, stats)
+                          case final rangeLabel?)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            bottom: 8,
+                          ),
+                          child: Text(
+                            rangeLabel,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: context.appColors.secondary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       _StatsCards(stats: stats),
                       if (stats.perEmployee.isNotEmpty) ...[
                         const SizedBox(height: 24),

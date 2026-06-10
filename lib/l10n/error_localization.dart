@@ -17,6 +17,10 @@ String localizedErrorMessage(
     'ORG_NOT_FOUND' => l10n.errorOrgNotFound,
     'FORBIDDEN' => l10n.errorForbiddenShift,
     'INVALID_STATUS' => l10n.errorInvalidStatusFilter,
+    'INVALID_PERIOD' => l10n.errorInvalidPeriod,
+    'INVALID_DATE_RANGE' => l10n.errorInvalidDateRange,
+    'MISSING_STATS_RANGE' => l10n.errorMissingStatsRange,
+    'AMBIGUOUS_STATS_RANGE' => l10n.errorAmbiguousStatsRange,
     _ => null,
   };
   return mapped ?? fallback ?? l10n.errorOccurred;

@@ -459,5 +459,44 @@
             "orgName": {"type": "String"}
         }
     },
-    "deepLinkJoinError": "Не удалось присоединиться по ссылке"
+    "deepLinkJoinError": "Не удалось присоединиться по ссылке",
+
+
+    "dateRangeFilterTitle": "Диапазон дат",
+    "dateRangeFrom": "С",
+    "dateRangeTo": "По",
+    "dateRangeApply": "Применить",
+    "dateRangeReset": "Сбросить",
+    "dateRangeChipBoth": "{from} – {to}",
+    "@dateRangeChipBoth": {
+        "placeholders": {
+            "from": {"type": "String"},
+            "to": {"type": "String"}
+        }
+    },
+    "dateRangeChipFromOnly": "с {from}",
+    "@dateRangeChipFromOnly": {
+        "placeholders": {
+            "from": {"type": "String"}
+        }
+    },
+    "dateRangeChipToOnly": "по {to}",
+    "@dateRangeChipToOnly": {
+        "placeholders": {
+            "to": {"type": "String"}
+        }
+    },
+    "statsModeCustom": "Период",
+    "statsAppliedRange": "за {from} – {to}",
+    "@statsAppliedRange": {
+        "placeholders": {
+            "from": {"type": "String"},
+            "to": {"type": "String"}
+        }
+    },
+    "shiftsEmptyForRange": "Нет смен за выбранный период",
+    "errorInvalidDateRange": "Дата начала позже даты окончания",
+    "errorMissingStatsRange": "Не указан период статистики",
+    "errorAmbiguousStatsRange": "Нельзя задать одновременно пресет и произвольный период",
+    "errorInvalidPeriod": "Некорректный период"
 }

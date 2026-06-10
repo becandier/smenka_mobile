@@ -10,6 +10,17 @@ enum StatsPeriod { day, week, month }
 abstract class ShiftStatsState with _$ShiftStatsState {
   const factory ShiftStatsState({
     @Default(SectionData<ShiftStats>()) SectionData<ShiftStats> stats,
-    @Default(StatsPeriod.day) StatsPeriod selectedPeriod,
+
+    /// Пресет окна; null — активен произвольный диапазон
+    /// ([customFrom]/[customTo]). Ровно один источник окна одновременно.
+    @Default(StatsPeriod.day) StatsPeriod? selectedPeriod,
+
+    /// Границы произвольного окна (UTC); заданы только при
+    /// `selectedPeriod == null`, хотя бы одна из границ непуста.
+    DateTime? customFrom,
+    DateTime? customTo,
   }) = _ShiftStatsState;
+  const ShiftStatsState._();
+
+  bool get isCustomRange => selectedPeriod == null;
 }

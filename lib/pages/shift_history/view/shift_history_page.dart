@@ -7,6 +7,7 @@ import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_cubit.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_state.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_stats_cubit.dart';
@@ -70,7 +71,9 @@ class _ShiftHistoryView extends StatelessWidget {
               onRefresh: () => context.read<ShiftHistoryCubit>().loadShifts(),
               emptyBuilder: () => AppEmptyState(
                 icon: Icons.history_outlined,
-                title: context.l10n.historyEmpty,
+                title: context.read<ShiftHistoryCubit>().state.hasDateFilter
+                    ? context.l10n.shiftsEmptyForRange
+                    : context.l10n.historyEmpty,
               ),
             ),
           ),

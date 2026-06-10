@@ -8,6 +8,17 @@ part 'org_stats_state.freezed.dart';
 abstract class OrgStatsState with _$OrgStatsState {
   const factory OrgStatsState({
     @Default(SectionData<OrgStats>()) SectionData<OrgStats> stats,
-    @Default('week') String period,
+
+    /// Пресет окна (`day|week|month`); null — активен произвольный
+    /// диапазон ([customFrom]/[customTo]). Ровно один источник окна.
+    @Default('week') String? period,
+
+    /// Границы произвольного окна (UTC); заданы только при `period == null`,
+    /// хотя бы одна из границ непуста.
+    DateTime? customFrom,
+    DateTime? customTo,
   }) = _OrgStatsState;
+  const OrgStatsState._();
+
+  bool get isCustomRange => period == null;
 }

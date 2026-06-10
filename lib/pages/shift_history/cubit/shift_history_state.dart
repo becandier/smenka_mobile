@@ -22,4 +22,6 @@ abstract class ShiftHistoryState with _$ShiftHistoryState {
 
   bool get hasFilters =>
       filterStatus != null || filterDateFrom != null || filterDateTo != null;
+
+  bool get hasDateFilter => filterDateFrom != null || filterDateTo != null;
 }
