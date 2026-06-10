@@ -11,7 +11,13 @@ abstract class ShiftRepository {
     int offset = 0,
   });
 
-  Future<Task<ShiftStats>> getStats({required String period});
+  /// Окно статистики: ровно один источник — либо [period],
+  /// либо [dateFrom]/[dateTo] (UTC).
+  Future<Task<ShiftStats>> getStats({
+    String? period,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  });
 
   Future<Task<Shift>> startShift({
     String? organizationId,

@@ -23,11 +23,17 @@ abstract class EmployeeStatsDto with _$EmployeeStatsDto {
 abstract class OrgStatsDto with _$OrgStatsDto {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OrgStatsDto({
-    required String period,
     required int totalWorkedSeconds,
     required int shiftCount,
     required int averageShiftSeconds,
     required List<EmployeeStatsDto> perEmployee,
+
+    /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+    String? period,
+
+    /// Фактически применённое окно статистики (UTC).
+    DateTime? rangeFrom,
+    DateTime? rangeTo,
   }) = _OrgStatsDto;
 
   factory OrgStatsDto.fromJson(Map<String, dynamic> json) =>

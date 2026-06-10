@@ -161,10 +161,26 @@ class OrganizationDataSource {
     return MemberDto.fromJson(response.data!);
   }
 
-  Future<OrgStatsDto> getStats(String orgId, {required String period}) async {
+  /// Статистика организации. Окно — либо [period], либо [dateFrom]/[dateTo]
+  /// (взаимоисключение обеспечивает вызывающая сторона, см. кубиты).
+  Future<OrgStatsDto> getStats(
+    String orgId, {
+    String? period,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  }) async {
+    final queryParameters = <String, dynamic>{};
+    if (period != null) queryParameters['period'] = period;
+    if (dateFrom != null) {
+      queryParameters['date_from'] = dateFrom.toIso8601String();
+    }
+    if (dateTo != null) {
+      queryParameters['date_to'] = dateTo.toIso8601String();
+    }
+
     final response = await _dio.get<Map<String, dynamic>>(
       '/organizations/$orgId/stats',
-      queryParameters: {'period': period},
+      queryParameters: queryParameters,
     );
     return OrgStatsDto.fromJson(response.data!);
   }

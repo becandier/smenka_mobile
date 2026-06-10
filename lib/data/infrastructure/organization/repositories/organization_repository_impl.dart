@@ -169,9 +169,19 @@ class OrganizationRepositoryImpl
   }
 
   @override
-  Future<Task<OrgStats>> getStats(String orgId, {required String period}) {
+  Future<Task<OrgStats>> getStats(
+    String orgId, {
+    String? period,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  }) {
     return execute(() async {
-      final dto = await _dataSource.getStats(orgId, period: period);
+      final dto = await _dataSource.getStats(
+        orgId,
+        period: period,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+      );
       return dto.toDomain();
     });
   }
