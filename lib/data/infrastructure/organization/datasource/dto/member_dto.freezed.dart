@@ -23,6 +23,10 @@ mixin _$MemberDto {
   DateTime get joinedAt;
   OrganizationRoleDto? get customRole;
 
+  /// Действующая ставка (additive, фича payroll); отсутствует
+  /// в ответах старого бэка.
+  CurrentRateDto? get currentRate;
+
   /// Create a copy of MemberDto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -50,17 +54,19 @@ mixin _$MemberDto {
             (identical(other.joinedAt, joinedAt) ||
                 other.joinedAt == joinedAt) &&
             (identical(other.customRole, customRole) ||
-                other.customRole == customRole));
+                other.customRole == customRole) &&
+            (identical(other.currentRate, currentRate) ||
+                other.currentRate == currentRate));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, joinedAt, customRole);
+      userName, userEmail, role, joinedAt, customRole, currentRate);
 
   @override
   String toString() {
-    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole)';
+    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, currentRate: $currentRate)';
   }
 }
 
@@ -77,9 +83,11 @@ abstract mixin class $MemberDtoCopyWith<$Res> {
       String userEmail,
       String role,
       DateTime joinedAt,
-      OrganizationRoleDto? customRole});
+      OrganizationRoleDto? customRole,
+      CurrentRateDto? currentRate});
 
   $OrganizationRoleDtoCopyWith<$Res>? get customRole;
+  $CurrentRateDtoCopyWith<$Res>? get currentRate;
 }
 
 /// @nodoc
@@ -102,6 +110,7 @@ class _$MemberDtoCopyWithImpl<$Res> implements $MemberDtoCopyWith<$Res> {
     Object? role = null,
     Object? joinedAt = null,
     Object? customRole = freezed,
+    Object? currentRate = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -136,6 +145,10 @@ class _$MemberDtoCopyWithImpl<$Res> implements $MemberDtoCopyWith<$Res> {
           ? _self.customRole
           : customRole // ignore: cast_nullable_to_non_nullable
               as OrganizationRoleDto?,
+      currentRate: freezed == currentRate
+          ? _self.currentRate
+          : currentRate // ignore: cast_nullable_to_non_nullable
+              as CurrentRateDto?,
     ));
   }
 
@@ -150,6 +163,20 @@ class _$MemberDtoCopyWithImpl<$Res> implements $MemberDtoCopyWith<$Res> {
 
     return $OrganizationRoleDtoCopyWith<$Res>(_self.customRole!, (value) {
       return _then(_self.copyWith(customRole: value));
+    });
+  }
+
+  /// Create a copy of MemberDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CurrentRateDtoCopyWith<$Res>? get currentRate {
+    if (_self.currentRate == null) {
+      return null;
+    }
+
+    return $CurrentRateDtoCopyWith<$Res>(_self.currentRate!, (value) {
+      return _then(_self.copyWith(currentRate: value));
     });
   }
 }
@@ -255,7 +282,8 @@ extension MemberDtoPatterns on MemberDto {
             String userEmail,
             String role,
             DateTime joinedAt,
-            OrganizationRoleDto? customRole)?
+            OrganizationRoleDto? customRole,
+            CurrentRateDto? currentRate)?
         $default, {
     required TResult orElse(),
   }) {
@@ -270,7 +298,8 @@ extension MemberDtoPatterns on MemberDto {
             _that.userEmail,
             _that.role,
             _that.joinedAt,
-            _that.customRole);
+            _that.customRole,
+            _that.currentRate);
       case _:
         return orElse();
     }
@@ -299,7 +328,8 @@ extension MemberDtoPatterns on MemberDto {
             String userEmail,
             String role,
             DateTime joinedAt,
-            OrganizationRoleDto? customRole)
+            OrganizationRoleDto? customRole,
+            CurrentRateDto? currentRate)
         $default,
   ) {
     final _that = this;
@@ -313,7 +343,8 @@ extension MemberDtoPatterns on MemberDto {
             _that.userEmail,
             _that.role,
             _that.joinedAt,
-            _that.customRole);
+            _that.customRole,
+            _that.currentRate);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -341,7 +372,8 @@ extension MemberDtoPatterns on MemberDto {
             String userEmail,
             String role,
             DateTime joinedAt,
-            OrganizationRoleDto? customRole)?
+            OrganizationRoleDto? customRole,
+            CurrentRateDto? currentRate)?
         $default,
   ) {
     final _that = this;
@@ -355,7 +387,8 @@ extension MemberDtoPatterns on MemberDto {
             _that.userEmail,
             _that.role,
             _that.joinedAt,
-            _that.customRole);
+            _that.customRole,
+            _that.currentRate);
       case _:
         return null;
     }
@@ -374,7 +407,8 @@ class _MemberDto implements MemberDto {
       required this.userEmail,
       required this.role,
       required this.joinedAt,
-      this.customRole});
+      this.customRole,
+      this.currentRate});
   factory _MemberDto.fromJson(Map<String, dynamic> json) =>
       _$MemberDtoFromJson(json);
 
@@ -394,6 +428,11 @@ class _MemberDto implements MemberDto {
   final DateTime joinedAt;
   @override
   final OrganizationRoleDto? customRole;
+
+  /// Действующая ставка (additive, фича payroll); отсутствует
+  /// в ответах старого бэка.
+  @override
+  final CurrentRateDto? currentRate;
 
   /// Create a copy of MemberDto
   /// with the given fields replaced by the non-null parameter values.
@@ -427,17 +466,19 @@ class _MemberDto implements MemberDto {
             (identical(other.joinedAt, joinedAt) ||
                 other.joinedAt == joinedAt) &&
             (identical(other.customRole, customRole) ||
-                other.customRole == customRole));
+                other.customRole == customRole) &&
+            (identical(other.currentRate, currentRate) ||
+                other.currentRate == currentRate));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, organizationId, userId,
-      userName, userEmail, role, joinedAt, customRole);
+      userName, userEmail, role, joinedAt, customRole, currentRate);
 
   @override
   String toString() {
-    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole)';
+    return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, currentRate: $currentRate)';
   }
 }
 
@@ -457,10 +498,13 @@ abstract mixin class _$MemberDtoCopyWith<$Res>
       String userEmail,
       String role,
       DateTime joinedAt,
-      OrganizationRoleDto? customRole});
+      OrganizationRoleDto? customRole,
+      CurrentRateDto? currentRate});
 
   @override
   $OrganizationRoleDtoCopyWith<$Res>? get customRole;
+  @override
+  $CurrentRateDtoCopyWith<$Res>? get currentRate;
 }
 
 /// @nodoc
@@ -483,6 +527,7 @@ class __$MemberDtoCopyWithImpl<$Res> implements _$MemberDtoCopyWith<$Res> {
     Object? role = null,
     Object? joinedAt = null,
     Object? customRole = freezed,
+    Object? currentRate = freezed,
   }) {
     return _then(_MemberDto(
       id: null == id
@@ -517,6 +562,10 @@ class __$MemberDtoCopyWithImpl<$Res> implements _$MemberDtoCopyWith<$Res> {
           ? _self.customRole
           : customRole // ignore: cast_nullable_to_non_nullable
               as OrganizationRoleDto?,
+      currentRate: freezed == currentRate
+          ? _self.currentRate
+          : currentRate // ignore: cast_nullable_to_non_nullable
+              as CurrentRateDto?,
     ));
   }
 
@@ -531,6 +580,20 @@ class __$MemberDtoCopyWithImpl<$Res> implements _$MemberDtoCopyWith<$Res> {
 
     return $OrganizationRoleDtoCopyWith<$Res>(_self.customRole!, (value) {
       return _then(_self.copyWith(customRole: value));
+    });
+  }
+
+  /// Create a copy of MemberDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CurrentRateDtoCopyWith<$Res>? get currentRate {
+    if (_self.currentRate == null) {
+      return null;
+    }
+
+    return $CurrentRateDtoCopyWith<$Res>(_self.currentRate!, (value) {
+      return _then(_self.copyWith(currentRate: value));
     });
   }
 }

@@ -714,7 +714,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorOrgNotFound => 'Организация не найдена';
 
   @override
-  String get errorForbiddenShift => 'Нет доступа к этой смене';
+  String get errorForbidden => 'Недостаточно прав';
 
   @override
   String get errorInvalidStatusFilter => 'Неверный статус-фильтр';
@@ -1123,7 +1123,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get statsModeCustom => 'Период';
+  String get statsModeCustom => 'Произвольный период';
 
   @override
   String statsAppliedRange(String from, String to) {
@@ -1145,4 +1145,113 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorInvalidPeriod => 'Некорректный период';
+
+  @override
+  String get payrollMyEarningsTitle => 'Мой заработок';
+
+  @override
+  String get payrollReportTitle => 'Зарплата';
+
+  @override
+  String get payrollRateSectionTitle => 'Ставка';
+
+  @override
+  String get payrollCurrentRateTitle => 'Текущая ставка';
+
+  @override
+  String get payrollAccrued => 'Начислено';
+
+  @override
+  String get payrollToPay => 'К выплате';
+
+  @override
+  String get payrollWorked => 'Отработано';
+
+  @override
+  String get payrollShiftsCount => 'Смен';
+
+  @override
+  String get payrollRateHourly => 'за час';
+
+  @override
+  String get payrollRatePerShift => 'за смену';
+
+  @override
+  String payrollRateEffectiveFrom(String date) {
+    return 'Действует с $date';
+  }
+
+  @override
+  String get payrollRateCurrent => 'Действующая';
+
+  @override
+  String get payrollRateNotSet => 'Ставка не задана';
+
+  @override
+  String get myEarningsNoRate => 'Ставка ещё не задана';
+
+  @override
+  String get myEarningsMissingRateHint =>
+      'Некоторые смены не оплачены — для них не была задана ставка. Обратитесь к администратору.';
+
+  @override
+  String get payrollAddRate => 'Добавить ставку';
+
+  @override
+  String get payrollEditRate => 'Исправить запись';
+
+  @override
+  String get payrollDeleteRate => 'Удалить';
+
+  @override
+  String get payrollDeleteRateConfirm =>
+      'Удалить запись о ставке? Действующая ставка для затронутых периодов может измениться.';
+
+  @override
+  String get payrollRateNoteHint => 'Комментарий, напр. «повышение»';
+
+  @override
+  String get payrollEditRateHint =>
+      'Это исправление ошибки в истории. Для новой ставки используйте «Добавить ставку».';
+
+  @override
+  String get payrollRateAmountLabel => 'Ставка, ₽';
+
+  @override
+  String get payrollRateDateLabel => 'Действует с';
+
+  @override
+  String get payrollMissingRateBadge => 'Есть смены без ставки';
+
+  @override
+  String payrollUnpaidHint(num count, String hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count смены',
+      many: '$count смен',
+      few: '$count смены',
+      one: '$count смена',
+    );
+    return '$_temp0 / $hours не оплачены: нет ставки на дату смены';
+  }
+
+  @override
+  String get payrollEmptyNoShifts => 'Нет завершённых смен за период';
+
+  @override
+  String get payrollRatesEmpty => 'Ставок пока нет';
+
+  @override
+  String get errorRateNotFound => 'Запись о ставке не найдена';
+
+  @override
+  String get errorRateEffectiveFromTaken =>
+      'На эту дату у сотрудника уже есть ставка. Выберите другую дату или исправьте существующую.';
+
+  @override
+  String get errorMemberNotFound => 'Сотрудник не найден';
+
+  @override
+  String get errorValidation => 'Проверьте введённые данные';
 }

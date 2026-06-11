@@ -86,7 +86,7 @@ class _StatsSection extends StatelessWidget {
                           onTap: () => _openDateRangePicker(context),
                           onClear: () => context
                               .read<ShiftStatsCubit>()
-                              .changePeriod(StatsPeriod.day),
+                              .setCustomRange(null, null),
                         ),
                       ),
                     ],
@@ -130,7 +130,11 @@ class _StatsSection extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (_appliedRangeLabel(context, stats)
+                    if (appliedRangeLabel(
+                      context,
+                      stats.rangeFrom,
+                      stats.rangeTo,
+                    )
                         case final rangeLabel?) ...[
                       const SizedBox(height: 12),
                       Text(
@@ -148,18 +152,6 @@ class _StatsSection extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  /// Подпись фактически применённого окна из `range_from`/`range_to`.
-  String? _appliedRangeLabel(BuildContext context, ShiftStats stats) {
-    final from = stats.rangeFrom;
-    final to = stats.rangeTo;
-    if (from == null || to == null) return null;
-    final format = DateFormat('dd.MM.yyyy');
-    return context.l10n.statsAppliedRange(
-      format.format(from.toLocal()),
-      format.format(to.toLocal()),
     );
   }
 

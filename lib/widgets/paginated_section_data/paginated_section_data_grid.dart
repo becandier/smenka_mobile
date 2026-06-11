@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/paginated_section_data.dart';
+import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/widgets/paginated_section_data/paginated_scroll_mixin.dart';
 import 'package:smenka_mobile/widgets/section_data/_section_data.dart';
@@ -84,7 +85,11 @@ class _PaginatedSectionDataGridState<C extends StateStreamable<S>, S, T>
         // Error
         if (sectionData.hasError && sectionData.isEmpty) {
           return SectionError(
-            error: sectionData.error ?? '',
+            error: localizedErrorMessage(
+              context,
+              code: sectionData.errorCode,
+              fallback: sectionData.error,
+            ),
             onRetry: widget.onRefresh,
           );
         }

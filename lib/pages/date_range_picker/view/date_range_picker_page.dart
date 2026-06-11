@@ -101,12 +101,12 @@ class _DateRangePickerPageState extends State<DateRangePickerPage> {
   void _onDateChanged(DateTime date) {
     final day = DateTime(date.year, date.month, date.day);
     setState(() {
+      // Активную границу НЕ переключаем автоматически: смена границы
+      // пересоздаёт календарь, и пользователь терял бы открытый месяц
+      // после каждого выбора даты.
       switch (_activeBound) {
         case _ActiveBound.from:
           _from = day;
-          // После выбора «С» сразу переключаемся на «По» — типичный
-          // сценарий заполнения диапазона слева направо.
-          _activeBound = _ActiveBound.to;
         case _ActiveBound.to:
           _to = day;
       }
@@ -162,9 +162,11 @@ class _DateRangePickerPageState extends State<DateRangePickerPage> {
             ],
           ),
           CalendarDatePicker(
-            // Пересоздаём календарь при смене активной границы/значения,
-            // чтобы он показывал месяц и выделение актуальной даты.
-            key: ValueKey('$_activeBound-$calendarInitial'),
+            // Пересоздаём календарь только при смене активной границы
+            // (или её очистке) — чтобы показать выделение её даты.
+            // Выбор даты внутри календаря виджет отражает сам, без
+            // пересоздания: открытый месяц не теряется.
+            key: ValueKey('$_activeBound-${calendarInitial == null}'),
             initialDate: calendarInitial,
             firstDate: firstDate,
             lastDate: _today,

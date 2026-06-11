@@ -680,6 +680,57 @@ class OrgMembersRouteArgs {
 }
 
 /// generated route for
+/// [MyEarningsPage]
+class MyEarningsRoute extends PageRouteInfo<MyEarningsRouteArgs> {
+  MyEarningsRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MyEarningsRoute.name,
+          args: MyEarningsRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'MyEarningsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<MyEarningsRouteArgs>(
+        orElse: () => MyEarningsRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return MyEarningsPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class MyEarningsRouteArgs {
+  const MyEarningsRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'MyEarningsRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MyEarningsRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [OrgSettingsPage]
 class OrgSettingsRoute extends PageRouteInfo<OrgSettingsRouteArgs> {
   OrgSettingsRoute({
@@ -988,6 +1039,54 @@ class OrganizationsTab extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PayrollPage]
+class PayrollRoute extends PageRouteInfo<PayrollRouteArgs> {
+  PayrollRoute({required String orgId, Key? key, List<PageRouteInfo>? children})
+      : super(
+          PayrollRoute.name,
+          args: PayrollRouteArgs(orgId: orgId, key: key),
+          rawPathParams: {'orgId': orgId},
+          initialChildren: children,
+        );
+
+  static const String name = 'PayrollRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<PayrollRouteArgs>(
+        orElse: () => PayrollRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return PayrollPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class PayrollRouteArgs {
+  const PayrollRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'PayrollRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PayrollRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [ProfilePage]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})
@@ -1017,6 +1116,78 @@ class ProfileTab extends PageRouteInfo<void> {
       return const ProfileTabPage();
     },
   );
+}
+
+/// generated route for
+/// [RateFormPage]
+class RateFormRoute extends PageRouteInfo<RateFormRouteArgs> {
+  RateFormRoute({
+    required String orgId,
+    required String memberId,
+    Rate? initialRate,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          RateFormRoute.name,
+          args: RateFormRouteArgs(
+            orgId: orgId,
+            memberId: memberId,
+            initialRate: initialRate,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'RateFormRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<RateFormRouteArgs>();
+      return RateFormPage(
+        orgId: args.orgId,
+        memberId: args.memberId,
+        initialRate: args.initialRate,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class RateFormRouteArgs {
+  const RateFormRouteArgs({
+    required this.orgId,
+    required this.memberId,
+    this.initialRate,
+    this.key,
+  });
+
+  final String orgId;
+
+  final String memberId;
+
+  final Rate? initialRate;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'RateFormRouteArgs{orgId: $orgId, memberId: $memberId, initialRate: $initialRate, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RateFormRouteArgs) return false;
+    return orgId == other.orgId &&
+        memberId == other.memberId &&
+        initialRate == other.initialRate &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      orgId.hashCode ^ memberId.hashCode ^ initialRate.hashCode ^ key.hashCode;
 }
 
 /// generated route for

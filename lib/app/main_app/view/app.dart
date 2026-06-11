@@ -23,6 +23,7 @@ import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/location/_location.dart';
 import 'package:smenka_mobile/data/domain/organization/_organization.dart';
 import 'package:smenka_mobile/data/domain/organization_role/_organization_role.dart';
+import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
 import 'package:smenka_mobile/data/domain/user/_user.dart';
 import 'package:smenka_mobile/l10n/app_localizations.dart';
@@ -78,6 +79,7 @@ class _AppView extends StatelessWidget {
               checklistRepository: state.checklistRepository,
               userRepository: state.userRepository,
               locationRepository: state.locationRepository,
+              payrollRepository: state.payrollRepository,
               deepLinkService: state.deepLinkService,
               pendingInviteStorage: state.pendingInviteStorage,
               shiftContextStorage: state.shiftContextStorage,

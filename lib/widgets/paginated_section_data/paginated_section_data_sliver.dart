@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/paginated_section_data.dart';
+import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/widgets/section_data/_section_data.dart';
 
@@ -81,7 +82,11 @@ class _PaginatedSliverListState<C extends StateStreamable<S>, S, T>
           if (sectionData.hasError && sectionData.isEmpty) {
             return SliverToBoxAdapter(
               child: SectionError(
-                error: sectionData.error ?? '',
+                error: localizedErrorMessage(
+                  context,
+                  code: sectionData.errorCode,
+                  fallback: sectionData.error,
+                ),
                 onRetry: widget.onRetry ?? () {},
               ),
             );
@@ -200,7 +205,11 @@ class _PaginatedSliverGridState<C extends StateStreamable<S>, S, T>
           if (sectionData.hasError && sectionData.isEmpty) {
             return SliverToBoxAdapter(
               child: SectionError(
-                error: sectionData.error ?? '',
+                error: localizedErrorMessage(
+                  context,
+                  code: sectionData.errorCode,
+                  fallback: sectionData.error,
+                ),
                 onRetry: widget.onRetry ?? () {},
               ),
             );

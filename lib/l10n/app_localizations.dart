@@ -1414,11 +1414,11 @@ abstract class AppLocalizations {
   /// **'Организация не найдена'**
   String get errorOrgNotFound;
 
-  /// No description provided for @errorForbiddenShift.
+  /// No description provided for @errorForbidden.
   ///
   /// In ru, this message translates to:
-  /// **'Нет доступа к этой смене'**
-  String get errorForbiddenShift;
+  /// **'Недостаточно прав'**
+  String get errorForbidden;
 
   /// No description provided for @errorInvalidStatusFilter.
   ///
@@ -2167,7 +2167,7 @@ abstract class AppLocalizations {
   /// No description provided for @statsModeCustom.
   ///
   /// In ru, this message translates to:
-  /// **'Период'**
+  /// **'Произвольный период'**
   String get statsModeCustom;
 
   /// No description provided for @statsAppliedRange.
@@ -2205,6 +2205,192 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Некорректный период'**
   String get errorInvalidPeriod;
+
+  /// No description provided for @payrollMyEarningsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Мой заработок'**
+  String get payrollMyEarningsTitle;
+
+  /// No description provided for @payrollReportTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Зарплата'**
+  String get payrollReportTitle;
+
+  /// No description provided for @payrollRateSectionTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ставка'**
+  String get payrollRateSectionTitle;
+
+  /// No description provided for @payrollCurrentRateTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущая ставка'**
+  String get payrollCurrentRateTitle;
+
+  /// No description provided for @payrollAccrued.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начислено'**
+  String get payrollAccrued;
+
+  /// No description provided for @payrollToPay.
+  ///
+  /// In ru, this message translates to:
+  /// **'К выплате'**
+  String get payrollToPay;
+
+  /// No description provided for @payrollWorked.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отработано'**
+  String get payrollWorked;
+
+  /// No description provided for @payrollShiftsCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смен'**
+  String get payrollShiftsCount;
+
+  /// No description provided for @payrollRateHourly.
+  ///
+  /// In ru, this message translates to:
+  /// **'за час'**
+  String get payrollRateHourly;
+
+  /// No description provided for @payrollRatePerShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'за смену'**
+  String get payrollRatePerShift;
+
+  /// No description provided for @payrollRateEffectiveFrom.
+  ///
+  /// In ru, this message translates to:
+  /// **'Действует с {date}'**
+  String payrollRateEffectiveFrom(String date);
+
+  /// No description provided for @payrollRateCurrent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Действующая'**
+  String get payrollRateCurrent;
+
+  /// No description provided for @payrollRateNotSet.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ставка не задана'**
+  String get payrollRateNotSet;
+
+  /// No description provided for @myEarningsNoRate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ставка ещё не задана'**
+  String get myEarningsNoRate;
+
+  /// No description provided for @myEarningsMissingRateHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Некоторые смены не оплачены — для них не была задана ставка. Обратитесь к администратору.'**
+  String get myEarningsMissingRateHint;
+
+  /// No description provided for @payrollAddRate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить ставку'**
+  String get payrollAddRate;
+
+  /// No description provided for @payrollEditRate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Исправить запись'**
+  String get payrollEditRate;
+
+  /// No description provided for @payrollDeleteRate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get payrollDeleteRate;
+
+  /// No description provided for @payrollDeleteRateConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить запись о ставке? Действующая ставка для затронутых периодов может измениться.'**
+  String get payrollDeleteRateConfirm;
+
+  /// No description provided for @payrollRateNoteHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Комментарий, напр. «повышение»'**
+  String get payrollRateNoteHint;
+
+  /// No description provided for @payrollEditRateHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Это исправление ошибки в истории. Для новой ставки используйте «Добавить ставку».'**
+  String get payrollEditRateHint;
+
+  /// No description provided for @payrollRateAmountLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ставка, ₽'**
+  String get payrollRateAmountLabel;
+
+  /// No description provided for @payrollRateDateLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Действует с'**
+  String get payrollRateDateLabel;
+
+  /// No description provided for @payrollMissingRateBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Есть смены без ставки'**
+  String get payrollMissingRateBadge;
+
+  /// No description provided for @payrollUnpaidHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} / {hours} не оплачены: нет ставки на дату смены'**
+  String payrollUnpaidHint(num count, String hours);
+
+  /// No description provided for @payrollEmptyNoShifts.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет завершённых смен за период'**
+  String get payrollEmptyNoShifts;
+
+  /// No description provided for @payrollRatesEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ставок пока нет'**
+  String get payrollRatesEmpty;
+
+  /// No description provided for @errorRateNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Запись о ставке не найдена'**
+  String get errorRateNotFound;
+
+  /// No description provided for @errorRateEffectiveFromTaken.
+  ///
+  /// In ru, this message translates to:
+  /// **'На эту дату у сотрудника уже есть ставка. Выберите другую дату или исправьте существующую.'**
+  String get errorRateEffectiveFromTaken;
+
+  /// No description provided for @errorMemberNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сотрудник не найден'**
+  String get errorMemberNotFound;
+
+  /// No description provided for @errorValidation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверьте введённые данные'**
+  String get errorValidation;
 }
 
 class _AppLocalizationsDelegate

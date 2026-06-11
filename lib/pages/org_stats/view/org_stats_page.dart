@@ -2,11 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
+import 'package:smenka_mobile/l10n/applied_range_label.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/org_stats/cubit/org_stats_cubit.dart';
@@ -52,18 +52,6 @@ class _OrgStatsView extends StatelessWidget {
     if (result != null) {
       cubit.setCustomRange(result.fromUtc, result.toUtc);
     }
-  }
-
-  /// Подпись фактически применённого окна из `range_from`/`range_to`.
-  String? _appliedRangeLabel(BuildContext context, OrgStats stats) {
-    final from = stats.rangeFrom;
-    final to = stats.rangeTo;
-    if (from == null || to == null) return null;
-    final format = DateFormat('dd.MM.yyyy');
-    return context.l10n.statsAppliedRange(
-      format.format(from.toLocal()),
-      format.format(to.toLocal()),
-    );
   }
 
   @override
@@ -133,8 +121,9 @@ class _OrgStatsView extends StatelessWidget {
                         to: state.customTo,
                         label: l10n.statsModeCustom,
                         onTap: () => _openDateRangePicker(context),
-                        onClear: () =>
-                            context.read<OrgStatsCubit>().setPeriod('week'),
+                        onClear: () => context
+                            .read<OrgStatsCubit>()
+                            .setCustomRange(null, null),
                       ),
                     ),
                   ],
@@ -155,7 +144,11 @@ class _OrgStatsView extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.only(bottom: 32),
                     children: [
-                      if (_appliedRangeLabel(context, stats)
+                      if (appliedRangeLabel(
+                        context,
+                        stats.rangeFrom,
+                        stats.rangeTo,
+                      )
                           case final rangeLabel?)
                         Padding(
                           padding: const EdgeInsets.only(

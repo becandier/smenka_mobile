@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-04-07 (фаза 8)
+Последнее обновление: 2026-06-11 (фичи date_filters, payroll, shift_quick_start)
 
 ---
 
@@ -126,14 +126,17 @@ lib/
 | `RegisterResult` | `domain/auth/models/register_result.dart` | userId + message |
 | `User` | `domain/user/models/user.dart` | id, email, name, phone, isVerified, role (UserRole: superAdmin/user), createdAt |
 | `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt |
-| `Member` | `domain/organization/models/member.dart` | id, orgId, userId, userName, userEmail, role (enum), joinedAt |
+| `Member` | `domain/organization/models/member.dart` | id, orgId, userId, userName, userEmail, role (enum), joinedAt, currentRate (nullable, payroll) |
 | `OrgSettings` | `domain/organization/models/org_settings.dart` | geoCheck, autoFinish, pauseLimits |
-| `OrgStats` | `domain/organization/models/org_stats.dart` | period, totals + perEmployee list |
+| `OrgStats` | `domain/organization/models/org_stats.dart` | period (nullable), totals + perEmployee list, rangeFrom/rangeTo |
 | `JoinResult` | `domain/organization/models/join_result.dart` | orgId, orgName, role |
 | `WorkLocation` | `domain/location/models/work_location.dart` | id, orgId, name, lat, lng, radius |
 | `Shift` | `domain/shift/models/shift.dart` | id, userId, orgId, times, status (enum), pauses, workedSeconds |
 | `Pause` | `domain/shift/models/shift.dart` | id, shiftId, startedAt, finishedAt |
-| `ShiftStats` | `domain/shift/models/shift_stats.dart` | period, totalWorked, count, average |
+| `ShiftStats` | `domain/shift/models/shift_stats.dart` | period (nullable), totalWorked, count, average, rangeFrom/rangeTo |
+| `Rate` / `CurrentRate` | `domain/payroll/models/rate.dart` | запись истории ставок / действующая; `RateType` (hourly/perShift); деньги в копейках (int) |
+| `Payroll` / `PayrollItem` / `PayrollTotals` / `PayrollPeriod` | `domain/payroll/models/payroll.dart` | отчёт «кому сколько заплатить» за период |
+| `MyEarnings` | `domain/payroll/models/my_earnings.dart` | личный заработок за период + currentRate, hasMissingRate |
 | `DefaultPaginator<T>` | `core/models/default_paginator.dart` | hasMore, data, total (универсальная пагинация) |
 
 ---
@@ -146,7 +149,8 @@ lib/
 | `UserDataSource` | `/api/v1/users` | getMe, updateMe |
 | `OrganizationDataSource` | `/api/v1/organizations` | create, getAll, getById, update, delete, rotateInvite, join, getMembers, removeMember, getSettings, updateSettings, getShifts, getStats |
 | `LocationDataSource` | `/api/v1/organizations/{orgId}/locations` | create, getAll, update, delete |
-| `ShiftDataSource` | `/api/v1/shifts` | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
+| `ShiftDataSource` | `/api/v1/shifts` | getShifts (date_from/date_to), getStats (period XOR date_from/date_to), startShift, pauseShift, resumeShift, finishShift |
+| `PayrollDataSource` | `/api/v1/organizations/{orgId}` | getRates, createRate, updateRate, deleteRate, getPayroll, getMyEarnings |
 
 ---
 
@@ -159,6 +163,7 @@ lib/
 | `OrganizationRepository` | OrganizationDataSource | create, getAll, getById, update, delete, rotateInvite, join, getMembers, removeMember, getSettings, updateSettings, getShifts, getStats |
 | `LocationRepository` | LocationDataSource | create, getAll, update, delete |
 | `ShiftRepository` | ShiftDataSource | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
+| `PayrollRepository` | PayrollDataSource | getRates, createRate, updateRate, deleteRate, getPayroll, getMyEarnings |
 
 ---
 
@@ -172,9 +177,9 @@ lib/
 | `AuthCubit` | Готов | Глобальное состояние авторизации (shared) |
 | `LoginCubit` | Готов | Login/Register форма с валидацией |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
-| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер |
-| `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, дата) |
-| `ShiftStatsCubit` | Готов | Статистика смен (день/неделя/месяц) |
+| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; предвыбор и запоминание контекста (`ShiftContextStorage`) |
+| `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, диапазон дат через общий пикер) |
+| `ShiftStatsCubit` | Готов | Статистика смен: пресет день/неделя/месяц XOR произвольный диапазон; request-token от устаревших ответов |
 | `ShiftDetailCubit` | Готов | Детали одной смены |
 | `OrganizationsCubit` | Готов | Список организаций, создание, присоединение, текущий юзер |
 | `OrganizationDetailCubit` | Готов | Детали орг: участники, инвайт, покинуть, удалить |
@@ -186,7 +191,11 @@ lib/
 | `OrgShiftsCubit` | Готов | Смены сотрудников (пагинация + фильтры: статус, дата, **сотрудник `?user_id`**) |
 | `OrgShiftDetailCubit` | Готов | Деталь чужой орг-смены (owner/admin, read-only); ошибки по `error.code` |
 | `EmployeePickerCubit` | Готов | Список участников для модалки фильтра по сотруднику |
-| `OrgStatsCubit` | Готов | Статистика организации (период + chart) |
+| `OrgStatsCubit` | Готов | Статистика организации (пресет XOR произвольный диапазон + chart) |
+| `MemberRatesCubit` | Готов | История ставок участника + удаление; действующая ставка (getter); ленивая загрузка из секции |
+| `RateFormCubit` | Готов | Сабмит формы ставки (POST/PATCH), подсветка RATE_EFFECTIVE_FROM_TAKEN |
+| `MyEarningsCubit` | Готов | «Мой заработок»: окно периода (PeriodPreset XOR произвольный), сводка + текущая ставка |
+| `PayrollCubit` | Готов | Отчёт «Зарплата»: окно периода, totals + items, карта участников для перехода на деталь |
 | `SuperAdminCubit` | Готов | Все организации системы (super_admin) |
 
 ---
@@ -214,6 +223,10 @@ lib/
 | `AddEditLocationRoute` | `/organizations/detail/:orgId/locations/add` | Добавить/ред. точку |
 | `OrgShiftsRoute` | `/organizations/detail/:orgId/shifts` | Смены сотрудников |
 | `OrgStatsRoute` | `/organizations/detail/:orgId/stats` | Статистика организации |
+| `DateRangePickerRoute` | `history/date-range` + `<org-detail>/date-range` | Общий date-range picker (CustomRoute-модалка, `DateRangePickerResult?`) |
+| `MyEarningsRoute` | `<org-detail>/my-earnings` | «Мой заработок» (org_member) |
+| `PayrollRoute` | `<org-detail>/payroll` | «Зарплата» — отчёт по сотрудникам (admin/owner) |
+| `RateFormRoute` | `<org-detail>/rate-form` | Модалка добавления/исправления ставки (CustomRoute, `bool?`) |
 | `SuperAdminRoute` | `/admin` | Панель super_admin (Tab 5, conditional) |
 
 **Guard**: Если не авторизован → редирект на `LoginRoute`
@@ -227,6 +240,7 @@ lib/
 | `AuthTokenStorage` | SharedPreferences | access_token, refresh_token |
 | `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
 | `PendingInviteStorage` | SharedPreferences | pending_invite_code |
+| `ShiftContextStorage` | SharedPreferences | last_shift_context (`personal` либо UUID организации) |
 
 ---
 
@@ -254,7 +268,15 @@ lib/
 - `ShiftAuthorBlock` — шапка автора орг-смены: имя/почта/бейджи ролей или «Бывший сотрудник» (карточка списка + деталь) (файл: `lib/widgets/shift_author_block.dart`)
 - `ShiftPauseList` — список пауз смены (переиспользуется в персональной и орг-детали) (файл: `lib/widgets/shift_pause_list.dart`)
 - `ChecklistInstanceTile` — плитка экземпляра чек-листа с `onTap` (список чек-листов + read-only блок на детали) (файл: `lib/widgets/checklist_instance_tile.dart`)
+- `DateRangeFilterChip` — чип фильтра диапазона дат («01.06 – 09.06» / «с…» / «по…», крестик-сброс); используется в истории смен, орг-сменах, статистике и payroll-экранах (файл: `lib/widgets/date_range_filter_chip.dart`)
+- `PeriodPresetSelector` — селектор окна периода payroll-экранов: SegmentedButton (день/неделя/месяц) + чип произвольного диапазона (файл: `lib/widgets/period_preset_selector.dart`)
 - Barrel file: `lib/widgets/_widgets.dart`
+
+### Утилиты дат и денег
+- `lib/core/models/period_preset.dart` — `PeriodPreset` (day/week/month) + `boundsUtc()`: границы пресета (локальные дни → UTC) для payroll-эндпоинтов без `period`
+- `lib/core/utils/money_format.dart` — `formatMoneyMinor` (копейки → «12 345,67 ₽») и `parseRublesToMinor` (строгий разбор ввода ₽ → копейки, без double)
+- `lib/l10n/applied_range_label.dart` — подпись применённого окна (`range_from`/`range_to`), поддерживает открытые границы
+- `lib/l10n/error_localization.dart` — центральный маппинг `error.code` → строка; используется `SectionDataWrapper` и Paginated-виджетами
 
 ### Toast-уведомления
 - `context.modals.showSuccess/showError/showInfo/showWarning` — overlay-based toast

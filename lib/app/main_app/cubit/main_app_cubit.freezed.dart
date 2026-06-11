@@ -164,6 +164,7 @@ extension MainAppStatePatterns on MainAppState {
             ChecklistRepository checklistRepository,
             UserRepository userRepository,
             LocationRepository locationRepository,
+            PayrollRepository payrollRepository,
             DeepLinkService deepLinkService,
             PendingInviteStorage pendingInviteStorage,
             ShiftContextStorage shiftContextStorage)?
@@ -191,6 +192,7 @@ extension MainAppStatePatterns on MainAppState {
             _that.checklistRepository,
             _that.userRepository,
             _that.locationRepository,
+            _that.payrollRepository,
             _that.deepLinkService,
             _that.pendingInviteStorage,
             _that.shiftContextStorage);
@@ -234,6 +236,7 @@ extension MainAppStatePatterns on MainAppState {
             ChecklistRepository checklistRepository,
             UserRepository userRepository,
             LocationRepository locationRepository,
+            PayrollRepository payrollRepository,
             DeepLinkService deepLinkService,
             PendingInviteStorage pendingInviteStorage,
             ShiftContextStorage shiftContextStorage)
@@ -260,6 +263,7 @@ extension MainAppStatePatterns on MainAppState {
             _that.checklistRepository,
             _that.userRepository,
             _that.locationRepository,
+            _that.payrollRepository,
             _that.deepLinkService,
             _that.pendingInviteStorage,
             _that.shiftContextStorage);
@@ -300,6 +304,7 @@ extension MainAppStatePatterns on MainAppState {
             ChecklistRepository checklistRepository,
             UserRepository userRepository,
             LocationRepository locationRepository,
+            PayrollRepository payrollRepository,
             DeepLinkService deepLinkService,
             PendingInviteStorage pendingInviteStorage,
             ShiftContextStorage shiftContextStorage)?
@@ -326,6 +331,7 @@ extension MainAppStatePatterns on MainAppState {
             _that.checklistRepository,
             _that.userRepository,
             _that.locationRepository,
+            _that.payrollRepository,
             _that.deepLinkService,
             _that.pendingInviteStorage,
             _that.shiftContextStorage);
@@ -358,6 +364,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       required this.checklistRepository,
       required this.userRepository,
       required this.locationRepository,
+      required this.payrollRepository,
       required this.deepLinkService,
       required this.pendingInviteStorage,
       required this.shiftContextStorage})
@@ -378,6 +385,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   final ChecklistRepository checklistRepository;
   final UserRepository userRepository;
   final LocationRepository locationRepository;
+  final PayrollRepository payrollRepository;
   final DeepLinkService deepLinkService;
   final PendingInviteStorage pendingInviteStorage;
   final ShiftContextStorage shiftContextStorage;
@@ -410,6 +418,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('checklistRepository', checklistRepository))
       ..add(DiagnosticsProperty('userRepository', userRepository))
       ..add(DiagnosticsProperty('locationRepository', locationRepository))
+      ..add(DiagnosticsProperty('payrollRepository', payrollRepository))
       ..add(DiagnosticsProperty('deepLinkService', deepLinkService))
       ..add(DiagnosticsProperty('pendingInviteStorage', pendingInviteStorage))
       ..add(DiagnosticsProperty('shiftContextStorage', shiftContextStorage));
@@ -450,6 +459,8 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
                 other.userRepository == userRepository) &&
             (identical(other.locationRepository, locationRepository) ||
                 other.locationRepository == locationRepository) &&
+            (identical(other.payrollRepository, payrollRepository) ||
+                other.payrollRepository == payrollRepository) &&
             (identical(other.deepLinkService, deepLinkService) ||
                 other.deepLinkService == deepLinkService) &&
             (identical(other.pendingInviteStorage, pendingInviteStorage) ||
@@ -459,30 +470,32 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      appConfig,
-      sharedPreferences,
-      packageInfo,
-      talker,
-      dio,
-      debugRepository,
-      themeMode,
-      authNotifier,
-      authRepository,
-      shiftRepository,
-      organizationRepository,
-      organizationRoleRepository,
-      checklistRepository,
-      userRepository,
-      locationRepository,
-      deepLinkService,
-      pendingInviteStorage,
-      shiftContextStorage);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        appConfig,
+        sharedPreferences,
+        packageInfo,
+        talker,
+        dio,
+        debugRepository,
+        themeMode,
+        authNotifier,
+        authRepository,
+        shiftRepository,
+        organizationRepository,
+        organizationRoleRepository,
+        checklistRepository,
+        userRepository,
+        locationRepository,
+        payrollRepository,
+        deepLinkService,
+        pendingInviteStorage,
+        shiftContextStorage
+      ]);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, organizationRoleRepository: $organizationRoleRepository, checklistRepository: $checklistRepository, userRepository: $userRepository, locationRepository: $locationRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage, shiftContextStorage: $shiftContextStorage)';
+    return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, organizationRoleRepository: $organizationRoleRepository, checklistRepository: $checklistRepository, userRepository: $userRepository, locationRepository: $locationRepository, payrollRepository: $payrollRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage, shiftContextStorage: $shiftContextStorage)';
   }
 }
 
@@ -509,6 +522,7 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res>
       ChecklistRepository checklistRepository,
       UserRepository userRepository,
       LocationRepository locationRepository,
+      PayrollRepository payrollRepository,
       DeepLinkService deepLinkService,
       PendingInviteStorage pendingInviteStorage,
       ShiftContextStorage shiftContextStorage});
@@ -541,6 +555,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
     Object? checklistRepository = null,
     Object? userRepository = null,
     Object? locationRepository = null,
+    Object? payrollRepository = null,
     Object? deepLinkService = null,
     Object? pendingInviteStorage = null,
     Object? shiftContextStorage = null,
@@ -606,6 +621,10 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
           ? _self.locationRepository
           : locationRepository // ignore: cast_nullable_to_non_nullable
               as LocationRepository,
+      payrollRepository: null == payrollRepository
+          ? _self.payrollRepository
+          : payrollRepository // ignore: cast_nullable_to_non_nullable
+              as PayrollRepository,
       deepLinkService: null == deepLinkService
           ? _self.deepLinkService
           : deepLinkService // ignore: cast_nullable_to_non_nullable
