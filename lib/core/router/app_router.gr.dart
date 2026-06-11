@@ -295,6 +295,68 @@ class CreateOrgRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [DateRangePickerPage]
+class DateRangePickerRoute extends PageRouteInfo<DateRangePickerRouteArgs> {
+  DateRangePickerRoute({
+    DateTime? initialFrom,
+    DateTime? initialTo,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          DateRangePickerRoute.name,
+          args: DateRangePickerRouteArgs(
+            initialFrom: initialFrom,
+            initialTo: initialTo,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'DateRangePickerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<DateRangePickerRouteArgs>(
+        orElse: () => const DateRangePickerRouteArgs(),
+      );
+      return DateRangePickerPage(
+        initialFrom: args.initialFrom,
+        initialTo: args.initialTo,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class DateRangePickerRouteArgs {
+  const DateRangePickerRouteArgs({this.initialFrom, this.initialTo, this.key});
+
+  final DateTime? initialFrom;
+
+  final DateTime? initialTo;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'DateRangePickerRouteArgs{initialFrom: $initialFrom, initialTo: $initialTo, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! DateRangePickerRouteArgs) return false;
+    return initialFrom == other.initialFrom &&
+        initialTo == other.initialTo &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode => initialFrom.hashCode ^ initialTo.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [DebugPage]
 class DebugRoute extends PageRouteInfo<void> {
   const DebugRoute({List<PageRouteInfo>? children})

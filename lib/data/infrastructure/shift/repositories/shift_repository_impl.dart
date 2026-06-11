@@ -32,9 +32,17 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
   }
 
   @override
-  Future<Task<ShiftStats>> getStats({required String period}) {
+  Future<Task<ShiftStats>> getStats({
+    String? period,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  }) {
     return execute(() async {
-      final dto = await _dataSource.getStats(period: period);
+      final dto = await _dataSource.getStats(
+        period: period,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+      );
       return dto.toDomain();
     });
   }

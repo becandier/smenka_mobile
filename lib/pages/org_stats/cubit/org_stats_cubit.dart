@@ -16,22 +16,59 @@ class OrgStatsCubit extends Cubit<OrgStatsState> {
   final String _orgId;
   final OrganizationRepository _organizationRepository;
 
+  /// Перезапрос статистики. Ровно один источник окна:
+  /// пресет [OrgStatsState.period] ЛИБО диапазон `customFrom`/`customTo`.
   Future<void> loadStats() async {
     emit(state.copyWith(stats: state.stats.toLoading()));
-    final result =
-        await _organizationRepository.getStats(_orgId, period: state.period);
+
+    final isCustom = state.isCustomRange;
+    final result = await _organizationRepository.getStats(
+      _orgId,
+      period: isCustom ? null : state.period,
+      dateFrom: isCustom ? state.customFrom : null,
+      dateTo: isCustom ? state.customTo : null,
+    );
+
     result.fold(
       onSuccess: (stats) {
         emit(state.copyWith(stats: state.stats.toSuccess(stats)));
       },
       onFailure: (error) {
-        emit(state.copyWith(stats: state.stats.toError(error.message)));
+        emit(
+          state.copyWith(
+            stats: state.stats.toError(error.message, code: error.code),
+          ),
+        );
       },
     );
   }
 
   void setPeriod(String period) {
-    emit(state.copyWith(period: period));
+    if (period == state.period) return;
+    emit(
+      state.copyWith(
+        period: period,
+        customFrom: null,
+        customTo: null,
+      ),
+    );
+    loadStats();
+  }
+
+  /// Применить произвольное окно (UTC-границы, хотя бы одна непуста).
+  /// Обе `null` — сброс кастомного окна: возврат к дефолтному пресету.
+  void setCustomRange(DateTime? dateFrom, DateTime? dateTo) {
+    if (dateFrom == null && dateTo == null) {
+      if (state.isCustomRange) setPeriod('week');
+      return;
+    }
+    emit(
+      state.copyWith(
+        period: null,
+        customFrom: dateFrom,
+        customTo: dateTo,
+      ),
+    );
     loadStats();
   }
 }

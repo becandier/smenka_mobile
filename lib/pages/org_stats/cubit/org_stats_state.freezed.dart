@@ -15,7 +15,15 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OrgStatsState {
   SectionData<OrgStats> get stats;
-  String get period;
+
+  /// Пресет окна (`day|week|month`); null — активен произвольный
+  /// диапазон ([customFrom]/[customTo]). Ровно один источник окна.
+  String? get period;
+
+  /// Границы произвольного окна (UTC); заданы только при `period == null`,
+  /// хотя бы одна из границ непуста.
+  DateTime? get customFrom;
+  DateTime? get customTo;
 
   /// Create a copy of OrgStatsState
   /// with the given fields replaced by the non-null parameter values.
@@ -31,15 +39,20 @@ mixin _$OrgStatsState {
         (other.runtimeType == runtimeType &&
             other is OrgStatsState &&
             (identical(other.stats, stats) || other.stats == stats) &&
-            (identical(other.period, period) || other.period == period));
+            (identical(other.period, period) || other.period == period) &&
+            (identical(other.customFrom, customFrom) ||
+                other.customFrom == customFrom) &&
+            (identical(other.customTo, customTo) ||
+                other.customTo == customTo));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, stats, period);
+  int get hashCode =>
+      Object.hash(runtimeType, stats, period, customFrom, customTo);
 
   @override
   String toString() {
-    return 'OrgStatsState(stats: $stats, period: $period)';
+    return 'OrgStatsState(stats: $stats, period: $period, customFrom: $customFrom, customTo: $customTo)';
   }
 }
 
@@ -49,7 +62,11 @@ abstract mixin class $OrgStatsStateCopyWith<$Res> {
           OrgStatsState value, $Res Function(OrgStatsState) _then) =
       _$OrgStatsStateCopyWithImpl;
   @useResult
-  $Res call({SectionData<OrgStats> stats, String period});
+  $Res call(
+      {SectionData<OrgStats> stats,
+      String? period,
+      DateTime? customFrom,
+      DateTime? customTo});
 
   $SectionDataCopyWith<OrgStats, $Res> get stats;
 }
@@ -68,17 +85,27 @@ class _$OrgStatsStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? stats = null,
-    Object? period = null,
+    Object? period = freezed,
+    Object? customFrom = freezed,
+    Object? customTo = freezed,
   }) {
     return _then(_self.copyWith(
       stats: null == stats
           ? _self.stats
           : stats // ignore: cast_nullable_to_non_nullable
               as SectionData<OrgStats>,
-      period: null == period
+      period: freezed == period
           ? _self.period
           : period // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      customFrom: freezed == customFrom
+          ? _self.customFrom
+          : customFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      customTo: freezed == customTo
+          ? _self.customTo
+          : customTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 
@@ -186,13 +213,16 @@ extension OrgStatsStatePatterns on OrgStatsState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SectionData<OrgStats> stats, String period)? $default, {
+    TResult Function(SectionData<OrgStats> stats, String? period,
+            DateTime? customFrom, DateTime? customTo)?
+        $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _OrgStatsState() when $default != null:
-        return $default(_that.stats, _that.period);
+        return $default(
+            _that.stats, _that.period, _that.customFrom, _that.customTo);
       case _:
         return orElse();
     }
@@ -213,12 +243,15 @@ extension OrgStatsStatePatterns on OrgStatsState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SectionData<OrgStats> stats, String period) $default,
+    TResult Function(SectionData<OrgStats> stats, String? period,
+            DateTime? customFrom, DateTime? customTo)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OrgStatsState():
-        return $default(_that.stats, _that.period);
+        return $default(
+            _that.stats, _that.period, _that.customFrom, _that.customTo);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -238,12 +271,15 @@ extension OrgStatsStatePatterns on OrgStatsState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(SectionData<OrgStats> stats, String period)? $default,
+    TResult? Function(SectionData<OrgStats> stats, String? period,
+            DateTime? customFrom, DateTime? customTo)?
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OrgStatsState() when $default != null:
-        return $default(_that.stats, _that.period);
+        return $default(
+            _that.stats, _that.period, _that.customFrom, _that.customTo);
       case _:
         return null;
     }
@@ -252,16 +288,30 @@ extension OrgStatsStatePatterns on OrgStatsState {
 
 /// @nodoc
 
-class _OrgStatsState implements OrgStatsState {
+class _OrgStatsState extends OrgStatsState {
   const _OrgStatsState(
-      {this.stats = const SectionData<OrgStats>(), this.period = 'week'});
+      {this.stats = const SectionData<OrgStats>(),
+      this.period = 'week',
+      this.customFrom,
+      this.customTo})
+      : super._();
 
   @override
   @JsonKey()
   final SectionData<OrgStats> stats;
+
+  /// Пресет окна (`day|week|month`); null — активен произвольный
+  /// диапазон ([customFrom]/[customTo]). Ровно один источник окна.
   @override
   @JsonKey()
-  final String period;
+  final String? period;
+
+  /// Границы произвольного окна (UTC); заданы только при `period == null`,
+  /// хотя бы одна из границ непуста.
+  @override
+  final DateTime? customFrom;
+  @override
+  final DateTime? customTo;
 
   /// Create a copy of OrgStatsState
   /// with the given fields replaced by the non-null parameter values.
@@ -277,15 +327,20 @@ class _OrgStatsState implements OrgStatsState {
         (other.runtimeType == runtimeType &&
             other is _OrgStatsState &&
             (identical(other.stats, stats) || other.stats == stats) &&
-            (identical(other.period, period) || other.period == period));
+            (identical(other.period, period) || other.period == period) &&
+            (identical(other.customFrom, customFrom) ||
+                other.customFrom == customFrom) &&
+            (identical(other.customTo, customTo) ||
+                other.customTo == customTo));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, stats, period);
+  int get hashCode =>
+      Object.hash(runtimeType, stats, period, customFrom, customTo);
 
   @override
   String toString() {
-    return 'OrgStatsState(stats: $stats, period: $period)';
+    return 'OrgStatsState(stats: $stats, period: $period, customFrom: $customFrom, customTo: $customTo)';
   }
 }
 
@@ -297,7 +352,11 @@ abstract mixin class _$OrgStatsStateCopyWith<$Res>
       __$OrgStatsStateCopyWithImpl;
   @override
   @useResult
-  $Res call({SectionData<OrgStats> stats, String period});
+  $Res call(
+      {SectionData<OrgStats> stats,
+      String? period,
+      DateTime? customFrom,
+      DateTime? customTo});
 
   @override
   $SectionDataCopyWith<OrgStats, $Res> get stats;
@@ -317,17 +376,27 @@ class __$OrgStatsStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? stats = null,
-    Object? period = null,
+    Object? period = freezed,
+    Object? customFrom = freezed,
+    Object? customTo = freezed,
   }) {
     return _then(_OrgStatsState(
       stats: null == stats
           ? _self.stats
           : stats // ignore: cast_nullable_to_non_nullable
               as SectionData<OrgStats>,
-      period: null == period
+      period: freezed == period
           ? _self.period
           : period // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      customFrom: freezed == customFrom
+          ? _self.customFrom
+          : customFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      customTo: freezed == customTo
+          ? _self.customTo
+          : customTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 

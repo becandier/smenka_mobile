@@ -17,10 +17,16 @@ abstract class EmployeeStats with _$EmployeeStats {
 @freezed
 abstract class OrgStats with _$OrgStats {
   const factory OrgStats({
-    required String period,
     required int totalWorkedSeconds,
     required int shiftCount,
     required int averageShiftSeconds,
     required List<EmployeeStats> perEmployee,
+
+    /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+    String? period,
+
+    /// Фактически применённое окно статистики (UTC).
+    DateTime? rangeFrom,
+    DateTime? rangeTo,
   }) = _OrgStats;
 }

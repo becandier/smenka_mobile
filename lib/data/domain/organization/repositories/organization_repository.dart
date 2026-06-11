@@ -36,7 +36,14 @@ abstract class OrganizationRepository {
   /// Деталь конкретной (в т.ч. чужой) орг-смены для owner/admin.
   Future<Task<Shift>> getShiftDetail(String orgId, String shiftId);
 
-  Future<Task<OrgStats>> getStats(String orgId, {required String period});
+  /// Окно статистики: ровно один источник — либо [period],
+  /// либо [dateFrom]/[dateTo] (UTC).
+  Future<Task<OrgStats>> getStats(
+    String orgId, {
+    String? period,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  });
 
   Future<Task<List<Organization>>> getAllOrganizations();
   Future<Task<Member>> updateMemberRole(

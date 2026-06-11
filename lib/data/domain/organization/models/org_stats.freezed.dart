@@ -430,11 +430,17 @@ class __$EmployeeStatsCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$OrgStats {
-  String get period;
   int get totalWorkedSeconds;
   int get shiftCount;
   int get averageShiftSeconds;
   List<EmployeeStats> get perEmployee;
+
+  /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+  String? get period;
+
+  /// Фактически применённое окно статистики (UTC).
+  DateTime? get rangeFrom;
+  DateTime? get rangeTo;
 
   /// Create a copy of OrgStats
   /// with the given fields replaced by the non-null parameter values.
@@ -448,7 +454,6 @@ mixin _$OrgStats {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is OrgStats &&
-            (identical(other.period, period) || other.period == period) &&
             (identical(other.totalWorkedSeconds, totalWorkedSeconds) ||
                 other.totalWorkedSeconds == totalWorkedSeconds) &&
             (identical(other.shiftCount, shiftCount) ||
@@ -456,21 +461,27 @@ mixin _$OrgStats {
             (identical(other.averageShiftSeconds, averageShiftSeconds) ||
                 other.averageShiftSeconds == averageShiftSeconds) &&
             const DeepCollectionEquality()
-                .equals(other.perEmployee, perEmployee));
+                .equals(other.perEmployee, perEmployee) &&
+            (identical(other.period, period) || other.period == period) &&
+            (identical(other.rangeFrom, rangeFrom) ||
+                other.rangeFrom == rangeFrom) &&
+            (identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      period,
       totalWorkedSeconds,
       shiftCount,
       averageShiftSeconds,
-      const DeepCollectionEquality().hash(perEmployee));
+      const DeepCollectionEquality().hash(perEmployee),
+      period,
+      rangeFrom,
+      rangeTo);
 
   @override
   String toString() {
-    return 'OrgStats(period: $period, totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, perEmployee: $perEmployee)';
+    return 'OrgStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, perEmployee: $perEmployee, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
   }
 }
 
@@ -480,11 +491,13 @@ abstract mixin class $OrgStatsCopyWith<$Res> {
       _$OrgStatsCopyWithImpl;
   @useResult
   $Res call(
-      {String period,
-      int totalWorkedSeconds,
+      {int totalWorkedSeconds,
       int shiftCount,
       int averageShiftSeconds,
-      List<EmployeeStats> perEmployee});
+      List<EmployeeStats> perEmployee,
+      String? period,
+      DateTime? rangeFrom,
+      DateTime? rangeTo});
 }
 
 /// @nodoc
@@ -499,17 +512,15 @@ class _$OrgStatsCopyWithImpl<$Res> implements $OrgStatsCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? period = null,
     Object? totalWorkedSeconds = null,
     Object? shiftCount = null,
     Object? averageShiftSeconds = null,
     Object? perEmployee = null,
+    Object? period = freezed,
+    Object? rangeFrom = freezed,
+    Object? rangeTo = freezed,
   }) {
     return _then(_self.copyWith(
-      period: null == period
-          ? _self.period
-          : period // ignore: cast_nullable_to_non_nullable
-              as String,
       totalWorkedSeconds: null == totalWorkedSeconds
           ? _self.totalWorkedSeconds
           : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
@@ -526,6 +537,18 @@ class _$OrgStatsCopyWithImpl<$Res> implements $OrgStatsCopyWith<$Res> {
           ? _self.perEmployee
           : perEmployee // ignore: cast_nullable_to_non_nullable
               as List<EmployeeStats>,
+      period: freezed == period
+          ? _self.period
+          : period // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rangeFrom: freezed == rangeFrom
+          ? _self.rangeFrom
+          : rangeFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      rangeTo: freezed == rangeTo
+          ? _self.rangeTo
+          : rangeTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -623,16 +646,28 @@ extension OrgStatsPatterns on OrgStats {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String period, int totalWorkedSeconds, int shiftCount,
-            int averageShiftSeconds, List<EmployeeStats> perEmployee)?
+    TResult Function(
+            int totalWorkedSeconds,
+            int shiftCount,
+            int averageShiftSeconds,
+            List<EmployeeStats> perEmployee,
+            String? period,
+            DateTime? rangeFrom,
+            DateTime? rangeTo)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _OrgStats() when $default != null:
-        return $default(_that.period, _that.totalWorkedSeconds,
-            _that.shiftCount, _that.averageShiftSeconds, _that.perEmployee);
+        return $default(
+            _that.totalWorkedSeconds,
+            _that.shiftCount,
+            _that.averageShiftSeconds,
+            _that.perEmployee,
+            _that.period,
+            _that.rangeFrom,
+            _that.rangeTo);
       case _:
         return orElse();
     }
@@ -653,15 +688,27 @@ extension OrgStatsPatterns on OrgStats {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String period, int totalWorkedSeconds, int shiftCount,
-            int averageShiftSeconds, List<EmployeeStats> perEmployee)
+    TResult Function(
+            int totalWorkedSeconds,
+            int shiftCount,
+            int averageShiftSeconds,
+            List<EmployeeStats> perEmployee,
+            String? period,
+            DateTime? rangeFrom,
+            DateTime? rangeTo)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OrgStats():
-        return $default(_that.period, _that.totalWorkedSeconds,
-            _that.shiftCount, _that.averageShiftSeconds, _that.perEmployee);
+        return $default(
+            _that.totalWorkedSeconds,
+            _that.shiftCount,
+            _that.averageShiftSeconds,
+            _that.perEmployee,
+            _that.period,
+            _that.rangeFrom,
+            _that.rangeTo);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -681,15 +728,27 @@ extension OrgStatsPatterns on OrgStats {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String period, int totalWorkedSeconds, int shiftCount,
-            int averageShiftSeconds, List<EmployeeStats> perEmployee)?
+    TResult? Function(
+            int totalWorkedSeconds,
+            int shiftCount,
+            int averageShiftSeconds,
+            List<EmployeeStats> perEmployee,
+            String? period,
+            DateTime? rangeFrom,
+            DateTime? rangeTo)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OrgStats() when $default != null:
-        return $default(_that.period, _that.totalWorkedSeconds,
-            _that.shiftCount, _that.averageShiftSeconds, _that.perEmployee);
+        return $default(
+            _that.totalWorkedSeconds,
+            _that.shiftCount,
+            _that.averageShiftSeconds,
+            _that.perEmployee,
+            _that.period,
+            _that.rangeFrom,
+            _that.rangeTo);
       case _:
         return null;
     }
@@ -700,15 +759,15 @@ extension OrgStatsPatterns on OrgStats {
 
 class _OrgStats implements OrgStats {
   const _OrgStats(
-      {required this.period,
-      required this.totalWorkedSeconds,
+      {required this.totalWorkedSeconds,
       required this.shiftCount,
       required this.averageShiftSeconds,
-      required final List<EmployeeStats> perEmployee})
+      required final List<EmployeeStats> perEmployee,
+      this.period,
+      this.rangeFrom,
+      this.rangeTo})
       : _perEmployee = perEmployee;
 
-  @override
-  final String period;
   @override
   final int totalWorkedSeconds;
   @override
@@ -723,6 +782,16 @@ class _OrgStats implements OrgStats {
     return EqualUnmodifiableListView(_perEmployee);
   }
 
+  /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+  @override
+  final String? period;
+
+  /// Фактически применённое окно статистики (UTC).
+  @override
+  final DateTime? rangeFrom;
+  @override
+  final DateTime? rangeTo;
+
   /// Create a copy of OrgStats
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -736,7 +805,6 @@ class _OrgStats implements OrgStats {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _OrgStats &&
-            (identical(other.period, period) || other.period == period) &&
             (identical(other.totalWorkedSeconds, totalWorkedSeconds) ||
                 other.totalWorkedSeconds == totalWorkedSeconds) &&
             (identical(other.shiftCount, shiftCount) ||
@@ -744,21 +812,27 @@ class _OrgStats implements OrgStats {
             (identical(other.averageShiftSeconds, averageShiftSeconds) ||
                 other.averageShiftSeconds == averageShiftSeconds) &&
             const DeepCollectionEquality()
-                .equals(other._perEmployee, _perEmployee));
+                .equals(other._perEmployee, _perEmployee) &&
+            (identical(other.period, period) || other.period == period) &&
+            (identical(other.rangeFrom, rangeFrom) ||
+                other.rangeFrom == rangeFrom) &&
+            (identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      period,
       totalWorkedSeconds,
       shiftCount,
       averageShiftSeconds,
-      const DeepCollectionEquality().hash(_perEmployee));
+      const DeepCollectionEquality().hash(_perEmployee),
+      period,
+      rangeFrom,
+      rangeTo);
 
   @override
   String toString() {
-    return 'OrgStats(period: $period, totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, perEmployee: $perEmployee)';
+    return 'OrgStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, perEmployee: $perEmployee, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
   }
 }
 
@@ -770,11 +844,13 @@ abstract mixin class _$OrgStatsCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String period,
-      int totalWorkedSeconds,
+      {int totalWorkedSeconds,
       int shiftCount,
       int averageShiftSeconds,
-      List<EmployeeStats> perEmployee});
+      List<EmployeeStats> perEmployee,
+      String? period,
+      DateTime? rangeFrom,
+      DateTime? rangeTo});
 }
 
 /// @nodoc
@@ -789,17 +865,15 @@ class __$OrgStatsCopyWithImpl<$Res> implements _$OrgStatsCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? period = null,
     Object? totalWorkedSeconds = null,
     Object? shiftCount = null,
     Object? averageShiftSeconds = null,
     Object? perEmployee = null,
+    Object? period = freezed,
+    Object? rangeFrom = freezed,
+    Object? rangeTo = freezed,
   }) {
     return _then(_OrgStats(
-      period: null == period
-          ? _self.period
-          : period // ignore: cast_nullable_to_non_nullable
-              as String,
       totalWorkedSeconds: null == totalWorkedSeconds
           ? _self.totalWorkedSeconds
           : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
@@ -816,6 +890,18 @@ class __$OrgStatsCopyWithImpl<$Res> implements _$OrgStatsCopyWith<$Res> {
           ? _self._perEmployee
           : perEmployee // ignore: cast_nullable_to_non_nullable
               as List<EmployeeStats>,
+      period: freezed == period
+          ? _self.period
+          : period // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rangeFrom: freezed == rangeFrom
+          ? _self.rangeFrom
+          : rangeFrom // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      rangeTo: freezed == rangeTo
+          ? _self.rangeTo
+          : rangeTo // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }

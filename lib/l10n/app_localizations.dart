@@ -2115,6 +2115,96 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не удалось присоединиться по ссылке'**
   String get deepLinkJoinError;
+
+  /// No description provided for @dateRangeFilterTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Диапазон дат'**
+  String get dateRangeFilterTitle;
+
+  /// No description provided for @dateRangeFrom.
+  ///
+  /// In ru, this message translates to:
+  /// **'С'**
+  String get dateRangeFrom;
+
+  /// No description provided for @dateRangeTo.
+  ///
+  /// In ru, this message translates to:
+  /// **'По'**
+  String get dateRangeTo;
+
+  /// No description provided for @dateRangeApply.
+  ///
+  /// In ru, this message translates to:
+  /// **'Применить'**
+  String get dateRangeApply;
+
+  /// No description provided for @dateRangeReset.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сбросить'**
+  String get dateRangeReset;
+
+  /// No description provided for @dateRangeChipBoth.
+  ///
+  /// In ru, this message translates to:
+  /// **'{from} – {to}'**
+  String dateRangeChipBoth(String from, String to);
+
+  /// No description provided for @dateRangeChipFromOnly.
+  ///
+  /// In ru, this message translates to:
+  /// **'с {from}'**
+  String dateRangeChipFromOnly(String from);
+
+  /// No description provided for @dateRangeChipToOnly.
+  ///
+  /// In ru, this message translates to:
+  /// **'по {to}'**
+  String dateRangeChipToOnly(String to);
+
+  /// No description provided for @statsModeCustom.
+  ///
+  /// In ru, this message translates to:
+  /// **'Период'**
+  String get statsModeCustom;
+
+  /// No description provided for @statsAppliedRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'за {from} – {to}'**
+  String statsAppliedRange(String from, String to);
+
+  /// No description provided for @shiftsEmptyForRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет смен за выбранный период'**
+  String get shiftsEmptyForRange;
+
+  /// No description provided for @errorInvalidDateRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дата начала позже даты окончания'**
+  String get errorInvalidDateRange;
+
+  /// No description provided for @errorMissingStatsRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не указан период статистики'**
+  String get errorMissingStatsRange;
+
+  /// No description provided for @errorAmbiguousStatsRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нельзя задать одновременно пресет и произвольный период'**
+  String get errorAmbiguousStatsRange;
+
+  /// No description provided for @errorInvalidPeriod.
+  ///
+  /// In ru, this message translates to:
+  /// **'Некорректный период'**
+  String get errorInvalidPeriod;
 }
 
 class _AppLocalizationsDelegate

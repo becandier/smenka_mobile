@@ -1091,4 +1091,58 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get deepLinkJoinError => 'Не удалось присоединиться по ссылке';
+
+  @override
+  String get dateRangeFilterTitle => 'Диапазон дат';
+
+  @override
+  String get dateRangeFrom => 'С';
+
+  @override
+  String get dateRangeTo => 'По';
+
+  @override
+  String get dateRangeApply => 'Применить';
+
+  @override
+  String get dateRangeReset => 'Сбросить';
+
+  @override
+  String dateRangeChipBoth(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String dateRangeChipFromOnly(String from) {
+    return 'с $from';
+  }
+
+  @override
+  String dateRangeChipToOnly(String to) {
+    return 'по $to';
+  }
+
+  @override
+  String get statsModeCustom => 'Период';
+
+  @override
+  String statsAppliedRange(String from, String to) {
+    return 'за $from – $to';
+  }
+
+  @override
+  String get shiftsEmptyForRange => 'Нет смен за выбранный период';
+
+  @override
+  String get errorInvalidDateRange => 'Дата начала позже даты окончания';
+
+  @override
+  String get errorMissingStatsRange => 'Не указан период статистики';
+
+  @override
+  String get errorAmbiguousStatsRange =>
+      'Нельзя задать одновременно пресет и произвольный период';
+
+  @override
+  String get errorInvalidPeriod => 'Некорректный период';
 }

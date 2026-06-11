@@ -16,6 +16,19 @@ class _OrgShiftsFilters extends StatelessWidget {
     }
   }
 
+  Future<void> _openDateRangePicker(BuildContext context) async {
+    final cubit = context.read<OrgShiftsCubit>();
+    final result = await context.router.push<DateRangePickerResult?>(
+      DateRangePickerRoute(
+        initialFrom: cubit.state.filterDateFrom?.toLocal(),
+        initialTo: cubit.state.filterDateTo?.toLocal(),
+      ),
+    );
+    if (result != null) {
+      cubit.setDateRange(result.fromUtc, result.toUtc);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -25,6 +38,8 @@ class _OrgShiftsFilters extends StatelessWidget {
           prev.filterStatus != curr.filterStatus ||
           prev.filterUserId != curr.filterUserId ||
           prev.filterUserName != curr.filterUserName ||
+          prev.filterDateFrom != curr.filterDateFrom ||
+          prev.filterDateTo != curr.filterDateTo ||
           prev.hasFilters != curr.hasFilters,
       builder: (context, state) {
         final cubit = context.read<OrgShiftsCubit>();
@@ -40,6 +55,14 @@ class _OrgShiftsFilters extends StatelessWidget {
                   label: state.filterUserName ?? l10n.shiftFilterByEmployee,
                   isSelected: state.hasEmployeeFilter,
                   onTap: () => _openEmployeePicker(context),
+                ),
+                const SizedBox(width: 8),
+                DateRangeFilterChip(
+                  from: state.filterDateFrom,
+                  to: state.filterDateTo,
+                  label: l10n.dateRangeFilterTitle,
+                  onTap: () => _openDateRangePicker(context),
+                  onClear: () => cubit.setDateRange(null, null),
                 ),
                 const SizedBox(width: 8),
                 _FilterChip(

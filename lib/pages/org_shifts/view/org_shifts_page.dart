@@ -7,6 +7,7 @@ import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/employee_picker/_employee_picker.dart';
 import 'package:smenka_mobile/pages/org_shifts/cubit/org_shifts_cubit.dart';
 import 'package:smenka_mobile/pages/org_shifts/cubit/org_shifts_state.dart';
@@ -66,12 +67,18 @@ class _OrgShiftsView extends StatelessWidget {
               onLoadMore: () =>
                   context.read<OrgShiftsCubit>().loadShifts(isRefresh: false),
               onRefresh: () => context.read<OrgShiftsCubit>().loadShifts(),
-              emptyBuilder: () => AppEmptyState(
-                icon: Icons.work_history_outlined,
-                title: context.read<OrgShiftsCubit>().state.hasEmployeeFilter
-                    ? l10n.orgShiftsEmptyForEmployee
-                    : l10n.orgShiftsEmpty,
-              ),
+              emptyBuilder: () {
+                final state = context.read<OrgShiftsCubit>().state;
+                final title = state.hasDateFilter
+                    ? l10n.shiftsEmptyForRange
+                    : state.hasEmployeeFilter
+                        ? l10n.orgShiftsEmptyForEmployee
+                        : l10n.orgShiftsEmpty;
+                return AppEmptyState(
+                  icon: Icons.work_history_outlined,
+                  title: title,
+                );
+              },
             ),
           ),
         ],

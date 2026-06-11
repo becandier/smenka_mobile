@@ -13,11 +13,16 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
 
   final ShiftRepository _shiftRepository;
 
+  /// Перезапрос статистики. Ровно один источник окна: пресет
+  /// `selectedPeriod` ЛИБО диапазон `customFrom`/`customTo` (UTC).
   Future<void> loadStats() async {
     emit(state.copyWith(stats: state.stats.toLoading()));
 
+    final isCustom = state.isCustomRange;
     final result = await _shiftRepository.getStats(
-      period: state.selectedPeriod.name,
+      period: isCustom ? null : state.selectedPeriod?.name,
+      dateFrom: isCustom ? state.customFrom : null,
+      dateTo: isCustom ? state.customTo : null,
     );
 
     result.fold(
@@ -25,14 +30,41 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
         emit(state.copyWith(stats: state.stats.toSuccess(stats)));
       },
       onFailure: (error) {
-        emit(state.copyWith(stats: state.stats.toError(error.message)));
+        emit(
+          state.copyWith(
+            stats: state.stats.toError(error.message, code: error.code),
+          ),
+        );
       },
     );
   }
 
   void changePeriod(StatsPeriod period) {
     if (period == state.selectedPeriod) return;
-    emit(state.copyWith(selectedPeriod: period));
+    emit(
+      state.copyWith(
+        selectedPeriod: period,
+        customFrom: null,
+        customTo: null,
+      ),
+    );
+    loadStats();
+  }
+
+  /// Применить произвольное окно (UTC-границы, хотя бы одна непуста).
+  /// Обе `null` — сброс кастомного окна: возврат к дефолтному пресету.
+  void setCustomRange(DateTime? dateFrom, DateTime? dateTo) {
+    if (dateFrom == null && dateTo == null) {
+      if (state.isCustomRange) changePeriod(StatsPeriod.day);
+      return;
+    }
+    emit(
+      state.copyWith(
+        selectedPeriod: null,
+        customFrom: dateFrom,
+        customTo: dateTo,
+      ),
+    );
     loadStats();
   }
 }

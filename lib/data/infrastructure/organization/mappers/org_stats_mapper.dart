@@ -22,6 +22,8 @@ extension OrgStatsMapper on OrgStatsDto {
       shiftCount: shiftCount,
       averageShiftSeconds: averageShiftSeconds,
       perEmployee: perEmployee.map((e) => e.toDomain()).toList(),
+      rangeFrom: rangeFrom,
+      rangeTo: rangeTo,
     );
   }
 }

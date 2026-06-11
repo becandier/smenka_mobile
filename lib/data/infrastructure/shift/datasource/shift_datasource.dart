@@ -32,10 +32,25 @@ class ShiftDataSource {
     return PaginatedShiftsDto.fromJson(response.data!);
   }
 
-  Future<ShiftStatsDto> getStats({required String period}) async {
+  /// Статистика смен. Окно — либо [period], либо [dateFrom]/[dateTo]
+  /// (взаимоисключение обеспечивает вызывающая сторона, см. кубиты).
+  Future<ShiftStatsDto> getStats({
+    String? period,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  }) async {
+    final queryParameters = <String, dynamic>{};
+    if (period != null) queryParameters['period'] = period;
+    if (dateFrom != null) {
+      queryParameters['date_from'] = dateFrom.toIso8601String();
+    }
+    if (dateTo != null) {
+      queryParameters['date_to'] = dateTo.toIso8601String();
+    }
+
     final response = await _dio.get<Map<String, dynamic>>(
       '/shifts/stats',
-      queryParameters: {'period': period},
+      queryParameters: queryParameters,
     );
     return ShiftStatsDto.fromJson(response.data!);
   }

@@ -33,4 +33,6 @@ abstract class OrgShiftsState with _$OrgShiftsState {
       filterUserId != null;
 
   bool get hasEmployeeFilter => filterUserId != null;
+
+  bool get hasDateFilter => filterDateFrom != null || filterDateTo != null;
 }

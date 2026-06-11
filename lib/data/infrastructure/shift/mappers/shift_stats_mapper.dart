@@ -8,6 +8,8 @@ extension ShiftStatsMapper on ShiftStatsDto {
       totalWorkedSeconds: totalWorkedSeconds,
       shiftCount: shiftCount,
       averageShiftSeconds: averageShiftSeconds,
+      rangeFrom: rangeFrom,
+      rangeTo: rangeTo,
     );
   }
 }

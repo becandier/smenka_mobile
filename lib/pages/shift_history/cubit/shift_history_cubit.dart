@@ -33,13 +33,10 @@ class ShiftHistoryCubit extends Cubit<ShiftHistoryState>
     loadShifts();
   }
 
-  void setDateFrom(DateTime? date) {
-    emit(state.copyWith(filterDateFrom: date));
-    loadShifts();
-  }
-
-  void setDateTo(DateTime? date) {
-    emit(state.copyWith(filterDateTo: date));
+  /// Применить диапазон дат (UTC-границы, обе включительно по `started_at`).
+  /// Обе `null` — сброс диапазона. Один перезапрос с первой страницы.
+  void setDateRange(DateTime? dateFrom, DateTime? dateTo) {
+    emit(state.copyWith(filterDateFrom: dateFrom, filterDateTo: dateTo));
     loadShifts();
   }
 
