@@ -19,7 +19,7 @@ mixin PaginationMixin<S> on Cubit<S> {
     required PaginatedSectionData<T> Function(S state) getSection,
     required S Function(S state, PaginatedSectionData<T> section) updateState,
     required Future<Task<DefaultPaginator<T>>> Function(int page, int perPage)
-        fetch,
+    fetch,
     bool isRefresh = true,
     void Function(List<T> newData)? onExtraSuccess,
   }) async {

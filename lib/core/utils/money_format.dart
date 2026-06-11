@@ -41,8 +41,9 @@ int? parseRublesToMinor(String input) {
 
   final rubles = int.parse(match.group(1) ?? '0');
   final kopecksStr = match.group(2);
-  final kopecks =
-      kopecksStr == null ? 0 : int.parse(kopecksStr.padRight(2, '0'));
+  final kopecks = kopecksStr == null
+      ? 0
+      : int.parse(kopecksStr.padRight(2, '0'));
 
   return rubles * 100 + kopecks;
 }

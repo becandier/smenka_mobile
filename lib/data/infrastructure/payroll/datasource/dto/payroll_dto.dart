@@ -6,10 +6,8 @@ part 'payroll_dto.g.dart';
 @freezed
 abstract class PayrollPeriodDto with _$PayrollPeriodDto {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory PayrollPeriodDto({
-    DateTime? dateFrom,
-    DateTime? dateTo,
-  }) = _PayrollPeriodDto;
+  const factory PayrollPeriodDto({DateTime? dateFrom, DateTime? dateTo}) =
+      _PayrollPeriodDto;
 
   factory PayrollPeriodDto.fromJson(Map<String, dynamic> json) =>
       _$PayrollPeriodDtoFromJson(json);

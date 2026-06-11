@@ -8,9 +8,9 @@ class RolesCubit extends Cubit<RolesState> {
   RolesCubit({
     required String orgId,
     required OrganizationRoleRepository roleRepository,
-  })  : _orgId = orgId,
-        _roleRepository = roleRepository,
-        super(const RolesState()) {
+  }) : _orgId = orgId,
+       _roleRepository = roleRepository,
+       super(const RolesState()) {
     loadRoles();
   }
 
@@ -59,11 +59,7 @@ class RolesCubit extends Cubit<RolesState> {
     emit(
       state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
-    final result = await _roleRepository.updateRole(
-      _orgId,
-      roleId,
-      name: name,
-    );
+    final result = await _roleRepository.updateRole(_orgId, roleId, name: name);
     return result.fold(
       onSuccess: (_) {
         emit(state.copyWith(actionStatus: FeatureStatus.success));

@@ -8,7 +8,7 @@ import 'package:smenka_mobile/data/infrastructure/payroll/mappers/rate_mapper.da
 
 class PayrollRepositoryImpl with TaskHandler implements PayrollRepository {
   PayrollRepositoryImpl({required PayrollDataSource dataSource})
-      : _dataSource = dataSource;
+    : _dataSource = dataSource;
 
   final PayrollDataSource _dataSource;
 
@@ -78,11 +78,7 @@ class PayrollRepositoryImpl with TaskHandler implements PayrollRepository {
   }
 
   @override
-  Future<Task<void>> deleteRate(
-    String orgId,
-    String memberId,
-    String rateId,
-  ) {
+  Future<Task<void>> deleteRate(String orgId, String memberId, String rateId) {
     return executeVoid(() => _dataSource.deleteRate(orgId, memberId, rateId));
   }
 

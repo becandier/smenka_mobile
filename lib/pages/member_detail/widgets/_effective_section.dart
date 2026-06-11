@@ -16,10 +16,12 @@ class _EffectiveSection extends StatelessWidget {
       builder: (context, state) {
         final items =
             state.effective.data ?? const <EffectiveChecklistTemplate>[];
-        final start =
-            items.where((t) => t.type == ChecklistType.shiftStart).toList();
-        final end =
-            items.where((t) => t.type == ChecklistType.shiftEnd).toList();
+        final start = items
+            .where((t) => t.type == ChecklistType.shiftStart)
+            .toList();
+        final end = items
+            .where((t) => t.type == ChecklistType.shiftEnd)
+            .toList();
 
         return Material(
           color: appColors.surface,
@@ -55,9 +57,7 @@ class _EffectiveSection extends StatelessWidget {
                   )
                 else ...[
                   if (start.isNotEmpty) ...[
-                    _GroupHeader(
-                      text: l10n.checklistTemplatesShiftStart,
-                    ),
+                    _GroupHeader(text: l10n.checklistTemplatesShiftStart),
                     ...start.map((t) => _EffectiveRow(template: t)),
                   ],
                   if (start.isNotEmpty && end.isNotEmpty)
@@ -87,9 +87,9 @@ class _GroupHeader extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4, bottom: 4),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: context.appColors.secondary,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelLarge?.copyWith(color: context.appColors.secondary),
       ),
     );
   }
@@ -130,9 +130,7 @@ class _EffectiveRow extends StatelessWidget {
           ),
           Text(
             sourceLabel,
-            style: textTheme.labelSmall?.copyWith(
-              color: appColors.secondary,
-            ),
+            style: textTheme.labelSmall?.copyWith(color: appColors.secondary),
           ),
         ],
       ),

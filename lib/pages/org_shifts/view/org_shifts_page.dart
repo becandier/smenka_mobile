@@ -18,10 +18,7 @@ part '../widgets/_org_shifts_filters.dart';
 
 @RoutePage()
 class OrgShiftsPage extends StatelessWidget {
-  const OrgShiftsPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const OrgShiftsPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -47,39 +44,37 @@ class _OrgShiftsView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.orgShiftsTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.orgShiftsTitle), centerTitle: true),
       body: Column(
         children: [
           const _OrgShiftsFilters(),
           Expanded(
             child:
                 PaginatedSectionDataList<OrgShiftsCubit, OrgShiftsState, Shift>(
-              selector: (state) => state.shifts,
-              itemBuilder: (context, shift, index) => _OrgShiftCard(
-                shift: shift,
-                onTap: () => context.router.push(
-                  OrgShiftDetailRoute(orgId: orgId, shiftId: shift.id),
-                ),
-              ),
-              onLoadMore: () =>
-                  context.read<OrgShiftsCubit>().loadShifts(isRefresh: false),
-              onRefresh: () => context.read<OrgShiftsCubit>().loadShifts(),
-              emptyBuilder: () {
-                final state = context.read<OrgShiftsCubit>().state;
-                final title = state.hasDateFilter
-                    ? l10n.shiftsEmptyForRange
-                    : state.hasEmployeeFilter
+                  selector: (state) => state.shifts,
+                  itemBuilder: (context, shift, index) => _OrgShiftCard(
+                    shift: shift,
+                    onTap: () => context.router.push(
+                      OrgShiftDetailRoute(orgId: orgId, shiftId: shift.id),
+                    ),
+                  ),
+                  onLoadMore: () => context.read<OrgShiftsCubit>().loadShifts(
+                    isRefresh: false,
+                  ),
+                  onRefresh: () => context.read<OrgShiftsCubit>().loadShifts(),
+                  emptyBuilder: () {
+                    final state = context.read<OrgShiftsCubit>().state;
+                    final title = state.hasDateFilter
+                        ? l10n.shiftsEmptyForRange
+                        : state.hasEmployeeFilter
                         ? l10n.orgShiftsEmptyForEmployee
                         : l10n.orgShiftsEmpty;
-                return AppEmptyState(
-                  icon: Icons.work_history_outlined,
-                  title: title,
-                );
-              },
-            ),
+                    return AppEmptyState(
+                      icon: Icons.work_history_outlined,
+                      title: title,
+                    );
+                  },
+                ),
           ),
         ],
       ),

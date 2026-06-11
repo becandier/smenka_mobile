@@ -16,21 +16,20 @@ class _OrganizationsSection extends StatelessWidget {
         children: [
           Text(
             l10n.myOrganizations,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
-          BlocSelector<ProfileCubit, ProfileState,
-              SectionData<List<Organization>>>(
+          BlocSelector<
+            ProfileCubit,
+            ProfileState,
+            SectionData<List<Organization>>
+          >(
             selector: (state) => state.organizations,
             builder: (context, orgSection) {
               if (orgSection.isLoading) {
                 return const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  ),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
                 );
               }
 
@@ -84,9 +83,8 @@ class _OrgCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => context.router.push(
-            OrganizationDetailRoute(orgId: org.id),
-          ),
+          onTap: () =>
+              context.router.push(OrganizationDetailRoute(orgId: org.id)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(

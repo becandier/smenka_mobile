@@ -45,11 +45,7 @@ enum _ActiveBound { from, to }
 
 @RoutePage()
 class DateRangePickerPage extends StatefulWidget {
-  const DateRangePickerPage({
-    this.initialFrom,
-    this.initialTo,
-    super.key,
-  });
+  const DateRangePickerPage({this.initialFrom, this.initialTo, super.key});
 
   /// Предзаполненная нижняя граница (локальный день).
   final DateTime? initialFrom;
@@ -143,8 +139,9 @@ class _DateRangePickerPageState extends State<DateRangePickerPage> {
                   formatter: _dateFormat,
                   isActive: _activeBound == _ActiveBound.from,
                   onTap: () => setState(() => _activeBound = _ActiveBound.from),
-                  onClear:
-                      _from == null ? null : () => setState(() => _from = null),
+                  onClear: _from == null
+                      ? null
+                      : () => setState(() => _from = null),
                 ),
               ),
               const SizedBox(width: 12),
@@ -155,8 +152,9 @@ class _DateRangePickerPageState extends State<DateRangePickerPage> {
                   formatter: _dateFormat,
                   isActive: _activeBound == _ActiveBound.to,
                   onTap: () => setState(() => _activeBound = _ActiveBound.to),
-                  onClear:
-                      _to == null ? null : () => setState(() => _to = null),
+                  onClear: _to == null
+                      ? null
+                      : () => setState(() => _to = null),
                 ),
               ),
             ],
@@ -176,9 +174,9 @@ class _DateRangePickerPageState extends State<DateRangePickerPage> {
             Text(
               l10n.errorInvalidDateRange,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: context.appColors.error,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: context.appColors.error),
             ),
             const SizedBox(height: 8),
           ],

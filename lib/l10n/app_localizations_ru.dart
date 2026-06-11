@@ -1254,4 +1254,25 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorValidation => 'Проверьте введённые данные';
+
+  @override
+  String get errorAccountLocked =>
+      'Слишком много попыток входа. Попробуйте позже';
+
+  @override
+  String get errorRateLimitExceeded =>
+      'Слишком много запросов. Подождите немного';
+
+  @override
+  String get errorTooManyCodeAttempts =>
+      'Превышено число попыток. Запросите новый код';
+
+  @override
+  String get commonNoConnection => 'Нет соединения';
+
+  @override
+  String get commonRetry => 'Повторить';
+
+  @override
+  String get shiftOfflineBanner => 'Нет соединения. Проверьте интернет';
 }

@@ -26,15 +26,15 @@ class AppColors extends ThemeExtension<AppColors> {
 
   /// Creates AppColors from an [IColors] implementation
   factory AppColors.fromColors(IColors colors) => AppColors(
-        primary: colors.primary,
-        secondary: colors.secondary,
-        background: colors.background,
-        surface: colors.surface,
-        error: colors.error,
-        success: colors.success,
-        warning: colors.warning,
-        info: colors.info,
-      );
+    primary: colors.primary,
+    secondary: colors.secondary,
+    background: colors.background,
+    surface: colors.surface,
+    error: colors.error,
+    success: colors.success,
+    warning: colors.warning,
+    info: colors.info,
+  );
 
   final Color primary;
   final Color secondary;

@@ -12,16 +12,17 @@ class _MemberTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final data = context
         .select<MembersCubit, ({bool isSelf, bool canManage, String orgId})>(
-      (cubit) => (
-        isSelf: member.userId == cubit.state.currentUserId,
-        canManage: cubit.state.canManage,
-        orgId: cubit.orgId,
-      ),
-    );
+          (cubit) => (
+            isSelf: member.userId == cubit.state.currentUserId,
+            canManage: cubit.state.canManage,
+            orgId: cubit.orgId,
+          ),
+        );
     final isSelf = data.isSelf;
     final canManage = data.canManage;
 
-    final joinedDate = '${member.joinedAt.day.toString().padLeft(2, '0')}.'
+    final joinedDate =
+        '${member.joinedAt.day.toString().padLeft(2, '0')}.'
         '${member.joinedAt.month.toString().padLeft(2, '0')}.'
         '${member.joinedAt.year}';
 

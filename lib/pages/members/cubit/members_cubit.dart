@@ -10,10 +10,10 @@ class MembersCubit extends Cubit<MembersState> {
     required String orgId,
     required OrganizationRepository organizationRepository,
     required UserRepository userRepository,
-  })  : _orgId = orgId,
-        _organizationRepository = organizationRepository,
-        _userRepository = userRepository,
-        super(const MembersState()) {
+  }) : _orgId = orgId,
+       _organizationRepository = organizationRepository,
+       _userRepository = userRepository,
+       super(const MembersState()) {
     _init();
   }
 
@@ -25,11 +25,7 @@ class MembersCubit extends Cubit<MembersState> {
   String get currentUserId => state.currentUserId;
 
   Future<void> _init() async {
-    await Future.wait([
-      _loadCurrentUser(),
-      _loadViewerRole(),
-      loadMembers(),
-    ]);
+    await Future.wait([_loadCurrentUser(), _loadViewerRole(), loadMembers()]);
   }
 
   Future<void> _loadCurrentUser() async {

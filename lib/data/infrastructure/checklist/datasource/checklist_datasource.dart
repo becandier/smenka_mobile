@@ -41,11 +41,7 @@ class ChecklistDataSource {
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/organizations/$orgId/checklist-templates',
-      data: {
-        'name': name,
-        'type': type,
-        'is_required': isRequired,
-      },
+      data: {'name': name, 'type': type, 'is_required': isRequired},
     );
     return ChecklistTemplateDto.fromJson(response.data!);
   }
@@ -89,10 +85,7 @@ class ChecklistDataSource {
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/organizations/$orgId/checklist-templates/$templateId/items',
-      data: {
-        'text': text,
-        'is_required': isRequired,
-      },
+      data: {'text': text, 'is_required': isRequired},
     );
     return ChecklistTemplateItemDto.fromJson(response.data!);
   }
@@ -254,10 +247,7 @@ class ChecklistDataSource {
   }) async {
     final response = await _dio.patch<Map<String, dynamic>>(
       '/shifts/$shiftId/checklists/$instanceId/items/$itemId',
-      data: {
-        'is_completed': isCompleted,
-        'comment': comment,
-      },
+      data: {'is_completed': isCompleted, 'comment': comment},
     );
     return ChecklistInstanceItemDto.fromJson(response.data!);
   }

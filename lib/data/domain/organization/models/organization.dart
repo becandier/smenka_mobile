@@ -25,9 +25,9 @@ extension OrgMembershipRoleX on OrgMembershipRole? {
   bool get isOwner => this == OrgMembershipRole.owner;
 
   MemberRole? get asSystemRole => switch (this) {
-        OrgMembershipRole.admin => MemberRole.admin,
-        OrgMembershipRole.employee => MemberRole.employee,
-        OrgMembershipRole.owner => null,
-        null => null,
-      };
+    OrgMembershipRole.admin => MemberRole.admin,
+    OrgMembershipRole.employee => MemberRole.employee,
+    OrgMembershipRole.owner => null,
+    null => null,
+  };
 }

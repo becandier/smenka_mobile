@@ -51,11 +51,7 @@ class _DetailInfoSection extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    this.value,
-    this.trailing,
-  });
+  const _InfoRow({required this.label, this.value, this.trailing});
 
   final String label;
   final String? value;
@@ -73,9 +69,7 @@ class _InfoRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.secondary,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: colors.secondary),
           ),
           if (trailing case final trailingWidget?)
             trailingWidget
@@ -120,10 +114,7 @@ class _StatusBadge extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             DecoratedBox(
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               child: const SizedBox(width: 8, height: 8),
             ),
             const SizedBox(width: 6),

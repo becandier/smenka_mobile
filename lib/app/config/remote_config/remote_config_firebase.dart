@@ -20,8 +20,9 @@ class AppConfigRemoteFirebase extends AppConfigRemote {
         await remoteConfig.setConfigSettings(
           RemoteConfigSettings(
             fetchTimeout: const Duration(seconds: 10),
-            minimumFetchInterval:
-                kDebugMode ? Duration.zero : const Duration(hours: 12),
+            minimumFetchInterval: kDebugMode
+                ? Duration.zero
+                : const Duration(hours: 12),
           ),
         );
         await remoteConfig.fetchAndActivate();

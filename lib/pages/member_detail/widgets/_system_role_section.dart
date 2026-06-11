@@ -9,8 +9,11 @@ class _SystemRoleSection extends StatelessWidget {
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocSelector<MemberDetailCubit, MemberDetailState,
-        ({MemberRole role, bool busy})>(
+    return BlocSelector<
+      MemberDetailCubit,
+      MemberDetailState,
+      ({MemberRole role, bool busy})
+    >(
       selector: (state) => (
         role: state.member.role,
         busy: state.actionStatus == FeatureStatus.loading,

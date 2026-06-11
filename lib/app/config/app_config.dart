@@ -1,10 +1,8 @@
 import 'package:smenka_mobile/app/config/_config.dart';
 
 class AppConfig {
-  AppConfig({
-    required AppConfigRemote remoteConfig,
-    required this.flavor,
-  }) : _remoteConfig = remoteConfig {
+  AppConfig({required AppConfigRemote remoteConfig, required this.flavor})
+    : _remoteConfig = remoteConfig {
     _init();
   }
 
@@ -14,8 +12,9 @@ class AppConfig {
 
   void _init() {
     final isProd = flavor == Flavors.prod;
-    endPoint =
-        isProd ? _getString('ENDPOINT_PROD') : _getString('ENDPOINT_DEV');
+    endPoint = isProd
+        ? _getString('ENDPOINT_PROD')
+        : _getString('ENDPOINT_DEV');
     privacyPolicy = _getString('PRIVACY_POLICY');
     minVersion = _getString('MIN_VERSION');
     techWork = _getBool('TECH_WORK');

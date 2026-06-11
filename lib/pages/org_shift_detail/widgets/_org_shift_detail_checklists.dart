@@ -87,10 +87,12 @@ class _OrgShiftChecklistsBody extends StatelessWidget {
               );
             }
 
-            final start =
-                items.where((i) => i.type == ChecklistType.shiftStart).toList();
-            final end =
-                items.where((i) => i.type == ChecklistType.shiftEnd).toList();
+            final start = items
+                .where((i) => i.type == ChecklistType.shiftStart)
+                .toList();
+            final end = items
+                .where((i) => i.type == ChecklistType.shiftEnd)
+                .toList();
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,9 +137,9 @@ class _GroupHeader extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: context.appColors.secondary,
-            ),
+          fontWeight: FontWeight.w600,
+          color: context.appColors.secondary,
+        ),
       ),
     );
   }

@@ -13,11 +13,11 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
     required OrganizationRepository organizationRepository,
     required OrganizationRoleRepository roleRepository,
     required ChecklistRepository checklistRepository,
-  })  : _orgId = orgId,
-        _organizationRepository = organizationRepository,
-        _roleRepository = roleRepository,
-        _checklistRepository = checklistRepository,
-        super(MemberDetailState(member: member)) {
+  }) : _orgId = orgId,
+       _organizationRepository = organizationRepository,
+       _roleRepository = roleRepository,
+       _checklistRepository = checklistRepository,
+       super(MemberDetailState(member: member)) {
     _init();
   }
 
@@ -31,11 +31,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
   Future<void> _init() async {
     await _loadViewerRole();
     if (!state.canManage) return;
-    await Future.wait([
-      loadOverrides(),
-      loadEffective(),
-      loadAvailableRoles(),
-    ]);
+    await Future.wait([loadOverrides(), loadEffective(), loadAvailableRoles()]);
   }
 
   Future<void> _loadViewerRole() async {
@@ -102,10 +98,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
   Future<bool> updateSystemRole(MemberRole role) async {
     if (role == state.member.role) return true;
     emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.loading,
-        actionError: null,
-      ),
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
     final result = await _organizationRepository.updateMemberRole(
       _orgId,
@@ -115,10 +108,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
     return result.fold(
       onSuccess: (member) {
         emit(
-          state.copyWith(
-            member: member,
-            actionStatus: FeatureStatus.success,
-          ),
+          state.copyWith(member: member, actionStatus: FeatureStatus.success),
         );
         return true;
       },
@@ -136,10 +126,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
 
   Future<bool> assignCustomRole(String? roleId) async {
     emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.loading,
-        actionError: null,
-      ),
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
     final result = await _roleRepository.assignRoleToMember(
       _orgId,
@@ -177,10 +164,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
 
   // --- Overrides ---
 
-  Future<bool> setOverride(
-    String templateId,
-    ChecklistOverrideType type,
-  ) {
+  Future<bool> setOverride(String templateId, ChecklistOverrideType type) {
     return _runTemplateAction(templateId, () async {
       final result = await _checklistRepository.setPersonalOverride(
         _orgId,
@@ -226,10 +210,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
 
   Future<bool> removeMember() async {
     emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.loading,
-        actionError: null,
-      ),
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
     final result = await _organizationRepository.removeMember(_orgId, userId);
     return result.fold(

@@ -7,9 +7,9 @@ class ShiftChecklistsCubit extends Cubit<ShiftChecklistsState> {
   ShiftChecklistsCubit({
     required String shiftId,
     required ChecklistRepository checklistRepository,
-  })  : _shiftId = shiftId,
-        _checklistRepository = checklistRepository,
-        super(const ShiftChecklistsState()) {
+  }) : _shiftId = shiftId,
+       _checklistRepository = checklistRepository,
+       super(const ShiftChecklistsState()) {
     loadChecklists();
   }
 

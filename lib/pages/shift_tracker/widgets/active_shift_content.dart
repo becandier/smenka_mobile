@@ -113,9 +113,9 @@ class _ActiveShiftContent extends StatelessWidget {
 
     var hasIncompleteRequired = false;
     if (shift != null && shift.organizationId != null) {
-      final task = await context
-          .read<ChecklistRepository>()
-          .getShiftChecklists(shift.id);
+      final task = await context.read<ChecklistRepository>().getShiftChecklists(
+        shift.id,
+      );
       hasIncompleteRequired = task.fold(
         onSuccess: (items) => items.any(
           (i) => i.isRequired && i.status != ChecklistInstanceStatus.completed,

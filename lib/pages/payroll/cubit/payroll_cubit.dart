@@ -11,10 +11,10 @@ class PayrollCubit extends Cubit<PayrollState> {
     required String orgId,
     required PayrollRepository payrollRepository,
     required OrganizationRepository organizationRepository,
-  })  : _orgId = orgId,
-        _payrollRepository = payrollRepository,
-        _organizationRepository = organizationRepository,
-        super(const PayrollState()) {
+  }) : _orgId = orgId,
+       _payrollRepository = payrollRepository,
+       _organizationRepository = organizationRepository,
+       super(const PayrollState()) {
     load();
     loadMembers();
   }
@@ -34,9 +34,9 @@ class PayrollCubit extends Cubit<PayrollState> {
 
     final (DateTime? dateFrom, DateTime? dateTo) = switch (state.preset) {
       final preset? => () {
-          final bounds = preset.boundsUtc(DateTime.now());
-          return (bounds.fromUtc, bounds.toUtc);
-        }(),
+        final bounds = preset.boundsUtc(DateTime.now());
+        return (bounds.fromUtc, bounds.toUtc);
+      }(),
       null => (state.customFrom, state.customTo),
     };
 
@@ -94,9 +94,7 @@ class PayrollCubit extends Cubit<PayrollState> {
       if (state.isCustomRange) setPreset(PeriodPreset.month);
       return;
     }
-    emit(
-      state.copyWith(preset: null, customFrom: dateFrom, customTo: dateTo),
-    );
+    emit(state.copyWith(preset: null, customFrom: dateFrom, customTo: dateTo));
     load();
   }
 }

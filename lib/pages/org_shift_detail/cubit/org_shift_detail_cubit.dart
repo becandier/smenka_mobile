@@ -12,10 +12,10 @@ class OrgShiftDetailCubit extends Cubit<OrgShiftDetailState> {
     required String orgId,
     required String shiftId,
     required OrganizationRepository organizationRepository,
-  })  : _orgId = orgId,
-        _shiftId = shiftId,
-        _organizationRepository = organizationRepository,
-        super(const OrgShiftDetailState()) {
+  }) : _orgId = orgId,
+       _shiftId = shiftId,
+       _organizationRepository = organizationRepository,
+       super(const OrgShiftDetailState()) {
     load();
   }
 

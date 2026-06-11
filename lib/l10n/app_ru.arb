@@ -542,5 +542,11 @@
     "errorRateNotFound": "Запись о ставке не найдена",
     "errorRateEffectiveFromTaken": "На эту дату у сотрудника уже есть ставка. Выберите другую дату или исправьте существующую.",
     "errorMemberNotFound": "Сотрудник не найден",
-    "errorValidation": "Проверьте введённые данные"
+    "errorValidation": "Проверьте введённые данные",
+    "errorAccountLocked": "Слишком много попыток входа. Попробуйте позже",
+    "errorRateLimitExceeded": "Слишком много запросов. Подождите немного",
+    "errorTooManyCodeAttempts": "Превышено число попыток. Запросите новый код",
+    "commonNoConnection": "Нет соединения",
+    "commonRetry": "Повторить",
+    "shiftOfflineBanner": "Нет соединения. Проверьте интернет"
 }

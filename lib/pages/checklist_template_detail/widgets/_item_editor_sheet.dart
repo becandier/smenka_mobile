@@ -48,8 +48,9 @@ class _ItemEditorSheetState extends State<_ItemEditorSheet> {
           const SizedBox(height: 12),
           SwitchListTile.adaptive(
             value: _isRequired,
-            onChanged:
-                _submitting ? null : (v) => setState(() => _isRequired = v),
+            onChanged: _submitting
+                ? null
+                : (v) => setState(() => _isRequired = v),
             title: Text(l10n.checklistTemplateItemRequiredLabel),
             contentPadding: EdgeInsets.zero,
           ),
@@ -75,11 +76,7 @@ class _ItemEditorSheetState extends State<_ItemEditorSheet> {
     final item = widget.item;
     final ok = item == null
         ? await cubit.addItem(text: text, isRequired: _isRequired)
-        : await cubit.updateItem(
-            item.id,
-            text: text,
-            isRequired: _isRequired,
-          );
+        : await cubit.updateItem(item.id, text: text, isRequired: _isRequired);
 
     if (!mounted) return;
     setState(() => _submitting = false);

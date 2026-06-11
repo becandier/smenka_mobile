@@ -13,9 +13,9 @@ class AuthRepositoryImpl with TaskHandler implements AuthRepository {
     required AuthDataSource dataSource,
     required AuthTokenStorage tokenStorage,
     required AuthStateNotifier authNotifier,
-  })  : _dataSource = dataSource,
-        _tokenStorage = tokenStorage,
-        _authNotifier = authNotifier;
+  }) : _dataSource = dataSource,
+       _tokenStorage = tokenStorage,
+       _authNotifier = authNotifier;
 
   final AuthDataSource _dataSource;
   final AuthTokenStorage _tokenStorage;

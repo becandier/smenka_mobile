@@ -21,10 +21,7 @@ part '../widgets/_org_navigation_section.dart';
 
 @RoutePage()
 class OrganizationDetailPage extends StatelessWidget {
-  const OrganizationDetailPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const OrganizationDetailPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -49,46 +46,52 @@ class _OrganizationDetailView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.orgDetailTitle),
-        centerTitle: true,
-      ),
-      body: SectionDataWrapper<OrganizationDetailCubit, OrganizationDetailState,
-          Organization>(
-        selector: (state) => state.organization,
-        onRetry: () => context.read<OrganizationDetailCubit>().refresh(),
-        contentBuilder: (org) {
-          return RefreshIndicator.adaptive(
-            onRefresh: () => context.read<OrganizationDetailCubit>().refresh(),
-            child: BlocSelector<OrganizationDetailCubit,
-                OrganizationDetailState, ({bool isOwner, bool isAdminOrOwner})>(
-              selector: (state) {
-                final cubit = context.read<OrganizationDetailCubit>();
-                return (
-                  isOwner: cubit.isOwner,
-                  isAdminOrOwner: cubit.isAdminOrOwner,
-                );
-              },
-              builder: (context, permissions) {
-                return ListView(
-                  padding: const EdgeInsets.only(bottom: 32),
-                  children: [
-                    _OrgHeader(organization: org),
-                    const SizedBox(height: 24),
-                    const _OrgNavigationSection(),
-                    const SizedBox(height: 24),
-                    if (permissions.isOwner) ...[
-                      _OrgInviteSection(organization: org),
-                      const SizedBox(height: 24),
-                    ],
-                    _OrgActionsSection(organization: org),
-                  ],
-                );
-              },
-            ),
-          );
-        },
-      ),
+      appBar: AppBar(title: Text(l10n.orgDetailTitle), centerTitle: true),
+      body:
+          SectionDataWrapper<
+            OrganizationDetailCubit,
+            OrganizationDetailState,
+            Organization
+          >(
+            selector: (state) => state.organization,
+            onRetry: () => context.read<OrganizationDetailCubit>().refresh(),
+            contentBuilder: (org) {
+              return RefreshIndicator.adaptive(
+                onRefresh: () =>
+                    context.read<OrganizationDetailCubit>().refresh(),
+                child:
+                    BlocSelector<
+                      OrganizationDetailCubit,
+                      OrganizationDetailState,
+                      ({bool isOwner, bool isAdminOrOwner})
+                    >(
+                      selector: (state) {
+                        final cubit = context.read<OrganizationDetailCubit>();
+                        return (
+                          isOwner: cubit.isOwner,
+                          isAdminOrOwner: cubit.isAdminOrOwner,
+                        );
+                      },
+                      builder: (context, permissions) {
+                        return ListView(
+                          padding: const EdgeInsets.only(bottom: 32),
+                          children: [
+                            _OrgHeader(organization: org),
+                            const SizedBox(height: 24),
+                            const _OrgNavigationSection(),
+                            const SizedBox(height: 24),
+                            if (permissions.isOwner) ...[
+                              _OrgInviteSection(organization: org),
+                              const SizedBox(height: 24),
+                            ],
+                            _OrgActionsSection(organization: org),
+                          ],
+                        );
+                      },
+                    ),
+              );
+            },
+          ),
     );
   }
 }

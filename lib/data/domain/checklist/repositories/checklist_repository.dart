@@ -51,11 +51,7 @@ abstract class ChecklistRepository {
     bool? isRequired,
   });
 
-  Future<Task<void>> deleteItem(
-    String orgId,
-    String templateId,
-    String itemId,
-  );
+  Future<Task<void>> deleteItem(String orgId, String templateId, String itemId);
 
   Future<Task<void>> reorderItems(
     String orgId,

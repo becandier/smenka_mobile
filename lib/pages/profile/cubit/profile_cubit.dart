@@ -14,17 +14,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     required UserRepository userRepository,
     required OrganizationRepository organizationRepository,
     required AuthCubit authCubit,
-  })  : _userRepository = userRepository,
-        _organizationRepository = organizationRepository,
-        _authCubit = authCubit,
-        super(const ProfileState()) {
-    _orgSubscription =
-        _organizationRepository.watchMyOrganizations().listen((orgs) {
-      emit(
-        state.copyWith(
-          organizations: state.organizations.toSuccess(orgs),
-        ),
-      );
+  }) : _userRepository = userRepository,
+       _organizationRepository = organizationRepository,
+       _authCubit = authCubit,
+       super(const ProfileState()) {
+    _orgSubscription = _organizationRepository.watchMyOrganizations().listen((
+      orgs,
+    ) {
+      emit(state.copyWith(organizations: state.organizations.toSuccess(orgs)));
     });
     _init();
   }
@@ -82,10 +79,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void resetUpdateStatus() {
     emit(
-      state.copyWith(
-        updateStatus: FeatureStatus.initial,
-        updateError: null,
-      ),
+      state.copyWith(updateStatus: FeatureStatus.initial, updateError: null),
     );
   }
 

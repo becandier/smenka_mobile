@@ -95,7 +95,8 @@ class _PaginatedSliverListState<C extends StateStreamable<S>, S, T>
           // Empty
           if (sectionData.isEmpty && !sectionData.isLoading) {
             return SliverToBoxAdapter(
-              child: widget.emptyBuilder?.call() ??
+              child:
+                  widget.emptyBuilder?.call() ??
                   Center(
                     child: Text(
                       context.l10n.noData,
@@ -110,7 +111,8 @@ class _PaginatedSliverListState<C extends StateStreamable<S>, S, T>
               sectionData.data.length + (sectionData.hasMore ? 1 : 0);
 
           return SliverList.separated(
-            separatorBuilder: widget.separatorBuilder ??
+            separatorBuilder:
+                widget.separatorBuilder ??
                 (context, index) => const SizedBox.shrink(),
             itemCount: itemCount,
             itemBuilder: (context, index) {
@@ -218,7 +220,8 @@ class _PaginatedSliverGridState<C extends StateStreamable<S>, S, T>
           // Empty
           if (sectionData.isEmpty && !sectionData.isLoading) {
             return SliverToBoxAdapter(
-              child: widget.emptyBuilder?.call() ??
+              child:
+                  widget.emptyBuilder?.call() ??
                   Center(
                     child: Text(
                       context.l10n.noData,
@@ -234,19 +237,16 @@ class _PaginatedSliverGridState<C extends StateStreamable<S>, S, T>
 
           return SliverGrid(
             gridDelegate: widget.gridDelegate,
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (index == sectionData.data.length) {
-                  return const _PaginationLoader();
-                }
-                return widget.itemBuilder(
-                  context,
-                  sectionData.data[index],
-                  index,
-                );
-              },
-              childCount: itemCount,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              if (index == sectionData.data.length) {
+                return const _PaginationLoader();
+              }
+              return widget.itemBuilder(
+                context,
+                sectionData.data[index],
+                index,
+              );
+            }, childCount: itemCount),
           );
         },
       ),

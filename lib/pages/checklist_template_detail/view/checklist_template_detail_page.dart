@@ -57,8 +57,10 @@ class _TemplateDetailView extends StatelessWidget {
         title: Text(l10n.checklistTemplateDetailTitle),
         centerTitle: true,
         actions: [
-          BlocBuilder<ChecklistTemplateDetailCubit,
-              ChecklistTemplateDetailState>(
+          BlocBuilder<
+            ChecklistTemplateDetailCubit,
+            ChecklistTemplateDetailState
+          >(
             buildWhen: (p, c) =>
                 p.template.data?.isArchived != c.template.data?.isArchived,
             builder: (context, state) {
@@ -75,28 +77,32 @@ class _TemplateDetailView extends StatelessWidget {
           ),
         ],
       ),
-      body: SectionDataWrapper<ChecklistTemplateDetailCubit,
-          ChecklistTemplateDetailState, ChecklistTemplateDetail>(
-        selector: (state) => state.template,
-        onRetry: () =>
-            context.read<ChecklistTemplateDetailCubit>().loadTemplate(),
-        contentBuilder: (detail) => RefreshIndicator.adaptive(
-          onRefresh: () =>
-              context.read<ChecklistTemplateDetailCubit>().loadTemplate(),
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _HeaderSection(detail: detail),
-              const SizedBox(height: 16),
-              _ItemsSection(detail: detail),
-              const SizedBox(height: 16),
-              const _RolesSection(),
-              const SizedBox(height: 16),
-              const _AssignmentsSection(),
-            ],
+      body:
+          SectionDataWrapper<
+            ChecklistTemplateDetailCubit,
+            ChecklistTemplateDetailState,
+            ChecklistTemplateDetail
+          >(
+            selector: (state) => state.template,
+            onRetry: () =>
+                context.read<ChecklistTemplateDetailCubit>().loadTemplate(),
+            contentBuilder: (detail) => RefreshIndicator.adaptive(
+              onRefresh: () =>
+                  context.read<ChecklistTemplateDetailCubit>().loadTemplate(),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  _HeaderSection(detail: detail),
+                  const SizedBox(height: 16),
+                  _ItemsSection(detail: detail),
+                  const SizedBox(height: 16),
+                  const _RolesSection(),
+                  const SizedBox(height: 16),
+                  const _AssignmentsSection(),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 

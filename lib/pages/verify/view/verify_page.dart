@@ -5,6 +5,7 @@ import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/auth/repositories/auth_repository.dart';
+import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/verify/cubit/verify_cubit.dart';
 import 'package:smenka_mobile/pages/verify/cubit/verify_state.dart';
@@ -13,10 +14,7 @@ import 'package:smenka_mobile/widgets/pin_code_field.dart';
 
 @RoutePage()
 class VerifyPage extends StatelessWidget {
-  const VerifyPage({
-    required this.email,
-    super.key,
-  });
+  const VerifyPage({required this.email, super.key});
 
   final String email;
 
@@ -61,10 +59,13 @@ class _VerifyViewState extends State<_VerifyView> {
             }
 
             if (state.status == FeatureStatus.error) {
-              final error = state.error;
-              if (error != null) {
-                context.modals.showError(error);
-              }
+              context.modals.showError(
+                localizedErrorMessage(
+                  context,
+                  code: state.errorCode,
+                  fallback: state.error,
+                ),
+              );
               _pinKey.currentState?.clear();
             }
           },
@@ -78,12 +79,25 @@ class _VerifyViewState extends State<_VerifyView> {
             context.modals.showInfo(l10n.authCodeResent);
           },
         ),
+        // Ошибка повторной отправки кода (напр. 429 RATE_LIMIT_EXCEEDED):
+        // resendCode не меняет status, поэтому ловим отдельно.
+        BlocListener<VerifyCubit, VerifyState>(
+          listenWhen: (prev, curr) =>
+              prev.isResending && !curr.isResending && curr.error != null,
+          listener: (context, state) {
+            context.modals.showError(
+              localizedErrorMessage(
+                context,
+                code: state.errorCode,
+                fallback: state.error,
+              ),
+            );
+          },
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(
-          leading: BackButton(
-            onPressed: () => context.router.maybePop(),
-          ),
+          leading: BackButton(onPressed: () => context.router.maybePop()),
         ),
         body: SafeArea(
           child: Center(

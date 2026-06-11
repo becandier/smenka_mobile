@@ -16,9 +16,7 @@ class _SettingsSection extends StatelessWidget {
         children: [
           Text(
             l10n.settings,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           Material(
@@ -37,10 +35,7 @@ class _SettingsSection extends StatelessWidget {
                         color: appColors.secondary,
                       ),
                       const SizedBox(width: 12),
-                      Text(
-                        l10n.theme,
-                        style: textTheme.bodyMedium,
-                      ),
+                      Text(l10n.theme, style: textTheme.bodyMedium),
                     ],
                   ),
                   const ThemeButtonWidget(),

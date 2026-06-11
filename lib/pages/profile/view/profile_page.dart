@@ -35,10 +35,7 @@ class _ProfileView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.profileTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.profileTitle), centerTitle: true),
       body: SectionDataWrapper<ProfileCubit, ProfileState, User>(
         selector: (state) => state.user,
         onRetry: () => context.read<ProfileCubit>().refresh(),
@@ -79,10 +76,7 @@ class _LogoutButton extends StatelessWidget {
       child: OutlinedButton.icon(
         onPressed: () => _showLogoutConfirmation(context),
         icon: Icon(Icons.logout, color: appColors.error),
-        label: Text(
-          l10n.logout,
-          style: TextStyle(color: appColors.error),
-        ),
+        label: Text(l10n.logout, style: TextStyle(color: appColors.error)),
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: appColors.error.withValues(alpha: 0.5)),
           minimumSize: const Size(double.infinity, 48),

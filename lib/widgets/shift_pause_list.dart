@@ -22,9 +22,7 @@ class ShiftPauseList extends StatelessWidget {
       children: [
         Text(
           l10n.detailPauses,
-          style: textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 12),
         if (pauses.isEmpty)

@@ -25,6 +25,12 @@ String localizedErrorMessage(
     'RATE_EFFECTIVE_FROM_TAKEN' => l10n.errorRateEffectiveFromTaken,
     'MEMBER_NOT_FOUND' => l10n.errorMemberNotFound,
     'VALIDATION_ERROR' => l10n.errorValidation,
+    // security_hardening: реакция на усиление безопасности бэка
+    'ACCOUNT_LOCKED' => l10n.errorAccountLocked,
+    'RATE_LIMIT_EXCEEDED' => l10n.errorRateLimitExceeded,
+    'TOO_MANY_CODE_ATTEMPTS' => l10n.errorTooManyCodeAttempts,
+    // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
+    'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,
   };
   return mapped ?? fallback ?? l10n.errorOccurred;

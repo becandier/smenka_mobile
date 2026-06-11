@@ -53,9 +53,9 @@ class _EditProfileModalState extends State<EditProfileModal> {
     final phone = _phoneController.text.trim();
 
     context.read<ProfileCubit>().updateProfile(
-          name: name != _initialName ? name : null,
-          phone: phone != _initialPhone ? phone : null,
-        );
+      name: name != _initialName ? name : null,
+      phone: phone != _initialPhone ? phone : null,
+    );
   }
 
   @override

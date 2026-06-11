@@ -9,9 +9,9 @@ class EmployeePickerCubit extends Cubit<EmployeePickerState> {
   EmployeePickerCubit({
     required String orgId,
     required OrganizationRepository organizationRepository,
-  })  : _orgId = orgId,
-        _organizationRepository = organizationRepository,
-        super(const EmployeePickerState()) {
+  }) : _orgId = orgId,
+       _organizationRepository = organizationRepository,
+       super(const EmployeePickerState()) {
     load();
   }
 

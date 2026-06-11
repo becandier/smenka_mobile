@@ -12,10 +12,10 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     required String instanceId,
     required ChecklistRepository checklistRepository,
     bool readOnly = false,
-  })  : _shiftId = shiftId,
-        _instanceId = instanceId,
-        _checklistRepository = checklistRepository,
-        super(ChecklistFillState(readOnly: readOnly)) {
+  }) : _shiftId = shiftId,
+       _instanceId = instanceId,
+       _checklistRepository = checklistRepository,
+       super(ChecklistFillState(readOnly: readOnly)) {
     loadInstance();
   }
 
@@ -108,10 +108,7 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
         final newStatuses = {...state.itemStatuses};
         newStatuses[item.id] = FeatureStatus.error;
         emit(
-          state.copyWith(
-            itemStatuses: newStatuses,
-            saveError: error.message,
-          ),
+          state.copyWith(itemStatuses: newStatuses, saveError: error.message),
         );
       },
     );

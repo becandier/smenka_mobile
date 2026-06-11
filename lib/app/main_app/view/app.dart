@@ -42,9 +42,7 @@ part 'loading_app.dart';
 part 'success_app.dart';
 
 class App extends StatelessWidget {
-  const App({
-    super.key,
-  });
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -64,31 +62,31 @@ class _AppView extends StatelessWidget {
       builder: (context, state) {
         return switch (state) {
           MainAppStateSuccess() => _SuccessApp(
-              appConfig: state.appConfig,
-              sharedPreferences: state.sharedPreferences,
-              packageInfo: state.packageInfo,
-              talker: state.talker,
-              dio: state.dio,
-              debugRepository: state.debugRepository,
-              themeMode: state.themeMode,
-              authNotifier: state.authNotifier,
-              authRepository: state.authRepository,
-              shiftRepository: state.shiftRepository,
-              organizationRepository: state.organizationRepository,
-              organizationRoleRepository: state.organizationRoleRepository,
-              checklistRepository: state.checklistRepository,
-              userRepository: state.userRepository,
-              locationRepository: state.locationRepository,
-              payrollRepository: state.payrollRepository,
-              deepLinkService: state.deepLinkService,
-              pendingInviteStorage: state.pendingInviteStorage,
-              shiftContextStorage: state.shiftContextStorage,
-            ),
+            appConfig: state.appConfig,
+            sharedPreferences: state.sharedPreferences,
+            packageInfo: state.packageInfo,
+            talker: state.talker,
+            dio: state.dio,
+            debugRepository: state.debugRepository,
+            themeMode: state.themeMode,
+            authNotifier: state.authNotifier,
+            authRepository: state.authRepository,
+            shiftRepository: state.shiftRepository,
+            organizationRepository: state.organizationRepository,
+            organizationRoleRepository: state.organizationRoleRepository,
+            checklistRepository: state.checklistRepository,
+            userRepository: state.userRepository,
+            locationRepository: state.locationRepository,
+            payrollRepository: state.payrollRepository,
+            deepLinkService: state.deepLinkService,
+            pendingInviteStorage: state.pendingInviteStorage,
+            shiftContextStorage: state.shiftContextStorage,
+          ),
           MainAppStateLoading() => const _LoadingApp(),
           MainAppStateError() => _ErrorApp(
-              error: state.error,
-              stackTrace: state.stackTrace,
-            ),
+            error: state.error,
+            stackTrace: state.stackTrace,
+          ),
         };
       },
     );

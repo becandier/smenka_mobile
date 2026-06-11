@@ -17,10 +17,7 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 /// «Зарплата» — отчёт «кому сколько заплатить» за период (admin/owner).
 @RoutePage()
 class PayrollPage extends StatelessWidget {
-  const PayrollPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const PayrollPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -58,10 +55,7 @@ class _PayrollView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.payrollReportTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.payrollReportTitle), centerTitle: true),
       body: Column(
         children: [
           Padding(
@@ -110,18 +104,16 @@ class _PayrollView extends StatelessWidget {
                           ),
                           children: [
                             if (appliedRangeLabel(
-                              context,
-                              payroll.period.dateFrom,
-                              payroll.period.dateTo,
-                            )
+                                  context,
+                                  payroll.period.dateFrom,
+                                  payroll.period.dateTo,
+                                )
                                 case final label?)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 8),
                                 child: Text(
                                   label,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
+                                  style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(
                                         color: context.appColors.secondary,
                                       ),
@@ -236,9 +228,7 @@ class _PayrollItemTile extends StatelessWidget {
       cubit.loadMembers();
       return;
     }
-    context.router.push(
-      MemberDetailRoute(orgId: cubit.orgId, member: member),
-    );
+    context.router.push(MemberDetailRoute(orgId: cubit.orgId, member: member));
   }
 
   @override
@@ -291,9 +281,7 @@ class _PayrollItemTile extends StatelessWidget {
               Text(
                 '${_formatWorkedDuration(context, item.workedSeconds)} · '
                 '${l10n.payrollShiftsCount}: ${item.shiftsCount}',
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.secondary,
-                ),
+                style: textTheme.bodySmall?.copyWith(color: colors.secondary),
               ),
               if (item.hasMissingRate) ...[
                 const SizedBox(height: 6),

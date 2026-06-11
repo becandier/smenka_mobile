@@ -10,9 +10,9 @@ class OrgShiftsCubit extends Cubit<OrgShiftsState>
   OrgShiftsCubit({
     required String orgId,
     required OrganizationRepository organizationRepository,
-  })  : _orgId = orgId,
-        _organizationRepository = organizationRepository,
-        super(const OrgShiftsState()) {
+  }) : _orgId = orgId,
+       _organizationRepository = organizationRepository,
+       super(const OrgShiftsState()) {
     loadShifts();
   }
 
@@ -22,19 +22,19 @@ class OrgShiftsCubit extends Cubit<OrgShiftsState>
   String get orgId => _orgId;
 
   Future<void> loadShifts({bool isRefresh = true}) => fetchPaginated<Shift>(
-        getSection: (s) => s.shifts,
-        updateState: (s, section) => s.copyWith(shifts: section),
-        fetch: (page, perPage) => _organizationRepository.getShifts(
-          _orgId,
-          userId: state.filterUserId,
-          status: state.filterStatus,
-          dateFrom: state.filterDateFrom,
-          dateTo: state.filterDateTo,
-          limit: perPage,
-          offset: (page - 1) * perPage,
-        ),
-        isRefresh: isRefresh,
-      );
+    getSection: (s) => s.shifts,
+    updateState: (s, section) => s.copyWith(shifts: section),
+    fetch: (page, perPage) => _organizationRepository.getShifts(
+      _orgId,
+      userId: state.filterUserId,
+      status: state.filterStatus,
+      dateFrom: state.filterDateFrom,
+      dateTo: state.filterDateTo,
+      limit: perPage,
+      offset: (page - 1) * perPage,
+    ),
+    isRefresh: isRefresh,
+  );
 
   void setStatusFilter(ShiftStatus? status) {
     emit(state.copyWith(filterStatus: status));

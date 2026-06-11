@@ -12,7 +12,7 @@ class OrganizationRepositoryImpl
     with TaskHandler
     implements OrganizationRepository {
   OrganizationRepositoryImpl({required OrganizationDataSource dataSource})
-      : _dataSource = dataSource;
+    : _dataSource = dataSource;
 
   final OrganizationDataSource _dataSource;
 

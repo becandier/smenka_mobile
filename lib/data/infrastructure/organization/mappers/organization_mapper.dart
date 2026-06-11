@@ -3,11 +3,11 @@ import 'package:smenka_mobile/data/infrastructure/organization/datasource/dto/_d
 import 'package:smenka_mobile/data/infrastructure/organization_role/mappers/_mappers.dart';
 
 OrgMembershipRole? _parseMyRole(String? value) => switch (value) {
-      'owner' => OrgMembershipRole.owner,
-      'admin' => OrgMembershipRole.admin,
-      'employee' => OrgMembershipRole.employee,
-      _ => null,
-    };
+  'owner' => OrgMembershipRole.owner,
+  'admin' => OrgMembershipRole.admin,
+  'employee' => OrgMembershipRole.employee,
+  _ => null,
+};
 
 extension OrganizationMapper on OrganizationDto {
   Organization toDomain() {

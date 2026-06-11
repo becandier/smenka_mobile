@@ -57,10 +57,7 @@ class _ShimmerPlaceholder extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: const SizedBox(
-        height: 72,
-        width: double.infinity,
-      ),
+      child: const SizedBox(height: 72, width: double.infinity),
     );
   }
 }

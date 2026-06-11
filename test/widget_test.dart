@@ -25,8 +25,9 @@ void main() {
     });
 
     test('toError keeps previous data and stores code', () {
-      final section =
-          const SectionData<int>().toSuccess(42).toError('boom', code: 'X');
+      final section = const SectionData<int>()
+          .toSuccess(42)
+          .toError('boom', code: 'X');
 
       expect(section.data, 42);
       expect(section.status, FeatureStatus.error);

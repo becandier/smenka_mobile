@@ -9,11 +9,7 @@ class _CenterMarker extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: EdgeInsets.only(bottom: 48),
-          child: Icon(
-            Icons.location_on,
-            size: 48,
-            color: Colors.red,
-          ),
+          child: Icon(Icons.location_on, size: 48, color: Colors.red),
         ),
       ),
     );

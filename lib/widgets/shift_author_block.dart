@@ -46,8 +46,8 @@ class ShiftAuthorBlock extends StatelessWidget {
 
   String? get _secondary =>
       (_nameTrimmed.isNotEmpty && _emailTrimmed.isNotEmpty)
-          ? _emailTrimmed
-          : null;
+      ? _emailTrimmed
+      : null;
 
   bool get _isFormer =>
       _parseRole(role) == null && (customRoleName?.trim().isEmpty ?? true);

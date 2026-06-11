@@ -11,15 +11,10 @@ import 'package:smenka_mobile/core/theme/colors/light_colors.dart';
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData get lightTheme => _buildTheme(
-        LightColors(),
-        Brightness.light,
-      );
+  static ThemeData get lightTheme =>
+      _buildTheme(LightColors(), Brightness.light);
 
-  static ThemeData get darkTheme => _buildTheme(
-        DarkColors(),
-        Brightness.dark,
-      );
+  static ThemeData get darkTheme => _buildTheme(DarkColors(), Brightness.dark);
 
   static ThemeData _buildTheme(IColors colors, Brightness brightness) {
     final appColors = AppColors.fromColors(colors);
@@ -44,9 +39,7 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 0.5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         color: colors.surface,
         surfaceTintColor: Colors.transparent,
       ),
@@ -119,9 +112,7 @@ class AppTheme {
         showDragHandle: true,
       ),
       dialogTheme: DialogThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         surfaceTintColor: Colors.transparent,
       ),
       dividerTheme: DividerThemeData(
@@ -132,27 +123,19 @@ class AppTheme {
         elevation: 2,
         backgroundColor: colors.primary,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       chipTheme: ChipThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         side: BorderSide.none,
       ),
       listTileTheme: ListTileThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

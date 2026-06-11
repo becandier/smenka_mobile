@@ -36,14 +36,12 @@ class _SuperAdminView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.superAdminTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.superAdminTitle), centerTitle: true),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final created =
-              await context.router.push<bool>(const CreateOrgRoute());
+          final created = await context.router.push<bool>(
+            const CreateOrgRoute(),
+          );
           if ((created ?? false) && context.mounted) {
             await context.read<SuperAdminCubit>().loadOrganizations();
           }
@@ -51,32 +49,36 @@ class _SuperAdminView extends StatelessWidget {
         icon: const Icon(Icons.add),
         label: Text(l10n.organizationsCreate),
       ),
-      body: SectionDataWrapper<SuperAdminCubit, SuperAdminState,
-          List<Organization>>(
-        selector: (state) => state.organizations,
-        onRetry: () => context.read<SuperAdminCubit>().loadOrganizations(),
-        contentBuilder: (orgs) {
-          if (orgs.isEmpty) {
-            return AppEmptyState(
-              icon: Icons.business_outlined,
-              title: l10n.superAdminEmpty,
-            );
-          }
+      body:
+          SectionDataWrapper<
+            SuperAdminCubit,
+            SuperAdminState,
+            List<Organization>
+          >(
+            selector: (state) => state.organizations,
+            onRetry: () => context.read<SuperAdminCubit>().loadOrganizations(),
+            contentBuilder: (orgs) {
+              if (orgs.isEmpty) {
+                return AppEmptyState(
+                  icon: Icons.business_outlined,
+                  title: l10n.superAdminEmpty,
+                );
+              }
 
-          return RefreshIndicator.adaptive(
-            onRefresh: () =>
-                context.read<SuperAdminCubit>().loadOrganizations(),
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: orgs.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                return _AdminOrgCard(organization: orgs[index]);
-              },
-            ),
-          );
-        },
-      ),
+              return RefreshIndicator.adaptive(
+                onRefresh: () =>
+                    context.read<SuperAdminCubit>().loadOrganizations(),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: orgs.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    return _AdminOrgCard(organization: orgs[index]);
+                  },
+                ),
+              );
+            },
+          ),
     );
   }
 }

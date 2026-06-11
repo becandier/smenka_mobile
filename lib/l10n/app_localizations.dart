@@ -62,7 +62,7 @@ import 'app_localizations_ru.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -85,11 +85,11 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('ru')];
@@ -2391,6 +2391,42 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Проверьте введённые данные'**
   String get errorValidation;
+
+  /// No description provided for @errorAccountLocked.
+  ///
+  /// In ru, this message translates to:
+  /// **'Слишком много попыток входа. Попробуйте позже'**
+  String get errorAccountLocked;
+
+  /// No description provided for @errorRateLimitExceeded.
+  ///
+  /// In ru, this message translates to:
+  /// **'Слишком много запросов. Подождите немного'**
+  String get errorRateLimitExceeded;
+
+  /// No description provided for @errorTooManyCodeAttempts.
+  ///
+  /// In ru, this message translates to:
+  /// **'Превышено число попыток. Запросите новый код'**
+  String get errorTooManyCodeAttempts;
+
+  /// No description provided for @commonNoConnection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет соединения'**
+  String get commonNoConnection;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get commonRetry;
+
+  /// No description provided for @shiftOfflineBanner.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет соединения. Проверьте интернет'**
+  String get shiftOfflineBanner;
 }
 
 class _AppLocalizationsDelegate
@@ -2418,8 +2454,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }

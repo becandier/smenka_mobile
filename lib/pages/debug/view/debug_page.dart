@@ -26,9 +26,7 @@ class _DebugView extends StatelessWidget {
     return BlocBuilder<DebugCubit, DebugState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(context.l10n.debugMode),
-          ),
+          appBar: AppBar(title: Text(context.l10n.debugMode)),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               context.read<MainAppCubit>().refreshApp();
@@ -37,9 +35,7 @@ class _DebugView extends StatelessWidget {
           ),
           body: state.status == FeatureStatus.loading
               ? const CircularProgressIndicator.adaptive()
-              : _DebugContent(
-                  flavor: state.flavor,
-                ),
+              : _DebugContent(flavor: state.flavor),
         );
       },
     );
@@ -47,9 +43,7 @@ class _DebugView extends StatelessWidget {
 }
 
 class _DebugContent extends StatelessWidget {
-  const _DebugContent({
-    required this.flavor,
-  });
+  const _DebugContent({required this.flavor});
 
   final Flavors? flavor;
 
@@ -73,12 +67,7 @@ class _DebugContent extends StatelessWidget {
               child: SimpleDialog(
                 title: Text(context.l10n.flavor),
                 children: Flavors.values
-                    .map(
-                      (e) => RadioListTile(
-                        title: Text(e.name),
-                        value: e,
-                      ),
-                    )
+                    .map((e) => RadioListTile(title: Text(e.name), value: e))
                     .toList(),
               ),
             ),
@@ -89,9 +78,7 @@ class _DebugContent extends StatelessWidget {
           title: Text(context.l10n.logs),
           trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () => context.router.pushWidget(
-            TalkerScreen(
-              talker: context.read<Talker>(),
-            ),
+            TalkerScreen(talker: context.read<Talker>()),
           ),
         ),
       ],

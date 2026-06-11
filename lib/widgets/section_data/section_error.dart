@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 class SectionError extends StatelessWidget {
-  const SectionError({
-    required this.error,
-    required this.onRetry,
-    super.key,
-  });
+  const SectionError({required this.error, required this.onRetry, super.key});
 
   final String error;
   final VoidCallback onRetry;
@@ -25,10 +21,7 @@ class SectionError extends StatelessWidget {
             children: [
               Text(error),
               const SizedBox(height: 8),
-              TextButton(
-                onPressed: onRetry,
-                child: Text(context.l10n.retry),
-              ),
+              TextButton(onPressed: onRetry, child: Text(context.l10n.retry)),
             ],
           ),
         ),

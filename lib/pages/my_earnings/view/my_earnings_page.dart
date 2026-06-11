@@ -16,10 +16,7 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 /// «Мой заработок» — личный заработок сотрудника за период (org_member).
 @RoutePage()
 class MyEarningsPage extends StatelessWidget {
-  const MyEarningsPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const MyEarningsPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -84,49 +81,53 @@ class _MyEarningsView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: SectionDataWrapper<MyEarningsCubit, MyEarningsState,
-                MyEarnings>(
-              selector: (state) => state.earnings,
-              onRetry: () => context.read<MyEarningsCubit>().load(),
-              contentBuilder: (earnings) {
-                return RefreshIndicator.adaptive(
-                  onRefresh: () => context.read<MyEarningsCubit>().load(),
-                  child: ListView(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      bottom: 32,
-                    ),
-                    children: [
-                      if (appliedRangeLabel(
-                        context,
-                        earnings.period.dateFrom,
-                        earnings.period.dateTo,
-                      )
-                          case final label?)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text(
-                            label,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
+            child:
+                SectionDataWrapper<
+                  MyEarningsCubit,
+                  MyEarningsState,
+                  MyEarnings
+                >(
+                  selector: (state) => state.earnings,
+                  onRetry: () => context.read<MyEarningsCubit>().load(),
+                  contentBuilder: (earnings) {
+                    return RefreshIndicator.adaptive(
+                      onRefresh: () => context.read<MyEarningsCubit>().load(),
+                      child: ListView(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 32,
+                        ),
+                        children: [
+                          if (appliedRangeLabel(
+                                context,
+                                earnings.period.dateFrom,
+                                earnings.period.dateTo,
+                              )
+                              case final label?)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                label,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
                                       color: context.appColors.secondary,
                                     ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      _SummaryCard(earnings: earnings),
-                      const SizedBox(height: 16),
-                      _CurrentRateCard(currentRate: earnings.currentRate),
-                      if (earnings.hasMissingRate) ...[
-                        const SizedBox(height: 16),
-                        const _MissingRateBanner(),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          _SummaryCard(earnings: earnings),
+                          const SizedBox(height: 16),
+                          _CurrentRateCard(currentRate: earnings.currentRate),
+                          if (earnings.hasMissingRate) ...[
+                            const SizedBox(height: 16),
+                            const _MissingRateBanner(),
+                          ],
+                        ],
+                      ),
+                    );
+                  },
+                ),
           ),
         ],
       ),
@@ -243,9 +244,7 @@ class _CurrentRateCard extends StatelessWidget {
             if (rate == null)
               Text(
                 l10n.myEarningsNoRate,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.secondary,
-                ),
+                style: textTheme.bodyMedium?.copyWith(color: colors.secondary),
               )
             else ...[
               Text(
@@ -258,13 +257,9 @@ class _CurrentRateCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 l10n.payrollRateEffectiveFrom(
-                  DateFormat('dd.MM.yyyy').format(
-                    rate.effectiveFrom.toLocal(),
-                  ),
+                  DateFormat('dd.MM.yyyy').format(rate.effectiveFrom.toLocal()),
                 ),
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.secondary,
-                ),
+                style: textTheme.bodySmall?.copyWith(color: colors.secondary),
               ),
             ],
           ],

@@ -13,7 +13,6 @@ import 'package:smenka_mobile/shared/auth/cubit/auth_cubit.dart';
 part 'app_router.gr.dart';
 
 @AutoRouterConfig()
-
 /// App Router for the app
 class AppRouter extends RootStackRouter {
   /// App Router for the app
@@ -25,7 +24,8 @@ class AppRouter extends RootStackRouter {
   @override
   late final List<AutoRouteGuard> guards = [
     AutoRouteGuard.simple((resolver, router) {
-      final isAuthRoute = resolver.routeName == LoginRoute.name ||
+      final isAuthRoute =
+          resolver.routeName == LoginRoute.name ||
           resolver.routeName == VerifyRoute.name;
 
       if (authNotifier.isAuthenticated) {
@@ -48,181 +48,143 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
+    AutoRoute(page: LoginRoute.page, path: '/login'),
+    AutoRoute(page: VerifyRoute.page, path: '/verify'),
+    AutoRoute(page: DebugRoute.page, path: '/debug'),
+    AutoRoute(
+      path: '/',
+      page: MainRouterRoute.page,
+      children: [
         AutoRoute(
-          page: LoginRoute.page,
-          path: '/login',
-        ),
-        AutoRoute(
-          page: VerifyRoute.page,
-          path: '/verify',
-        ),
-        AutoRoute(
-          page: DebugRoute.page,
-          path: '/debug',
-        ),
-        AutoRoute(
-          path: '/',
-          page: MainRouterRoute.page,
+          path: '',
+          page: ShiftTab.page,
           children: [
             AutoRoute(
-              path: '',
-              page: ShiftTab.page,
-              children: [
-                AutoRoute(
-                  path: 'shift',
-                  initial: true,
-                  page: ShiftTrackerRoute.page,
-                ),
-                AutoRoute(
-                  path: 'shifts/:shiftId/checklists',
-                  page: ShiftChecklistsRoute.page,
-                ),
-                AutoRoute(
-                  path: 'shifts/:shiftId/checklists/:instanceId',
-                  page: ChecklistFillRoute.page,
-                ),
-              ],
+              path: 'shift',
+              initial: true,
+              page: ShiftTrackerRoute.page,
             ),
             AutoRoute(
-              path: 'history',
-              page: HistoryTab.page,
-              children: [
-                AutoRoute(
-                  path: '',
-                  initial: true,
-                  page: ShiftHistoryRoute.page,
-                ),
-                CustomRoute<DateRangePickerResult?>(
-                  path: 'date-range',
-                  page: DateRangePickerRoute.page,
-                  customRouteBuilder: _modalBottomSheetBuilder,
-                ),
-                AutoRoute(
-                  path: 'detail',
-                  page: ShiftDetailRoute.page,
-                ),
-                AutoRoute(
-                  path: 'shifts/:shiftId/checklists',
-                  page: ShiftChecklistsRoute.page,
-                ),
-                AutoRoute(
-                  path: 'shifts/:shiftId/checklists/:instanceId',
-                  page: ChecklistFillRoute.page,
-                ),
-              ],
+              path: 'shifts/:shiftId/checklists',
+              page: ShiftChecklistsRoute.page,
             ),
             AutoRoute(
-              path: 'organizations',
-              page: OrganizationsTab.page,
-              children: [
-                AutoRoute(
-                  path: '',
-                  initial: true,
-                  page: OrganizationsRoute.page,
-                ),
-                CustomRoute<void>(
-                  path: 'join',
-                  page: JoinOrgRoute.page,
-                  customRouteBuilder: _modalBottomSheetBuilder,
-                ),
-                ..._orgDetailRoutes('detail/:orgId'),
-              ],
-            ),
-            AutoRoute(
-              path: 'profile',
-              page: ProfileTab.page,
-              children: [
-                AutoRoute(
-                  path: '',
-                  initial: true,
-                  page: ProfileRoute.page,
-                ),
-                CustomRoute<void>(
-                  path: 'edit',
-                  page: EditProfileRoute.page,
-                  customRouteBuilder: _modalBottomSheetBuilder,
-                ),
-                ..._orgDetailRoutes('org-detail/:orgId'),
-              ],
-            ),
-            AutoRoute(
-              path: 'admin',
-              page: SuperAdminTab.page,
-              children: [
-                AutoRoute(
-                  path: '',
-                  initial: true,
-                  page: SuperAdminRoute.page,
-                ),
-                CustomRoute<void>(
-                  path: 'create-org',
-                  page: CreateOrgRoute.page,
-                  customRouteBuilder: _modalBottomSheetBuilder,
-                ),
-                ..._orgDetailRoutes('org-detail/:orgId'),
-              ],
+              path: 'shifts/:shiftId/checklists/:instanceId',
+              page: ChecklistFillRoute.page,
             ),
           ],
         ),
-      ];
+        AutoRoute(
+          path: 'history',
+          page: HistoryTab.page,
+          children: [
+            AutoRoute(path: '', initial: true, page: ShiftHistoryRoute.page),
+            CustomRoute<DateRangePickerResult?>(
+              path: 'date-range',
+              page: DateRangePickerRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
+            AutoRoute(path: 'detail', page: ShiftDetailRoute.page),
+            AutoRoute(
+              path: 'shifts/:shiftId/checklists',
+              page: ShiftChecklistsRoute.page,
+            ),
+            AutoRoute(
+              path: 'shifts/:shiftId/checklists/:instanceId',
+              page: ChecklistFillRoute.page,
+            ),
+          ],
+        ),
+        AutoRoute(
+          path: 'organizations',
+          page: OrganizationsTab.page,
+          children: [
+            AutoRoute(path: '', initial: true, page: OrganizationsRoute.page),
+            CustomRoute<void>(
+              path: 'join',
+              page: JoinOrgRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
+            ..._orgDetailRoutes('detail/:orgId'),
+          ],
+        ),
+        AutoRoute(
+          path: 'profile',
+          page: ProfileTab.page,
+          children: [
+            AutoRoute(path: '', initial: true, page: ProfileRoute.page),
+            CustomRoute<void>(
+              path: 'edit',
+              page: EditProfileRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
+            ..._orgDetailRoutes('org-detail/:orgId'),
+          ],
+        ),
+        AutoRoute(
+          path: 'admin',
+          page: SuperAdminTab.page,
+          children: [
+            AutoRoute(path: '', initial: true, page: SuperAdminRoute.page),
+            CustomRoute<void>(
+              path: 'create-org',
+              page: CreateOrgRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
+            ..._orgDetailRoutes('org-detail/:orgId'),
+          ],
+        ),
+      ],
+    ),
+  ];
 }
 
 /// Общие роуты организации, переиспользуемые в нескольких табах.
 List<AutoRoute> _orgDetailRoutes(String basePath) => [
-      AutoRoute(path: basePath, page: OrganizationDetailRoute.page),
-      AutoRoute(path: '$basePath/members', page: OrgMembersRoute.page),
-      AutoRoute(
-        path: '$basePath/members/:userId',
-        page: MemberDetailRoute.page,
-      ),
-      AutoRoute(path: '$basePath/settings', page: OrgSettingsRoute.page),
-      AutoRoute(path: '$basePath/locations', page: WorkLocationsRoute.page),
-      AutoRoute(
-        path: '$basePath/locations/add',
-        page: AddEditLocationRoute.page,
-      ),
-      AutoRoute(path: '$basePath/roles', page: RolesRoute.page),
-      AutoRoute(
-        path: '$basePath/checklist-templates',
-        page: ChecklistTemplatesRoute.page,
-      ),
-      AutoRoute(
-        path: '$basePath/checklist-templates/:templateId',
-        page: ChecklistTemplateDetailRoute.page,
-      ),
-      AutoRoute(path: '$basePath/shifts', page: OrgShiftsRoute.page),
-      AutoRoute(
-        path: '$basePath/shifts/:shiftId',
-        page: OrgShiftDetailRoute.page,
-      ),
-      // Чек-листы чужой смены (read-only) — доступны из детали орг-смены
-      // в тех же табах (organizations/profile/admin).
-      AutoRoute(
-        path: '$basePath/shifts/:shiftId/checklists/:instanceId',
-        page: ChecklistFillRoute.page,
-      ),
-      CustomRoute<EmployeePickerResult?>(
-        path: '$basePath/employee-picker',
-        page: EmployeePickerRoute.page,
-        customRouteBuilder: _modalBottomSheetBuilder,
-      ),
-      CustomRoute<DateRangePickerResult?>(
-        path: '$basePath/date-range',
-        page: DateRangePickerRoute.page,
-        customRouteBuilder: _modalBottomSheetBuilder,
-      ),
-      AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),
-      AutoRoute(path: '$basePath/my-earnings', page: MyEarningsRoute.page),
-      AutoRoute(path: '$basePath/payroll', page: PayrollRoute.page),
-      CustomRoute<bool?>(
-        path: '$basePath/rate-form',
-        page: RateFormRoute.page,
-        customRouteBuilder: _modalBottomSheetBuilder,
-      ),
-    ];
+  AutoRoute(path: basePath, page: OrganizationDetailRoute.page),
+  AutoRoute(path: '$basePath/members', page: OrgMembersRoute.page),
+  AutoRoute(path: '$basePath/members/:userId', page: MemberDetailRoute.page),
+  AutoRoute(path: '$basePath/settings', page: OrgSettingsRoute.page),
+  AutoRoute(path: '$basePath/locations', page: WorkLocationsRoute.page),
+  AutoRoute(path: '$basePath/locations/add', page: AddEditLocationRoute.page),
+  AutoRoute(path: '$basePath/roles', page: RolesRoute.page),
+  AutoRoute(
+    path: '$basePath/checklist-templates',
+    page: ChecklistTemplatesRoute.page,
+  ),
+  AutoRoute(
+    path: '$basePath/checklist-templates/:templateId',
+    page: ChecklistTemplateDetailRoute.page,
+  ),
+  AutoRoute(path: '$basePath/shifts', page: OrgShiftsRoute.page),
+  AutoRoute(path: '$basePath/shifts/:shiftId', page: OrgShiftDetailRoute.page),
+  // Чек-листы чужой смены (read-only) — доступны из детали орг-смены
+  // в тех же табах (organizations/profile/admin).
+  AutoRoute(
+    path: '$basePath/shifts/:shiftId/checklists/:instanceId',
+    page: ChecklistFillRoute.page,
+  ),
+  CustomRoute<EmployeePickerResult?>(
+    path: '$basePath/employee-picker',
+    page: EmployeePickerRoute.page,
+    customRouteBuilder: _modalBottomSheetBuilder,
+  ),
+  CustomRoute<DateRangePickerResult?>(
+    path: '$basePath/date-range',
+    page: DateRangePickerRoute.page,
+    customRouteBuilder: _modalBottomSheetBuilder,
+  ),
+  AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),
+  AutoRoute(path: '$basePath/my-earnings', page: MyEarningsRoute.page),
+  AutoRoute(path: '$basePath/payroll', page: PayrollRoute.page),
+  CustomRoute<bool?>(
+    path: '$basePath/rate-form',
+    page: RateFormRoute.page,
+    customRouteBuilder: _modalBottomSheetBuilder,
+  ),
+];
 
 @RoutePage(name: 'ShiftTab')
-
 /// Shift Tab Page for the app
 class ShiftTabPage extends AutoRouter {
   /// Shift Tab Page for the app
@@ -230,7 +192,6 @@ class ShiftTabPage extends AutoRouter {
 }
 
 @RoutePage(name: 'HistoryTab')
-
 /// History Tab Page for the app
 class HistoryTabPage extends AutoRouter {
   /// History Tab Page for the app
@@ -238,7 +199,6 @@ class HistoryTabPage extends AutoRouter {
 }
 
 @RoutePage(name: 'OrganizationsTab')
-
 /// Organizations Tab Page for the app
 class OrganizationsTabPage extends StatelessWidget {
   /// Organizations Tab Page for the app
@@ -257,7 +217,6 @@ class OrganizationsTabPage extends StatelessWidget {
 }
 
 @RoutePage(name: 'ProfileTab')
-
 /// Profile Tab Page for the app
 class ProfileTabPage extends StatelessWidget {
   /// Profile Tab Page for the app
@@ -277,7 +236,6 @@ class ProfileTabPage extends StatelessWidget {
 }
 
 @RoutePage(name: 'SuperAdminTab')
-
 /// Super Admin Tab Page for the app
 class SuperAdminTabPage extends AutoRouter {
   /// Super Admin Tab Page for the app

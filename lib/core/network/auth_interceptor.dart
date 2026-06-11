@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
 import 'package:smenka_mobile/data/domain/auth/models/_models.dart';
@@ -15,13 +16,20 @@ class AuthInterceptor extends QueuedInterceptor {
     required AuthTokenStorage tokenStorage,
     required AuthStateNotifier authNotifier,
     required Dio dio,
-  })  : _tokenStorage = tokenStorage,
-        _authNotifier = authNotifier,
-        _dio = dio;
+    @visibleForTesting Dio? refreshDio,
+  }) : _tokenStorage = tokenStorage,
+       _authNotifier = authNotifier,
+       _dio = dio,
+       _refreshDioOverride = refreshDio;
 
   final AuthTokenStorage _tokenStorage;
   final AuthStateNotifier _authNotifier;
   final Dio _dio;
+
+  /// Тестовый сим: подменяет Dio для запроса `/auth/refresh`. В проде `null` —
+  /// используется отдельный «чистый» Dio без интерцепторов
+  /// (см. [_refreshTokens]).
+  final Dio? _refreshDioOverride;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -79,15 +87,17 @@ class AuthInterceptor extends QueuedInterceptor {
 
   /// Обновление токенов через отдельный Dio (без интерцепторов)
   Future<(String, String)> _refreshTokens(String refreshToken) async {
-    final refreshDio = Dio(
-      BaseOptions(
-        baseUrl: _dio.options.baseUrl,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ),
-    );
+    final refreshDio =
+        _refreshDioOverride ??
+        Dio(
+          BaseOptions(
+            baseUrl: _dio.options.baseUrl,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          ),
+        );
 
     final response = await refreshDio.post<Map<String, dynamic>>(
       '/auth/refresh',

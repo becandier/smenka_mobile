@@ -13,7 +13,4 @@ _RegisterResultDto _$RegisterResultDtoFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$RegisterResultDtoToJson(_RegisterResultDto instance) =>
-    <String, dynamic>{
-      'user_id': instance.userId,
-      'message': instance.message,
-    };
+    <String, dynamic>{'user_id': instance.userId, 'message': instance.message};

@@ -78,9 +78,9 @@ class ChecklistInstanceTile extends StatelessWidget {
                       instance.status == ChecklistInstanceStatus.completed
                           ? Icons.check_circle
                           : instance.status ==
-                                  ChecklistInstanceStatus.incomplete
-                              ? Icons.error_outline
-                              : Icons.pending_outlined,
+                                ChecklistInstanceStatus.incomplete
+                          ? Icons.error_outline
+                          : Icons.pending_outlined,
                       color: statusColor,
                       size: 18,
                     ),
@@ -136,9 +136,9 @@ class _Chip extends StatelessWidget {
         child: Text(
           text,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w500,
-              ),
+            color: color,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

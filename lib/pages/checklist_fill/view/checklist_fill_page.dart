@@ -52,52 +52,57 @@ class _ChecklistFillView extends StatelessWidget {
       appBar: AppBar(
         title: BlocBuilder<ChecklistFillCubit, ChecklistFillState>(
           buildWhen: (p, c) => p.instance.data?.name != c.instance.data?.name,
-          builder: (context, state) => Text(
-            state.instance.data?.name ?? l10n.checklistFillTitle,
-          ),
+          builder: (context, state) =>
+              Text(state.instance.data?.name ?? l10n.checklistFillTitle),
         ),
         centerTitle: true,
       ),
-      body: SectionDataWrapper<ChecklistFillCubit, ChecklistFillState,
-          ChecklistInstanceDetail>(
-        selector: (state) => state.instance,
-        onRetry: () => context.read<ChecklistFillCubit>().loadInstance(),
-        contentBuilder: (detail) {
-          final sorted = [...detail.items]
-            ..sort((a, b) => a.position.compareTo(b.position));
-          final completed = sorted.where((i) => i.isCompleted).length;
+      body:
+          SectionDataWrapper<
+            ChecklistFillCubit,
+            ChecklistFillState,
+            ChecklistInstanceDetail
+          >(
+            selector: (state) => state.instance,
+            onRetry: () => context.read<ChecklistFillCubit>().loadInstance(),
+            contentBuilder: (detail) {
+              final sorted = [...detail.items]
+                ..sort((a, b) => a.position.compareTo(b.position));
+              final completed = sorted.where((i) => i.isCompleted).length;
 
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                child: Row(
-                  children: [
-                    Icon(Icons.task_alt, color: appColors.primary, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.shiftChecklistProgress(completed, sorted.length),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: appColors.primary),
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.task_alt,
+                          color: appColors.primary,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.shiftChecklistProgress(completed, sorted.length),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: appColors.primary),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: sorted.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) =>
-                      _FillItemTile(item: sorted[index]),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: sorted.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) =>
+                          _FillItemTile(item: sorted[index]),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
     );
   }
 }

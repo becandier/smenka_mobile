@@ -13,12 +13,12 @@ class ChecklistTemplateDetailCubit extends Cubit<ChecklistTemplateDetailState> {
     required ChecklistRepository checklistRepository,
     required OrganizationRoleRepository roleRepository,
     required OrganizationRepository organizationRepository,
-  })  : _orgId = orgId,
-        _templateId = templateId,
-        _checklistRepository = checklistRepository,
-        _roleRepository = roleRepository,
-        _organizationRepository = organizationRepository,
-        super(const ChecklistTemplateDetailState()) {
+  }) : _orgId = orgId,
+       _templateId = templateId,
+       _checklistRepository = checklistRepository,
+       _roleRepository = roleRepository,
+       _organizationRepository = organizationRepository,
+       super(const ChecklistTemplateDetailState()) {
     _init();
   }
 
@@ -91,9 +91,7 @@ class ChecklistTemplateDetailCubit extends Cubit<ChecklistTemplateDetailState> {
       },
       onFailure: (error) {
         emit(
-          state.copyWith(
-            assignments: state.assignments.toError(error.message),
-          ),
+          state.copyWith(assignments: state.assignments.toError(error.message)),
         );
       },
     );
@@ -289,10 +287,7 @@ class ChecklistTemplateDetailCubit extends Cubit<ChecklistTemplateDetailState> {
 
   // --- Personal overrides ---
 
-  Future<bool> setPersonalOverride(
-    String userId,
-    ChecklistOverrideType type,
-  ) {
+  Future<bool> setPersonalOverride(String userId, ChecklistOverrideType type) {
     return _runMemberAction(userId, () async {
       final result = await _checklistRepository.setPersonalOverride(
         _orgId,
@@ -339,8 +334,10 @@ class ChecklistTemplateDetailCubit extends Cubit<ChecklistTemplateDetailState> {
     emit(
       state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
-    final result =
-        await _checklistRepository.archiveTemplate(_orgId, _templateId);
+    final result = await _checklistRepository.archiveTemplate(
+      _orgId,
+      _templateId,
+    );
     return result.fold(
       onSuccess: (_) {
         emit(state.copyWith(actionStatus: FeatureStatus.success));

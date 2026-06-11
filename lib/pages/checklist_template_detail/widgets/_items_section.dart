@@ -140,10 +140,7 @@ class _ItemTile extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(
-                    Icons.delete_outline,
-                    color: appColors.error,
-                  ),
+                  icon: Icon(Icons.delete_outline, color: appColors.error),
                   onPressed: () => _confirmDelete(context),
                 ),
               ],

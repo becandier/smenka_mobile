@@ -17,10 +17,7 @@ part '../widgets/_location_tile.dart';
 
 @RoutePage()
 class WorkLocationsPage extends StatelessWidget {
-  const WorkLocationsPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const WorkLocationsPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -44,40 +41,41 @@ class _WorkLocationsView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.workLocationsTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.workLocationsTitle), centerTitle: true),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToAddLocation(context),
         child: const Icon(Icons.add),
       ),
-      body: SectionDataWrapper<LocationsCubit, LocationsState,
-          List<WorkLocation>>(
-        selector: (state) => state.locations,
-        onRetry: () => context.read<LocationsCubit>().loadLocations(),
-        contentBuilder: (locations) {
-          if (locations.isEmpty) {
-            return AppEmptyState(
-              icon: Icons.location_off_outlined,
-              title: l10n.workLocationsEmpty,
-              actionLabel: l10n.workLocationsAdd,
-              onAction: () => _navigateToAddLocation(context),
-            );
-          }
+      body:
+          SectionDataWrapper<
+            LocationsCubit,
+            LocationsState,
+            List<WorkLocation>
+          >(
+            selector: (state) => state.locations,
+            onRetry: () => context.read<LocationsCubit>().loadLocations(),
+            contentBuilder: (locations) {
+              if (locations.isEmpty) {
+                return AppEmptyState(
+                  icon: Icons.location_off_outlined,
+                  title: l10n.workLocationsEmpty,
+                  actionLabel: l10n.workLocationsAdd,
+                  onAction: () => _navigateToAddLocation(context),
+                );
+              }
 
-          return RefreshIndicator.adaptive(
-            onRefresh: () => context.read<LocationsCubit>().loadLocations(),
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: locations.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) =>
-                  _LocationTile(location: locations[index]),
-            ),
-          );
-        },
-      ),
+              return RefreshIndicator.adaptive(
+                onRefresh: () => context.read<LocationsCubit>().loadLocations(),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: locations.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) =>
+                      _LocationTile(location: locations[index]),
+                ),
+              );
+            },
+          ),
     );
   }
 

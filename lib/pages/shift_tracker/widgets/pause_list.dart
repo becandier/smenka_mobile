@@ -40,10 +40,7 @@ class _PauseList extends StatelessWidget {
 }
 
 class _PauseCard extends StatelessWidget {
-  const _PauseCard({
-    required this.pause,
-    required this.index,
-  });
+  const _PauseCard({required this.pause, required this.index});
 
   final Pause pause;
   final int index;

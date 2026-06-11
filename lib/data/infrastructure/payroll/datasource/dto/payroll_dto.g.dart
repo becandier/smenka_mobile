@@ -61,13 +61,13 @@ Map<String, dynamic> _$PayrollTotalsDtoToJson(_PayrollTotalsDto instance) =>
     };
 
 _PayrollDto _$PayrollDtoFromJson(Map<String, dynamic> json) => _PayrollDto(
-      period: PayrollPeriodDto.fromJson(json['period'] as Map<String, dynamic>),
-      currency: json['currency'] as String,
-      items: (json['items'] as List<dynamic>)
-          .map((e) => PayrollItemDto.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      totals: PayrollTotalsDto.fromJson(json['totals'] as Map<String, dynamic>),
-    );
+  period: PayrollPeriodDto.fromJson(json['period'] as Map<String, dynamic>),
+  currency: json['currency'] as String,
+  items: (json['items'] as List<dynamic>)
+      .map((e) => PayrollItemDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  totals: PayrollTotalsDto.fromJson(json['totals'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$PayrollDtoToJson(_PayrollDto instance) =>
     <String, dynamic>{

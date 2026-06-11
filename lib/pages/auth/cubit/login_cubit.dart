@@ -7,8 +7,8 @@ import 'package:smenka_mobile/pages/auth/cubit/login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit({required AuthRepository authRepository})
-      : _authRepository = authRepository,
-        super(const LoginState(obscurePassword: true));
+    : _authRepository = authRepository,
+      super(const LoginState(obscurePassword: true));
 
   final AuthRepository _authRepository;
 
@@ -17,25 +17,32 @@ class LoginCubit extends Cubit<LoginState> {
       state.copyWith(
         mode: state.isLogin ? AuthMode.register : AuthMode.login,
         error: null,
+        errorCode: null,
         status: FeatureStatus.initial,
       ),
     );
   }
 
   void updateEmail(String value) =>
-      emit(state.copyWith(email: value, error: null));
+      emit(state.copyWith(email: value, error: null, errorCode: null));
 
   void updatePassword(String value) =>
-      emit(state.copyWith(password: value, error: null));
+      emit(state.copyWith(password: value, error: null, errorCode: null));
 
   void updateName(String value) =>
-      emit(state.copyWith(name: value, error: null));
+      emit(state.copyWith(name: value, error: null, errorCode: null));
 
   void toggleObscurePassword() =>
       emit(state.copyWith(obscurePassword: !state.obscurePassword));
 
   Future<LoginResult> login() async {
-    emit(state.copyWith(status: FeatureStatus.loading, error: null));
+    emit(
+      state.copyWith(
+        status: FeatureStatus.loading,
+        error: null,
+        errorCode: null,
+      ),
+    );
 
     final result = await _authRepository.login(
       email: state.email.trim(),
@@ -56,6 +63,7 @@ class LoginCubit extends Cubit<LoginState> {
           state.copyWith(
             status: FeatureStatus.error,
             error: error.message,
+            errorCode: error.code,
           ),
         );
         return LoginResult.error;
@@ -64,7 +72,13 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<LoginResult> register() async {
-    emit(state.copyWith(status: FeatureStatus.loading, error: null));
+    emit(
+      state.copyWith(
+        status: FeatureStatus.loading,
+        error: null,
+        errorCode: null,
+      ),
+    );
 
     final result = await _authRepository.register(
       email: state.email.trim(),
@@ -82,6 +96,7 @@ class LoginCubit extends Cubit<LoginState> {
           state.copyWith(
             status: FeatureStatus.error,
             error: error.message,
+            errorCode: error.code,
           ),
         );
         return LoginResult.error;

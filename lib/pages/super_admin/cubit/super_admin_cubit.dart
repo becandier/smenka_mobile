@@ -4,10 +4,9 @@ import 'package:smenka_mobile/data/domain/organization/repositories/organization
 import 'package:smenka_mobile/pages/super_admin/cubit/super_admin_state.dart';
 
 class SuperAdminCubit extends Cubit<SuperAdminState> {
-  SuperAdminCubit({
-    required OrganizationRepository organizationRepository,
-  })  : _organizationRepository = organizationRepository,
-        super(const SuperAdminState()) {
+  SuperAdminCubit({required OrganizationRepository organizationRepository})
+    : _organizationRepository = organizationRepository,
+      super(const SuperAdminState()) {
     loadOrganizations();
   }
 

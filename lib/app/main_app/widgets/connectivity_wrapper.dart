@@ -1,3 +1,6 @@
+// Виджет намеренно помечен @Deprecated целиком; его собственные ссылки на
+// себя (createState) дают ложноположительный deprecated_member_use.
+// ignore_for_file: deprecated_member_use_from_same_package
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -11,10 +14,7 @@ class ConnectivityWrapper extends StatefulWidget {
 Есть баг с context ScaffoldMessenger. 
 Используйте альтернативный подход для обработки подключения.
 ''')
-  const ConnectivityWrapper({
-    required this.child,
-    super.key,
-  });
+  const ConnectivityWrapper({required this.child, super.key});
   final Widget child;
 
   @override
@@ -32,10 +32,7 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper> {
 
   void _showInfoConnectivly(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 2),
-      ),
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
     );
   }
 

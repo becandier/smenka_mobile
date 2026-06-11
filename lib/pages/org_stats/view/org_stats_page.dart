@@ -19,10 +19,7 @@ part '../widgets/_stats_table.dart';
 
 @RoutePage()
 class OrgStatsPage extends StatelessWidget {
-  const OrgStatsPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const OrgStatsPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -60,10 +57,7 @@ class _OrgStatsView extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.orgStatsTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.orgStatsTitle), centerTitle: true),
       body: Column(
         children: [
           // Источник окна: пресет ЛИБО произвольный диапазон
@@ -145,10 +139,10 @@ class _OrgStatsView extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 32),
                     children: [
                       if (appliedRangeLabel(
-                        context,
-                        stats.rangeFrom,
-                        stats.rangeTo,
-                      )
+                            context,
+                            stats.rangeFrom,
+                            stats.rangeTo,
+                          )
                           case final rangeLabel?)
                         Padding(
                           padding: const EdgeInsets.only(

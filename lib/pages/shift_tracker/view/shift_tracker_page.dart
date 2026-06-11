@@ -13,6 +13,7 @@ import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
+import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_cubit.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_state.dart';
@@ -23,6 +24,7 @@ part '../widgets/active_shift_content.dart';
 part '../widgets/org_selector.dart';
 part '../widgets/pause_list.dart';
 part '../widgets/shift_checklists_tile.dart';
+part '../widgets/shift_connectivity_bars.dart';
 
 @RoutePage()
 class ShiftTrackerPage extends StatelessWidget {
@@ -45,6 +47,16 @@ class ShiftTrackerPage extends StatelessWidget {
 class _ShiftTrackerView extends StatelessWidget {
   const _ShiftTrackerView();
 
+  Widget _buildContent(ShiftTrackerState state) {
+    if (state.activeShift.isLoading) {
+      return const Center(child: CircularProgressIndicator.adaptive());
+    }
+    if (state.hasActiveShift) {
+      return _ActiveShiftContent(state: state);
+    }
+    return _IdleShiftContent(state: state);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -52,11 +64,18 @@ class _ShiftTrackerView extends StatelessWidget {
         BlocListener<ShiftTrackerCubit, ShiftTrackerState>(
           listenWhen: (prev, curr) => prev.actionStatus != curr.actionStatus,
           listener: (context, state) {
-            if (state.actionStatus == FeatureStatus.error) {
-              final error = state.actionError;
-              if (error != null) {
-                context.modals.showError(error);
-              }
+            // Сетевые ошибки показываем не тостом, а постоянной плашкой
+            // с кнопкой «Повторить» (см. _ShiftActionErrorBar) — тост бы
+            // исчез и пользователь потерял бы возможность ретрая.
+            if (state.actionStatus == FeatureStatus.error &&
+                !state.isActionNetworkError) {
+              context.modals.showError(
+                localizedErrorMessage(
+                  context,
+                  code: state.actionErrorCode,
+                  fallback: state.actionError,
+                ),
+              );
             }
           },
         ),
@@ -77,16 +96,14 @@ class _ShiftTrackerView extends StatelessWidget {
         body: SafeArea(
           child: BlocBuilder<ShiftTrackerCubit, ShiftTrackerState>(
             builder: (context, state) {
-              if (state.activeShift.isLoading) {
-                return const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
-              }
-
-              if (state.hasActiveShift) {
-                return _ActiveShiftContent(state: state);
-              }
-              return _IdleShiftContent(state: state);
+              return Column(
+                children: [
+                  if (state.isOffline) const _OfflineBanner(),
+                  Expanded(child: _buildContent(state)),
+                  if (state.hasActionError && state.isActionNetworkError)
+                    _ShiftActionErrorBar(state: state),
+                ],
+              );
             },
           ),
         ),

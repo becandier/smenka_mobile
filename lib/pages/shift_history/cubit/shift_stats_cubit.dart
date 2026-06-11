@@ -4,10 +4,9 @@ import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.da
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_stats_state.dart';
 
 class ShiftStatsCubit extends Cubit<ShiftStatsState> {
-  ShiftStatsCubit({
-    required ShiftRepository shiftRepository,
-  })  : _shiftRepository = shiftRepository,
-        super(const ShiftStatsState()) {
+  ShiftStatsCubit({required ShiftRepository shiftRepository})
+    : _shiftRepository = shiftRepository,
+      super(const ShiftStatsState()) {
     loadStats();
   }
 
@@ -48,11 +47,7 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
   void changePeriod(StatsPeriod period) {
     if (period == state.selectedPeriod) return;
     emit(
-      state.copyWith(
-        selectedPeriod: period,
-        customFrom: null,
-        customTo: null,
-      ),
+      state.copyWith(selectedPeriod: period, customFrom: null, customTo: null),
     );
     loadStats();
   }

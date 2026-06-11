@@ -55,8 +55,9 @@ class _OverridesSection extends StatelessWidget {
                       for (final item in items) ...[
                         _OverrideRow(
                           item: item,
-                          isPending: state.pendingTemplateIds
-                              .contains(item.templateId),
+                          isPending: state.pendingTemplateIds.contains(
+                            item.templateId,
+                          ),
                         ),
                         if (item != items.last)
                           Divider(
@@ -106,10 +107,7 @@ class _OverrideRow extends StatelessWidget {
             color: typeColor.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 3,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               child: Text(
                 typeLabel,
                 style: textTheme.labelSmall?.copyWith(
@@ -179,13 +177,13 @@ class _OverrideRow extends StatelessWidget {
     final cubit = context.read<MemberDetailCubit>();
     final ok = switch (action) {
       _OverrideAction.switchToAdd => await cubit.setOverride(
-          item.templateId,
-          ChecklistOverrideType.add,
-        ),
+        item.templateId,
+        ChecklistOverrideType.add,
+      ),
       _OverrideAction.switchToRemove => await cubit.setOverride(
-          item.templateId,
-          ChecklistOverrideType.remove,
-        ),
+        item.templateId,
+        ChecklistOverrideType.remove,
+      ),
       _OverrideAction.clear => await cubit.clearOverride(item.templateId),
     };
     if (!ok && context.mounted) {

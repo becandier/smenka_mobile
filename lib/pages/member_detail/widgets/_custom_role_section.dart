@@ -9,8 +9,11 @@ class _CustomRoleSection extends StatelessWidget {
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocSelector<MemberDetailCubit, MemberDetailState,
-        OrganizationRole?>(
+    return BlocSelector<
+      MemberDetailCubit,
+      MemberDetailState,
+      OrganizationRole?
+    >(
       selector: (state) => state.member.customRole,
       builder: (context, role) {
         return Material(
@@ -64,10 +67,8 @@ class _CustomRoleSection extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: const _CustomRoleSheet(),
-      ),
+      builder: (_) =>
+          BlocProvider.value(value: cubit, child: const _CustomRoleSheet()),
     );
   }
 }

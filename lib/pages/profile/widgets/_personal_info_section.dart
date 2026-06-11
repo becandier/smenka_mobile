@@ -11,7 +11,8 @@ class _PersonalInfoSection extends StatelessWidget {
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
 
-    final formattedDate = '${user.createdAt.day.toString().padLeft(2, '0')}.'
+    final formattedDate =
+        '${user.createdAt.day.toString().padLeft(2, '0')}.'
         '${user.createdAt.month.toString().padLeft(2, '0')}.'
         '${user.createdAt.year}';
 

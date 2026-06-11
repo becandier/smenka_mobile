@@ -65,9 +65,9 @@ class _FillItemTileState extends State<_FillItemTile> {
                   value: widget.item.isCompleted,
                   onChanged: readOnly
                       ? null
-                      : (_) => context
-                          .read<ChecklistFillCubit>()
-                          .toggleItem(widget.item),
+                      : (_) => context.read<ChecklistFillCubit>().toggleItem(
+                          widget.item,
+                        ),
                 ),
                 const SizedBox(width: 4),
                 Expanded(
@@ -76,10 +76,7 @@ class _FillItemTileState extends State<_FillItemTile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.item.text,
-                          style: textTheme.bodyMedium,
-                        ),
+                        Text(widget.item.text, style: textTheme.bodyMedium),
                         if (widget.item.isRequired)
                           Padding(
                             padding: const EdgeInsets.only(top: 4),
@@ -100,8 +97,9 @@ class _FillItemTileState extends State<_FillItemTile> {
                     child: SizedBox(
                       width: 14,
                       height: 14,
-                      child:
-                          CircularProgressIndicator.adaptive(strokeWidth: 1.6),
+                      child: CircularProgressIndicator.adaptive(
+                        strokeWidth: 1.6,
+                      ),
                     ),
                   ),
               ],
@@ -147,9 +145,9 @@ class _FillItemTileState extends State<_FillItemTile> {
                     ),
                     onChanged: (value) {
                       context.read<ChecklistFillCubit>().scheduleCommentUpdate(
-                            widget.item,
-                            value.isEmpty ? null : value,
-                          );
+                        widget.item,
+                        value.isEmpty ? null : value,
+                      );
                     },
                   ),
                 ),

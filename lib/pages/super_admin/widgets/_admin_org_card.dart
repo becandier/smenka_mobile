@@ -9,8 +9,9 @@ class _AdminOrgCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
-    final formattedDate =
-        DateFormat('dd.MM.yyyy').format(organization.createdAt);
+    final formattedDate = DateFormat(
+      'dd.MM.yyyy',
+    ).format(organization.createdAt);
 
     return Material(
       color: appColors.surface,

@@ -6,7 +6,7 @@ import 'package:smenka_mobile/data/infrastructure/user/mappers/_mappers.dart';
 
 class UserRepositoryImpl with TaskHandler implements UserRepository {
   UserRepositoryImpl({required UserDataSource dataSource})
-      : _dataSource = dataSource;
+    : _dataSource = dataSource;
 
   final UserDataSource _dataSource;
 

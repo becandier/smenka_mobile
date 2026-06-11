@@ -1,9 +1,7 @@
 part of '../view/add_edit_location_page.dart';
 
 class _LocationForm extends StatefulWidget {
-  const _LocationForm({
-    required this.onRadiusChanged,
-  });
+  const _LocationForm({required this.onRadiusChanged});
 
   final void Function(int radiusMeters) onRadiusChanged;
 
@@ -112,9 +110,9 @@ class _LocationFormState extends State<_LocationForm> {
                           label: '$radiusMeters',
                           onChanged: (value) {
                             final newRadius = value.round();
-                            context
-                                .read<AddEditLocationCubit>()
-                                .updateRadius(newRadius);
+                            context.read<AddEditLocationCubit>().updateRadius(
+                              newRadius,
+                            );
                             widget.onRadiusChanged(newRadius);
                           },
                         ),

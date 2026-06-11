@@ -54,10 +54,7 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
       if (isDeviceAccess) {
         pushDebugScreen();
       } else {
-        Future.delayed(
-          Duration.zero,
-          _promptPassword,
-        );
+        Future.delayed(Duration.zero, _promptPassword);
       }
       return;
     }
@@ -68,20 +65,20 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
 
   // Переходим в экран отладки
   void pushDebugScreen() {
-    final checkContext = widget.navigatorKey != null &&
+    final checkContext =
+        widget.navigatorKey != null &&
             widget.navigatorKey!.currentContext != null
         ? widget.navigatorKey!.currentContext!
         : context;
     context.read<DebugCubit>().setDeviceAccess();
-    checkContext.router.push(
-      const DebugRoute(),
-    );
+    checkContext.router.push(const DebugRoute());
   }
 
   // Проверяем введенный пароль
   Future<void> _promptPassword() async {
     var isValid = false;
-    final checkContext = widget.navigatorKey != null &&
+    final checkContext =
+        widget.navigatorKey != null &&
             widget.navigatorKey!.currentContext != null
         ? widget.navigatorKey!.currentContext!
         : context;
@@ -93,9 +90,7 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
   }
 
   // Показываем модалку для ввода пароля
-  Future<bool?> showEnterPasswordModal(
-    BuildContext checkContext,
-  ) {
+  Future<bool?> showEnterPasswordModal(BuildContext checkContext) {
     final formKey = GlobalKey<FormState>();
     final controller = TextEditingController();
     // Переменная для отслеживания видимости пароля
@@ -146,9 +141,7 @@ class _DebugGestureDetectorState extends State<DebugGestureDetector> {
                     onPressed: () {
                       context.router.maybePop(false);
                     },
-                    child: Text(
-                      context.l10n.cancel,
-                    ),
+                    child: Text(context.l10n.cancel),
                   ),
                   ElevatedButton(
                     onPressed: () => handleSubmit(context),

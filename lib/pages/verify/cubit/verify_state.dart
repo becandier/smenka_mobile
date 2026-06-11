@@ -12,6 +12,9 @@ abstract class VerifyState with _$VerifyState {
     @Default(0) int cooldownSeconds,
     @Default(false) bool isResending,
     String? error,
+
+    /// Машинный `error.code` последней ошибки (для маппинга 429)
+    String? errorCode,
   }) = _VerifyState;
   const VerifyState._();
 

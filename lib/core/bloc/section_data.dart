@@ -20,26 +20,18 @@ abstract class SectionData<T> with _$SectionData<T> {
   bool get isSuccess => status == FeatureStatus.success;
   bool get hasData => data != null;
 
-  SectionData<T> toLoading() => copyWith(
-        status: FeatureStatus.loading,
-      );
+  SectionData<T> toLoading() => copyWith(status: FeatureStatus.loading);
 
   SectionData<T> toSuccess(T data) => copyWith(
-        status: FeatureStatus.success,
-        data: data,
-        error: null,
-        errorCode: null,
-      );
+    status: FeatureStatus.success,
+    data: data,
+    error: null,
+    errorCode: null,
+  );
 
-  SectionData<T> toError(String? message, {String? code}) => copyWith(
-        status: FeatureStatus.error,
-        error: message,
-        errorCode: code,
-      );
+  SectionData<T> toError(String? message, {String? code}) =>
+      copyWith(status: FeatureStatus.error, error: message, errorCode: code);
 
-  SectionData<T> toIdle() => copyWith(
-        status: FeatureStatus.idle,
-        error: null,
-        errorCode: null,
-      );
+  SectionData<T> toIdle() =>
+      copyWith(status: FeatureStatus.idle, error: null, errorCode: null);
 }

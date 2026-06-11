@@ -27,20 +27,20 @@ Map<String, dynamic> _$EmployeeStatsDtoToJson(_EmployeeStatsDto instance) =>
     };
 
 _OrgStatsDto _$OrgStatsDtoFromJson(Map<String, dynamic> json) => _OrgStatsDto(
-      totalWorkedSeconds: (json['total_worked_seconds'] as num).toInt(),
-      shiftCount: (json['shift_count'] as num).toInt(),
-      averageShiftSeconds: (json['average_shift_seconds'] as num).toInt(),
-      perEmployee: (json['per_employee'] as List<dynamic>)
-          .map((e) => EmployeeStatsDto.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      period: json['period'] as String?,
-      rangeFrom: json['range_from'] == null
-          ? null
-          : DateTime.parse(json['range_from'] as String),
-      rangeTo: json['range_to'] == null
-          ? null
-          : DateTime.parse(json['range_to'] as String),
-    );
+  totalWorkedSeconds: (json['total_worked_seconds'] as num).toInt(),
+  shiftCount: (json['shift_count'] as num).toInt(),
+  averageShiftSeconds: (json['average_shift_seconds'] as num).toInt(),
+  perEmployee: (json['per_employee'] as List<dynamic>)
+      .map((e) => EmployeeStatsDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  period: json['period'] as String?,
+  rangeFrom: json['range_from'] == null
+      ? null
+      : DateTime.parse(json['range_from'] as String),
+  rangeTo: json['range_to'] == null
+      ? null
+      : DateTime.parse(json['range_to'] as String),
+);
 
 Map<String, dynamic> _$OrgStatsDtoToJson(_OrgStatsDto instance) =>
     <String, dynamic>{
