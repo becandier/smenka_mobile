@@ -26,18 +26,11 @@ class DevModeBannerWrapper extends StatelessWidget {
           child: Material(
             color: Colors.red.withValues(alpha: 0.65),
             child: const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 6,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.developer_mode,
-                    color: Colors.white,
-                    size: 18,
-                  ),
+                  Icon(Icons.developer_mode, color: Colors.white, size: 18),
                   SizedBox(width: 8),
                   Text(
                     'DEV MODE',

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
@@ -18,20 +19,20 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     required OrganizationRepository organizationRepository,
     required GeoService geoService,
     required ShiftContextStorage contextStorage,
-  })  : _shiftRepository = shiftRepository,
-        _organizationRepository = organizationRepository,
-        _geoService = geoService,
-        _contextStorage = contextStorage,
-        super(const ShiftTrackerState()) {
-    _orgSubscription =
-        _organizationRepository.watchMyOrganizations().listen((orgs) {
-      emit(
-        state.copyWith(
-          organizations: state.organizations.toSuccess(orgs),
-        ),
-      );
+    Connectivity? connectivity,
+  }) : _shiftRepository = shiftRepository,
+       _organizationRepository = organizationRepository,
+       _geoService = geoService,
+       _contextStorage = contextStorage,
+       _connectivity = connectivity ?? Connectivity(),
+       super(const ShiftTrackerState()) {
+    _orgSubscription = _organizationRepository.watchMyOrganizations().listen((
+      orgs,
+    ) {
+      emit(state.copyWith(organizations: state.organizations.toSuccess(orgs)));
       _maybePreselectContext();
     });
+    _watchConnectivity();
     _init();
   }
 
@@ -39,7 +40,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   final OrganizationRepository _organizationRepository;
   final GeoService _geoService;
   final ShiftContextStorage _contextStorage;
+  final Connectivity _connectivity;
   Timer? _timer;
+
+  /// Последнее действие смены — для повторной попытки после сетевой ошибки.
+  Future<void> Function()? _lastAction;
+
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
 
   /// Предвыбор контекста применяется ровно один раз
   bool _contextPreselectApplied = false;
@@ -56,6 +63,31 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }
 
   StreamSubscription<List<Organization>>? _orgSubscription;
+
+  /// Подписка на изменения сети — для пассивной индикации офлайна (баннер).
+  /// Не блокирует операции смены: трекер продолжает считать время локально.
+  void _watchConnectivity() {
+    _connectivitySub = _connectivity.onConnectivityChanged.listen((results) {
+      emit(state.copyWith(isOffline: _isOffline(results)));
+    });
+    unawaited(
+      _connectivity.checkConnectivity().then((results) {
+        emit(state.copyWith(isOffline: _isOffline(results)));
+      }),
+    );
+  }
+
+  bool _isOffline(List<ConnectivityResult> results) =>
+      results.isEmpty || results.every((r) => r == ConnectivityResult.none);
+
+  /// Повторяет последнее действие смены (start/pause/resume/finish) —
+  /// используется кнопкой «Повторить» при сетевой ошибке.
+  Future<void> retryLastAction() async {
+    final action = _lastAction;
+    if (action != null) {
+      await action();
+    }
+  }
 
   Future<void> _init() async {
     await Future.wait([
@@ -120,9 +152,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
       },
       onFailure: (error) {
         emit(
-          state.copyWith(
-            activeShift: state.activeShift.toError(error.message),
-          ),
+          state.copyWith(activeShift: state.activeShift.toError(error.message)),
         );
       },
     );
@@ -165,8 +195,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }
 
   Future<StartShiftResult> startShift() async {
+    _lastAction = startShift;
     emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+        actionErrorCode: null,
+      ),
     );
 
     final org = state.selectedOrganization;
@@ -227,6 +262,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           state.copyWith(
             actionStatus: FeatureStatus.error,
             actionError: error.message,
+            actionErrorCode: error.code,
           ),
         );
         return StartShiftResult.error;
@@ -242,8 +278,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     final shift = state.activeShift.data;
     if (shift == null) return false;
 
+    _lastAction = pauseShift;
     emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+        actionErrorCode: null,
+      ),
     );
 
     final result = await _shiftRepository.pauseShift(shift.id);
@@ -263,6 +304,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           state.copyWith(
             actionStatus: FeatureStatus.error,
             actionError: error.message,
+            actionErrorCode: error.code,
           ),
         );
         return false;
@@ -274,8 +316,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     final shift = state.activeShift.data;
     if (shift == null) return false;
 
+    _lastAction = resumeShift;
     emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+        actionErrorCode: null,
+      ),
     );
 
     final result = await _shiftRepository.resumeShift(shift.id);
@@ -295,6 +342,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           state.copyWith(
             actionStatus: FeatureStatus.error,
             actionError: error.message,
+            actionErrorCode: error.code,
           ),
         );
         return false;
@@ -306,8 +354,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     final shift = state.activeShift.data;
     if (shift == null) return false;
 
+    _lastAction = finishShift;
     emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+        actionErrorCode: null,
+      ),
     );
 
     final result = await _shiftRepository.finishShift(shift.id);
@@ -331,6 +384,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           state.copyWith(
             actionStatus: FeatureStatus.error,
             actionError: error.message,
+            actionErrorCode: error.code,
           ),
         );
         return false;
@@ -377,6 +431,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   Future<void> close() {
     _stopTimer();
     _orgSubscription?.cancel();
+    _connectivitySub?.cancel();
     return super.close();
   }
 }

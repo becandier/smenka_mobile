@@ -52,14 +52,16 @@ class _CreateTemplateSheetState extends State<_CreateTemplateSheet> {
               ),
             ],
             selected: {_type},
-            onSelectionChanged:
-                _submitting ? null : (s) => setState(() => _type = s.first),
+            onSelectionChanged: _submitting
+                ? null
+                : (s) => setState(() => _type = s.first),
           ),
           const SizedBox(height: 12),
           SwitchListTile.adaptive(
             value: _isRequired,
-            onChanged:
-                _submitting ? null : (v) => setState(() => _isRequired = v),
+            onChanged: _submitting
+                ? null
+                : (v) => setState(() => _isRequired = v),
             title: Text(l10n.checklistTemplateIsRequiredLabel),
             subtitle: Text(l10n.checklistTemplateIsRequiredDesc),
             contentPadding: EdgeInsets.zero,

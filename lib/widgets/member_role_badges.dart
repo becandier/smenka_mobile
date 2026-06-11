@@ -40,10 +40,7 @@ class MemberRoleBadges extends StatelessWidget {
     final l10n = context.l10n;
     final appColors = context.appColors;
 
-    final system = switch ((
-      isOwner,
-      systemRole,
-    )) {
+    final system = switch ((isOwner, systemRole)) {
       (true, _) => (l10n.roleOwner, appColors.primary),
       (false, MemberRole.admin) => (l10n.roleAdmin, appColors.primary),
       (false, MemberRole.employee) => (l10n.roleEmployee, appColors.secondary),
@@ -54,11 +51,7 @@ class MemberRoleBadges extends StatelessWidget {
 
     final badges = <Widget>[
       if (system != null)
-        _RoleBadge(
-          label: system.$1,
-          color: system.$2,
-          compact: compact,
-        ),
+        _RoleBadge(label: system.$1, color: system.$2, compact: compact),
       if (customLabel != null)
         _RoleBadge(
           label: customLabel,
@@ -116,9 +109,9 @@ class _RoleBadge extends StatelessWidget {
         child: Text(
           label,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w500,
-              ),
+            color: color,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

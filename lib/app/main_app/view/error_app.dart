@@ -4,10 +4,7 @@
 part of 'app.dart';
 
 class _ErrorApp extends StatefulWidget {
-  const _ErrorApp({
-    required this.error,
-    required this.stackTrace,
-  });
+  const _ErrorApp({required this.error, required this.stackTrace});
 
   final Object? error;
   final StackTrace? stackTrace;
@@ -37,25 +34,14 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
       vsync: this,
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1,
-    ).animate(
-      CurvedAnimation(
-        parent: _pulseController,
-        curve: Curves.easeInOut,
-      ),
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _slideController,
-        curve: Curves.elasticOut,
-      ),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.elasticOut),
+        );
 
     _slideController.forward();
   }
@@ -85,11 +71,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFFF6B6B),
-                Color(0xFFFF8E8E),
-                Color(0xFFFFB3B3),
-              ],
+              colors: [Color(0xFFFF6B6B), Color(0xFFFF8E8E), Color(0xFFFFB3B3)],
             ),
           ),
           child: SafeArea(
@@ -250,8 +232,9 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                                     Text(
                                       'Error: ${widget.error}',
                                       style: TextStyle(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.9),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.9,
+                                        ),
                                         fontSize: 12,
                                         fontFamily: 'monospace',
                                       ),
@@ -262,8 +245,9 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                                     Text(
                                       widget.stackTrace.toString(),
                                       style: TextStyle(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.7),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.7,
+                                        ),
                                         fontSize: 10,
                                         fontFamily: 'monospace',
                                       ),

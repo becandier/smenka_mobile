@@ -11,8 +11,9 @@ class _OrgShiftCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = context.appColors;
 
-    final dateFormatted =
-        DateFormat('dd.MM.yyyy, HH:mm').format(shift.startedAt);
+    final dateFormatted = DateFormat(
+      'dd.MM.yyyy, HH:mm',
+    ).format(shift.startedAt);
     final duration = _formatDuration(context, shift.workedSeconds);
     final statusLabel = _statusLabel(context, shift.status);
     final statusColor = _statusColor(context, shift.status);

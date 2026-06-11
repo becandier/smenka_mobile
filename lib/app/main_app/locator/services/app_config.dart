@@ -19,10 +19,7 @@ class AppConfigInitializer implements ServiceInitializer {
   Future<void> initialize(AppServiceLocator locator) async {
     final flavor = await debugRepository.getFlavor();
 
-    final appConfig = AppConfig(
-      remoteConfig: remoteConfig,
-      flavor: flavor,
-    );
+    final appConfig = AppConfig(remoteConfig: remoteConfig, flavor: flavor);
 
     locator.register<AppConfig>(appConfig);
   }

@@ -41,7 +41,15 @@ class DioInitializer implements ServiceInitializer {
     dio.interceptors.addAll([
       authInterceptor,
       DioHeadersIntercaption(),
-      TalkerDioLogger(talker: talker),
+      TalkerDioLogger(
+        talker: talker,
+        // security_hardening: не светим Bearer-токен в логах. По умолчанию
+        // printErrorHeaders=true, поэтому на ошибочных ответах заголовки
+        // (включая Authorization) попали бы в Talker/Crashlytics.
+        settings: const TalkerDioLoggerSettings(
+          hiddenHeaders: {'Authorization', 'authorization'},
+        ),
+      ),
       ApiResponseInterceptor(),
       ApiErrorInterceptor(),
     ]);

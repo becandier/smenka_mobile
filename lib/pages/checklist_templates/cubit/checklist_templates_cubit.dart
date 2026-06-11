@@ -8,9 +8,9 @@ class ChecklistTemplatesCubit extends Cubit<ChecklistTemplatesState> {
   ChecklistTemplatesCubit({
     required String orgId,
     required ChecklistRepository checklistRepository,
-  })  : _orgId = orgId,
-        _checklistRepository = checklistRepository,
-        super(const ChecklistTemplatesState()) {
+  }) : _orgId = orgId,
+       _checklistRepository = checklistRepository,
+       super(const ChecklistTemplatesState()) {
     loadTemplates();
   }
 

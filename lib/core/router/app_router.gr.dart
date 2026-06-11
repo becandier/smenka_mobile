@@ -19,14 +19,14 @@ class AddEditLocationRoute extends PageRouteInfo<AddEditLocationRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          AddEditLocationRoute.name,
-          args: AddEditLocationRouteArgs(
-            orgId: orgId,
-            existingLocation: existingLocation,
-            key: key,
-          ),
-          initialChildren: children,
-        );
+         AddEditLocationRoute.name,
+         args: AddEditLocationRouteArgs(
+           orgId: orgId,
+           existingLocation: existingLocation,
+           key: key,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'AddEditLocationRoute';
 
@@ -84,16 +84,16 @@ class ChecklistFillRoute extends PageRouteInfo<ChecklistFillRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          ChecklistFillRoute.name,
-          args: ChecklistFillRouteArgs(
-            shiftId: shiftId,
-            instanceId: instanceId,
-            readOnly: readOnly,
-            key: key,
-          ),
-          rawPathParams: {'shiftId': shiftId, 'instanceId': instanceId},
-          initialChildren: children,
-        );
+         ChecklistFillRoute.name,
+         args: ChecklistFillRouteArgs(
+           shiftId: shiftId,
+           instanceId: instanceId,
+           readOnly: readOnly,
+           key: key,
+         ),
+         rawPathParams: {'shiftId': shiftId, 'instanceId': instanceId},
+         initialChildren: children,
+       );
 
   static const String name = 'ChecklistFillRoute';
 
@@ -163,15 +163,15 @@ class ChecklistTemplateDetailRoute
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          ChecklistTemplateDetailRoute.name,
-          args: ChecklistTemplateDetailRouteArgs(
-            orgId: orgId,
-            templateId: templateId,
-            key: key,
-          ),
-          rawPathParams: {'orgId': orgId, 'templateId': templateId},
-          initialChildren: children,
-        );
+         ChecklistTemplateDetailRoute.name,
+         args: ChecklistTemplateDetailRouteArgs(
+           orgId: orgId,
+           templateId: templateId,
+           key: key,
+         ),
+         rawPathParams: {'orgId': orgId, 'templateId': templateId},
+         initialChildren: children,
+       );
 
   static const String name = 'ChecklistTemplateDetailRoute';
 
@@ -234,11 +234,11 @@ class ChecklistTemplatesRoute
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          ChecklistTemplatesRoute.name,
-          args: ChecklistTemplatesRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         ChecklistTemplatesRoute.name,
+         args: ChecklistTemplatesRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'ChecklistTemplatesRoute';
 
@@ -282,7 +282,7 @@ class ChecklistTemplatesRouteArgs {
 /// [CreateOrgModal]
 class CreateOrgRoute extends PageRouteInfo<void> {
   const CreateOrgRoute({List<PageRouteInfo>? children})
-      : super(CreateOrgRoute.name, initialChildren: children);
+    : super(CreateOrgRoute.name, initialChildren: children);
 
   static const String name = 'CreateOrgRoute';
 
@@ -303,14 +303,14 @@ class DateRangePickerRoute extends PageRouteInfo<DateRangePickerRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          DateRangePickerRoute.name,
-          args: DateRangePickerRouteArgs(
-            initialFrom: initialFrom,
-            initialTo: initialTo,
-            key: key,
-          ),
-          initialChildren: children,
-        );
+         DateRangePickerRoute.name,
+         args: DateRangePickerRouteArgs(
+           initialFrom: initialFrom,
+           initialTo: initialTo,
+           key: key,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'DateRangePickerRoute';
 
@@ -360,7 +360,7 @@ class DateRangePickerRouteArgs {
 /// [DebugPage]
 class DebugRoute extends PageRouteInfo<void> {
   const DebugRoute({List<PageRouteInfo>? children})
-      : super(DebugRoute.name, initialChildren: children);
+    : super(DebugRoute.name, initialChildren: children);
 
   static const String name = 'DebugRoute';
 
@@ -376,7 +376,7 @@ class DebugRoute extends PageRouteInfo<void> {
 /// [EditProfileModal]
 class EditProfileRoute extends PageRouteInfo<void> {
   const EditProfileRoute({List<PageRouteInfo>? children})
-      : super(EditProfileRoute.name, initialChildren: children);
+    : super(EditProfileRoute.name, initialChildren: children);
 
   static const String name = 'EditProfileRoute';
 
@@ -397,15 +397,15 @@ class EmployeePickerRoute extends PageRouteInfo<EmployeePickerRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          EmployeePickerRoute.name,
-          args: EmployeePickerRouteArgs(
-            orgId: orgId,
-            selectedUserId: selectedUserId,
-            key: key,
-          ),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         EmployeePickerRoute.name,
+         args: EmployeePickerRouteArgs(
+           orgId: orgId,
+           selectedUserId: selectedUserId,
+           key: key,
+         ),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'EmployeePickerRoute';
 
@@ -461,7 +461,7 @@ class EmployeePickerRouteArgs {
 /// [ExampleHomePage]
 class ExampleHomeRoute extends PageRouteInfo<void> {
   const ExampleHomeRoute({List<PageRouteInfo>? children})
-      : super(ExampleHomeRoute.name, initialChildren: children);
+    : super(ExampleHomeRoute.name, initialChildren: children);
 
   static const String name = 'ExampleHomeRoute';
 
@@ -477,7 +477,7 @@ class ExampleHomeRoute extends PageRouteInfo<void> {
 /// [HistoryTabPage]
 class HistoryTab extends PageRouteInfo<void> {
   const HistoryTab({List<PageRouteInfo>? children})
-      : super(HistoryTab.name, initialChildren: children);
+    : super(HistoryTab.name, initialChildren: children);
 
   static const String name = 'HistoryTab';
 
@@ -493,7 +493,7 @@ class HistoryTab extends PageRouteInfo<void> {
 /// [JoinOrgModal]
 class JoinOrgRoute extends PageRouteInfo<void> {
   const JoinOrgRoute({List<PageRouteInfo>? children})
-      : super(JoinOrgRoute.name, initialChildren: children);
+    : super(JoinOrgRoute.name, initialChildren: children);
 
   static const String name = 'JoinOrgRoute';
 
@@ -513,10 +513,10 @@ class LoginRoute extends PageRouteInfo<LoginRouteArgs> {
     void Function({required bool didLogin})? onResult,
     List<PageRouteInfo>? children,
   }) : super(
-          LoginRoute.name,
-          args: LoginRouteArgs(key: key, onResult: onResult),
-          initialChildren: children,
-        );
+         LoginRoute.name,
+         args: LoginRouteArgs(key: key, onResult: onResult),
+         initialChildren: children,
+       );
 
   static const String name = 'LoginRoute';
 
@@ -558,7 +558,7 @@ class LoginRouteArgs {
 /// [MainRouterPage]
 class MainRouterRoute extends PageRouteInfo<void> {
   const MainRouterRoute({List<PageRouteInfo>? children})
-      : super(MainRouterRoute.name, initialChildren: children);
+    : super(MainRouterRoute.name, initialChildren: children);
 
   static const String name = 'MainRouterRoute';
 
@@ -579,10 +579,10 @@ class MemberDetailRoute extends PageRouteInfo<MemberDetailRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          MemberDetailRoute.name,
-          args: MemberDetailRouteArgs(orgId: orgId, member: member, key: key),
-          initialChildren: children,
-        );
+         MemberDetailRoute.name,
+         args: MemberDetailRouteArgs(orgId: orgId, member: member, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'MemberDetailRoute';
 
@@ -636,11 +636,11 @@ class OrgMembersRoute extends PageRouteInfo<OrgMembersRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          OrgMembersRoute.name,
-          args: OrgMembersRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         OrgMembersRoute.name,
+         args: OrgMembersRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'OrgMembersRoute';
 
@@ -687,11 +687,11 @@ class MyEarningsRoute extends PageRouteInfo<MyEarningsRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          MyEarningsRoute.name,
-          args: MyEarningsRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         MyEarningsRoute.name,
+         args: MyEarningsRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'MyEarningsRoute';
 
@@ -738,11 +738,11 @@ class OrgSettingsRoute extends PageRouteInfo<OrgSettingsRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          OrgSettingsRoute.name,
-          args: OrgSettingsRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         OrgSettingsRoute.name,
+         args: OrgSettingsRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'OrgSettingsRoute';
 
@@ -791,15 +791,15 @@ class OrgShiftDetailRoute extends PageRouteInfo<OrgShiftDetailRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          OrgShiftDetailRoute.name,
-          args: OrgShiftDetailRouteArgs(
-            orgId: orgId,
-            shiftId: shiftId,
-            key: key,
-          ),
-          rawPathParams: {'orgId': orgId, 'shiftId': shiftId},
-          initialChildren: children,
-        );
+         OrgShiftDetailRoute.name,
+         args: OrgShiftDetailRouteArgs(
+           orgId: orgId,
+           shiftId: shiftId,
+           key: key,
+         ),
+         rawPathParams: {'orgId': orgId, 'shiftId': shiftId},
+         initialChildren: children,
+       );
 
   static const String name = 'OrgShiftDetailRoute';
 
@@ -859,11 +859,11 @@ class OrgShiftsRoute extends PageRouteInfo<OrgShiftsRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          OrgShiftsRoute.name,
-          args: OrgShiftsRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         OrgShiftsRoute.name,
+         args: OrgShiftsRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'OrgShiftsRoute';
 
@@ -910,11 +910,11 @@ class OrgStatsRoute extends PageRouteInfo<OrgStatsRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          OrgStatsRoute.name,
-          args: OrgStatsRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         OrgStatsRoute.name,
+         args: OrgStatsRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'OrgStatsRoute';
 
@@ -962,11 +962,11 @@ class OrganizationDetailRoute
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          OrganizationDetailRoute.name,
-          args: OrganizationDetailRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         OrganizationDetailRoute.name,
+         args: OrganizationDetailRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'OrganizationDetailRoute';
 
@@ -1010,7 +1010,7 @@ class OrganizationDetailRouteArgs {
 /// [OrganizationsPage]
 class OrganizationsRoute extends PageRouteInfo<void> {
   const OrganizationsRoute({List<PageRouteInfo>? children})
-      : super(OrganizationsRoute.name, initialChildren: children);
+    : super(OrganizationsRoute.name, initialChildren: children);
 
   static const String name = 'OrganizationsRoute';
 
@@ -1026,7 +1026,7 @@ class OrganizationsRoute extends PageRouteInfo<void> {
 /// [OrganizationsTabPage]
 class OrganizationsTab extends PageRouteInfo<void> {
   const OrganizationsTab({List<PageRouteInfo>? children})
-      : super(OrganizationsTab.name, initialChildren: children);
+    : super(OrganizationsTab.name, initialChildren: children);
 
   static const String name = 'OrganizationsTab';
 
@@ -1042,12 +1042,12 @@ class OrganizationsTab extends PageRouteInfo<void> {
 /// [PayrollPage]
 class PayrollRoute extends PageRouteInfo<PayrollRouteArgs> {
   PayrollRoute({required String orgId, Key? key, List<PageRouteInfo>? children})
-      : super(
-          PayrollRoute.name,
-          args: PayrollRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+    : super(
+        PayrollRoute.name,
+        args: PayrollRouteArgs(orgId: orgId, key: key),
+        rawPathParams: {'orgId': orgId},
+        initialChildren: children,
+      );
 
   static const String name = 'PayrollRoute';
 
@@ -1090,7 +1090,7 @@ class PayrollRouteArgs {
 /// [ProfilePage]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})
-      : super(ProfileRoute.name, initialChildren: children);
+    : super(ProfileRoute.name, initialChildren: children);
 
   static const String name = 'ProfileRoute';
 
@@ -1106,7 +1106,7 @@ class ProfileRoute extends PageRouteInfo<void> {
 /// [ProfileTabPage]
 class ProfileTab extends PageRouteInfo<void> {
   const ProfileTab({List<PageRouteInfo>? children})
-      : super(ProfileTab.name, initialChildren: children);
+    : super(ProfileTab.name, initialChildren: children);
 
   static const String name = 'ProfileTab';
 
@@ -1128,15 +1128,15 @@ class RateFormRoute extends PageRouteInfo<RateFormRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          RateFormRoute.name,
-          args: RateFormRouteArgs(
-            orgId: orgId,
-            memberId: memberId,
-            initialRate: initialRate,
-            key: key,
-          ),
-          initialChildren: children,
-        );
+         RateFormRoute.name,
+         args: RateFormRouteArgs(
+           orgId: orgId,
+           memberId: memberId,
+           initialRate: initialRate,
+           key: key,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'RateFormRoute';
 
@@ -1194,12 +1194,12 @@ class RateFormRouteArgs {
 /// [RolesPage]
 class RolesRoute extends PageRouteInfo<RolesRouteArgs> {
   RolesRoute({required String orgId, Key? key, List<PageRouteInfo>? children})
-      : super(
-          RolesRoute.name,
-          args: RolesRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+    : super(
+        RolesRoute.name,
+        args: RolesRouteArgs(orgId: orgId, key: key),
+        rawPathParams: {'orgId': orgId},
+        initialChildren: children,
+      );
 
   static const String name = 'RolesRoute';
 
@@ -1246,11 +1246,11 @@ class ShiftChecklistsRoute extends PageRouteInfo<ShiftChecklistsRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          ShiftChecklistsRoute.name,
-          args: ShiftChecklistsRouteArgs(shiftId: shiftId, key: key),
-          rawPathParams: {'shiftId': shiftId},
-          initialChildren: children,
-        );
+         ShiftChecklistsRoute.name,
+         args: ShiftChecklistsRouteArgs(shiftId: shiftId, key: key),
+         rawPathParams: {'shiftId': shiftId},
+         initialChildren: children,
+       );
 
   static const String name = 'ShiftChecklistsRoute';
 
@@ -1298,10 +1298,10 @@ class ShiftDetailRoute extends PageRouteInfo<ShiftDetailRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          ShiftDetailRoute.name,
-          args: ShiftDetailRouteArgs(shift: shift, key: key),
-          initialChildren: children,
-        );
+         ShiftDetailRoute.name,
+         args: ShiftDetailRouteArgs(shift: shift, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'ShiftDetailRoute';
 
@@ -1341,7 +1341,7 @@ class ShiftDetailRouteArgs {
 /// [ShiftHistoryPage]
 class ShiftHistoryRoute extends PageRouteInfo<void> {
   const ShiftHistoryRoute({List<PageRouteInfo>? children})
-      : super(ShiftHistoryRoute.name, initialChildren: children);
+    : super(ShiftHistoryRoute.name, initialChildren: children);
 
   static const String name = 'ShiftHistoryRoute';
 
@@ -1357,7 +1357,7 @@ class ShiftHistoryRoute extends PageRouteInfo<void> {
 /// [ShiftTabPage]
 class ShiftTab extends PageRouteInfo<void> {
   const ShiftTab({List<PageRouteInfo>? children})
-      : super(ShiftTab.name, initialChildren: children);
+    : super(ShiftTab.name, initialChildren: children);
 
   static const String name = 'ShiftTab';
 
@@ -1373,7 +1373,7 @@ class ShiftTab extends PageRouteInfo<void> {
 /// [ShiftTrackerPage]
 class ShiftTrackerRoute extends PageRouteInfo<void> {
   const ShiftTrackerRoute({List<PageRouteInfo>? children})
-      : super(ShiftTrackerRoute.name, initialChildren: children);
+    : super(ShiftTrackerRoute.name, initialChildren: children);
 
   static const String name = 'ShiftTrackerRoute';
 
@@ -1389,7 +1389,7 @@ class ShiftTrackerRoute extends PageRouteInfo<void> {
 /// [SuperAdminPage]
 class SuperAdminRoute extends PageRouteInfo<void> {
   const SuperAdminRoute({List<PageRouteInfo>? children})
-      : super(SuperAdminRoute.name, initialChildren: children);
+    : super(SuperAdminRoute.name, initialChildren: children);
 
   static const String name = 'SuperAdminRoute';
 
@@ -1405,7 +1405,7 @@ class SuperAdminRoute extends PageRouteInfo<void> {
 /// [SuperAdminTabPage]
 class SuperAdminTab extends PageRouteInfo<void> {
   const SuperAdminTab({List<PageRouteInfo>? children})
-      : super(SuperAdminTab.name, initialChildren: children);
+    : super(SuperAdminTab.name, initialChildren: children);
 
   static const String name = 'SuperAdminTab';
 
@@ -1421,11 +1421,11 @@ class SuperAdminTab extends PageRouteInfo<void> {
 /// [VerifyPage]
 class VerifyRoute extends PageRouteInfo<VerifyRouteArgs> {
   VerifyRoute({required String email, Key? key, List<PageRouteInfo>? children})
-      : super(
-          VerifyRoute.name,
-          args: VerifyRouteArgs(email: email, key: key),
-          initialChildren: children,
-        );
+    : super(
+        VerifyRoute.name,
+        args: VerifyRouteArgs(email: email, key: key),
+        initialChildren: children,
+      );
 
   static const String name = 'VerifyRoute';
 
@@ -1469,11 +1469,11 @@ class WorkLocationsRoute extends PageRouteInfo<WorkLocationsRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-          WorkLocationsRoute.name,
-          args: WorkLocationsRouteArgs(orgId: orgId, key: key),
-          rawPathParams: {'orgId': orgId},
-          initialChildren: children,
-        );
+         WorkLocationsRoute.name,
+         args: WorkLocationsRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
 
   static const String name = 'WorkLocationsRoute';
 

@@ -5,10 +5,8 @@ part 'payroll.freezed.dart';
 /// Фактическое окно отчёта (эхо запроса; границы могут быть открыты).
 @freezed
 abstract class PayrollPeriod with _$PayrollPeriod {
-  const factory PayrollPeriod({
-    DateTime? dateFrom,
-    DateTime? dateTo,
-  }) = _PayrollPeriod;
+  const factory PayrollPeriod({DateTime? dateFrom, DateTime? dateTo}) =
+      _PayrollPeriod;
 }
 
 /// Строка отчёта «кому сколько заплатить» по одному сотруднику.

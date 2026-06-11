@@ -19,10 +19,7 @@ class _OrgSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.shiftSelectOrg,
-          style: textTheme.titleSmall,
-        ),
+        Text(l10n.shiftSelectOrg, style: textTheme.titleSmall),
         const SizedBox(height: 8),
         DropdownButtonFormField<String?>(
           // initialValue применяется один раз при создании state формы:
@@ -32,18 +29,14 @@ class _OrgSelector extends StatelessWidget {
           initialValue: selectedOrganizationId,
           isExpanded: true,
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
             ),
           ),
           items: [
-            DropdownMenuItem<String?>(
-              child: Text(l10n.shiftPersonal),
-            ),
+            DropdownMenuItem<String?>(child: Text(l10n.shiftPersonal)),
             ...organizations.map(
               (org) => DropdownMenuItem<String?>(
                 value: org.id,

@@ -169,3 +169,14 @@
 - [x] Экран «Мой заработок» (`org_member`): пресеты `PeriodPreset` (день/неделя/месяц, default месяц) + произвольный период, текущая ставка, бейдж смен без ставки
 - [x] Экран «Зарплата» (admin/owner): totals + строки по сотрудникам с «К выплате» и unpaid-подсказкой (plural), переход на деталь участника
 - [x] `PeriodPresetSelector` (реюз для payroll-экранов); локализация + коды ошибок; мульти-агентное ревью пройдено; `make check` зелёный
+
+---
+
+## Фича — Усиление безопасности `[x]` (`../docs/tasks/security_hardening/mobile.md`)
+- [x] **Secure storage токенов**: `AuthTokenStorage` переведён на `flutter_secure_storage` (Keychain/Keystore) с in-memory кэшем для синхронных геттеров; `init()` вызывается в bootstrap (`MainAppCubit`, фаза 3.5) до Dio и `checkAuthStatus`
+- [x] **Миграция сессии**: одноразовый перенос токенов из `SharedPreferences` в secure storage без разлогина; гарантированная очистка плейнтекста из `SharedPreferences` (defense-in-depth)
+- [x] **Реакция на 423/429 по `error.code`**: `ACCOUNT_LOCKED` (блок submit на login до правки полей), `RATE_LIMIT_EXCEEDED` (login/resend), `TOO_MANY_CODE_ATTEMPTS` (verify: сообщение + сброс кулдауна → CTA «запросить код заново»); всё через `localizedErrorMessage(code:, fallback:)`
+- [x] **Офлайн-устойчивость трекера смены**: сетевая ошибка `start/pause/resume/finish` не «глотается» — `actionErrorCode`, плашка «Нет соединения» + кнопка «Повторить» (`retryLastAction`); активная смена и таймер не теряются; офлайн-баннер по `connectivity_plus`; геопуть start не затронут
+- [x] Новый part-виджет `shift_connectivity_bars.dart` (`_OfflineBanner`, `_ShiftActionErrorBar`); новые ключи l10n (`errorAccountLocked`/`errorRateLimitExceeded`/`errorTooManyCodeAttempts`/`commonNoConnection`/`commonRetry`/`shiftOfflineBanner`)
+- [x] **Тесты** (новые, было 1 файл): `AuthTokenStorage` (save/clear/has + миграция), `AuthInterceptor` (Bearer/401-ветка/нет цикла на auth), маппинг кодов login/verify, `ShiftTrackerCubit` (сетевые ошибки start/finish + ретрай + смена не теряется + офлайн)
+- [x] Мульти-агентное состязательное ревью пройдено; `make check` зелёный (analyze — 0 issues, 26 тестов)

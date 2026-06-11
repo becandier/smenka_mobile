@@ -30,9 +30,9 @@ class _JoinOrgModalState extends State<JoinOrgModal> {
 
   void _submit() {
     if (!_isValid) return;
-    context
-        .read<OrganizationsCubit>()
-        .joinOrganization(inviteCode: _codeController.text.trim());
+    context.read<OrganizationsCubit>().joinOrganization(
+      inviteCode: _codeController.text.trim(),
+    );
   }
 
   @override
@@ -99,8 +99,11 @@ class _JoinOrgModalState extends State<JoinOrgModal> {
             ListenableBuilder(
               listenable: _codeController,
               builder: (context, _) {
-                return BlocSelector<OrganizationsCubit, OrganizationsState,
-                    FeatureStatus>(
+                return BlocSelector<
+                  OrganizationsCubit,
+                  OrganizationsState,
+                  FeatureStatus
+                >(
                   selector: (state) => state.joinStatus,
                   builder: (context, status) {
                     return AppButton(

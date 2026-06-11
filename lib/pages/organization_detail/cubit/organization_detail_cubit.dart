@@ -12,10 +12,10 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
     required String orgId,
     required OrganizationRepository organizationRepository,
     required UserRepository userRepository,
-  })  : _orgId = orgId,
-        _organizationRepository = organizationRepository,
-        _userRepository = userRepository,
-        super(const OrganizationDetailState()) {
+  }) : _orgId = orgId,
+       _organizationRepository = organizationRepository,
+       _userRepository = userRepository,
+       super(const OrganizationDetailState()) {
     _init();
   }
 
@@ -35,10 +35,7 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
 
   Future<void> _init() async {
     await _loadCurrentUser();
-    await Future.wait([
-      _loadOrganization(),
-      _loadMembers(),
-    ]);
+    await Future.wait([_loadOrganization(), _loadMembers()]);
   }
 
   Future<void> _loadCurrentUser() async {
@@ -46,10 +43,7 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
     result.fold(
       onSuccess: (user) {
         emit(
-          state.copyWith(
-            currentUserId: user.id,
-            currentUserRole: user.role,
-          ),
+          state.copyWith(currentUserId: user.id, currentUserRole: user.role),
         );
       },
       onFailure: (_) {},
@@ -86,8 +80,9 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
     result.fold(
       onSuccess: (members) {
         MemberRole? myRole;
-        final myMembership =
-            members.where((m) => m.userId == state.currentUserId);
+        final myMembership = members.where(
+          (m) => m.userId == state.currentUserId,
+        );
         if (myMembership.isNotEmpty) {
           myRole = myMembership.first.role;
         }
@@ -105,18 +100,12 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
   }
 
   Future<void> refresh() async {
-    await Future.wait([
-      _loadOrganization(),
-      _loadMembers(),
-    ]);
+    await Future.wait([_loadOrganization(), _loadMembers()]);
   }
 
   Future<void> rotateInviteCode() async {
     emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.loading,
-        actionError: null,
-      ),
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
     final result = await _organizationRepository.rotateInvite(_orgId);
 
@@ -142,10 +131,7 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
 
   Future<bool> leaveOrganization() async {
     emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.loading,
-        actionError: null,
-      ),
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
     final result = await _organizationRepository.removeMember(
       _orgId,
@@ -171,10 +157,7 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
 
   Future<bool> deleteOrganization() async {
     emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.loading,
-        actionError: null,
-      ),
+      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
     );
     final result = await _organizationRepository.delete(_orgId);
 
@@ -197,10 +180,7 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
 
   void resetActionStatus() {
     emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.initial,
-        actionError: null,
-      ),
+      state.copyWith(actionStatus: FeatureStatus.initial, actionError: null),
     );
   }
 }

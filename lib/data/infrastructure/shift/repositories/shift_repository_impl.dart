@@ -7,7 +7,7 @@ import 'package:smenka_mobile/data/infrastructure/shift/mappers/_mappers.dart';
 
 class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
   ShiftRepositoryImpl({required ShiftDataSource dataSource})
-      : _dataSource = dataSource;
+    : _dataSource = dataSource;
 
   final ShiftDataSource _dataSource;
 

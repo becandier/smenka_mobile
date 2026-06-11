@@ -5,7 +5,5 @@ part 'shift_detail_state.freezed.dart';
 
 @freezed
 abstract class ShiftDetailState with _$ShiftDetailState {
-  const factory ShiftDetailState({
-    required Shift shift,
-  }) = _ShiftDetailState;
+  const factory ShiftDetailState({required Shift shift}) = _ShiftDetailState;
 }

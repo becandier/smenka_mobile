@@ -32,7 +32,8 @@ class AppBottomSheet extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SingleChildScrollView(
-          padding: padding ??
+          padding:
+              padding ??
               EdgeInsets.only(
                 left: 16,
                 right: 16,
@@ -47,9 +48,9 @@ class AppBottomSheet extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   title!,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
               if (showDragHandle || title != null) const SizedBox(height: 16),

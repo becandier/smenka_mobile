@@ -24,7 +24,7 @@ class _AssignRolesSheetState extends State<_AssignRolesSheet> {
     final l10n = context.l10n;
     final roles =
         context.read<ChecklistTemplateDetailCubit>().state.roles.data ??
-            const <OrganizationRole>[];
+        const <OrganizationRole>[];
 
     return AppBottomSheet(
       title: l10n.checklistTemplateAssignRoles,

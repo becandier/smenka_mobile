@@ -12,10 +12,7 @@ class ExampleHomePage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Example Home Page'),
-            ThemeButtonWidget(),
-          ],
+          children: [Text('Example Home Page'), ThemeButtonWidget()],
         ),
       ),
     );

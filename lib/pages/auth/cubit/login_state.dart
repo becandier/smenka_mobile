@@ -15,11 +15,17 @@ abstract class LoginState with _$LoginState {
     @Default(false) bool obscurePassword,
     @Default(FeatureStatus.initial) FeatureStatus status,
     String? error,
+
+    /// Машинный `error.code` последней ошибки (для маппинга 423/429)
+    String? errorCode,
   }) = _LoginState;
   const LoginState._();
 
   bool get isLogin => mode == AuthMode.login;
   bool get isRegister => mode == AuthMode.register;
+
+  /// Аккаунт временно заблокирован (423 ACCOUNT_LOCKED) — блокируем submit
+  bool get isLocked => errorCode == 'ACCOUNT_LOCKED';
 
   bool get isEmailValid => RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email);
 

@@ -11,8 +11,10 @@ class _AssignmentsSection extends StatelessWidget {
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocBuilder<ChecklistTemplateDetailCubit,
-        ChecklistTemplateDetailState>(
+    return BlocBuilder<
+      ChecklistTemplateDetailCubit,
+      ChecklistTemplateDetailState
+    >(
       buildWhen: (p, c) =>
           p.assignments.data != c.assignments.data ||
           p.members.data != c.members.data ||
@@ -87,22 +89,23 @@ class _MemberOverrideRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return BlocSelector<
-        ChecklistTemplateDetailCubit,
-        ChecklistTemplateDetailState,
-        ({_OverrideChoice choice, bool isPending})>(
+      ChecklistTemplateDetailCubit,
+      ChecklistTemplateDetailState,
+      ({_OverrideChoice choice, bool isPending})
+    >(
       selector: (state) {
         final assignments = state.assignments.data;
         final isAdded =
             assignments?.personalAdd.any((u) => u.userId == member.userId) ??
-                false;
+            false;
         final isRemoved =
             assignments?.personalRemove.any((u) => u.userId == member.userId) ??
-                false;
+            false;
         final choice = isAdded
             ? _OverrideChoice.add
             : isRemoved
-                ? _OverrideChoice.remove
-                : _OverrideChoice.defaults;
+            ? _OverrideChoice.remove
+            : _OverrideChoice.defaults;
         return (
           choice: choice,
           isPending: state.pendingMemberIds.contains(member.userId),
@@ -120,8 +123,9 @@ class _MemberOverrideRow extends StatelessWidget {
                   member.userName.isNotEmpty
                       ? member.userName[0].toUpperCase()
                       : '?',
-                  style:
-                      textTheme.labelMedium?.copyWith(color: appColors.primary),
+                  style: textTheme.labelMedium?.copyWith(
+                    color: appColors.primary,
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -223,16 +227,17 @@ class _OverrideSwitcher extends StatelessWidget {
     }
 
     final ok = switch (target) {
-      _OverrideChoice.defaults =>
-        await cubit.clearPersonalOverride(member.userId),
+      _OverrideChoice.defaults => await cubit.clearPersonalOverride(
+        member.userId,
+      ),
       _OverrideChoice.add => await cubit.setPersonalOverride(
-          member.userId,
-          ChecklistOverrideType.add,
-        ),
+        member.userId,
+        ChecklistOverrideType.add,
+      ),
       _OverrideChoice.remove => await cubit.setPersonalOverride(
-          member.userId,
-          ChecklistOverrideType.remove,
-        ),
+        member.userId,
+        ChecklistOverrideType.remove,
+      ),
     };
 
     if (!ok && context.mounted) {
@@ -259,8 +264,9 @@ class _OverrideChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background =
-        selected ? color.withValues(alpha: 0.15) : Colors.transparent;
+    final background = selected
+        ? color.withValues(alpha: 0.15)
+        : Colors.transparent;
     final borderColor = selected ? color : color.withValues(alpha: 0.35);
     final textColor = selected ? color : color.withValues(alpha: 0.7);
 
@@ -290,9 +296,9 @@ class _OverrideChip extends StatelessWidget {
               : Text(
                   label,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: textColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
         ),
       ),

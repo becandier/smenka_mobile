@@ -77,8 +77,11 @@ class _RateFormViewState extends State<_RateFormView> {
     _noteController = TextEditingController(text: initial?.note ?? '');
     _rateType = initial?.rateType ?? RateType.hourly;
     final initialDay = (initial?.effectiveFrom ?? DateTime.now()).toLocal();
-    _effectiveFromDay =
-        DateTime(initialDay.year, initialDay.month, initialDay.day);
+    _effectiveFromDay = DateTime(
+      initialDay.year,
+      initialDay.month,
+      initialDay.day,
+    );
   }
 
   @override
@@ -184,9 +187,7 @@ class _RateFormViewState extends State<_RateFormView> {
               if (isEdit) ...[
                 Text(
                   l10n.payrollEditRateHint,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.secondary,
-                  ),
+                  style: textTheme.bodySmall?.copyWith(color: colors.secondary),
                 ),
                 const SizedBox(height: 12),
               ],
@@ -194,8 +195,9 @@ class _RateFormViewState extends State<_RateFormView> {
                 controller: _amountController,
                 label: l10n.payrollRateAmountLabel,
                 error: _amountError,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 enabled: !state.isSubmitting,
               ),
               const SizedBox(height: 16),
@@ -214,7 +216,7 @@ class _RateFormViewState extends State<_RateFormView> {
                 onSelectionChanged: state.isSubmitting
                     ? null
                     : (selection) =>
-                        setState(() => _rateType = selection.first),
+                          setState(() => _rateType = selection.first),
                 showSelectedIcon: false,
               ),
               const SizedBox(height: 16),

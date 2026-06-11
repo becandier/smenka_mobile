@@ -18,10 +18,7 @@ abstract class AuthRepository {
   });
 
   /// Подтверждение email 4-значным кодом — возвращает токены
-  Future<Task<AuthToken>> verify({
-    required String email,
-    required String code,
-  });
+  Future<Task<AuthToken>> verify({required String email, required String code});
 
   /// Повторная отправка кода (cooldown 30 сек)
   Future<Task<void>> resendCode({required String email});

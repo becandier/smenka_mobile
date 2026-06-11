@@ -16,10 +16,7 @@ part '../widgets/_member_tile.dart';
 
 @RoutePage(name: 'OrgMembersRoute')
 class MembersPage extends StatelessWidget {
-  const MembersPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const MembersPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -44,10 +41,7 @@ class _MembersView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.membersTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.membersTitle), centerTitle: true),
       body: SectionDataWrapper<MembersCubit, MembersState, List<Member>>(
         selector: (state) => state.members,
         onRetry: () => context.read<MembersCubit>().loadMembers(),

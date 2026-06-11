@@ -14,10 +14,7 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 
 @RoutePage()
 class OrgSettingsPage extends StatelessWidget {
-  const OrgSettingsPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const OrgSettingsPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -41,10 +38,7 @@ class _OrgSettingsView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.orgSettingsTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.orgSettingsTitle), centerTitle: true),
       body: SectionDataWrapper<OrgSettingsCubit, OrgSettingsState, OrgSettings>(
         selector: (state) => state.settings,
         onRetry: () => context.read<OrgSettingsCubit>().loadSettings(),
@@ -168,9 +162,7 @@ class _GeoCheckTile extends StatelessWidget {
         ),
         value: value,
         onChanged: onChanged,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -199,9 +191,7 @@ class _NumberFieldState extends State<_NumberField> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: widget.value?.toString() ?? '',
-    );
+    _controller = TextEditingController(text: widget.value?.toString() ?? '');
   }
 
   @override
@@ -237,10 +227,7 @@ class _NumberFieldState extends State<_NumberField> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.label,
-              style: textTheme.titleSmall,
-            ),
+            Text(widget.label, style: textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(
               widget.description,

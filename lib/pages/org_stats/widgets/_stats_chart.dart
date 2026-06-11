@@ -43,7 +43,7 @@ class _StatsChart extends StatelessWidget {
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
                     maxY: maxHours > 0 ? maxHours * 1.1 : 1,
-                    barTouchData: BarTouchData(enabled: false),
+                    barTouchData: const BarTouchData(enabled: false),
                     titlesData: FlTitlesData(
                       topTitles: const AxisTitles(),
                       rightTitles: const AxisTitles(),

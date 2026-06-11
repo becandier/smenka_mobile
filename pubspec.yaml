@@ -4,9 +4,9 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
-# Actualy Flutter SDK version is 3.27.0
+# Flutter SDK: глобальный (3.41.x, Dart 3.11). FVM убран.
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.0
 
 dependencies:
   flutter:
@@ -18,43 +18,46 @@ dependencies:
   firebase_core: ^4.0.0
   firebase_remote_config: ^6.0.0
   flutter_bloc: ^9.0.0
-  upgrader: ^11.3.1
+  upgrader: ^13.5.0
   shared_preferences: ^2.3.5
   flutter_svg: ^2.0.17
   firebase_crashlytics: ^5.0.0
   intl: ^0.20.2
-  package_info_plus: ^8.1.3
+  package_info_plus: ^10.1.0
   url_launcher: ^6.3.1
-  connectivity_plus: ^6.1.2
-  auto_route: ^10.0.0
+  connectivity_plus: ^7.1.1
+  auto_route: ^11.1.0
   talker_flutter: ^5.0.0
   dio: ^5.8.0+1
   talker_dio_logger: ^5.0.0
   talker_bloc_logger: ^5.0.0
   firebase_analytics: ^12.0.0
   freezed_annotation: ^3.0.0
-  json_annotation: ^4.9.0
+  json_annotation: ^4.12.0
   flutter_gen: ^5.10.0
   bloc: ^9.0.0
-  yandex_maps_mapkit_lite: 4.30.0-beta
-  fl_chart: ^0.70.2
+  yandex_maps_mapkit_lite: ^4.36.0
+  fl_chart: ^1.2.0
   geolocator: ^14.0.0
   shimmer: ^3.0.0
-  app_links: ^6.3.2
+  app_links: ^7.0.0
   rxdart: ^0.28.0
   path_provider: ^2.1.5
+  flutter_secure_storage: ^10.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   auto_route_generator: ^10.0.1
-  very_good_analysis: ^9.0.0
+  very_good_analysis: ^10.2.0
   flutter_launcher_icons: ^0.14.2
   build_runner: ^2.4.15
   freezed: ^3.0.3
   json_serializable: ^6.9.4
   flutter_gen_runner: ^5.10.0
+  mocktail: ^1.0.4
+  bloc_test: ^10.0.0
 
 
 flutter:

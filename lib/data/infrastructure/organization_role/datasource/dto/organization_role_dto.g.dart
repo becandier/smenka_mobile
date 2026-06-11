@@ -14,9 +14,9 @@ _OrganizationRoleDto _$OrganizationRoleDtoFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$OrganizationRoleDtoToJson(
-        _OrganizationRoleDto instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'created_at': instance.createdAt.toIso8601String(),
-    };
+  _OrganizationRoleDto instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'created_at': instance.createdAt.toIso8601String(),
+};

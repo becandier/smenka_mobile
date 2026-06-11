@@ -11,439 +11,280 @@ part of 'shift_stats.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$ShiftStats {
-  int get totalWorkedSeconds;
-  int get shiftCount;
-  int get averageShiftSeconds;
 
-  /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
-  String? get period;
+ int get totalWorkedSeconds; int get shiftCount; int get averageShiftSeconds;/// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+ String? get period;/// Фактически применённое окно статистики (UTC).
+ DateTime? get rangeFrom; DateTime? get rangeTo;
+/// Create a copy of ShiftStats
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ShiftStatsCopyWith<ShiftStats> get copyWith => _$ShiftStatsCopyWithImpl<ShiftStats>(this as ShiftStats, _$identity);
 
-  /// Фактически применённое окно статистики (UTC).
-  DateTime? get rangeFrom;
-  DateTime? get rangeTo;
 
-  /// Create a copy of ShiftStats
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $ShiftStatsCopyWith<ShiftStats> get copyWith =>
-      _$ShiftStatsCopyWithImpl<ShiftStats>(this as ShiftStats, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is ShiftStats &&
-            (identical(other.totalWorkedSeconds, totalWorkedSeconds) ||
-                other.totalWorkedSeconds == totalWorkedSeconds) &&
-            (identical(other.shiftCount, shiftCount) ||
-                other.shiftCount == shiftCount) &&
-            (identical(other.averageShiftSeconds, averageShiftSeconds) ||
-                other.averageShiftSeconds == averageShiftSeconds) &&
-            (identical(other.period, period) || other.period == period) &&
-            (identical(other.rangeFrom, rangeFrom) ||
-                other.rangeFrom == rangeFrom) &&
-            (identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftStats&&(identical(other.totalWorkedSeconds, totalWorkedSeconds) || other.totalWorkedSeconds == totalWorkedSeconds)&&(identical(other.shiftCount, shiftCount) || other.shiftCount == shiftCount)&&(identical(other.averageShiftSeconds, averageShiftSeconds) || other.averageShiftSeconds == averageShiftSeconds)&&(identical(other.period, period) || other.period == period)&&(identical(other.rangeFrom, rangeFrom) || other.rangeFrom == rangeFrom)&&(identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
+}
 
-  @override
-  int get hashCode => Object.hash(runtimeType, totalWorkedSeconds, shiftCount,
-      averageShiftSeconds, period, rangeFrom, rangeTo);
 
-  @override
-  String toString() {
-    return 'ShiftStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
-  }
+@override
+int get hashCode => Object.hash(runtimeType,totalWorkedSeconds,shiftCount,averageShiftSeconds,period,rangeFrom,rangeTo);
+
+@override
+String toString() {
+  return 'ShiftStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $ShiftStatsCopyWith<$Res> {
-  factory $ShiftStatsCopyWith(
-          ShiftStats value, $Res Function(ShiftStats) _then) =
-      _$ShiftStatsCopyWithImpl;
-  @useResult
-  $Res call(
-      {int totalWorkedSeconds,
-      int shiftCount,
-      int averageShiftSeconds,
-      String? period,
-      DateTime? rangeFrom,
-      DateTime? rangeTo});
-}
+abstract mixin class $ShiftStatsCopyWith<$Res>  {
+  factory $ShiftStatsCopyWith(ShiftStats value, $Res Function(ShiftStats) _then) = _$ShiftStatsCopyWithImpl;
+@useResult
+$Res call({
+ int totalWorkedSeconds, int shiftCount, int averageShiftSeconds, String? period, DateTime? rangeFrom, DateTime? rangeTo
+});
 
+
+
+
+}
 /// @nodoc
-class _$ShiftStatsCopyWithImpl<$Res> implements $ShiftStatsCopyWith<$Res> {
+class _$ShiftStatsCopyWithImpl<$Res>
+    implements $ShiftStatsCopyWith<$Res> {
   _$ShiftStatsCopyWithImpl(this._self, this._then);
 
   final ShiftStats _self;
   final $Res Function(ShiftStats) _then;
 
-  /// Create a copy of ShiftStats
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? totalWorkedSeconds = null,
-    Object? shiftCount = null,
-    Object? averageShiftSeconds = null,
-    Object? period = freezed,
-    Object? rangeFrom = freezed,
-    Object? rangeTo = freezed,
-  }) {
-    return _then(_self.copyWith(
-      totalWorkedSeconds: null == totalWorkedSeconds
-          ? _self.totalWorkedSeconds
-          : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
-              as int,
-      shiftCount: null == shiftCount
-          ? _self.shiftCount
-          : shiftCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      averageShiftSeconds: null == averageShiftSeconds
-          ? _self.averageShiftSeconds
-          : averageShiftSeconds // ignore: cast_nullable_to_non_nullable
-              as int,
-      period: freezed == period
-          ? _self.period
-          : period // ignore: cast_nullable_to_non_nullable
-              as String?,
-      rangeFrom: freezed == rangeFrom
-          ? _self.rangeFrom
-          : rangeFrom // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      rangeTo: freezed == rangeTo
-          ? _self.rangeTo
-          : rangeTo // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ));
-  }
+/// Create a copy of ShiftStats
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? totalWorkedSeconds = null,Object? shiftCount = null,Object? averageShiftSeconds = null,Object? period = freezed,Object? rangeFrom = freezed,Object? rangeTo = freezed,}) {
+  return _then(_self.copyWith(
+totalWorkedSeconds: null == totalWorkedSeconds ? _self.totalWorkedSeconds : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
+as int,shiftCount: null == shiftCount ? _self.shiftCount : shiftCount // ignore: cast_nullable_to_non_nullable
+as int,averageShiftSeconds: null == averageShiftSeconds ? _self.averageShiftSeconds : averageShiftSeconds // ignore: cast_nullable_to_non_nullable
+as int,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String?,rangeFrom: freezed == rangeFrom ? _self.rangeFrom : rangeFrom // ignore: cast_nullable_to_non_nullable
+as DateTime?,rangeTo: freezed == rangeTo ? _self.rangeTo : rangeTo // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
 }
+
+}
+
 
 /// Adds pattern-matching-related methods to [ShiftStats].
 extension ShiftStatsPatterns on ShiftStats {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_ShiftStats value)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _ShiftStats() when $default != null:
-        return $default(_that);
-      case _:
-        return orElse();
-    }
-  }
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ShiftStats value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ShiftStats() when $default != null:
+return $default(_that);case _:
+  return orElse();
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_ShiftStats value) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _ShiftStats():
-        return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ShiftStats value)  $default,){
+final _that = this;
+switch (_that) {
+case _ShiftStats():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_ShiftStats value)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _ShiftStats() when $default != null:
-        return $default(_that);
-      case _:
-        return null;
-    }
-  }
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ShiftStats value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ShiftStats() when $default != null:
+return $default(_that);case _:
+  return null;
 
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            int totalWorkedSeconds,
-            int shiftCount,
-            int averageShiftSeconds,
-            String? period,
-            DateTime? rangeFrom,
-            DateTime? rangeTo)?
-        $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _ShiftStats() when $default != null:
-        return $default(
-            _that.totalWorkedSeconds,
-            _that.shiftCount,
-            _that.averageShiftSeconds,
-            _that.period,
-            _that.rangeFrom,
-            _that.rangeTo);
-      case _:
-        return orElse();
-    }
-  }
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int totalWorkedSeconds,  int shiftCount,  int averageShiftSeconds,  String? period,  DateTime? rangeFrom,  DateTime? rangeTo)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ShiftStats() when $default != null:
+return $default(_that.totalWorkedSeconds,_that.shiftCount,_that.averageShiftSeconds,_that.period,_that.rangeFrom,_that.rangeTo);case _:
+  return orElse();
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(
-            int totalWorkedSeconds,
-            int shiftCount,
-            int averageShiftSeconds,
-            String? period,
-            DateTime? rangeFrom,
-            DateTime? rangeTo)
-        $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _ShiftStats():
-        return $default(
-            _that.totalWorkedSeconds,
-            _that.shiftCount,
-            _that.averageShiftSeconds,
-            _that.period,
-            _that.rangeFrom,
-            _that.rangeTo);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int totalWorkedSeconds,  int shiftCount,  int averageShiftSeconds,  String? period,  DateTime? rangeFrom,  DateTime? rangeTo)  $default,) {final _that = this;
+switch (_that) {
+case _ShiftStats():
+return $default(_that.totalWorkedSeconds,_that.shiftCount,_that.averageShiftSeconds,_that.period,_that.rangeFrom,_that.rangeTo);case _:
+  throw StateError('Unexpected subclass');
 
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            int totalWorkedSeconds,
-            int shiftCount,
-            int averageShiftSeconds,
-            String? period,
-            DateTime? rangeFrom,
-            DateTime? rangeTo)?
-        $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _ShiftStats() when $default != null:
-        return $default(
-            _that.totalWorkedSeconds,
-            _that.shiftCount,
-            _that.averageShiftSeconds,
-            _that.period,
-            _that.rangeFrom,
-            _that.rangeTo);
-      case _:
-        return null;
-    }
-  }
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int totalWorkedSeconds,  int shiftCount,  int averageShiftSeconds,  String? period,  DateTime? rangeFrom,  DateTime? rangeTo)?  $default,) {final _that = this;
+switch (_that) {
+case _ShiftStats() when $default != null:
+return $default(_that.totalWorkedSeconds,_that.shiftCount,_that.averageShiftSeconds,_that.period,_that.rangeFrom,_that.rangeTo);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
+
 
 class _ShiftStats implements ShiftStats {
-  const _ShiftStats(
-      {required this.totalWorkedSeconds,
-      required this.shiftCount,
-      required this.averageShiftSeconds,
-      this.period,
-      this.rangeFrom,
-      this.rangeTo});
+  const _ShiftStats({required this.totalWorkedSeconds, required this.shiftCount, required this.averageShiftSeconds, this.period, this.rangeFrom, this.rangeTo});
+  
 
-  @override
-  final int totalWorkedSeconds;
-  @override
-  final int shiftCount;
-  @override
-  final int averageShiftSeconds;
+@override final  int totalWorkedSeconds;
+@override final  int shiftCount;
+@override final  int averageShiftSeconds;
+/// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
+@override final  String? period;
+/// Фактически применённое окно статистики (UTC).
+@override final  DateTime? rangeFrom;
+@override final  DateTime? rangeTo;
 
-  /// Пресет окна (`day|week|month`); null, если окно задано диапазоном.
-  @override
-  final String? period;
+/// Create a copy of ShiftStats
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ShiftStatsCopyWith<_ShiftStats> get copyWith => __$ShiftStatsCopyWithImpl<_ShiftStats>(this, _$identity);
 
-  /// Фактически применённое окно статистики (UTC).
-  @override
-  final DateTime? rangeFrom;
-  @override
-  final DateTime? rangeTo;
 
-  /// Create a copy of ShiftStats
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$ShiftStatsCopyWith<_ShiftStats> get copyWith =>
-      __$ShiftStatsCopyWithImpl<_ShiftStats>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _ShiftStats &&
-            (identical(other.totalWorkedSeconds, totalWorkedSeconds) ||
-                other.totalWorkedSeconds == totalWorkedSeconds) &&
-            (identical(other.shiftCount, shiftCount) ||
-                other.shiftCount == shiftCount) &&
-            (identical(other.averageShiftSeconds, averageShiftSeconds) ||
-                other.averageShiftSeconds == averageShiftSeconds) &&
-            (identical(other.period, period) || other.period == period) &&
-            (identical(other.rangeFrom, rangeFrom) ||
-                other.rangeFrom == rangeFrom) &&
-            (identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftStats&&(identical(other.totalWorkedSeconds, totalWorkedSeconds) || other.totalWorkedSeconds == totalWorkedSeconds)&&(identical(other.shiftCount, shiftCount) || other.shiftCount == shiftCount)&&(identical(other.averageShiftSeconds, averageShiftSeconds) || other.averageShiftSeconds == averageShiftSeconds)&&(identical(other.period, period) || other.period == period)&&(identical(other.rangeFrom, rangeFrom) || other.rangeFrom == rangeFrom)&&(identical(other.rangeTo, rangeTo) || other.rangeTo == rangeTo));
+}
 
-  @override
-  int get hashCode => Object.hash(runtimeType, totalWorkedSeconds, shiftCount,
-      averageShiftSeconds, period, rangeFrom, rangeTo);
 
-  @override
-  String toString() {
-    return 'ShiftStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
-  }
+@override
+int get hashCode => Object.hash(runtimeType,totalWorkedSeconds,shiftCount,averageShiftSeconds,period,rangeFrom,rangeTo);
+
+@override
+String toString() {
+  return 'ShiftStats(totalWorkedSeconds: $totalWorkedSeconds, shiftCount: $shiftCount, averageShiftSeconds: $averageShiftSeconds, period: $period, rangeFrom: $rangeFrom, rangeTo: $rangeTo)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$ShiftStatsCopyWith<$Res>
-    implements $ShiftStatsCopyWith<$Res> {
-  factory _$ShiftStatsCopyWith(
-          _ShiftStats value, $Res Function(_ShiftStats) _then) =
-      __$ShiftStatsCopyWithImpl;
-  @override
-  @useResult
-  $Res call(
-      {int totalWorkedSeconds,
-      int shiftCount,
-      int averageShiftSeconds,
-      String? period,
-      DateTime? rangeFrom,
-      DateTime? rangeTo});
-}
+abstract mixin class _$ShiftStatsCopyWith<$Res> implements $ShiftStatsCopyWith<$Res> {
+  factory _$ShiftStatsCopyWith(_ShiftStats value, $Res Function(_ShiftStats) _then) = __$ShiftStatsCopyWithImpl;
+@override @useResult
+$Res call({
+ int totalWorkedSeconds, int shiftCount, int averageShiftSeconds, String? period, DateTime? rangeFrom, DateTime? rangeTo
+});
 
+
+
+
+}
 /// @nodoc
-class __$ShiftStatsCopyWithImpl<$Res> implements _$ShiftStatsCopyWith<$Res> {
+class __$ShiftStatsCopyWithImpl<$Res>
+    implements _$ShiftStatsCopyWith<$Res> {
   __$ShiftStatsCopyWithImpl(this._self, this._then);
 
   final _ShiftStats _self;
   final $Res Function(_ShiftStats) _then;
 
-  /// Create a copy of ShiftStats
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? totalWorkedSeconds = null,
-    Object? shiftCount = null,
-    Object? averageShiftSeconds = null,
-    Object? period = freezed,
-    Object? rangeFrom = freezed,
-    Object? rangeTo = freezed,
-  }) {
-    return _then(_ShiftStats(
-      totalWorkedSeconds: null == totalWorkedSeconds
-          ? _self.totalWorkedSeconds
-          : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
-              as int,
-      shiftCount: null == shiftCount
-          ? _self.shiftCount
-          : shiftCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      averageShiftSeconds: null == averageShiftSeconds
-          ? _self.averageShiftSeconds
-          : averageShiftSeconds // ignore: cast_nullable_to_non_nullable
-              as int,
-      period: freezed == period
-          ? _self.period
-          : period // ignore: cast_nullable_to_non_nullable
-              as String?,
-      rangeFrom: freezed == rangeFrom
-          ? _self.rangeFrom
-          : rangeFrom // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      rangeTo: freezed == rangeTo
-          ? _self.rangeTo
-          : rangeTo // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ));
-  }
+/// Create a copy of ShiftStats
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? totalWorkedSeconds = null,Object? shiftCount = null,Object? averageShiftSeconds = null,Object? period = freezed,Object? rangeFrom = freezed,Object? rangeTo = freezed,}) {
+  return _then(_ShiftStats(
+totalWorkedSeconds: null == totalWorkedSeconds ? _self.totalWorkedSeconds : totalWorkedSeconds // ignore: cast_nullable_to_non_nullable
+as int,shiftCount: null == shiftCount ? _self.shiftCount : shiftCount // ignore: cast_nullable_to_non_nullable
+as int,averageShiftSeconds: null == averageShiftSeconds ? _self.averageShiftSeconds : averageShiftSeconds // ignore: cast_nullable_to_non_nullable
+as int,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String?,rangeFrom: freezed == rangeFrom ? _self.rangeFrom : rangeFrom // ignore: cast_nullable_to_non_nullable
+as DateTime?,rangeTo: freezed == rangeTo ? _self.rangeTo : rangeTo // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+
 }
 
 // dart format on

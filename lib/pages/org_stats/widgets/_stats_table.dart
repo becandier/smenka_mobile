@@ -102,27 +102,15 @@ class _TableRow extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: Text(
-              shifts,
-              style: style,
-              textAlign: TextAlign.center,
-            ),
+            child: Text(shifts, style: style, textAlign: TextAlign.center),
           ),
           Expanded(
             flex: 2,
-            child: Text(
-              hours,
-              style: style,
-              textAlign: TextAlign.center,
-            ),
+            child: Text(hours, style: style, textAlign: TextAlign.center),
           ),
           Expanded(
             flex: 2,
-            child: Text(
-              avg,
-              style: style,
-              textAlign: TextAlign.end,
-            ),
+            child: Text(avg, style: style, textAlign: TextAlign.end),
           ),
         ],
       ),

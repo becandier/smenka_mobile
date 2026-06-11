@@ -37,9 +37,7 @@ class AppEmptyState extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: textTheme.bodyLarge?.copyWith(
-                color: appColors.secondary,
-              ),
+              style: textTheme.bodyLarge?.copyWith(color: appColors.secondary),
               textAlign: TextAlign.center,
             ),
             if (subtitle case final subtitle?) ...[
@@ -54,11 +52,7 @@ class AppEmptyState extends StatelessWidget {
             ],
             if (actionLabel case final label? when onAction != null) ...[
               const SizedBox(height: 24),
-              AppButton(
-                onPressed: onAction,
-                label: label,
-                isOutlined: true,
-              ),
+              AppButton(onPressed: onAction, label: label, isOutlined: true),
             ],
           ],
         ),

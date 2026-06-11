@@ -57,10 +57,7 @@ class _OrgShiftDetailView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.shiftDetailTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.shiftDetailTitle), centerTitle: true),
       body: BlocBuilder<OrgShiftDetailCubit, OrgShiftDetailState>(
         builder: (context, state) {
           final section = state.shift;
@@ -132,7 +129,8 @@ class _ErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final isAccessOrMissing = code == 'SHIFT_NOT_FOUND' ||
+    final isAccessOrMissing =
+        code == 'SHIFT_NOT_FOUND' ||
         code == 'ORG_NOT_FOUND' ||
         code == 'FORBIDDEN';
 

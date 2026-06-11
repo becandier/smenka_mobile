@@ -10,10 +10,10 @@ class AuthCubit extends Cubit<cubit.AuthCubitState> {
     required AuthRepository authRepository,
     required AuthStateNotifier authNotifier,
     required OrganizationRepository organizationRepository,
-  })  : _authRepository = authRepository,
-        _authNotifier = authNotifier,
-        _organizationRepository = organizationRepository,
-        super(const cubit.AuthCubitState.unknown()) {
+  }) : _authRepository = authRepository,
+       _authNotifier = authNotifier,
+       _organizationRepository = organizationRepository,
+       super(const cubit.AuthCubitState.unknown()) {
     _authNotifier.addListener(_onAuthStateChanged);
     _syncState();
   }

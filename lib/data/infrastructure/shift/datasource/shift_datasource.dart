@@ -13,10 +13,7 @@ class ShiftDataSource {
     int limit = 20,
     int offset = 0,
   }) async {
-    final queryParameters = <String, dynamic>{
-      'limit': limit,
-      'offset': offset,
-    };
+    final queryParameters = <String, dynamic>{'limit': limit, 'offset': offset};
     if (status != null) queryParameters['status'] = status;
     if (dateFrom != null) {
       queryParameters['date_from'] = dateFrom.toIso8601String();

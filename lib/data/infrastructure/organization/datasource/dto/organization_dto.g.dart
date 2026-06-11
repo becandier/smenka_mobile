@@ -19,7 +19,8 @@ _OrganizationDto _$OrganizationDtoFromJson(Map<String, dynamic> json) =>
       myCustomRole: json['my_custom_role'] == null
           ? null
           : OrganizationRoleDto.fromJson(
-              json['my_custom_role'] as Map<String, dynamic>),
+              json['my_custom_role'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$OrganizationDtoToJson(_OrganizationDto instance) =>

@@ -92,15 +92,16 @@ class _EmployeePickerView extends StatelessWidget {
                   child: Text(
                     l10n.shiftEmployeePickerEmpty,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: context.appColors.secondary,
-                        ),
+                      color: context.appColors.secondary,
+                    ),
                   ),
                 )
               else
                 ...members.map(
                   (m) => _EmployeeRow(
-                    label:
-                        m.userName.trim().isNotEmpty ? m.userName : m.userEmail,
+                    label: m.userName.trim().isNotEmpty
+                        ? m.userName
+                        : m.userEmail,
                     subtitle: m.userName.trim().isNotEmpty ? m.userEmail : null,
                     isSelected: m.userId == selectedUserId,
                     onTap: () => _pick(context, m),
@@ -148,8 +149,9 @@ class _EmployeeRow extends StatelessWidget {
                     Text(
                       label,
                       style: textTheme.bodyLarge?.copyWith(
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w400,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
                       ),
                     ),
                     if (subtitle case final sub?) ...[
@@ -192,16 +194,12 @@ class _ErrorRow extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: context.appColors.error,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: context.appColors.error),
           ),
           const SizedBox(height: 12),
-          AppButton(
-            onPressed: onRetry,
-            label: l10n.retry,
-            isOutlined: true,
-          ),
+          AppButton(onPressed: onRetry, label: l10n.retry, isOutlined: true),
         ],
       ),
     );

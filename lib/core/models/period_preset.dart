@@ -14,24 +14,24 @@ extension PeriodPresetBounds on PeriodPreset {
 
     final (DateTime start, DateTime end) = switch (this) {
       PeriodPreset.day => (
-          today,
-          DateTime(today.year, today.month, today.day, 23, 59, 59),
-        ),
+        today,
+        DateTime(today.year, today.month, today.day, 23, 59, 59),
+      ),
       PeriodPreset.week => () {
-          final monday = DateTime(
-            today.year,
-            today.month,
-            today.day - (today.weekday - 1),
-          );
-          return (
-            monday,
-            DateTime(monday.year, monday.month, monday.day + 6, 23, 59, 59),
-          );
-        }(),
+        final monday = DateTime(
+          today.year,
+          today.month,
+          today.day - (today.weekday - 1),
+        );
+        return (
+          monday,
+          DateTime(monday.year, monday.month, monday.day + 6, 23, 59, 59),
+        );
+      }(),
       PeriodPreset.month => (
-          DateTime(today.year, today.month),
-          DateTime(today.year, today.month + 1, 0, 23, 59, 59),
-        ),
+        DateTime(today.year, today.month),
+        DateTime(today.year, today.month + 1, 0, 23, 59, 59),
+      ),
     };
 
     return (fromUtc: start.toUtc(), toUtc: end.toUtc());

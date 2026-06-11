@@ -112,13 +112,18 @@ class _RatesSectionState extends State<_RatesSection> {
                 ],
               ),
               const SizedBox(height: 8),
-              SectionDataWrapper<MemberRatesCubit, MemberRatesState,
-                  List<Rate>>(
+              SectionDataWrapper<
+                MemberRatesCubit,
+                MemberRatesState,
+                List<Rate>
+              >(
                 selector: (state) => state.rates,
                 onRetry: () => context.read<MemberRatesCubit>().loadRates(),
                 contentBuilder: (rates) {
-                  final current =
-                      context.read<MemberRatesCubit>().state.currentRate;
+                  final current = context
+                      .read<MemberRatesCubit>()
+                      .state
+                      .currentRate;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,9 +206,7 @@ class _CurrentRateBlock extends StatelessWidget {
         else
           Text(
             rateLabel,
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
       ],
     );
@@ -287,9 +290,9 @@ class _RateRow extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       l10n.payrollRateEffectiveFrom(
-                        DateFormat('dd.MM.yyyy').format(
-                          rate.effectiveFrom.toLocal(),
-                        ),
+                        DateFormat(
+                          'dd.MM.yyyy',
+                        ).format(rate.effectiveFrom.toLocal()),
                       ),
                       style: textTheme.bodySmall?.copyWith(
                         color: colors.secondary,

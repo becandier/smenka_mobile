@@ -16,9 +16,7 @@ class OrganizationDataSource {
   }
 
   Future<List<OrganizationDto>> getAll() async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/organizations',
-    );
+    final response = await _dio.get<Map<String, dynamic>>('/organizations');
     final items = response.data!['items'] as List<dynamic>;
     return items
         .cast<Map<String, dynamic>>()
@@ -68,9 +66,7 @@ class OrganizationDataSource {
   }
 
   Future<void> removeMember(String orgId, String memberUserId) async {
-    await _dio.delete<void>(
-      '/organizations/$orgId/members/$memberUserId',
-    );
+    await _dio.delete<void>('/organizations/$orgId/members/$memberUserId');
   }
 
   Future<OrgSettingsDto> getSettings(String orgId) async {
@@ -111,10 +107,7 @@ class OrganizationDataSource {
     int limit = 20,
     int offset = 0,
   }) async {
-    final queryParameters = <String, dynamic>{
-      'limit': limit,
-      'offset': offset,
-    };
+    final queryParameters = <String, dynamic>{'limit': limit, 'offset': offset};
     if (userId != null) queryParameters['user_id'] = userId;
     if (status != null) queryParameters['status'] = status;
     if (dateFrom != null) {
@@ -139,9 +132,7 @@ class OrganizationDataSource {
   }
 
   Future<List<OrganizationDto>> getAllOrganizations() async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/organizations/all',
-    );
+    final response = await _dio.get<Map<String, dynamic>>('/organizations/all');
     final items = response.data!['items'] as List<dynamic>;
     return items
         .cast<Map<String, dynamic>>()

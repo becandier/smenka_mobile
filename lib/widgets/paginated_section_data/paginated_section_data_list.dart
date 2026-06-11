@@ -105,7 +105,8 @@ class _PaginatedSectionDataListState<C extends StateStreamable<S>, S, T>
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverFillRemaining(
-                  child: widget.emptyBuilder?.call() ??
+                  child:
+                      widget.emptyBuilder?.call() ??
                       Center(
                         child: Text(
                           context.l10n.noData,

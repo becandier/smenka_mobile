@@ -70,9 +70,10 @@ class _AddEditLocationViewState extends State<_AddEditLocationView>
   ) {
     if (finished) {
       final target = cameraPosition.target;
-      context
-          .read<AddEditLocationCubit>()
-          .updatePosition(target.latitude, target.longitude);
+      context.read<AddEditLocationCubit>().updatePosition(
+        target.latitude,
+        target.longitude,
+      );
     }
 
     _updateCircle();
@@ -95,15 +96,16 @@ class _AddEditLocationViewState extends State<_AddEditLocationView>
     );
 
     // Добавляем круг радиуса
-    final circle = mapWindow.map.mapObjects.addCircle(
-      Circle(
-        Point(latitude: state.latitude, longitude: state.longitude),
-        radius: state.radiusMeters.toDouble(),
-      ),
-    )
-      ..strokeColor = Colors.blue.withValues(alpha: 0.8)
-      ..strokeWidth = 2
-      ..fillColor = Colors.blue.withValues(alpha: 0.15);
+    final circle =
+        mapWindow.map.mapObjects.addCircle(
+            Circle(
+              Point(latitude: state.latitude, longitude: state.longitude),
+              radius: state.radiusMeters.toDouble(),
+            ),
+          )
+          ..strokeColor = Colors.blue.withValues(alpha: 0.8)
+          ..strokeWidth = 2
+          ..fillColor = Colors.blue.withValues(alpha: 0.15);
     _circleMapObject = circle;
 
     setState(() {
@@ -156,9 +158,7 @@ class _AddEditLocationViewState extends State<_AddEditLocationView>
         body: Stack(
           children: [
             // Карта Yandex
-            FlutterMapWidget(
-              onMapCreated: _onMapCreated,
-            ),
+            FlutterMapWidget(onMapCreated: _onMapCreated),
             // Маркер по центру
             const _CenterMarker(),
             // Подсказка сверху
@@ -188,9 +188,7 @@ class _AddEditLocationViewState extends State<_AddEditLocationView>
                 ),
               ),
             // Форма внизу
-            _LocationForm(
-              onRadiusChanged: _updateCircleRadius,
-            ),
+            _LocationForm(onRadiusChanged: _updateCircleRadius),
           ],
         ),
       ),

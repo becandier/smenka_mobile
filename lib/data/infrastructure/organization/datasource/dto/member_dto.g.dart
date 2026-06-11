@@ -7,22 +7,22 @@ part of 'member_dto.dart';
 // **************************************************************************
 
 _MemberDto _$MemberDtoFromJson(Map<String, dynamic> json) => _MemberDto(
-      id: json['id'] as String,
-      organizationId: json['organization_id'] as String,
-      userId: json['user_id'] as String,
-      userName: json['user_name'] as String,
-      userEmail: json['user_email'] as String,
-      role: json['role'] as String,
-      joinedAt: DateTime.parse(json['joined_at'] as String),
-      customRole: json['custom_role'] == null
-          ? null
-          : OrganizationRoleDto.fromJson(
-              json['custom_role'] as Map<String, dynamic>),
-      currentRate: json['current_rate'] == null
-          ? null
-          : CurrentRateDto.fromJson(
-              json['current_rate'] as Map<String, dynamic>),
-    );
+  id: json['id'] as String,
+  organizationId: json['organization_id'] as String,
+  userId: json['user_id'] as String,
+  userName: json['user_name'] as String,
+  userEmail: json['user_email'] as String,
+  role: json['role'] as String,
+  joinedAt: DateTime.parse(json['joined_at'] as String),
+  customRole: json['custom_role'] == null
+      ? null
+      : OrganizationRoleDto.fromJson(
+          json['custom_role'] as Map<String, dynamic>,
+        ),
+  currentRate: json['current_rate'] == null
+      ? null
+      : CurrentRateDto.fromJson(json['current_rate'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$MemberDtoToJson(_MemberDto instance) =>
     <String, dynamic>{

@@ -18,13 +18,14 @@ class _OrgInviteSection extends StatelessWidget {
         children: [
           Text(
             l10n.orgDetailInviteCode,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
-          BlocSelector<OrganizationDetailCubit, OrganizationDetailState,
-              String?>(
+          BlocSelector<
+            OrganizationDetailCubit,
+            OrganizationDetailState,
+            String?
+          >(
             selector: (state) => state.inviteCode,
             builder: (context, inviteCode) {
               final code = inviteCode ?? organization.inviteCode;

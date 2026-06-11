@@ -9,8 +9,10 @@ class _RolesSection extends StatelessWidget {
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocBuilder<ChecklistTemplateDetailCubit,
-        ChecklistTemplateDetailState>(
+    return BlocBuilder<
+      ChecklistTemplateDetailCubit,
+      ChecklistTemplateDetailState
+    >(
       buildWhen: (p, c) =>
           p.assignments.data != c.assignments.data ||
           p.roles.data != c.roles.data,
@@ -18,8 +20,9 @@ class _RolesSection extends StatelessWidget {
         final assignments = state.assignments.data;
         final allRoles = state.roles.data ?? const <OrganizationRole>[];
         final assignedIds = assignments?.roleIds.toSet() ?? const <String>{};
-        final assignedRoles =
-            allRoles.where((r) => assignedIds.contains(r.id)).toList();
+        final assignedRoles = allRoles
+            .where((r) => assignedIds.contains(r.id))
+            .toList();
 
         return Material(
           color: appColors.surface,
@@ -59,8 +62,9 @@ class _RolesSection extends StatelessWidget {
                         .map(
                           (r) => Chip(
                             label: Text(r.name),
-                            backgroundColor:
-                                appColors.primary.withValues(alpha: 0.1),
+                            backgroundColor: appColors.primary.withValues(
+                              alpha: 0.1,
+                            ),
                             labelStyle: TextStyle(color: appColors.primary),
                             side: BorderSide.none,
                           ),

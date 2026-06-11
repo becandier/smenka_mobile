@@ -1,18 +1,20 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-06-11 (фичи date_filters, payroll, shift_quick_start)
+Последнее обновление: 2026-06-11 (фичи date_filters, payroll, shift_quick_start, security_hardening)
 
 ---
 
 ## Стек
 
-- Flutter, Dart
+- Flutter 3.41 / Dart 3.11 — глобальный SDK (FVM убран; пакеты подняты до актуальных мажоров)
 - auto_route (навигация)
 - flutter_bloc / Cubit (state management)
 - freezed + json_serializable (модели)
 - Dio (HTTP)
 - GetIt + Injectable (DI)
-- SharedPreferences (локальное хранение)
+- SharedPreferences (локальное хранение нечувствительных данных: тема, контекст смены)
+- flutter_secure_storage (токены `access`/`refresh` — Keychain/Keystore)
+- connectivity_plus (индикация офлайна)
 - Firebase (Crashlytics, Remote Config)
 
 ---
@@ -237,10 +239,17 @@ lib/
 
 | Сервис | Хранилище | Данные |
 |--------|-----------|--------|
-| `AuthTokenStorage` | SharedPreferences | access_token, refresh_token |
+| `AuthTokenStorage` | **flutter_secure_storage** (+ in-memory кэш) | access_token, refresh_token |
 | `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
 | `PendingInviteStorage` | SharedPreferences | pending_invite_code |
 | `ShiftContextStorage` | SharedPreferences | last_shift_context (`personal` либо UUID организации) |
+
+### `AuthTokenStorage` — безопасное хранение токенов (security_hardening)
+- Токены лежат в `flutter_secure_storage` (Keychain на iOS, EncryptedSharedPreferences/Keystore на Android). Нечувствительные данные (тема, контекст смены) остаются в `SharedPreferences`.
+- **In-memory кэш**: secure storage асинхронный, а `AuthInterceptor`/репозитории читают токены синхронно (`accessToken`/`refreshToken`/`hasTokens`). `init()` наполняет кэш при старте, `saveTokens`/`clearTokens` пишут write-through.
+- **Bootstrap-порядок**: `await authTokenStorage.init()` в `MainAppCubit._init` (фаза 3.5) — строго до создания Dio (фаза 4) и `checkAuthStatus`.
+- **Одноразовая миграция**: если secure storage пуст, а в старом `SharedPreferences` есть валидная пара токенов — переносим в secure storage и удаляем плейнтекст (пользователь не разлогинивается). Плейнтекст из `SharedPreferences` вычищается в любом случае (defense-in-depth).
+- Логика рефреша в `AuthInterceptor` не менялась.
 
 ---
 

@@ -7,9 +7,9 @@ class OrgStatsCubit extends Cubit<OrgStatsState> {
   OrgStatsCubit({
     required String orgId,
     required OrganizationRepository organizationRepository,
-  })  : _orgId = orgId,
-        _organizationRepository = organizationRepository,
-        super(const OrgStatsState()) {
+  }) : _orgId = orgId,
+       _organizationRepository = organizationRepository,
+       super(const OrgStatsState()) {
     loadStats();
   }
 
@@ -50,13 +50,7 @@ class OrgStatsCubit extends Cubit<OrgStatsState> {
 
   void setPeriod(String period) {
     if (period == state.period) return;
-    emit(
-      state.copyWith(
-        period: period,
-        customFrom: null,
-        customTo: null,
-      ),
-    );
+    emit(state.copyWith(period: period, customFrom: null, customTo: null));
     loadStats();
   }
 
@@ -67,13 +61,7 @@ class OrgStatsCubit extends Cubit<OrgStatsState> {
       if (state.isCustomRange) setPeriod('week');
       return;
     }
-    emit(
-      state.copyWith(
-        period: null,
-        customFrom: dateFrom,
-        customTo: dateTo,
-      ),
-    );
+    emit(state.copyWith(period: null, customFrom: dateFrom, customTo: dateTo));
     loadStats();
   }
 }

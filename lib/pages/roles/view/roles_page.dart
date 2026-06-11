@@ -14,10 +14,7 @@ part '../widgets/_role_editor_sheet.dart';
 
 @RoutePage()
 class RolesPage extends StatelessWidget {
-  const RolesPage({
-    @pathParam required this.orgId,
-    super.key,
-  });
+  const RolesPage({@pathParam required this.orgId, super.key});
 
   final String orgId;
 
@@ -41,10 +38,7 @@ class _RolesView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.rolesTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.rolesTitle), centerTitle: true),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openCreate(context),
         child: const Icon(Icons.add),

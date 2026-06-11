@@ -93,9 +93,7 @@ class _SuccessAppState extends State<_SuccessApp> {
         );
       },
       onFailure: (_) {
-        context.modals.showError(
-          context.l10n.deepLinkJoinError,
-        );
+        context.modals.showError(context.l10n.deepLinkJoinError);
       },
     );
   }
@@ -112,9 +110,7 @@ class _SuccessAppState extends State<_SuccessApp> {
         RepositoryProvider<IDebugRepositoryImp>.value(
           value: widget.debugRepository,
         ),
-        RepositoryProvider<AuthRepository>.value(
-          value: widget.authRepository,
-        ),
+        RepositoryProvider<AuthRepository>.value(value: widget.authRepository),
         RepositoryProvider<ShiftRepository>.value(
           value: widget.shiftRepository,
         ),
@@ -127,9 +123,7 @@ class _SuccessAppState extends State<_SuccessApp> {
         RepositoryProvider<ChecklistRepository>.value(
           value: widget.checklistRepository,
         ),
-        RepositoryProvider<UserRepository>.value(
-          value: widget.userRepository,
-        ),
+        RepositoryProvider<UserRepository>.value(value: widget.userRepository),
         RepositoryProvider<LocationRepository>.value(
           value: widget.locationRepository,
         ),
@@ -209,8 +203,9 @@ class _SuccessAppState extends State<_SuccessApp> {
                           techWorks: widget.appConfig.techWork,
                           child: DebugGestureDetector(
                             navigatorKey: _router.navigatorKey,
-                            password:
-                                context.read<AppConfig>().debugModePassword,
+                            password: context
+                                .read<AppConfig>()
+                                .debugModePassword,
                             child: GestureDetector(
                               onTap: () =>
                                   FocusManager.instance.primaryFocus?.unfocus(),

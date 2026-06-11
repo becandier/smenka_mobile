@@ -47,15 +47,15 @@ extension TaskX<T> on Task<T> {
 
   /// Возвращает данные или null при ошибке
   T? get dataOrNull => switch (this) {
-        TaskSuccess(:final data) => data,
-        TaskFailure() => null,
-      };
+    TaskSuccess(:final data) => data,
+    TaskFailure() => null,
+  };
 
   /// Возвращает ошибку или null при успехе
   ApiException? get errorOrNull => switch (this) {
-        TaskSuccess() => null,
-        TaskFailure(:final error) => error,
-      };
+    TaskSuccess() => null,
+    TaskFailure(:final error) => error,
+  };
 
   /// Проверка на успех
   bool get isSuccess => this is TaskSuccess<T>;
@@ -65,13 +65,13 @@ extension TaskX<T> on Task<T> {
 
   /// Возвращает данные или значение по умолчанию
   T getOrElse(T defaultValue) => switch (this) {
-        TaskSuccess(:final data) => data,
-        TaskFailure() => defaultValue,
-      };
+    TaskSuccess(:final data) => data,
+    TaskFailure() => defaultValue,
+  };
 
   /// Возвращает данные или вычисляет значение по умолчанию
   T getOrElseCompute(T Function(ApiException error) compute) => switch (this) {
-        TaskSuccess(:final data) => data,
-        TaskFailure(:final error) => compute(error),
-      };
+    TaskSuccess(:final data) => data,
+    TaskFailure(:final error) => compute(error),
+  };
 }

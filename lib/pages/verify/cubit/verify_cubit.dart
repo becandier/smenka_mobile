@@ -7,11 +7,9 @@ import 'package:smenka_mobile/data/domain/auth/repositories/auth_repository.dart
 import 'package:smenka_mobile/pages/verify/cubit/verify_state.dart';
 
 class VerifyCubit extends Cubit<VerifyState> {
-  VerifyCubit({
-    required String email,
-    required AuthRepository authRepository,
-  })  : _authRepository = authRepository,
-        super(VerifyState(email: email)) {
+  VerifyCubit({required String email, required AuthRepository authRepository})
+    : _authRepository = authRepository,
+      super(VerifyState(email: email)) {
     _startCooldown();
   }
 
@@ -33,13 +31,19 @@ class VerifyCubit extends Cubit<VerifyState> {
   }
 
   void updateCode(String code) {
-    emit(state.copyWith(code: code, error: null));
+    emit(state.copyWith(code: code, error: null, errorCode: null));
   }
 
   Future<bool> verify() async {
     if (!state.isCodeComplete) return false;
 
-    emit(state.copyWith(status: FeatureStatus.loading, error: null));
+    emit(
+      state.copyWith(
+        status: FeatureStatus.loading,
+        error: null,
+        errorCode: null,
+      ),
+    );
 
     final result = await _authRepository.verify(
       email: state.email,
@@ -56,9 +60,15 @@ class VerifyCubit extends Cubit<VerifyState> {
           state.copyWith(
             status: FeatureStatus.error,
             error: error.message,
+            errorCode: error.code,
             code: '',
           ),
         );
+        // 429 TOO_MANY_CODE_ATTEMPTS — старый код больше не примут, открываем
+        // CTA «запросить код заново», снимая кулдаун.
+        if (error.code == 'TOO_MANY_CODE_ATTEMPTS') {
+          _cancelCooldown();
+        }
         return false;
       },
     );
@@ -73,13 +83,24 @@ class VerifyCubit extends Cubit<VerifyState> {
 
     result.fold(
       onSuccess: (_) {
-        emit(state.copyWith(isResending: false));
+        emit(state.copyWith(isResending: false, error: null, errorCode: null));
         _startCooldown();
       },
       onFailure: (error) {
-        emit(state.copyWith(isResending: false, error: error.message));
+        emit(
+          state.copyWith(
+            isResending: false,
+            error: error.message,
+            errorCode: error.code,
+          ),
+        );
       },
     );
+  }
+
+  void _cancelCooldown() {
+    _cooldownTimer?.cancel();
+    emit(state.copyWith(cooldownSeconds: 0));
   }
 
   @override

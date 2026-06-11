@@ -16,9 +16,7 @@ import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart';
 /// - Visual indicator for selected theme
 /// - Smooth animations and modern styling
 class ThemeButtonWidget extends StatelessWidget {
-  const ThemeButtonWidget({
-    super.key,
-  });
+  const ThemeButtonWidget({super.key});
 
   /// Returns appropriate icon for each theme mode
   IconData _getThemeIcon(ThemeMode mode) {
@@ -84,10 +82,7 @@ class ThemeButtonWidget extends StatelessWidget {
           ],
           child: Container(
             height: 48,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: appColors.surface,
               borderRadius: BorderRadius.circular(12),
@@ -106,18 +101,14 @@ class ThemeButtonWidget extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  _getThemeIcon(state),
-                  size: 20,
-                  color: appColors.primary,
-                ),
+                Icon(_getThemeIcon(state), size: 20, color: appColors.primary),
                 const SizedBox(width: 12),
                 Text(
                   _getThemeLabel(context, state),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: appColors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    color: appColors.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Icon(
@@ -159,9 +150,9 @@ class ThemeButtonWidget extends StatelessWidget {
           Text(
             _getThemeLabel(context, mode),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isSelected ? appColors.primary : appColors.secondary,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                ),
+              color: isSelected ? appColors.primary : appColors.secondary,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            ),
           ),
           if (isSelected) ...[
             const SizedBox(width: 8),

@@ -8,9 +8,9 @@ class LocationsCubit extends Cubit<LocationsState> {
   LocationsCubit({
     required String orgId,
     required LocationRepository locationRepository,
-  })  : _orgId = orgId,
-        _locationRepository = locationRepository,
-        super(const LocationsState()) {
+  }) : _orgId = orgId,
+       _locationRepository = locationRepository,
+       super(const LocationsState()) {
     loadLocations();
   }
 

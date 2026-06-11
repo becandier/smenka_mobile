@@ -31,34 +31,39 @@ class OrganizationsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SectionDataWrapper<OrganizationsCubit, OrganizationsState,
-          List<Organization>>(
-        selector: (state) => state.organizations,
-        onRetry: () => context.read<OrganizationsCubit>().loadOrganizations(),
-        contentBuilder: (orgs) {
-          if (orgs.isEmpty) {
-            return AppEmptyState(
-              icon: Icons.business_outlined,
-              title: l10n.organizationsEmpty,
-              actionLabel: l10n.organizationsJoinByCode,
-              onAction: () => context.router.push(const JoinOrgRoute()),
-            );
-          }
-
-          return RefreshIndicator.adaptive(
-            onRefresh: () =>
+      body:
+          SectionDataWrapper<
+            OrganizationsCubit,
+            OrganizationsState,
+            List<Organization>
+          >(
+            selector: (state) => state.organizations,
+            onRetry: () =>
                 context.read<OrganizationsCubit>().loadOrganizations(),
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: orgs.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                return _OrgListCard(organization: orgs[index]);
-              },
-            ),
-          );
-        },
-      ),
+            contentBuilder: (orgs) {
+              if (orgs.isEmpty) {
+                return AppEmptyState(
+                  icon: Icons.business_outlined,
+                  title: l10n.organizationsEmpty,
+                  actionLabel: l10n.organizationsJoinByCode,
+                  onAction: () => context.router.push(const JoinOrgRoute()),
+                );
+              }
+
+              return RefreshIndicator.adaptive(
+                onRefresh: () =>
+                    context.read<OrganizationsCubit>().loadOrganizations(),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: orgs.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    return _OrgListCard(organization: orgs[index]);
+                  },
+                ),
+              );
+            },
+          ),
     );
   }
 }

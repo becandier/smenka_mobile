@@ -38,9 +38,10 @@ class _ShiftFilters extends StatelessWidget {
                   to: state.filterDateTo,
                   label: context.l10n.dateRangeFilterTitle,
                   onTap: () => _openDateRangePicker(context),
-                  onClear: () => context
-                      .read<ShiftHistoryCubit>()
-                      .setDateRange(null, null),
+                  onClear: () => context.read<ShiftHistoryCubit>().setDateRange(
+                    null,
+                    null,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 _FilterChip(

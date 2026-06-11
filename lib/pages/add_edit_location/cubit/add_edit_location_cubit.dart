@@ -11,20 +11,20 @@ class AddEditLocationCubit extends Cubit<AddEditLocationState> {
     required String orgId,
     required LocationRepository locationRepository,
     WorkLocation? existingLocation,
-  })  : _orgId = orgId,
-        _locationRepository = locationRepository,
-        super(
-          existingLocation != null
-              ? AddEditLocationState(
-                  name: existingLocation.name,
-                  latitude: existingLocation.latitude,
-                  longitude: existingLocation.longitude,
-                  radiusMeters: existingLocation.radiusMeters,
-                  isEdit: true,
-                  locationId: existingLocation.id,
-                )
-              : const AddEditLocationState(),
-        );
+  }) : _orgId = orgId,
+       _locationRepository = locationRepository,
+       super(
+         existingLocation != null
+             ? AddEditLocationState(
+                 name: existingLocation.name,
+                 latitude: existingLocation.latitude,
+                 longitude: existingLocation.longitude,
+                 radiusMeters: existingLocation.radiusMeters,
+                 isEdit: true,
+                 locationId: existingLocation.id,
+               )
+             : const AddEditLocationState(),
+       );
 
   final String _orgId;
   final LocationRepository _locationRepository;

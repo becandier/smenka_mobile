@@ -118,10 +118,7 @@ class _LocationTile extends StatelessWidget {
   void _navigateToEdit(BuildContext context) {
     final cubit = context.read<LocationsCubit>();
     context.router.push(
-      AddEditLocationRoute(
-        orgId: cubit.orgId,
-        existingLocation: location,
-      ),
+      AddEditLocationRoute(orgId: cubit.orgId, existingLocation: location),
     );
   }
 }

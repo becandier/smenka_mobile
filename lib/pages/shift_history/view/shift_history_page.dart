@@ -33,9 +33,8 @@ class ShiftHistoryPage extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (_) => ShiftStatsCubit(
-            shiftRepository: context.read<ShiftRepository>(),
-          ),
+          create: (_) =>
+              ShiftStatsCubit(shiftRepository: context.read<ShiftRepository>()),
         ),
       ],
       child: const _ShiftHistoryView(),
@@ -49,34 +48,36 @@ class _ShiftHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.historyTitle),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(context.l10n.historyTitle), centerTitle: true),
       body: Column(
         children: [
           const _StatsSection(),
           const _ShiftFilters(),
           Expanded(
-            child: PaginatedSectionDataList<ShiftHistoryCubit,
-                ShiftHistoryState, Shift>(
-              selector: (state) => state.shifts,
-              itemBuilder: (context, shift, index) => _ShiftCard(
-                shift: shift,
-                onTap: () =>
-                    context.router.push(ShiftDetailRoute(shift: shift)),
-              ),
-              onLoadMore: () => context
-                  .read<ShiftHistoryCubit>()
-                  .loadShifts(isRefresh: false),
-              onRefresh: () => context.read<ShiftHistoryCubit>().loadShifts(),
-              emptyBuilder: () => AppEmptyState(
-                icon: Icons.history_outlined,
-                title: context.read<ShiftHistoryCubit>().state.hasDateFilter
-                    ? context.l10n.shiftsEmptyForRange
-                    : context.l10n.historyEmpty,
-              ),
-            ),
+            child:
+                PaginatedSectionDataList<
+                  ShiftHistoryCubit,
+                  ShiftHistoryState,
+                  Shift
+                >(
+                  selector: (state) => state.shifts,
+                  itemBuilder: (context, shift, index) => _ShiftCard(
+                    shift: shift,
+                    onTap: () =>
+                        context.router.push(ShiftDetailRoute(shift: shift)),
+                  ),
+                  onLoadMore: () => context
+                      .read<ShiftHistoryCubit>()
+                      .loadShifts(isRefresh: false),
+                  onRefresh: () =>
+                      context.read<ShiftHistoryCubit>().loadShifts(),
+                  emptyBuilder: () => AppEmptyState(
+                    icon: Icons.history_outlined,
+                    title: context.read<ShiftHistoryCubit>().state.hasDateFilter
+                        ? context.l10n.shiftsEmptyForRange
+                        : context.l10n.historyEmpty,
+                  ),
+                ),
           ),
         ],
       ),

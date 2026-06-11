@@ -17,7 +17,8 @@ _MyEarningsDto _$MyEarningsDtoFromJson(Map<String, dynamic> json) =>
       currentRate: json['current_rate'] == null
           ? null
           : CurrentRateDto.fromJson(
-              json['current_rate'] as Map<String, dynamic>),
+              json['current_rate'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$MyEarningsDtoToJson(_MyEarningsDto instance) =>

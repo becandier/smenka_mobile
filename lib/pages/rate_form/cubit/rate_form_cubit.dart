@@ -12,11 +12,11 @@ class RateFormCubit extends Cubit<RateFormState> {
     required String memberId,
     required PayrollRepository payrollRepository,
     String? rateId,
-  })  : _orgId = orgId,
-        _memberId = memberId,
-        _rateId = rateId,
-        _payrollRepository = payrollRepository,
-        super(const RateFormState());
+  }) : _orgId = orgId,
+       _memberId = memberId,
+       _rateId = rateId,
+       _payrollRepository = payrollRepository,
+       super(const RateFormState());
 
   final String _orgId;
   final String _memberId;

@@ -9,9 +9,9 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
   OrgSettingsCubit({
     required String orgId,
     required OrganizationRepository organizationRepository,
-  })  : _orgId = orgId,
-        _organizationRepository = organizationRepository,
-        super(const OrgSettingsState()) {
+  }) : _orgId = orgId,
+       _organizationRepository = organizationRepository,
+       super(const OrgSettingsState()) {
     loadSettings();
   }
 
@@ -39,11 +39,7 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
         );
       },
       onFailure: (error) {
-        emit(
-          state.copyWith(
-            settings: state.settings.toError(error.message),
-          ),
-        );
+        emit(state.copyWith(settings: state.settings.toError(error.message)));
       },
     );
   }
@@ -82,9 +78,11 @@ class OrgSettingsCubit extends Cubit<OrgSettingsState> {
     final original = _original;
     if (original == null) return;
 
-    final effectiveAutoFinish =
-        state.autoFinishEnabled ? state.autoFinishHours : null;
-    final hasChanges = state.geoCheckEnabled != original.geoCheckEnabled ||
+    final effectiveAutoFinish = state.autoFinishEnabled
+        ? state.autoFinishHours
+        : null;
+    final hasChanges =
+        state.geoCheckEnabled != original.geoCheckEnabled ||
         effectiveAutoFinish != original.autoFinishHours ||
         state.maxPauseMinutes != original.maxPauseMinutes ||
         state.maxPausesPerShift != original.maxPausesPerShift;

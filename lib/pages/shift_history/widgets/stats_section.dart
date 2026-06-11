@@ -131,10 +131,10 @@ class _StatsSection extends StatelessWidget {
                       ],
                     ),
                     if (appliedRangeLabel(
-                      context,
-                      stats.rangeFrom,
-                      stats.rangeTo,
-                    )
+                          context,
+                          stats.rangeFrom,
+                          stats.rangeTo,
+                        )
                         case final rangeLabel?) ...[
                       const SizedBox(height: 12),
                       Text(
@@ -163,10 +163,7 @@ class _StatsSection extends StatelessWidget {
 }
 
 class _StatItem extends StatelessWidget {
-  const _StatItem({
-    required this.value,
-    required this.label,
-  });
+  const _StatItem({required this.value, required this.label});
 
   final String value;
   final String label;
@@ -181,17 +178,13 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: textTheme.bodySmall?.copyWith(
-            color: colors.secondary,
-          ),
+          style: textTheme.bodySmall?.copyWith(color: colors.secondary),
           textAlign: TextAlign.center,
         ),
       ],

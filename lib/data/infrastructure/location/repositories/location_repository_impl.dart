@@ -6,7 +6,7 @@ import 'package:smenka_mobile/data/infrastructure/location/mappers/_mappers.dart
 
 class LocationRepositoryImpl with TaskHandler implements LocationRepository {
   LocationRepositoryImpl({required LocationDataSource dataSource})
-      : _dataSource = dataSource;
+    : _dataSource = dataSource;
 
   final LocationDataSource _dataSource;
 

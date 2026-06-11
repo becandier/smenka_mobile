@@ -14,65 +14,47 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$OrgSettingsDto {
-  String get organizationId;
-  bool get geoCheckEnabled;
-  int? get autoFinishHours;
-  int? get maxPauseMinutes;
-  int? get maxPausesPerShift;
 
-  /// Create a copy of OrgSettingsDto
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $OrgSettingsDtoCopyWith<OrgSettingsDto> get copyWith =>
-      _$OrgSettingsDtoCopyWithImpl<OrgSettingsDto>(
-          this as OrgSettingsDto, _$identity);
+ String get organizationId; bool get geoCheckEnabled; int? get autoFinishHours; int? get maxPauseMinutes; int? get maxPausesPerShift;
+/// Create a copy of OrgSettingsDto
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OrgSettingsDtoCopyWith<OrgSettingsDto> get copyWith => _$OrgSettingsDtoCopyWithImpl<OrgSettingsDto>(this as OrgSettingsDto, _$identity);
 
   /// Serializes this OrgSettingsDto to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is OrgSettingsDto &&
-            (identical(other.organizationId, organizationId) ||
-                other.organizationId == organizationId) &&
-            (identical(other.geoCheckEnabled, geoCheckEnabled) ||
-                other.geoCheckEnabled == geoCheckEnabled) &&
-            (identical(other.autoFinishHours, autoFinishHours) ||
-                other.autoFinishHours == autoFinishHours) &&
-            (identical(other.maxPauseMinutes, maxPauseMinutes) ||
-                other.maxPauseMinutes == maxPauseMinutes) &&
-            (identical(other.maxPausesPerShift, maxPausesPerShift) ||
-                other.maxPausesPerShift == maxPausesPerShift));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, organizationId, geoCheckEnabled,
-      autoFinishHours, maxPauseMinutes, maxPausesPerShift);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrgSettingsDto&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.geoCheckEnabled, geoCheckEnabled) || other.geoCheckEnabled == geoCheckEnabled)&&(identical(other.autoFinishHours, autoFinishHours) || other.autoFinishHours == autoFinishHours)&&(identical(other.maxPauseMinutes, maxPauseMinutes) || other.maxPauseMinutes == maxPauseMinutes)&&(identical(other.maxPausesPerShift, maxPausesPerShift) || other.maxPausesPerShift == maxPausesPerShift));
+}
 
-  @override
-  String toString() {
-    return 'OrgSettingsDto(organizationId: $organizationId, geoCheckEnabled: $geoCheckEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,organizationId,geoCheckEnabled,autoFinishHours,maxPauseMinutes,maxPausesPerShift);
+
+@override
+String toString() {
+  return 'OrgSettingsDto(organizationId: $organizationId, geoCheckEnabled: $geoCheckEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $OrgSettingsDtoCopyWith<$Res> {
-  factory $OrgSettingsDtoCopyWith(
-          OrgSettingsDto value, $Res Function(OrgSettingsDto) _then) =
-      _$OrgSettingsDtoCopyWithImpl;
-  @useResult
-  $Res call(
-      {String organizationId,
-      bool geoCheckEnabled,
-      int? autoFinishHours,
-      int? maxPauseMinutes,
-      int? maxPausesPerShift});
-}
+abstract mixin class $OrgSettingsDtoCopyWith<$Res>  {
+  factory $OrgSettingsDtoCopyWith(OrgSettingsDto value, $Res Function(OrgSettingsDto) _then) = _$OrgSettingsDtoCopyWithImpl;
+@useResult
+$Res call({
+ String organizationId, bool geoCheckEnabled, int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift
+});
 
+
+
+
+}
 /// @nodoc
 class _$OrgSettingsDtoCopyWithImpl<$Res>
     implements $OrgSettingsDtoCopyWith<$Res> {
@@ -81,303 +63,205 @@ class _$OrgSettingsDtoCopyWithImpl<$Res>
   final OrgSettingsDto _self;
   final $Res Function(OrgSettingsDto) _then;
 
-  /// Create a copy of OrgSettingsDto
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? organizationId = null,
-    Object? geoCheckEnabled = null,
-    Object? autoFinishHours = freezed,
-    Object? maxPauseMinutes = freezed,
-    Object? maxPausesPerShift = freezed,
-  }) {
-    return _then(_self.copyWith(
-      organizationId: null == organizationId
-          ? _self.organizationId
-          : organizationId // ignore: cast_nullable_to_non_nullable
-              as String,
-      geoCheckEnabled: null == geoCheckEnabled
-          ? _self.geoCheckEnabled
-          : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
-              as bool,
-      autoFinishHours: freezed == autoFinishHours
-          ? _self.autoFinishHours
-          : autoFinishHours // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxPauseMinutes: freezed == maxPauseMinutes
-          ? _self.maxPauseMinutes
-          : maxPauseMinutes // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxPausesPerShift: freezed == maxPausesPerShift
-          ? _self.maxPausesPerShift
-          : maxPausesPerShift // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ));
-  }
+/// Create a copy of OrgSettingsDto
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? organizationId = null,Object? geoCheckEnabled = null,Object? autoFinishHours = freezed,Object? maxPauseMinutes = freezed,Object? maxPausesPerShift = freezed,}) {
+  return _then(_self.copyWith(
+organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as String,geoCheckEnabled: null == geoCheckEnabled ? _self.geoCheckEnabled : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
+as bool,autoFinishHours: freezed == autoFinishHours ? _self.autoFinishHours : autoFinishHours // ignore: cast_nullable_to_non_nullable
+as int?,maxPauseMinutes: freezed == maxPauseMinutes ? _self.maxPauseMinutes : maxPauseMinutes // ignore: cast_nullable_to_non_nullable
+as int?,maxPausesPerShift: freezed == maxPausesPerShift ? _self.maxPausesPerShift : maxPausesPerShift // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
 }
+
+}
+
 
 /// Adds pattern-matching-related methods to [OrgSettingsDto].
 extension OrgSettingsDtoPatterns on OrgSettingsDto {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_OrgSettingsDto value)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _OrgSettingsDto() when $default != null:
-        return $default(_that);
-      case _:
-        return orElse();
-    }
-  }
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OrgSettingsDto value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _OrgSettingsDto() when $default != null:
+return $default(_that);case _:
+  return orElse();
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_OrgSettingsDto value) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _OrgSettingsDto():
-        return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OrgSettingsDto value)  $default,){
+final _that = this;
+switch (_that) {
+case _OrgSettingsDto():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_OrgSettingsDto value)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _OrgSettingsDto() when $default != null:
-        return $default(_that);
-      case _:
-        return null;
-    }
-  }
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OrgSettingsDto value)?  $default,){
+final _that = this;
+switch (_that) {
+case _OrgSettingsDto() when $default != null:
+return $default(_that);case _:
+  return null;
 
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String organizationId, bool geoCheckEnabled,
-            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
-        $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _OrgSettingsDto() when $default != null:
-        return $default(
-            _that.organizationId,
-            _that.geoCheckEnabled,
-            _that.autoFinishHours,
-            _that.maxPauseMinutes,
-            _that.maxPausesPerShift);
-      case _:
-        return orElse();
-    }
-  }
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String organizationId,  bool geoCheckEnabled,  int? autoFinishHours,  int? maxPauseMinutes,  int? maxPausesPerShift)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _OrgSettingsDto() when $default != null:
+return $default(_that.organizationId,_that.geoCheckEnabled,_that.autoFinishHours,_that.maxPauseMinutes,_that.maxPausesPerShift);case _:
+  return orElse();
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(String organizationId, bool geoCheckEnabled,
-            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)
-        $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _OrgSettingsDto():
-        return $default(
-            _that.organizationId,
-            _that.geoCheckEnabled,
-            _that.autoFinishHours,
-            _that.maxPauseMinutes,
-            _that.maxPausesPerShift);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String organizationId,  bool geoCheckEnabled,  int? autoFinishHours,  int? maxPauseMinutes,  int? maxPausesPerShift)  $default,) {final _that = this;
+switch (_that) {
+case _OrgSettingsDto():
+return $default(_that.organizationId,_that.geoCheckEnabled,_that.autoFinishHours,_that.maxPauseMinutes,_that.maxPausesPerShift);case _:
+  throw StateError('Unexpected subclass');
 
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String organizationId, bool geoCheckEnabled,
-            int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift)?
-        $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _OrgSettingsDto() when $default != null:
-        return $default(
-            _that.organizationId,
-            _that.geoCheckEnabled,
-            _that.autoFinishHours,
-            _that.maxPauseMinutes,
-            _that.maxPausesPerShift);
-      case _:
-        return null;
-    }
-  }
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String organizationId,  bool geoCheckEnabled,  int? autoFinishHours,  int? maxPauseMinutes,  int? maxPausesPerShift)?  $default,) {final _that = this;
+switch (_that) {
+case _OrgSettingsDto() when $default != null:
+return $default(_that.organizationId,_that.geoCheckEnabled,_that.autoFinishHours,_that.maxPauseMinutes,_that.maxPausesPerShift);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _OrgSettingsDto implements OrgSettingsDto {
-  const _OrgSettingsDto(
-      {required this.organizationId,
-      required this.geoCheckEnabled,
-      this.autoFinishHours,
-      this.maxPauseMinutes,
-      this.maxPausesPerShift});
-  factory _OrgSettingsDto.fromJson(Map<String, dynamic> json) =>
-      _$OrgSettingsDtoFromJson(json);
+  const _OrgSettingsDto({required this.organizationId, required this.geoCheckEnabled, this.autoFinishHours, this.maxPauseMinutes, this.maxPausesPerShift});
+  factory _OrgSettingsDto.fromJson(Map<String, dynamic> json) => _$OrgSettingsDtoFromJson(json);
 
-  @override
-  final String organizationId;
-  @override
-  final bool geoCheckEnabled;
-  @override
-  final int? autoFinishHours;
-  @override
-  final int? maxPauseMinutes;
-  @override
-  final int? maxPausesPerShift;
+@override final  String organizationId;
+@override final  bool geoCheckEnabled;
+@override final  int? autoFinishHours;
+@override final  int? maxPauseMinutes;
+@override final  int? maxPausesPerShift;
 
-  /// Create a copy of OrgSettingsDto
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$OrgSettingsDtoCopyWith<_OrgSettingsDto> get copyWith =>
-      __$OrgSettingsDtoCopyWithImpl<_OrgSettingsDto>(this, _$identity);
+/// Create a copy of OrgSettingsDto
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OrgSettingsDtoCopyWith<_OrgSettingsDto> get copyWith => __$OrgSettingsDtoCopyWithImpl<_OrgSettingsDto>(this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$OrgSettingsDtoToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$OrgSettingsDtoToJson(this, );
+}
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _OrgSettingsDto &&
-            (identical(other.organizationId, organizationId) ||
-                other.organizationId == organizationId) &&
-            (identical(other.geoCheckEnabled, geoCheckEnabled) ||
-                other.geoCheckEnabled == geoCheckEnabled) &&
-            (identical(other.autoFinishHours, autoFinishHours) ||
-                other.autoFinishHours == autoFinishHours) &&
-            (identical(other.maxPauseMinutes, maxPauseMinutes) ||
-                other.maxPauseMinutes == maxPauseMinutes) &&
-            (identical(other.maxPausesPerShift, maxPausesPerShift) ||
-                other.maxPausesPerShift == maxPausesPerShift));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrgSettingsDto&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.geoCheckEnabled, geoCheckEnabled) || other.geoCheckEnabled == geoCheckEnabled)&&(identical(other.autoFinishHours, autoFinishHours) || other.autoFinishHours == autoFinishHours)&&(identical(other.maxPauseMinutes, maxPauseMinutes) || other.maxPauseMinutes == maxPauseMinutes)&&(identical(other.maxPausesPerShift, maxPausesPerShift) || other.maxPausesPerShift == maxPausesPerShift));
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, organizationId, geoCheckEnabled,
-      autoFinishHours, maxPauseMinutes, maxPausesPerShift);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,organizationId,geoCheckEnabled,autoFinishHours,maxPauseMinutes,maxPausesPerShift);
 
-  @override
-  String toString() {
-    return 'OrgSettingsDto(organizationId: $organizationId, geoCheckEnabled: $geoCheckEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift)';
-  }
+@override
+String toString() {
+  return 'OrgSettingsDto(organizationId: $organizationId, geoCheckEnabled: $geoCheckEnabled, autoFinishHours: $autoFinishHours, maxPauseMinutes: $maxPauseMinutes, maxPausesPerShift: $maxPausesPerShift)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$OrgSettingsDtoCopyWith<$Res>
-    implements $OrgSettingsDtoCopyWith<$Res> {
-  factory _$OrgSettingsDtoCopyWith(
-          _OrgSettingsDto value, $Res Function(_OrgSettingsDto) _then) =
-      __$OrgSettingsDtoCopyWithImpl;
-  @override
-  @useResult
-  $Res call(
-      {String organizationId,
-      bool geoCheckEnabled,
-      int? autoFinishHours,
-      int? maxPauseMinutes,
-      int? maxPausesPerShift});
-}
+abstract mixin class _$OrgSettingsDtoCopyWith<$Res> implements $OrgSettingsDtoCopyWith<$Res> {
+  factory _$OrgSettingsDtoCopyWith(_OrgSettingsDto value, $Res Function(_OrgSettingsDto) _then) = __$OrgSettingsDtoCopyWithImpl;
+@override @useResult
+$Res call({
+ String organizationId, bool geoCheckEnabled, int? autoFinishHours, int? maxPauseMinutes, int? maxPausesPerShift
+});
 
+
+
+
+}
 /// @nodoc
 class __$OrgSettingsDtoCopyWithImpl<$Res>
     implements _$OrgSettingsDtoCopyWith<$Res> {
@@ -386,40 +270,20 @@ class __$OrgSettingsDtoCopyWithImpl<$Res>
   final _OrgSettingsDto _self;
   final $Res Function(_OrgSettingsDto) _then;
 
-  /// Create a copy of OrgSettingsDto
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? organizationId = null,
-    Object? geoCheckEnabled = null,
-    Object? autoFinishHours = freezed,
-    Object? maxPauseMinutes = freezed,
-    Object? maxPausesPerShift = freezed,
-  }) {
-    return _then(_OrgSettingsDto(
-      organizationId: null == organizationId
-          ? _self.organizationId
-          : organizationId // ignore: cast_nullable_to_non_nullable
-              as String,
-      geoCheckEnabled: null == geoCheckEnabled
-          ? _self.geoCheckEnabled
-          : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
-              as bool,
-      autoFinishHours: freezed == autoFinishHours
-          ? _self.autoFinishHours
-          : autoFinishHours // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxPauseMinutes: freezed == maxPauseMinutes
-          ? _self.maxPauseMinutes
-          : maxPauseMinutes // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxPausesPerShift: freezed == maxPausesPerShift
-          ? _self.maxPausesPerShift
-          : maxPausesPerShift // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ));
-  }
+/// Create a copy of OrgSettingsDto
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? organizationId = null,Object? geoCheckEnabled = null,Object? autoFinishHours = freezed,Object? maxPauseMinutes = freezed,Object? maxPausesPerShift = freezed,}) {
+  return _then(_OrgSettingsDto(
+organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as String,geoCheckEnabled: null == geoCheckEnabled ? _self.geoCheckEnabled : geoCheckEnabled // ignore: cast_nullable_to_non_nullable
+as bool,autoFinishHours: freezed == autoFinishHours ? _self.autoFinishHours : autoFinishHours // ignore: cast_nullable_to_non_nullable
+as int?,maxPauseMinutes: freezed == maxPauseMinutes ? _self.maxPauseMinutes : maxPauseMinutes // ignore: cast_nullable_to_non_nullable
+as int?,maxPausesPerShift: freezed == maxPausesPerShift ? _self.maxPausesPerShift : maxPausesPerShift // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
 }
 
 // dart format on

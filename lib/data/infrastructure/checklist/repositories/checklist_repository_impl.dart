@@ -6,7 +6,7 @@ import 'package:smenka_mobile/data/infrastructure/checklist/mappers/_mappers.dar
 
 class ChecklistRepositoryImpl with TaskHandler implements ChecklistRepository {
   ChecklistRepositoryImpl({required ChecklistDataSource dataSource})
-      : _dataSource = dataSource;
+    : _dataSource = dataSource;
 
   final ChecklistDataSource _dataSource;
 
@@ -132,9 +132,7 @@ class ChecklistRepositoryImpl with TaskHandler implements ChecklistRepository {
     String templateId,
     String itemId,
   ) {
-    return executeVoid(
-      () => _dataSource.deleteItem(orgId, templateId, itemId),
-    );
+    return executeVoid(() => _dataSource.deleteItem(orgId, templateId, itemId));
   }
 
   @override

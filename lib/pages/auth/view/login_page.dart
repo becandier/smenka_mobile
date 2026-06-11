@@ -5,6 +5,7 @@ import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/auth/repositories/auth_repository.dart';
+import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/auth/cubit/login_cubit.dart';
 import 'package:smenka_mobile/pages/auth/cubit/login_state.dart';
@@ -15,10 +16,7 @@ part '../widgets/password_requirements.dart';
 
 @RoutePage()
 class LoginPage extends StatelessWidget {
-  const LoginPage({
-    super.key,
-    this.onResult,
-  });
+  const LoginPage({super.key, this.onResult});
 
   /// Callback при успешной авторизации -- вызывается guard-ом
   final void Function({required bool didLogin})? onResult;
@@ -26,9 +24,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => LoginCubit(
-        authRepository: context.read<AuthRepository>(),
-      ),
+      create: (_) => LoginCubit(authRepository: context.read<AuthRepository>()),
       child: _LoginView(onResult: onResult),
     );
   }
@@ -106,10 +102,14 @@ class _LoginViewState extends State<_LoginView> {
         context.modals.showInfo(message);
         await context.router.push(VerifyRoute(email: email));
       case LoginResult.error:
-        final error = cubit.state.error;
-        if (error != null) {
-          context.modals.showError(error);
-        }
+        final errorState = cubit.state;
+        context.modals.showError(
+          localizedErrorMessage(
+            context,
+            code: errorState.errorCode,
+            fallback: errorState.error,
+          ),
+        );
     }
   }
 
@@ -171,9 +171,9 @@ class _LoginViewState extends State<_LoginView> {
       child: Text(
         state.isLogin ? context.l10n.authLogin : context.l10n.authRegister,
         key: ValueKey(state.mode),
-        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       ),
     );
@@ -220,7 +220,8 @@ class _LoginViewState extends State<_LoginView> {
     return AppButton(
       label: state.isLogin ? context.l10n.authLogin : context.l10n.authRegister,
       isLoading: state.isLoading,
-      isEnabled: state.isFormValid,
+      // 423 ACCOUNT_LOCKED — временно блокируем повторные попытки входа
+      isEnabled: state.isFormValid && !state.isLocked,
       onPressed: _onSubmit,
     );
   }

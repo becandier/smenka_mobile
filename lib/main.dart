@@ -3,7 +3,5 @@ import 'package:smenka_mobile/app/main_app/view/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    const App(),
-  );
+  runApp(const App());
 }

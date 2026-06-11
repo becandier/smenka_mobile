@@ -18,9 +18,7 @@ class TalkerInitializer implements ServiceInitializer {
   Future<void> initialize(AppServiceLocator locator) async {
     final talker = TalkerFlutter.init();
     locator.register<Talker>(talker);
-    Bloc.observer = TalkerBlocObserver(
-      talker: talker,
-    );
+    Bloc.observer = TalkerBlocObserver(talker: talker);
     // Устанавливаем обработчик ошибок Flutter с использованием Talker
     FlutterError.onError = (errorDetails) {
       talker.handle(

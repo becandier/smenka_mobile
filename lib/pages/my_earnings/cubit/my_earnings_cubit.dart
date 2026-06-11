@@ -9,9 +9,9 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
   MyEarningsCubit({
     required String orgId,
     required PayrollRepository payrollRepository,
-  })  : _orgId = orgId,
-        _payrollRepository = payrollRepository,
-        super(const MyEarningsState()) {
+  }) : _orgId = orgId,
+       _payrollRepository = payrollRepository,
+       super(const MyEarningsState()) {
     load();
   }
 
@@ -27,9 +27,9 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
 
     final (DateTime? dateFrom, DateTime? dateTo) = switch (state.preset) {
       final preset? => () {
-          final bounds = preset.boundsUtc(DateTime.now());
-          return (bounds.fromUtc, bounds.toUtc);
-        }(),
+        final bounds = preset.boundsUtc(DateTime.now());
+        return (bounds.fromUtc, bounds.toUtc);
+      }(),
       null => (state.customFrom, state.customTo),
     };
 
@@ -66,9 +66,7 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
       if (state.isCustomRange) setPreset(PeriodPreset.month);
       return;
     }
-    emit(
-      state.copyWith(preset: null, customFrom: dateFrom, customTo: dateTo),
-    );
+    emit(state.copyWith(preset: null, customFrom: dateFrom, customTo: dateTo));
     load();
   }
 }

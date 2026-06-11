@@ -21,8 +21,8 @@ class ThemeCubit extends Cubit<ThemeMode> {
   ThemeCubit({
     required ThemeLocalStorageApi themeLocalStorageApi,
     required ThemeMode initialValue,
-  })  : _themeLocalStorageApi = themeLocalStorageApi,
-        super(initialValue);
+  }) : _themeLocalStorageApi = themeLocalStorageApi,
+       super(initialValue);
 
   final ThemeLocalStorageApi _themeLocalStorageApi;
 

@@ -58,8 +58,6 @@ class LocationDataSource {
   }
 
   Future<void> delete(String orgId, String locationId) async {
-    await _dio.delete<void>(
-      '/organizations/$orgId/locations/$locationId',
-    );
+    await _dio.delete<void>('/organizations/$orgId/locations/$locationId');
   }
 }

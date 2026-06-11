@@ -56,8 +56,10 @@ class _DetailChecklistsSectionState extends State<_DetailChecklistsSection> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
                   child: Text(
                     l10n.shiftChecklistsTitle,
                     style: textTheme.titleMedium?.copyWith(
@@ -99,6 +101,10 @@ class _InstanceRow extends StatelessWidget {
       ChecklistInstanceStatus.completed => l10n.shiftChecklistStatusCompleted,
       ChecklistInstanceStatus.incomplete => l10n.shiftChecklistStatusIncomplete,
     };
+    final progress = l10n.shiftChecklistProgress(
+      item.itemsSummary.completed,
+      item.itemsSummary.total,
+    );
 
     return InkWell(
       onTap: () => context.router.push(
@@ -112,8 +118,8 @@ class _InstanceRow extends StatelessWidget {
               item.status == ChecklistInstanceStatus.completed
                   ? Icons.check_circle
                   : item.status == ChecklistInstanceStatus.incomplete
-                      ? Icons.error_outline
-                      : Icons.pending_outlined,
+                  ? Icons.error_outline
+                  : Icons.pending_outlined,
               color: statusColor,
               size: 20,
             ),
@@ -129,10 +135,7 @@ class _InstanceRow extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$statusLabel · ${l10n.shiftChecklistProgress(
-                      item.itemsSummary.completed,
-                      item.itemsSummary.total,
-                    )}',
+                    '$statusLabel · $progress',
                     style: textTheme.bodySmall?.copyWith(
                       color: appColors.secondary,
                     ),

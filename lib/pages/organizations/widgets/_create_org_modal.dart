@@ -30,9 +30,9 @@ class _CreateOrgModalState extends State<CreateOrgModal> {
 
   void _submit() {
     if (!_isValid) return;
-    context
-        .read<OrganizationsCubit>()
-        .createOrganization(name: _nameController.text.trim());
+    context.read<OrganizationsCubit>().createOrganization(
+      name: _nameController.text.trim(),
+    );
   }
 
   @override
@@ -89,7 +89,8 @@ class _CreateOrgModalState extends State<CreateOrgModal> {
                   controller: _nameController,
                   label: l10n.createOrgNameLabel,
                   hint: l10n.createOrgNameHint,
-                  error: _nameController.text.isNotEmpty &&
+                  error:
+                      _nameController.text.isNotEmpty &&
                           _nameController.text.trim().isEmpty
                       ? l10n.createOrgNameRequired
                       : null,
@@ -102,8 +103,11 @@ class _CreateOrgModalState extends State<CreateOrgModal> {
             ListenableBuilder(
               listenable: _nameController,
               builder: (context, _) {
-                return BlocSelector<OrganizationsCubit, OrganizationsState,
-                    FeatureStatus>(
+                return BlocSelector<
+                  OrganizationsCubit,
+                  OrganizationsState,
+                  FeatureStatus
+                >(
                   selector: (state) => state.createStatus,
                   builder: (context, status) {
                     return AppButton(

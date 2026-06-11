@@ -56,15 +56,9 @@ class MainAppCubit extends Cubit<MainAppState> {
       await _initService(PackageInfoInitializer());
 
       // Фаза 2: Сервисы с зависимостями
+      await _initService(TalkerInitializer(crashlytics: _serviceLocator.get()));
       await _initService(
-        TalkerInitializer(
-          crashlytics: _serviceLocator.get(),
-        ),
-      );
-      await _initService(
-        DebugRepositoryInitializer(
-          sharedPreferences: _serviceLocator.get(),
-        ),
+        DebugRepositoryInitializer(sharedPreferences: _serviceLocator.get()),
       );
 
       // Фаза 3: Сервисы с зависимостями на фазу 2
@@ -76,9 +70,13 @@ class MainAppCubit extends Cubit<MainAppState> {
       );
 
       // Фаза 3.5: Auth инфраструктура
+      // init() наполняет in-memory кэш из secure storage и однократно
+      // мигрирует токены из открытого SharedPreferences — до создания Dio
+      // и проверки авторизации, чтобы первый же запрос увидел токены.
       final authTokenStorage = AuthTokenStorage(
         prefs: _serviceLocator.get<SharedPreferences>(),
       );
+      await authTokenStorage.init();
       _serviceLocator.register<AuthTokenStorage>(authTokenStorage);
 
       final authNotifier = AuthStateNotifier();
@@ -155,8 +153,8 @@ class MainAppCubit extends Cubit<MainAppState> {
           authRepository: _serviceLocator.get<AuthRepository>(),
           shiftRepository: _serviceLocator.get<ShiftRepository>(),
           organizationRepository: _serviceLocator.get<OrganizationRepository>(),
-          organizationRoleRepository:
-              _serviceLocator.get<OrganizationRoleRepository>(),
+          organizationRoleRepository: _serviceLocator
+              .get<OrganizationRoleRepository>(),
           checklistRepository: _serviceLocator.get<ChecklistRepository>(),
           userRepository: _serviceLocator.get<UserRepository>(),
           locationRepository: _serviceLocator.get<LocationRepository>(),
@@ -169,16 +167,13 @@ class MainAppCubit extends Cubit<MainAppState> {
     } catch (e, stackTrace) {
       // Логируем ошибку, если доступен логгер
       if (_serviceLocator.isRegistered<Talker>()) {
-        _serviceLocator
-            .get<Talker>()
-            .handle(e, stackTrace, 'App initialization error');
+        _serviceLocator.get<Talker>().handle(
+          e,
+          stackTrace,
+          'App initialization error',
+        );
       }
-      emit(
-        MainAppState.error(
-          error: e,
-          stackTrace: stackTrace,
-        ),
-      );
+      emit(MainAppState.error(error: e, stackTrace: stackTrace));
     }
   }
 
@@ -190,10 +185,10 @@ class MainAppCubit extends Cubit<MainAppState> {
       // Логируем ошибку инициализации
       if (_serviceLocator.isRegistered<Talker>()) {
         _serviceLocator.get<Talker>().handle(
-              e,
-              stackTrace,
-              'Failed to initialize ${initializer.serviceName}',
-            );
+          e,
+          stackTrace,
+          'Failed to initialize ${initializer.serviceName}',
+        );
       }
     }
   }

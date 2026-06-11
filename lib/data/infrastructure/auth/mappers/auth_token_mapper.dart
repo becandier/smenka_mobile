@@ -3,9 +3,6 @@ import 'package:smenka_mobile/data/infrastructure/auth/datasource/dto/_dto.dart'
 
 extension AuthTokenMapper on AuthTokenDto {
   AuthToken toDomain() {
-    return AuthToken(
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    );
+    return AuthToken(accessToken: accessToken, refreshToken: refreshToken);
   }
 }

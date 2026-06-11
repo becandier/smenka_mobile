@@ -28,16 +28,12 @@ class _ProfileHeader extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             user.name,
-            style: textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 4),
           Text(
             user.email,
-            style: textTheme.bodyMedium?.copyWith(
-              color: appColors.secondary,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: appColors.secondary),
           ),
         ],
       ),

@@ -3,10 +3,6 @@ import 'package:smenka_mobile/data/infrastructure/organization_role/datasource/d
 
 extension OrganizationRoleMapper on OrganizationRoleDto {
   OrganizationRole toDomain() {
-    return OrganizationRole(
-      id: id,
-      name: name,
-      createdAt: createdAt,
-    );
+    return OrganizationRole(id: id, name: name, createdAt: createdAt);
   }
 }

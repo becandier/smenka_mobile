@@ -27,10 +27,7 @@ mixin TaskHandler {
       );
     } catch (e) {
       return Task.failure(
-        ApiException.server(
-          message: e.toString(),
-          code: 'UNKNOWN_ERROR',
-        ),
+        ApiException.server(message: e.toString(), code: 'UNKNOWN_ERROR'),
       );
     }
   }

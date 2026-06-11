@@ -15,10 +15,10 @@ class MemberRatesCubit extends Cubit<MemberRatesState> {
     required String orgId,
     required String memberId,
     required PayrollRepository payrollRepository,
-  })  : _orgId = orgId,
-        _memberId = memberId,
-        _payrollRepository = payrollRepository,
-        super(const MemberRatesState());
+  }) : _orgId = orgId,
+       _memberId = memberId,
+       _payrollRepository = payrollRepository,
+       super(const MemberRatesState());
 
   final String _orgId;
   final String _memberId;
@@ -57,8 +57,11 @@ class MemberRatesCubit extends Cubit<MemberRatesState> {
       ),
     );
 
-    final result =
-        await _payrollRepository.deleteRate(_orgId, _memberId, rateId);
+    final result = await _payrollRepository.deleteRate(
+      _orgId,
+      _memberId,
+      rateId,
+    );
 
     return result.fold(
       onSuccess: (_) {

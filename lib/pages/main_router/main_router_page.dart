@@ -77,8 +77,10 @@ class _MainRouterPageState extends State<MainRouterPage> {
               label: context.l10n.superAdminTitle,
             ),
         ];
-        final selectedIndex =
-            tabsRouter.activeIndex.clamp(0, destinations.length - 1);
+        final selectedIndex = tabsRouter.activeIndex.clamp(
+          0,
+          destinations.length - 1,
+        );
 
         return Scaffold(
           body: child,

@@ -41,12 +41,7 @@ class AppToastState extends State<AppToast>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -1),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _controller.forward();
   }
@@ -124,10 +119,9 @@ class AppToastState extends State<AppToast>
                       Expanded(
                         child: Text(
                           widget.message,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: onSurface,
-                                  ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: onSurface),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -138,11 +132,7 @@ class AppToastState extends State<AppToast>
                         behavior: HitTestBehavior.opaque,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
-                          child: Icon(
-                            Icons.close,
-                            size: 24,
-                            color: onSurface,
-                          ),
+                          child: Icon(Icons.close, size: 24, color: onSurface),
                         ),
                       ),
                     ],
@@ -158,10 +148,7 @@ class AppToastState extends State<AppToast>
 }
 
 class _ToastIcon extends StatelessWidget {
-  const _ToastIcon({
-    required this.icon,
-    required this.color,
-  });
+  const _ToastIcon({required this.icon, required this.color});
 
   final IconData icon;
   final Color color;
@@ -175,11 +162,7 @@ class _ToastIcon extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: Icon(
-          icon,
-          color: color,
-          size: 24,
-        ),
+        child: Icon(icon, color: color, size: 24),
       ),
     );
   }

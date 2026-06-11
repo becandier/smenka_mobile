@@ -70,13 +70,13 @@ class ApiErrorInterceptor extends Interceptor {
     // Fallback по HTTP статусу
     return switch (response.statusCode) {
       401 => const ApiException.unauthorized(
-          message: 'Необходима авторизация',
-          code: 'UNAUTHORIZED',
-        ),
+        message: 'Необходима авторизация',
+        code: 'UNAUTHORIZED',
+      ),
       _ => const ApiException.server(
-          message: 'Произошла непредвиденная ошибка',
-          code: 'UNKNOWN_ERROR',
-        ),
+        message: 'Произошла непредвиденная ошибка',
+        code: 'UNKNOWN_ERROR',
+      ),
     };
   }
 
