@@ -139,3 +139,33 @@
 - [x] `error.code` → локализованный текст (`lib/l10n/error_localization.dart`); `SectionData`/`PaginatedSectionData` несут `errorCode`
 - [x] Реюз-виджеты: `ShiftAuthorBlock`, `ChecklistInstanceTile`, `ShiftPauseList`; `MemberRoleBadges` поддерживает `customRoleName`
 - [x] Локализация; `make check` зелёный (analyze без ошибок/предупреждений)
+
+---
+
+## Фича — Быстрый старт смены `[x]` (`../docs/tasks/shift_quick_start/mobile.md`)
+- [x] `ShiftContextStorage` (shared_preferences): маркер `personal` либо UUID организации
+- [x] Предвыбор контекста после init трекера: сохранённый валидный маркер → он; иначе единственная организация → она; иначе «Личная»
+- [x] `selectOrganization` персистит выбор; `finishShift` больше не сбрасывает контекст
+- [x] Фикс `DropdownButtonFormField`: `ValueKey` для отражения асинхронного предвыбора
+- [x] `make check` зелёный
+
+---
+
+## Фича — Фильтры по диапазону дат `[x]` (`../docs/tasks/date_filters/mobile.md`)
+- [x] Общий date-range picker: `DateRangePickerPage` (CustomRoute-модалка), результат `DateRangePickerResult` (локальные дни + `fromUtc`/`toUtc` — границы дня), открытые диапазоны, валидация `from <= to`
+- [x] Переиспользуемые виджеты: `DateRangeFilterChip` (чип с форматами «01.06 – 09.06» / «с…» / «по…»)
+- [x] История смен и орг-смены: чип диапазона, `setDateRange` одним перезапросом (offset=0), empty-текст периода; «мёртвые» `filterDateFrom/To` оживлены
+- [x] Статистика (личная и орг): пресет XOR произвольный диапазон, DTO/домен с nullable `period` + `range_from`/`range_to`, подпись применённого окна (`appliedRangeLabel`, открытые границы)
+- [x] Ошибки секций и пагинированных списков локализуются по `error.code` (INVALID_DATE_RANGE, MISSING_STATS_RANGE, AMBIGUOUS_STATS_RANGE, INVALID_PERIOD)
+- [x] Request-token против устаревших ответов в stats-кубитах; мульти-агентное ревью пройдено; `make check` зелёный
+
+---
+
+## Фича — Ставки и расчёт зарплаты `[x]` (`../docs/tasks/payroll/mobile.md`)
+- [x] Домен/инфраструктура: `Rate`/`CurrentRate`/`Payroll`/`MyEarnings`, `PayrollDataSource` + `PayrollRepository` (CRUD ставок, отчёт, my-earnings), DI; деньги только int-копейки (`money_format`)
+- [x] `MemberResponse.current_rate` (additive nullable) в `Member`/`MemberDto`; толерантный парсинг `rate_type`
+- [x] Секция «Ставка» на `member_detail`: блок текущей ставки, история с бейджем «Действующая», мутации только admin (owner read-only), ленивая загрузка (без 403 для employee)
+- [x] Модалка `RateFormPage` (CustomRoute): добавление/исправление, ₽×100 без double, подсветка `RATE_EFFECTIVE_FROM_TAKEN`, исходный instant даты при неизменённой дате
+- [x] Экран «Мой заработок» (`org_member`): пресеты `PeriodPreset` (день/неделя/месяц, default месяц) + произвольный период, текущая ставка, бейдж смен без ставки
+- [x] Экран «Зарплата» (admin/owner): totals + строки по сотрудникам с «К выплате» и unpaid-подсказкой (plural), переход на деталь участника
+- [x] `PeriodPresetSelector` (реюз для payroll-экранов); локализация + коды ошибок; мульти-агентное ревью пройдено; `make check` зелёный
