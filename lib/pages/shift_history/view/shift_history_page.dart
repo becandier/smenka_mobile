@@ -6,6 +6,7 @@ import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
+import 'package:smenka_mobile/l10n/applied_range_label.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_cubit.dart';

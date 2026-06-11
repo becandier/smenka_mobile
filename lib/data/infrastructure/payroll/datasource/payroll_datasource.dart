@@ -42,7 +42,9 @@ class PayrollDataSource {
     return RateDto.fromJson(response.data!);
   }
 
-  /// Исправить запись истории (все поля опциональны).
+  /// Исправить запись истории (поля опциональны).
+  /// `note` отправляется ВСЕГДА (явный null очищает комментарий) —
+  /// форма редактирования шлёт полное состояние записи.
   Future<RateDto> updateRate(
     String orgId,
     String memberId,
@@ -52,13 +54,12 @@ class PayrollDataSource {
     DateTime? effectiveFrom,
     String? note,
   }) async {
-    final body = <String, dynamic>{};
+    final body = <String, dynamic>{'note': note};
     if (rateAmountMinor != null) body['rate_amount_minor'] = rateAmountMinor;
     if (rateType != null) body['rate_type'] = rateType;
     if (effectiveFrom != null) {
       body['effective_from'] = effectiveFrom.toIso8601String();
     }
-    if (note != null) body['note'] = note;
 
     final response = await _dio.patch<Map<String, dynamic>>(
       '/organizations/$orgId/members/$memberId/rates/$rateId',

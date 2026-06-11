@@ -18,7 +18,11 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
   final String _orgId;
   final PayrollRepository _payrollRepository;
 
+  /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
+  int _requestId = 0;
+
   Future<void> load() async {
+    final requestId = ++_requestId;
     emit(state.copyWith(earnings: state.earnings.toLoading()));
 
     final (DateTime? dateFrom, DateTime? dateTo) = switch (state.preset) {
@@ -34,6 +38,7 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
       dateFrom: dateFrom,
       dateTo: dateTo,
     );
+    if (requestId != _requestId) return;
 
     result.fold(
       onSuccess: (earnings) {

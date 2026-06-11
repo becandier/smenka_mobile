@@ -1,12 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
+import 'package:smenka_mobile/l10n/applied_range_label.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/payroll/cubit/payroll_cubit.dart';
@@ -108,7 +109,11 @@ class _PayrollView extends StatelessWidget {
                             bottom: 32,
                           ),
                           children: [
-                            if (_periodLabel(context, payroll.period)
+                            if (appliedRangeLabel(
+                              context,
+                              payroll.period.dateFrom,
+                              payroll.period.dateTo,
+                            )
                                 case final label?)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 8),
@@ -139,17 +144,6 @@ class _PayrollView extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  String? _periodLabel(BuildContext context, PayrollPeriod period) {
-    final from = period.dateFrom;
-    final to = period.dateTo;
-    if (from == null || to == null) return null;
-    final format = DateFormat('dd.MM.yyyy');
-    return context.l10n.statsAppliedRange(
-      format.format(from.toLocal()),
-      format.format(to.toLocal()),
     );
   }
 }
@@ -235,7 +229,13 @@ class _PayrollItemTile extends StatelessWidget {
   void _openMemberDetail(BuildContext context) {
     final cubit = context.read<PayrollCubit>();
     final member = cubit.state.membersByUserId[item.userId];
-    if (member == null) return;
+    if (member == null) {
+      // Участники ещё не загрузились (или сотрудник исключён):
+      // сообщаем и повторяем загрузку для следующего тапа.
+      context.modals.showInfo(context.l10n.errorMemberNotFound);
+      cubit.loadMembers();
+      return;
+    }
     context.router.push(
       MemberDetailRoute(orgId: cubit.orgId, member: member),
     );
@@ -268,11 +268,22 @@ class _PayrollItemTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
-                    formatMoneyMinor(item.grossAmountMinor),
-                    style: textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        formatMoneyMinor(item.grossAmountMinor),
+                        style: textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        l10n.payrollToPay,
+                        style: textTheme.labelSmall?.copyWith(
+                          color: colors.secondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

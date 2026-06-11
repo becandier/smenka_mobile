@@ -62,6 +62,11 @@ class _RateFormViewState extends State<_RateFormView> {
   String? _amountError;
   String? _dateError;
 
+  /// Пользователь менял дату. Если нет — при исправлении отправляем
+  /// исходный instant effective_from без пересчёта через локальную полночь
+  /// (иначе момент действия молча сдвинулся бы на таймзону редактора).
+  bool _dateDirty = false;
+
   @override
   void initState() {
     super.initState();
@@ -93,15 +98,24 @@ class _RateFormViewState extends State<_RateFormView> {
 
   Future<void> _pickEffectiveFrom() async {
     final now = DateTime.now();
+    final firstDate = DateTime(2020);
+    final lastDate = DateTime(now.year + 2, now.month, now.day);
+    // Кламп: initialDate вне [firstDate, lastDate] роняет showDatePicker
+    // на assert (например, очень старая ставка из истории).
+    var initialDate = _effectiveFromDay;
+    if (initialDate.isBefore(firstDate)) initialDate = firstDate;
+    if (initialDate.isAfter(lastDate)) initialDate = lastDate;
+
     final picked = await showDatePicker(
       context: context,
-      initialDate: _effectiveFromDay,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(now.year + 2, now.month, now.day),
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
     );
     if (picked == null) return;
     setState(() {
       _effectiveFromDay = DateTime(picked.year, picked.month, picked.day);
+      _dateDirty = true;
       _dateError = null;
     });
   }
@@ -120,10 +134,15 @@ class _RateFormViewState extends State<_RateFormView> {
 
     final cubit = context.read<RateFormCubit>();
     final note = _noteController.text.trim();
+    final initialRate = widget.initialRate;
+    // Дату не меняли при исправлении — шлём исходный instant как есть.
+    final effectiveFromUtc = !_dateDirty && initialRate != null
+        ? initialRate.effectiveFrom
+        : _effectiveFromDay.toUtc();
     final ok = await cubit.submit(
       rateAmountMinor: amountMinor,
       rateType: _rateType,
-      effectiveFromUtc: _effectiveFromDay.toUtc(),
+      effectiveFromUtc: effectiveFromUtc,
       note: note.isEmpty ? null : note,
     );
 

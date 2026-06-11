@@ -1414,11 +1414,11 @@ abstract class AppLocalizations {
   /// **'Организация не найдена'**
   String get errorOrgNotFound;
 
-  /// No description provided for @errorForbiddenShift.
+  /// No description provided for @errorForbidden.
   ///
   /// In ru, this message translates to:
-  /// **'Нет доступа к этой смене'**
-  String get errorForbiddenShift;
+  /// **'Недостаточно прав'**
+  String get errorForbidden;
 
   /// No description provided for @errorInvalidStatusFilter.
   ///
@@ -2167,7 +2167,7 @@ abstract class AppLocalizations {
   /// No description provided for @statsModeCustom.
   ///
   /// In ru, this message translates to:
-  /// **'Период'**
+  /// **'Произвольный период'**
   String get statsModeCustom;
 
   /// No description provided for @statsAppliedRange.
@@ -2353,8 +2353,8 @@ abstract class AppLocalizations {
   /// No description provided for @payrollUnpaidHint.
   ///
   /// In ru, this message translates to:
-  /// **'{count} смен / {hours} не оплачены: нет ставки на дату смены'**
-  String payrollUnpaidHint(int count, String hours);
+  /// **'{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} / {hours} не оплачены: нет ставки на дату смены'**
+  String payrollUnpaidHint(num count, String hours);
 
   /// No description provided for @payrollEmptyNoShifts.
   ///

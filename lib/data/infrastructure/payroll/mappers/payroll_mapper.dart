@@ -47,7 +47,7 @@ extension MyEarningsMapper on MyEarningsDto {
       shiftsCount: shiftsCount,
       grossAmountMinor: grossAmountMinor,
       hasMissingRate: hasMissingRate,
-      currentRate: currentRate?.toDomain(),
+      currentRate: currentRate?.toDomainOrNull(),
     );
   }
 }

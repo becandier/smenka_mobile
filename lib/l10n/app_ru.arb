@@ -304,7 +304,7 @@
 
     "errorShiftNotFound": "Смена не найдена",
     "errorOrgNotFound": "Организация не найдена",
-    "errorForbiddenShift": "Нет доступа к этой смене",
+    "errorForbidden": "Недостаточно прав",
     "errorInvalidStatusFilter": "Неверный статус-фильтр",
 
     "orgStatsTitle": "Статистика организации",
@@ -486,7 +486,7 @@
             "to": {"type": "String"}
         }
     },
-    "statsModeCustom": "Период",
+    "statsModeCustom": "Произвольный период",
     "statsAppliedRange": "за {from} – {to}",
     "@statsAppliedRange": {
         "placeholders": {
@@ -530,10 +530,10 @@
     "payrollRateAmountLabel": "Ставка, ₽",
     "payrollRateDateLabel": "Действует с",
     "payrollMissingRateBadge": "Есть смены без ставки",
-    "payrollUnpaidHint": "{count} смен / {hours} не оплачены: нет ставки на дату смены",
+    "payrollUnpaidHint": "{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} / {hours} не оплачены: нет ставки на дату смены",
     "@payrollUnpaidHint": {
         "placeholders": {
-            "count": {"type": "int"},
+            "count": {"type": "num"},
             "hours": {"type": "String"}
         }
     },

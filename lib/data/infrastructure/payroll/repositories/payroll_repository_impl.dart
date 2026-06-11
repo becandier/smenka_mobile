@@ -1,6 +1,7 @@
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/network/task_handler.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
+import 'package:smenka_mobile/data/infrastructure/payroll/datasource/dto/_dto.dart';
 import 'package:smenka_mobile/data/infrastructure/payroll/datasource/payroll_datasource.dart';
 import 'package:smenka_mobile/data/infrastructure/payroll/mappers/payroll_mapper.dart';
 import 'package:smenka_mobile/data/infrastructure/payroll/mappers/rate_mapper.dart';
@@ -11,11 +12,22 @@ class PayrollRepositoryImpl with TaskHandler implements PayrollRepository {
 
   final PayrollDataSource _dataSource;
 
+  /// Ответ на нашу же мутацию обязан содержать известный `rate_type`;
+  /// иначе это аномалия бэка — уйдёт в TaskFailure через catch в [execute].
+  Rate _toDomainStrict(RateDto dto) {
+    final rate = dto.toDomainOrNull();
+    if (rate == null) {
+      throw ArgumentError.value(dto.rateType, 'rate_type', 'Unknown rate type');
+    }
+    return rate;
+  }
+
   @override
   Future<Task<List<Rate>>> getRates(String orgId, String memberId) {
     return execute(() async {
       final dtos = await _dataSource.getRates(orgId, memberId);
-      return dtos.map((dto) => dto.toDomain()).toList();
+      // Записи с неизвестным rate_type пропускаем (forward-совместимость).
+      return dtos.map((dto) => dto.toDomainOrNull()).whereType<Rate>().toList();
     });
   }
 
@@ -37,7 +49,7 @@ class PayrollRepositoryImpl with TaskHandler implements PayrollRepository {
         effectiveFrom: effectiveFrom,
         note: note,
       );
-      return dto.toDomain();
+      return _toDomainStrict(dto);
     });
   }
 
@@ -61,7 +73,7 @@ class PayrollRepositoryImpl with TaskHandler implements PayrollRepository {
         effectiveFrom: effectiveFrom,
         note: note,
       );
-      return dto.toDomain();
+      return _toDomainStrict(dto);
     });
   }
 

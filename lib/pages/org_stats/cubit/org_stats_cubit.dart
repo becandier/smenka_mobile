@@ -16,9 +16,13 @@ class OrgStatsCubit extends Cubit<OrgStatsState> {
   final String _orgId;
   final OrganizationRepository _organizationRepository;
 
+  /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
+  int _requestId = 0;
+
   /// Перезапрос статистики. Ровно один источник окна:
   /// пресет [OrgStatsState.period] ЛИБО диапазон `customFrom`/`customTo`.
   Future<void> loadStats() async {
+    final requestId = ++_requestId;
     emit(state.copyWith(stats: state.stats.toLoading()));
 
     final isCustom = state.isCustomRange;
@@ -28,6 +32,7 @@ class OrgStatsCubit extends Cubit<OrgStatsState> {
       dateFrom: isCustom ? state.customFrom : null,
       dateTo: isCustom ? state.customTo : null,
     );
+    if (requestId != _requestId) return;
 
     result.fold(
       onSuccess: (stats) {

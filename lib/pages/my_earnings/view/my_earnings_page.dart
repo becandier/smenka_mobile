@@ -6,6 +6,7 @@ import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
+import 'package:smenka_mobile/l10n/applied_range_label.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/my_earnings/cubit/my_earnings_cubit.dart';
@@ -97,7 +98,11 @@ class _MyEarningsView extends StatelessWidget {
                       bottom: 32,
                     ),
                     children: [
-                      if (_periodLabel(context, earnings.period)
+                      if (appliedRangeLabel(
+                        context,
+                        earnings.period.dateFrom,
+                        earnings.period.dateTo,
+                      )
                           case final label?)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
@@ -125,17 +130,6 @@ class _MyEarningsView extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  String? _periodLabel(BuildContext context, PayrollPeriod period) {
-    final from = period.dateFrom;
-    final to = period.dateTo;
-    if (from == null || to == null) return null;
-    final format = DateFormat('dd.MM.yyyy');
-    return context.l10n.statsAppliedRange(
-      format.format(from.toLocal()),
-      format.format(to.toLocal()),
     );
   }
 }

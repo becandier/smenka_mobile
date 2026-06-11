@@ -714,7 +714,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorOrgNotFound => 'Организация не найдена';
 
   @override
-  String get errorForbiddenShift => 'Нет доступа к этой смене';
+  String get errorForbidden => 'Недостаточно прав';
 
   @override
   String get errorInvalidStatusFilter => 'Неверный статус-фильтр';
@@ -1123,7 +1123,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get statsModeCustom => 'Период';
+  String get statsModeCustom => 'Произвольный период';
 
   @override
   String statsAppliedRange(String from, String to) {
@@ -1224,8 +1224,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get payrollMissingRateBadge => 'Есть смены без ставки';
 
   @override
-  String payrollUnpaidHint(int count, String hours) {
-    return '$count смен / $hours не оплачены: нет ставки на дату смены';
+  String payrollUnpaidHint(num count, String hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count смены',
+      many: '$count смен',
+      few: '$count смены',
+      one: '$count смена',
+    );
+    return '$_temp0 / $hours не оплачены: нет ставки на дату смены';
   }
 
   @override

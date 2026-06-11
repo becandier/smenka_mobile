@@ -13,9 +13,14 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
 
   final ShiftRepository _shiftRepository;
 
+  /// Монотонный токен запроса: ответы устаревших запросов (пользователь
+  /// успел сменить окно) игнорируются, чтобы не перетереть актуальные данные.
+  int _requestId = 0;
+
   /// Перезапрос статистики. Ровно один источник окна: пресет
   /// `selectedPeriod` ЛИБО диапазон `customFrom`/`customTo` (UTC).
   Future<void> loadStats() async {
+    final requestId = ++_requestId;
     emit(state.copyWith(stats: state.stats.toLoading()));
 
     final isCustom = state.isCustomRange;
@@ -24,6 +29,7 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
       dateFrom: isCustom ? state.customFrom : null,
       dateTo: isCustom ? state.customTo : null,
     );
+    if (requestId != _requestId) return;
 
     result.fold(
       onSuccess: (stats) {

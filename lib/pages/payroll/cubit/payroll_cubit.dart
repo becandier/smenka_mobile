@@ -16,7 +16,7 @@ class PayrollCubit extends Cubit<PayrollState> {
         _organizationRepository = organizationRepository,
         super(const PayrollState()) {
     load();
-    _loadMembers();
+    loadMembers();
   }
 
   final String _orgId;
@@ -25,7 +25,11 @@ class PayrollCubit extends Cubit<PayrollState> {
 
   String get orgId => _orgId;
 
+  /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
+  int _requestId = 0;
+
   Future<void> load() async {
+    final requestId = ++_requestId;
     emit(state.copyWith(payroll: state.payroll.toLoading()));
 
     final (DateTime? dateFrom, DateTime? dateTo) = switch (state.preset) {
@@ -41,6 +45,7 @@ class PayrollCubit extends Cubit<PayrollState> {
       dateFrom: dateFrom,
       dateTo: dateTo,
     );
+    if (requestId != _requestId) return;
 
     result.fold(
       onSuccess: (payroll) {
@@ -57,8 +62,9 @@ class PayrollCubit extends Cubit<PayrollState> {
   }
 
   /// Карта участников для навигации на деталь. Ошибка не критична:
-  /// отчёт работает и без неё (просто не будет перехода по тапу).
-  Future<void> _loadMembers() async {
+  /// отчёт работает и без неё; UI повторяет загрузку при тапе по строке,
+  /// для которой участник не нашёлся.
+  Future<void> loadMembers() async {
     final result = await _organizationRepository.getMembers(_orgId);
     result.fold(
       onSuccess: (members) {

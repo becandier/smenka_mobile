@@ -14,7 +14,7 @@ extension MemberMapper on MemberDto {
       role: MemberRole.values.byName(role),
       customRole: customRole?.toDomain(),
       joinedAt: joinedAt,
-      currentRate: currentRate?.toDomain(),
+      currentRate: currentRate?.toDomainOrNull(),
     );
   }
 }

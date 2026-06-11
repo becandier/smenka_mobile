@@ -2,8 +2,24 @@ part of '../view/member_detail_page.dart';
 
 /// Секция «Ставка» (фича payroll): текущая ставка + история.
 /// Видна admin/owner; мутации (добавить/исправить/удалить) — только admin.
-class _RatesSection extends StatelessWidget {
+class _RatesSection extends StatefulWidget {
   const _RatesSection();
+
+  @override
+  State<_RatesSection> createState() => _RatesSectionState();
+}
+
+class _RatesSectionState extends State<_RatesSection> {
+  @override
+  void initState() {
+    super.initState();
+    // Секция рендерится только при canManage — историю грузим отсюда,
+    // а не из конструктора кубита (см. комментарий в MemberRatesCubit).
+    final cubit = context.read<MemberRatesCubit>();
+    if (cubit.state.rates.status == FeatureStatus.initial) {
+      cubit.loadRates();
+    }
+  }
 
   Future<void> _openRateForm(BuildContext context, Rate? initialRate) async {
     final ratesCubit = context.read<MemberRatesCubit>();
@@ -101,35 +117,37 @@ class _RatesSection extends StatelessWidget {
                 selector: (state) => state.rates,
                 onRetry: () => context.read<MemberRatesCubit>().loadRates(),
                 contentBuilder: (rates) {
-                  if (rates.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        l10n.payrollRatesEmpty,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.secondary,
-                        ),
-                      ),
-                    );
-                  }
-
-                  final currentId =
-                      context.read<MemberRatesCubit>().state.currentRate?.id;
+                  final current =
+                      context.read<MemberRatesCubit>().state.currentRate;
 
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (final rate in rates)
-                        _RateRow(
-                          rate: rate,
-                          isCurrent: rate.id == currentId,
-                          isAdmin: isAdmin,
-                          onTap: isAdmin
-                              ? () => _openRateForm(context, rate)
-                              : null,
-                          onDelete: isAdmin
-                              ? () => _confirmDelete(context, rate)
-                              : null,
-                        ),
+                      _CurrentRateBlock(current: current),
+                      const SizedBox(height: 12),
+                      if (rates.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                            l10n.payrollRatesEmpty,
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: colors.secondary,
+                            ),
+                          ),
+                        )
+                      else
+                        for (final rate in rates)
+                          _RateRow(
+                            rate: rate,
+                            isCurrent: rate.id == current?.id,
+                            isAdmin: isAdmin,
+                            onTap: isAdmin
+                                ? () => _openRateForm(context, rate)
+                                : null,
+                            onDelete: isAdmin
+                                ? () => _confirmDelete(context, rate)
+                                : null,
+                          ),
                     ],
                   );
                 },
@@ -138,6 +156,56 @@ class _RatesSection extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Блок «Текущая ставка»: действующая на «сейчас» запись истории
+/// либо «Ставка не задана» (в т.ч. когда все ставки начинаются в будущем).
+class _CurrentRateBlock extends StatelessWidget {
+  const _CurrentRateBlock({required this.current});
+
+  final Rate? current;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+    final rate = current;
+
+    String? rateLabel;
+    if (rate != null) {
+      final type = rate.rateType == RateType.hourly
+          ? l10n.payrollRateHourly
+          : l10n.payrollRatePerShift;
+      final since = l10n.payrollRateEffectiveFrom(
+        DateFormat('dd.MM.yyyy').format(rate.effectiveFrom.toLocal()),
+      );
+      rateLabel = '${formatMoneyMinor(rate.rateAmountMinor)} $type · $since';
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.payrollCurrentRateTitle,
+          style: textTheme.bodySmall?.copyWith(color: colors.secondary),
+        ),
+        const SizedBox(height: 4),
+        if (rateLabel == null)
+          Text(
+            l10n.payrollRateNotSet,
+            style: textTheme.bodyMedium?.copyWith(color: colors.secondary),
+          )
+        else
+          Text(
+            rateLabel,
+            style: textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+      ],
     );
   }
 }

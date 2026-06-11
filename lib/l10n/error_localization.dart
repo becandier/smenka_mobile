@@ -15,7 +15,7 @@ String localizedErrorMessage(
   final mapped = switch (code) {
     'SHIFT_NOT_FOUND' => l10n.errorShiftNotFound,
     'ORG_NOT_FOUND' => l10n.errorOrgNotFound,
-    'FORBIDDEN' => l10n.errorForbiddenShift,
+    'FORBIDDEN' => l10n.errorForbidden,
     'INVALID_STATUS' => l10n.errorInvalidStatusFilter,
     'INVALID_PERIOD' => l10n.errorInvalidPeriod,
     'INVALID_DATE_RANGE' => l10n.errorInvalidDateRange,

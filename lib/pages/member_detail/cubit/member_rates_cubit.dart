@@ -6,6 +6,10 @@ import 'package:smenka_mobile/pages/member_detail/cubit/member_rates_state.dart'
 
 /// История ставок участника + мутации (фича payroll).
 /// Не зависит от MemberDetailCubit: права (viewerRole) проверяет UI.
+///
+/// Загрузка НЕ стартует в конструкторе: GET .../rates доступен только
+/// admin/owner, а деталь участника открывает любой член организации —
+/// [loadRates] дёргает секция ставок, которая рендерится только при canManage.
 class MemberRatesCubit extends Cubit<MemberRatesState> {
   MemberRatesCubit({
     required String orgId,
@@ -14,9 +18,7 @@ class MemberRatesCubit extends Cubit<MemberRatesState> {
   })  : _orgId = orgId,
         _memberId = memberId,
         _payrollRepository = payrollRepository,
-        super(const MemberRatesState()) {
-    loadRates();
-  }
+        super(const MemberRatesState());
 
   final String _orgId;
   final String _memberId;
