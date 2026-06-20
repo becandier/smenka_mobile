@@ -4,6 +4,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,13 +49,23 @@ class MainAppCubit extends Cubit<MainAppState> {
 
       // Фаза 1: Базовые сервисы без зависимостей
       await _initService(FirebaseInitializer());
-      await _initService(CrashlyticsInitializer());
+      // Crashlytics не поддерживается на web — пропускаем регистрацию,
+      // чтобы фаза 2 не падала при попытке получить сервис из локатора.
+      if (!kIsWeb) {
+        await _initService(CrashlyticsInitializer());
+      }
       await _initService(SharedPreferencesInitializer());
       await _initService(RemoteConfigInitializer());
       await _initService(PackageInfoInitializer());
 
       // Фаза 2: Сервисы с зависимостями
-      await _initService(TalkerInitializer(crashlytics: _serviceLocator.get()));
+      await _initService(
+        TalkerInitializer(
+          crashlytics: _serviceLocator.isRegistered<FirebaseCrashlytics>()
+              ? _serviceLocator.get<FirebaseCrashlytics>()
+              : null,
+        ),
+      );
       await _initService(
         DebugRepositoryInitializer(sharedPreferences: _serviceLocator.get()),
       );

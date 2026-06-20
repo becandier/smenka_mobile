@@ -175,32 +175,38 @@ class _SuccessAppState extends State<_SuccessApp> {
                 supportedLocales: AppLocalizations.supportedLocales,
                 locale: _deviceLocale,
                 builder: (context, child) {
+                  final appContent = TechWorksWrapper(
+                    navigatorKey: _router.navigatorKey,
+                    techWorks: widget.appConfig.techWork,
+                    child: DebugGestureDetector(
+                      navigatorKey: _router.navigatorKey,
+                      password: context.read<AppConfig>().debugModePassword,
+                      child: GestureDetector(
+                        onTap: () =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
+                        child: child ?? const SizedBox(),
+                      ),
+                    ),
+                  );
+
+                  // Upgrader (проверка версии в сторе) бессмысленен на web —
+                  // там нет App Store / Google Play. Рендерим контент напрямую.
+                  final upgradeAwareContent = kIsWeb
+                      ? appContent
+                      : UpgradeAlert(
+                          navigatorKey: _router.navigatorKey,
+                          upgrader: Upgrader(
+                            languageCode: _deviceLocale?.languageCode,
+                            minAppVersion: widget.appConfig.minVersion,
+                          ),
+                          child: appContent,
+                        );
+
                   return DevModeBannerWrapper(
                     isDevMode: widget.appConfig.flavor == Flavors.dev,
                     child: TalkerWrapper(
                       talker: widget.talker,
-                      child: UpgradeAlert(
-                        navigatorKey: _router.navigatorKey,
-                        upgrader: Upgrader(
-                          languageCode: _deviceLocale?.languageCode,
-                          minAppVersion: widget.appConfig.minVersion,
-                        ),
-                        child: TechWorksWrapper(
-                          navigatorKey: _router.navigatorKey,
-                          techWorks: widget.appConfig.techWork,
-                          child: DebugGestureDetector(
-                            navigatorKey: _router.navigatorKey,
-                            password: context
-                                .read<AppConfig>()
-                                .debugModePassword,
-                            child: GestureDetector(
-                              onTap: () =>
-                                  FocusManager.instance.primaryFocus?.unfocus(),
-                              child: child ?? const SizedBox(),
-                            ),
-                          ),
-                        ),
-                      ),
+                      child: upgradeAwareContent,
                     ),
                   );
                 },

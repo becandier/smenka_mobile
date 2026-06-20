@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:smenka_mobile/core/network/api_exceptions.dart';
 
@@ -28,8 +26,7 @@ class ApiErrorInterceptor extends Interceptor {
     }
 
     // Проверяем сетевые ошибки
-    if (error.error is SocketException ||
-        error.type == DioExceptionType.connectionTimeout ||
+    if (error.type == DioExceptionType.connectionTimeout ||
         error.type == DioExceptionType.receiveTimeout ||
         error.type == DioExceptionType.sendTimeout) {
       return const ApiException.network(
