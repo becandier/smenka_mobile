@@ -9,6 +9,10 @@ abstract class ChecklistItemsSummaryDto with _$ChecklistItemsSummaryDto {
   const factory ChecklistItemsSummaryDto({
     required int total,
     required int completed,
+    // nullable (не @Default): старый бэк поля не пришлёт — в маппере падаем на
+    // completed, чтобы прогресс не обнулялся (а не на 0).
+    int? satisfiedCount,
+    @Default(0) int photosRequiredMissing,
   }) = _ChecklistItemsSummaryDto;
 
   factory ChecklistItemsSummaryDto.fromJson(Map<String, dynamic> json) =>
@@ -45,6 +49,7 @@ abstract class ChecklistInstanceDetailDto with _$ChecklistInstanceDetailDto {
     required DateTime createdAt,
     required List<ChecklistInstanceItemDto> items,
     DateTime? completedAt,
+    int? maxPhotosPerItem,
   }) = _ChecklistInstanceDetailDto;
 
   factory ChecklistInstanceDetailDto.fromJson(Map<String, dynamic> json) =>
@@ -63,8 +68,32 @@ abstract class ChecklistInstanceItemDto with _$ChecklistInstanceItemDto {
     required int changeCount,
     String? comment,
     DateTime? completedAt,
+    // Снимок шаблона по фото; строки парсятся в enum в маппере (как status).
+    // `@Default` — поэтапный деплой: старый бэк новых полей не пришлёт.
+    @Default('none') String photoRequirement,
+    @Default('camera') String photoSource,
+    @Default(0) int photosCount,
+    @Default(<ChecklistItemPhotoDto>[]) List<ChecklistItemPhotoDto> photos,
   }) = _ChecklistInstanceItemDto;
 
   factory ChecklistInstanceItemDto.fromJson(Map<String, dynamic> json) =>
       _$ChecklistInstanceItemDtoFromJson(json);
+}
+
+@freezed
+abstract class ChecklistItemPhotoDto with _$ChecklistItemPhotoDto {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory ChecklistItemPhotoDto({
+    required String id,
+    required String fileId,
+    required int position,
+    String? url,
+    DateTime? urlExpiresAt,
+    DateTime? capturedAt,
+    double? latitude,
+    double? longitude,
+  }) = _ChecklistItemPhotoDto;
+
+  factory ChecklistItemPhotoDto.fromJson(Map<String, dynamic> json) =>
+      _$ChecklistItemPhotoDtoFromJson(json);
 }

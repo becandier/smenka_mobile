@@ -102,13 +102,20 @@ class _InstanceRow extends StatelessWidget {
       ChecklistInstanceStatus.incomplete => l10n.shiftChecklistStatusIncomplete,
     };
     final progress = l10n.shiftChecklistProgress(
-      item.itemsSummary.completed,
+      item.itemsSummary.satisfiedCount,
       item.itemsSummary.total,
     );
 
     return InkWell(
       onTap: () => context.router.push(
-        ChecklistFillRoute(shiftId: shift.id, instanceId: item.id),
+        ChecklistFillRoute(
+          shiftId: shift.id,
+          instanceId: item.id,
+          organizationId: shift.organizationId,
+          // Завершённую смену открываем только на чтение — мутации (чек/фото)
+          // скрываем заранее, бэкенд на них ответил бы SHIFT_FINISHED.
+          readOnly: shift.status == ShiftStatus.finished,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

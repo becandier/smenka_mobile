@@ -16,6 +16,7 @@ class ChecklistFillRoute extends PageRouteInfo<ChecklistFillRouteArgs> {
   ChecklistFillRoute({
     required String shiftId,
     required String instanceId,
+    String? organizationId,
     bool readOnly = false,
     Key? key,
     List<PageRouteInfo>? children,
@@ -24,6 +25,7 @@ class ChecklistFillRoute extends PageRouteInfo<ChecklistFillRouteArgs> {
          args: ChecklistFillRouteArgs(
            shiftId: shiftId,
            instanceId: instanceId,
+           organizationId: organizationId,
            readOnly: readOnly,
            key: key,
          ),
@@ -46,6 +48,7 @@ class ChecklistFillRoute extends PageRouteInfo<ChecklistFillRouteArgs> {
       return ChecklistFillPage(
         shiftId: args.shiftId,
         instanceId: args.instanceId,
+        organizationId: args.organizationId,
         readOnly: args.readOnly,
         key: args.key,
       );
@@ -57,6 +60,7 @@ class ChecklistFillRouteArgs {
   const ChecklistFillRouteArgs({
     required this.shiftId,
     required this.instanceId,
+    this.organizationId,
     this.readOnly = false,
     this.key,
   });
@@ -65,13 +69,15 @@ class ChecklistFillRouteArgs {
 
   final String instanceId;
 
+  final String? organizationId;
+
   final bool readOnly;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'ChecklistFillRouteArgs{shiftId: $shiftId, instanceId: $instanceId, readOnly: $readOnly, key: $key}';
+    return 'ChecklistFillRouteArgs{shiftId: $shiftId, instanceId: $instanceId, organizationId: $organizationId, readOnly: $readOnly, key: $key}';
   }
 
   @override
@@ -80,13 +86,119 @@ class ChecklistFillRouteArgs {
     if (other is! ChecklistFillRouteArgs) return false;
     return shiftId == other.shiftId &&
         instanceId == other.instanceId &&
+        organizationId == other.organizationId &&
         readOnly == other.readOnly &&
         key == other.key;
   }
 
   @override
   int get hashCode =>
-      shiftId.hashCode ^ instanceId.hashCode ^ readOnly.hashCode ^ key.hashCode;
+      shiftId.hashCode ^
+      instanceId.hashCode ^
+      organizationId.hashCode ^
+      readOnly.hashCode ^
+      key.hashCode;
+}
+
+/// generated route for
+/// [ChecklistPhotoSourcePage]
+class ChecklistPhotoSourceRoute extends PageRouteInfo<void> {
+  const ChecklistPhotoSourceRoute({List<PageRouteInfo>? children})
+    : super(ChecklistPhotoSourceRoute.name, initialChildren: children);
+
+  static const String name = 'ChecklistPhotoSourceRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ChecklistPhotoSourcePage();
+    },
+  );
+}
+
+/// generated route for
+/// [ChecklistPhotoViewerPage]
+class ChecklistPhotoViewerRoute
+    extends PageRouteInfo<ChecklistPhotoViewerRouteArgs> {
+  ChecklistPhotoViewerRoute({
+    required List<ChecklistItemPhoto> photos,
+    required int initialIndex,
+    required bool isAddedSemantics,
+    Future<bool> Function(String)? onDeletePhoto,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         ChecklistPhotoViewerRoute.name,
+         args: ChecklistPhotoViewerRouteArgs(
+           photos: photos,
+           initialIndex: initialIndex,
+           isAddedSemantics: isAddedSemantics,
+           onDeletePhoto: onDeletePhoto,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'ChecklistPhotoViewerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ChecklistPhotoViewerRouteArgs>();
+      return ChecklistPhotoViewerPage(
+        photos: args.photos,
+        initialIndex: args.initialIndex,
+        isAddedSemantics: args.isAddedSemantics,
+        onDeletePhoto: args.onDeletePhoto,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class ChecklistPhotoViewerRouteArgs {
+  const ChecklistPhotoViewerRouteArgs({
+    required this.photos,
+    required this.initialIndex,
+    required this.isAddedSemantics,
+    this.onDeletePhoto,
+    this.key,
+  });
+
+  final List<ChecklistItemPhoto> photos;
+
+  final int initialIndex;
+
+  final bool isAddedSemantics;
+
+  final Future<bool> Function(String)? onDeletePhoto;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ChecklistPhotoViewerRouteArgs{photos: $photos, initialIndex: $initialIndex, isAddedSemantics: $isAddedSemantics, onDeletePhoto: $onDeletePhoto, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChecklistPhotoViewerRouteArgs) return false;
+    return const ListEquality<ChecklistItemPhoto>().equals(
+          photos,
+          other.photos,
+        ) &&
+        initialIndex == other.initialIndex &&
+        isAddedSemantics == other.isAddedSemantics &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      const ListEquality<ChecklistItemPhoto>().hash(photos) ^
+      initialIndex.hashCode ^
+      isAddedSemantics.hashCode ^
+      key.hashCode;
 }
 
 /// generated route for
@@ -866,11 +978,16 @@ class ProfileTab extends PageRouteInfo<void> {
 class ShiftChecklistsRoute extends PageRouteInfo<ShiftChecklistsRouteArgs> {
   ShiftChecklistsRoute({
     required String shiftId,
+    String? organizationId,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          ShiftChecklistsRoute.name,
-         args: ShiftChecklistsRouteArgs(shiftId: shiftId, key: key),
+         args: ShiftChecklistsRouteArgs(
+           shiftId: shiftId,
+           organizationId: organizationId,
+           key: key,
+         ),
          rawPathParams: {'shiftId': shiftId},
          initialChildren: children,
        );
@@ -885,32 +1002,44 @@ class ShiftChecklistsRoute extends PageRouteInfo<ShiftChecklistsRouteArgs> {
         orElse: () =>
             ShiftChecklistsRouteArgs(shiftId: pathParams.getString('shiftId')),
       );
-      return ShiftChecklistsPage(shiftId: args.shiftId, key: args.key);
+      return ShiftChecklistsPage(
+        shiftId: args.shiftId,
+        organizationId: args.organizationId,
+        key: args.key,
+      );
     },
   );
 }
 
 class ShiftChecklistsRouteArgs {
-  const ShiftChecklistsRouteArgs({required this.shiftId, this.key});
+  const ShiftChecklistsRouteArgs({
+    required this.shiftId,
+    this.organizationId,
+    this.key,
+  });
 
   final String shiftId;
+
+  final String? organizationId;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'ShiftChecklistsRouteArgs{shiftId: $shiftId, key: $key}';
+    return 'ShiftChecklistsRouteArgs{shiftId: $shiftId, organizationId: $organizationId, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! ShiftChecklistsRouteArgs) return false;
-    return shiftId == other.shiftId && key == other.key;
+    return shiftId == other.shiftId &&
+        organizationId == other.organizationId &&
+        key == other.key;
   }
 
   @override
-  int get hashCode => shiftId.hashCode ^ key.hashCode;
+  int get hashCode => shiftId.hashCode ^ organizationId.hashCode ^ key.hashCode;
 }
 
 /// generated route for

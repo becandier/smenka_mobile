@@ -36,6 +36,14 @@ String localizedErrorMessage(
     'FILE_NOT_FOUND' => l10n.errorFileNotFound,
     'FILE_IN_USE' => l10n.errorFileInUse,
     'INVALID_FILE_CATEGORY' => l10n.errorInvalidFileCategory,
+    // checklist_photos: фото к пунктам чек-листов
+    'PHOTO_NOT_ALLOWED' => l10n.errorPhotoNotAllowed,
+    'PHOTO_LIMIT_EXCEEDED' => l10n.errorPhotoLimitExceeded,
+    'PHOTO_NOT_FOUND' => l10n.errorPhotoNotFound,
+    'PHOTO_FILE_INVALID' => l10n.errorPhotoFileInvalid,
+    'SHIFT_FINISHED' => l10n.errorShiftFinished,
+    'INSTANCE_NOT_FOUND' => l10n.errorInstanceNotFound,
+    'ITEM_NOT_FOUND' => l10n.errorItemNotFound,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,

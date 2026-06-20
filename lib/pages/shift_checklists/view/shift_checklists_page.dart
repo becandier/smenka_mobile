@@ -10,9 +10,16 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 
 @RoutePage()
 class ShiftChecklistsPage extends StatelessWidget {
-  const ShiftChecklistsPage({@pathParam required this.shiftId, super.key});
+  const ShiftChecklistsPage({
+    @pathParam required this.shiftId,
+    this.organizationId,
+    super.key,
+  });
 
   final String shiftId;
+
+  /// Организация смены — пробрасывается в `ChecklistFillPage` для фото.
+  final String? organizationId;
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +28,15 @@ class ShiftChecklistsPage extends StatelessWidget {
         shiftId: shiftId,
         checklistRepository: context.read<ChecklistRepository>(),
       ),
-      child: const _ShiftChecklistsView(),
+      child: _ShiftChecklistsView(organizationId: organizationId),
     );
   }
 }
 
 class _ShiftChecklistsView extends StatelessWidget {
-  const _ShiftChecklistsView();
+  const _ShiftChecklistsView({this.organizationId});
+
+  final String? organizationId;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +107,11 @@ class _ShiftChecklistsView extends StatelessWidget {
   ) async {
     final cubit = context.read<ShiftChecklistsCubit>();
     await context.router.push(
-      ChecklistFillRoute(shiftId: cubit.shiftId, instanceId: instance.id),
+      ChecklistFillRoute(
+        shiftId: cubit.shiftId,
+        instanceId: instance.id,
+        organizationId: organizationId,
+      ),
     );
     await cubit.loadChecklists();
   }

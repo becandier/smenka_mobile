@@ -97,7 +97,10 @@ class _ActiveShiftContent extends StatelessWidget {
 
           // Checklists for org shifts
           if (shift.organizationId != null)
-            _ShiftChecklistsTile(shiftId: shift.id),
+            _ShiftChecklistsTile(
+              shiftId: shift.id,
+              organizationId: shift.organizationId,
+            ),
 
           // Pauses list
           if (shift.pauses.isNotEmpty || isPaused)

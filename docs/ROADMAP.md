@@ -129,6 +129,17 @@
 
 ---
 
+## Фича — Фото к пунктам чек-листов `[x]` (`../docs/tasks/checklist_photos/mobile.md`)
+- [x] Пакеты: `image_picker`, `image`, `flutter_image_compress`, `photo_view`; iOS-права (камера/фото) в `Info.plist`
+- [x] Модели/DTO/маппер: `ChecklistItemPhoto`, enum `PhotoRequirement`/`PhotoSource` (snake-маппинг через switch с безопасным дефолтом), новые поля пункта/detail/summary с обратной совместимостью (`satisfied_count` → фолбэк на `completed`, `max_photos_per_item?`, `@Default` на новых полях)
+- [x] Repo/DataSource: `addItemPhoto` / `deleteItemPhoto` (`POST`/`DELETE .../items/{id}/photos`, `captured_at` UTC ISO8601)
+- [x] `ChecklistFillCubit`: антифрод-флоу `addPhoto` (image_picker → гео через существующий `GeoService` → штамп даты/координат в фоновом изоляте через `compute` → нативное сжатие ~1600px → `POST /files` → привязка), `retryPhoto` (частичный сбой: только привязка / весь флоу / `PHOTO_FILE_INVALID`→заново), `removePhoto`; гонка `SHIFT_FINISHED`→read-only; `emit`-guard на `isClosed`
+- [x] UI: `_ItemPhotosSection` (лента превью `StorageImage` + кнопка «Добавить фото» по лимиту/`readOnly` + бейдж «Нужно фото» + черновики загрузки с прогрессом/ретраем), bottom-sheet выбора источника (`CustomRoute`), полноэкранный вьюер `photo_view` (зум/пан/свайп, подпись время/координаты с семантикой camera/gallery, удаление)
+- [x] `ChecklistInstanceTile`/деталь: прогресс по `satisfied_count`, бейдж `photos_required_missing`; `organizationId` проброшен во все точки входа; завершённая своя смена → read-only
+- [x] Ошибки по `error.code` (`PHOTO_*`, `SHIFT_FINISHED`, `INSTANCE/ITEM_NOT_FOUND`, `FILE_*`); локализация; `make check` зелёный (+9 тестов маппера), 6-линзовое adversarial-ревью с фиксами
+
+---
+
 ## Фича — Видимость владельца смены `[x]` (`../docs/tasks/shift_owner_visibility/mobile.md`)
 - [x] Модель `Shift` + DTO/маппер: additive nullable-поля `userName` / `userEmail` / `role` / `customRoleName` (плоская строка); персональный `GET /shifts` не затронут
 - [x] DataSource/Repository: метод детали `GET /organizations/{org_id}/shifts/{shift_id}`; проброс `?user_id` в список

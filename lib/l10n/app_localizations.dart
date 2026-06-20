@@ -1480,6 +1480,78 @@ abstract class AppLocalizations {
   /// **'Не удалось сохранить'**
   String get checklistFillSaveError;
 
+  /// No description provided for @checklistPhotoAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить фото'**
+  String get checklistPhotoAdd;
+
+  /// No description provided for @checklistPhotoTakePhoto.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять фото'**
+  String get checklistPhotoTakePhoto;
+
+  /// No description provided for @checklistPhotoChooseGallery.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать из галереи'**
+  String get checklistPhotoChooseGallery;
+
+  /// No description provided for @checklistPhotoSourceTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить фото'**
+  String get checklistPhotoSourceTitle;
+
+  /// No description provided for @checklistPhotoRequiredBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужно фото'**
+  String get checklistPhotoRequiredBadge;
+
+  /// No description provided for @checklistPhotoDeleteConfirmTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить фото?'**
+  String get checklistPhotoDeleteConfirmTitle;
+
+  /// No description provided for @checklistPhotoDelete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get checklistPhotoDelete;
+
+  /// No description provided for @checklistPhotoGeoUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Координаты недоступны'**
+  String get checklistPhotoGeoUnavailable;
+
+  /// No description provided for @checklistPhotoShiftFinished.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена завершена'**
+  String get checklistPhotoShiftFinished;
+
+  /// No description provided for @checklistPhotoCaptionTaken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снято: {datetime}'**
+  String checklistPhotoCaptionTaken(String datetime);
+
+  /// No description provided for @checklistPhotoCaptionAdded.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавлено: {datetime}'**
+  String checklistPhotoCaptionAdded(String datetime);
+
+  /// No description provided for @checklistPhotoCaptionCoords.
+  ///
+  /// In ru, this message translates to:
+  /// **'Координаты: {lat}, {lng}'**
+  String checklistPhotoCaptionCoords(String lat, String lng);
+
   /// No description provided for @shiftFinishIncompleteWarning.
   ///
   /// In ru, this message translates to:
@@ -1785,6 +1857,48 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Неизвестная категория файла'**
   String get errorInvalidFileCategory;
+
+  /// No description provided for @errorPhotoNotAllowed.
+  ///
+  /// In ru, this message translates to:
+  /// **'К этому пункту нельзя прикреплять фото'**
+  String get errorPhotoNotAllowed;
+
+  /// No description provided for @errorPhotoLimitExceeded.
+  ///
+  /// In ru, this message translates to:
+  /// **'Достигнут лимит фото для пункта'**
+  String get errorPhotoLimitExceeded;
+
+  /// No description provided for @errorPhotoNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Фото не найдено'**
+  String get errorPhotoNotFound;
+
+  /// No description provided for @errorPhotoFileInvalid.
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл недоступен, снимите фото заново'**
+  String get errorPhotoFileInvalid;
+
+  /// No description provided for @errorShiftFinished.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена завершена'**
+  String get errorShiftFinished;
+
+  /// No description provided for @errorInstanceNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Чек-лист не найден'**
+  String get errorInstanceNotFound;
+
+  /// No description provided for @errorItemNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пункт чек-листа не найден'**
+  String get errorItemNotFound;
 
   /// No description provided for @commonNoConnection.
   ///

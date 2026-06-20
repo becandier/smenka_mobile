@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StoredFile {
 
- String get id; FileCategory get category; String get originalFilename; String get contentType; int get sizeBytes;/// Presigned GET URL с коротким TTL — можно открывать напрямую с устройства.
+ String get id; FileCategory get category; String get originalFilename; String get contentType; int get sizeBytes;/// Presigned GET URL с коротким TTL; открывается напрямую с устройства.
  String get url;/// Момент протухания [url] (UTC).
  DateTime get urlExpiresAt; DateTime get createdAt;
 /// Create a copy of StoredFile
@@ -223,7 +223,7 @@ class _StoredFile implements StoredFile {
 @override final  String originalFilename;
 @override final  String contentType;
 @override final  int sizeBytes;
-/// Presigned GET URL с коротким TTL — можно открывать напрямую с устройства.
+/// Presigned GET URL с коротким TTL; открывается напрямую с устройства.
 @override final  String url;
 /// Момент протухания [url] (UTC).
 @override final  DateTime urlExpiresAt;

@@ -738,6 +738,48 @@ class AppLocalizationsRu extends AppLocalizations {
   String get checklistFillSaveError => 'Не удалось сохранить';
 
   @override
+  String get checklistPhotoAdd => 'Добавить фото';
+
+  @override
+  String get checklistPhotoTakePhoto => 'Снять фото';
+
+  @override
+  String get checklistPhotoChooseGallery => 'Выбрать из галереи';
+
+  @override
+  String get checklistPhotoSourceTitle => 'Добавить фото';
+
+  @override
+  String get checklistPhotoRequiredBadge => 'Нужно фото';
+
+  @override
+  String get checklistPhotoDeleteConfirmTitle => 'Удалить фото?';
+
+  @override
+  String get checklistPhotoDelete => 'Удалить';
+
+  @override
+  String get checklistPhotoGeoUnavailable => 'Координаты недоступны';
+
+  @override
+  String get checklistPhotoShiftFinished => 'Смена завершена';
+
+  @override
+  String checklistPhotoCaptionTaken(String datetime) {
+    return 'Снято: $datetime';
+  }
+
+  @override
+  String checklistPhotoCaptionAdded(String datetime) {
+    return 'Добавлено: $datetime';
+  }
+
+  @override
+  String checklistPhotoCaptionCoords(String lat, String lng) {
+    return 'Координаты: $lat, $lng';
+  }
+
+  @override
   String get shiftFinishIncompleteWarning =>
       'Есть незаполненные обязательные чек-листы';
 
@@ -919,6 +961,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorInvalidFileCategory => 'Неизвестная категория файла';
+
+  @override
+  String get errorPhotoNotAllowed => 'К этому пункту нельзя прикреплять фото';
+
+  @override
+  String get errorPhotoLimitExceeded => 'Достигнут лимит фото для пункта';
+
+  @override
+  String get errorPhotoNotFound => 'Фото не найдено';
+
+  @override
+  String get errorPhotoFileInvalid => 'Файл недоступен, снимите фото заново';
+
+  @override
+  String get errorShiftFinished => 'Смена завершена';
+
+  @override
+  String get errorInstanceNotFound => 'Чек-лист не найден';
+
+  @override
+  String get errorItemNotFound => 'Пункт чек-листа не найден';
 
   @override
   String get commonNoConnection => 'Нет соединения';

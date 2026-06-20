@@ -162,6 +162,7 @@ class _FillItemTileState extends State<_FillItemTile> {
                   ),
                 ),
               ),
+            _ItemPhotosSection(item: widget.item),
           ],
         ),
       ),

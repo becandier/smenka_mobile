@@ -35,9 +35,10 @@ class ChecklistInstanceTile extends StatelessWidget {
       ChecklistInstanceStatus.incomplete => l10n.shiftChecklistStatusIncomplete,
     };
 
+    // Честный прогресс с учётом фото — по satisfied_count (не по is_completed).
     final progress = instance.itemsSummary.total == 0
         ? 0.0
-        : instance.itemsSummary.completed / instance.itemsSummary.total;
+        : instance.itemsSummary.satisfiedCount / instance.itemsSummary.total;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -62,6 +63,13 @@ class ChecklistInstanceTile extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (instance.itemsSummary.photosRequiredMissing > 0) ...[
+                      const SizedBox(width: 6),
+                      _Chip(
+                        text: l10n.checklistPhotoRequiredBadge,
+                        color: appColors.warning,
+                      ),
+                    ],
                     if (instance.isRequired) ...[
                       const SizedBox(width: 6),
                       _Chip(
@@ -92,7 +100,7 @@ class ChecklistInstanceTile extends StatelessWidget {
                     const Spacer(),
                     Text(
                       l10n.shiftChecklistProgress(
-                        instance.itemsSummary.completed,
+                        instance.itemsSummary.satisfiedCount,
                         instance.itemsSummary.total,
                       ),
                       style: textTheme.bodySmall?.copyWith(

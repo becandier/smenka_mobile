@@ -28,4 +28,23 @@ abstract class ChecklistRepository {
     required bool isCompleted,
     String? comment,
   });
+
+  // Item photos (владелец активной смены)
+
+  Future<Task<ChecklistItemPhoto>> addItemPhoto(
+    String shiftId,
+    String instanceId,
+    String itemId, {
+    required String fileId,
+    DateTime? capturedAt,
+    double? latitude,
+    double? longitude,
+  });
+
+  Future<Task<void>> deleteItemPhoto(
+    String shiftId,
+    String instanceId,
+    String itemId,
+    String photoId,
+  );
 }

@@ -61,4 +61,42 @@ class ChecklistRepositoryImpl with TaskHandler implements ChecklistRepository {
       return dto.toDomain();
     });
   }
+
+  // --- Item photos ---
+
+  @override
+  Future<Task<ChecklistItemPhoto>> addItemPhoto(
+    String shiftId,
+    String instanceId,
+    String itemId, {
+    required String fileId,
+    DateTime? capturedAt,
+    double? latitude,
+    double? longitude,
+  }) {
+    return execute(() async {
+      final dto = await _dataSource.addItemPhoto(
+        shiftId,
+        instanceId,
+        itemId,
+        fileId: fileId,
+        capturedAt: capturedAt,
+        latitude: latitude,
+        longitude: longitude,
+      );
+      return dto.toDomain();
+    });
+  }
+
+  @override
+  Future<Task<void>> deleteItemPhoto(
+    String shiftId,
+    String instanceId,
+    String itemId,
+    String photoId,
+  ) {
+    return execute(
+      () => _dataSource.deleteItemPhoto(shiftId, instanceId, itemId, photoId),
+    );
+  }
 }
