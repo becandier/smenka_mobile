@@ -1750,6 +1750,42 @@ abstract class AppLocalizations {
   /// **'Превышено число попыток. Запросите новый код'**
   String get errorTooManyCodeAttempts;
 
+  /// No description provided for @errorFileTooLarge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл слишком большой'**
+  String get errorFileTooLarge;
+
+  /// No description provided for @errorUnsupportedFileType.
+  ///
+  /// In ru, this message translates to:
+  /// **'Недопустимый формат файла'**
+  String get errorUnsupportedFileType;
+
+  /// No description provided for @errorStorageUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Хранилище недоступно, попробуйте позже'**
+  String get errorStorageUnavailable;
+
+  /// No description provided for @errorFileNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл не найден'**
+  String get errorFileNotFound;
+
+  /// No description provided for @errorFileInUse.
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл используется и не может быть удалён'**
+  String get errorFileInUse;
+
+  /// No description provided for @errorInvalidFileCategory.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неизвестная категория файла'**
+  String get errorInvalidFileCategory;
+
   /// No description provided for @commonNoConnection.
   ///
   /// In ru, this message translates to:

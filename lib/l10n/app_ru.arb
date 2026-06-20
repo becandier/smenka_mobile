@@ -395,6 +395,12 @@
     "errorAccountLocked": "Слишком много попыток входа. Попробуйте позже",
     "errorRateLimitExceeded": "Слишком много запросов. Подождите немного",
     "errorTooManyCodeAttempts": "Превышено число попыток. Запросите новый код",
+    "errorFileTooLarge": "Файл слишком большой",
+    "errorUnsupportedFileType": "Недопустимый формат файла",
+    "errorStorageUnavailable": "Хранилище недоступно, попробуйте позже",
+    "errorFileNotFound": "Файл не найден",
+    "errorFileInUse": "Файл используется и не может быть удалён",
+    "errorInvalidFileCategory": "Неизвестная категория файла",
     "commonNoConnection": "Нет соединения",
     "commonRetry": "Повторить",
     "shiftOfflineBanner": "Нет соединения. Проверьте интернет"

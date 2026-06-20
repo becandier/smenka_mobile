@@ -29,6 +29,13 @@ String localizedErrorMessage(
     'ACCOUNT_LOCKED' => l10n.errorAccountLocked,
     'RATE_LIMIT_EXCEEDED' => l10n.errorRateLimitExceeded,
     'TOO_MANY_CODE_ATTEMPTS' => l10n.errorTooManyCodeAttempts,
+    // file_storage: загрузка/выдача файлов
+    'FILE_TOO_LARGE' => l10n.errorFileTooLarge,
+    'UNSUPPORTED_FILE_TYPE' => l10n.errorUnsupportedFileType,
+    'STORAGE_UNAVAILABLE' => l10n.errorStorageUnavailable,
+    'FILE_NOT_FOUND' => l10n.errorFileNotFound,
+    'FILE_IN_USE' => l10n.errorFileInUse,
+    'INVALID_FILE_CATEGORY' => l10n.errorInvalidFileCategory,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,

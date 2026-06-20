@@ -19,6 +19,7 @@ import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
+import 'package:smenka_mobile/data/domain/file_storage/_file_storage.dart';
 import 'package:smenka_mobile/data/domain/organization/_organization.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
@@ -116,6 +117,7 @@ class MainAppCubit extends Cubit<MainAppState> {
       await _initService(OrganizationRepositoryInitializer(dio: dio));
       await _initService(ChecklistRepositoryInitializer(dio: dio));
       await _initService(PayrollRepositoryInitializer(dio: dio));
+      await _initService(FilesRepositoryInitializer(dio: dio));
 
       // Фаза 5.5: Deep Links
       final deepLinkService = DeepLinkService();
@@ -158,6 +160,7 @@ class MainAppCubit extends Cubit<MainAppState> {
           checklistRepository: _serviceLocator.get<ChecklistRepository>(),
           userRepository: _serviceLocator.get<UserRepository>(),
           payrollRepository: _serviceLocator.get<PayrollRepository>(),
+          filesRepository: _serviceLocator.get<FilesRepository>(),
           deepLinkService: _serviceLocator.get<DeepLinkService>(),
           pendingInviteStorage: _serviceLocator.get<PendingInviteStorage>(),
           shiftContextStorage: _serviceLocator.get<ShiftContextStorage>(),
