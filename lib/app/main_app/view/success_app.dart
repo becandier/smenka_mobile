@@ -13,10 +13,8 @@ class _SuccessApp extends StatefulWidget {
     required this.authRepository,
     required this.shiftRepository,
     required this.organizationRepository,
-    required this.organizationRoleRepository,
     required this.checklistRepository,
     required this.userRepository,
-    required this.locationRepository,
     required this.payrollRepository,
     required this.deepLinkService,
     required this.pendingInviteStorage,
@@ -33,10 +31,8 @@ class _SuccessApp extends StatefulWidget {
   final AuthRepository authRepository;
   final ShiftRepository shiftRepository;
   final OrganizationRepository organizationRepository;
-  final OrganizationRoleRepository organizationRoleRepository;
   final ChecklistRepository checklistRepository;
   final UserRepository userRepository;
-  final LocationRepository locationRepository;
   final PayrollRepository payrollRepository;
   final DeepLinkService deepLinkService;
   final PendingInviteStorage pendingInviteStorage;
@@ -117,16 +113,10 @@ class _SuccessAppState extends State<_SuccessApp> {
         RepositoryProvider<OrganizationRepository>.value(
           value: widget.organizationRepository,
         ),
-        RepositoryProvider<OrganizationRoleRepository>.value(
-          value: widget.organizationRoleRepository,
-        ),
         RepositoryProvider<ChecklistRepository>.value(
           value: widget.checklistRepository,
         ),
         RepositoryProvider<UserRepository>.value(value: widget.userRepository),
-        RepositoryProvider<LocationRepository>.value(
-          value: widget.locationRepository,
-        ),
         RepositoryProvider<PayrollRepository>.value(
           value: widget.payrollRepository,
         ),
@@ -189,9 +179,6 @@ class _SuccessAppState extends State<_SuccessApp> {
                     isDevMode: widget.appConfig.flavor == Flavors.dev,
                     child: TalkerWrapper(
                       talker: widget.talker,
-                      options: const TalkerWrapperOptions(
-                        enableErrorAlerts: true,
-                      ),
                       child: UpgradeAlert(
                         navigatorKey: _router.navigatorKey,
                         upgrader: Upgrader(

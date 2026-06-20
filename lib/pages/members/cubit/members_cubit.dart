@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
@@ -54,35 +53,6 @@ class MembersCubit extends Cubit<MembersState> {
       onFailure: (error) {
         emit(state.copyWith(members: state.members.toError(error.message)));
       },
-    );
-  }
-
-  Future<bool> removeMember(String userId) async {
-    emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
-    );
-    final result = await _organizationRepository.removeMember(_orgId, userId);
-    return result.fold(
-      onSuccess: (_) {
-        emit(state.copyWith(actionStatus: FeatureStatus.success));
-        loadMembers();
-        return true;
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            actionStatus: FeatureStatus.error,
-            actionError: error.message,
-          ),
-        );
-        return false;
-      },
-    );
-  }
-
-  void resetActionStatus() {
-    emit(
-      state.copyWith(actionStatus: FeatureStatus.initial, actionError: null),
     );
   }
 }

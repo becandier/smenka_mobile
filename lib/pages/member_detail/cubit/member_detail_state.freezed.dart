@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MemberDetailState {
 
- Member get member; OrgMembershipRole? get viewerRole; SectionData<List<MemberChecklistOverride>> get overrides; SectionData<List<EffectiveChecklistTemplate>> get effective; SectionData<List<OrganizationRole>> get availableRoles; Set<String> get pendingTemplateIds; FeatureStatus get actionStatus; String? get actionError;
+ Member get member; OrgMembershipRole? get viewerRole; SectionData<List<EffectiveChecklistTemplate>> get effective;
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MemberDetailStateCopyWith<MemberDetailState> get copyWith => _$MemberDetailStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&(identical(other.effective, effective) || other.effective == effective)&&(identical(other.availableRoles, availableRoles) || other.availableRoles == availableRoles)&&const DeepCollectionEquality().equals(other.pendingTemplateIds, pendingTemplateIds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,member,viewerRole,overrides,effective,availableRoles,const DeepCollectionEquality().hash(pendingTemplateIds),actionStatus,actionError);
+int get hashCode => Object.hash(runtimeType,member,viewerRole,effective);
 
 @override
 String toString() {
-  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, overrides: $overrides, effective: $effective, availableRoles: $availableRoles, pendingTemplateIds: $pendingTemplateIds, actionStatus: $actionStatus, actionError: $actionError)';
+  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $MemberDetailStateCopyWith<$Res>  {
   factory $MemberDetailStateCopyWith(MemberDetailState value, $Res Function(MemberDetailState) _then) = _$MemberDetailStateCopyWithImpl;
 @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<MemberChecklistOverride>> overrides, SectionData<List<EffectiveChecklistTemplate>> effective, SectionData<List<OrganizationRole>> availableRoles, Set<String> pendingTemplateIds, FeatureStatus actionStatus, String? actionError
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective
 });
 
 
-$MemberCopyWith<$Res> get member;$SectionDataCopyWith<List<MemberChecklistOverride>, $Res> get overrides;$SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res> get effective;$SectionDataCopyWith<List<OrganizationRole>, $Res> get availableRoles;
+$MemberCopyWith<$Res> get member;$SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res> get effective;
 
 }
 /// @nodoc
@@ -62,17 +62,12 @@ class _$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? overrides = null,Object? effective = null,Object? availableRoles = null,Object? pendingTemplateIds = null,Object? actionStatus = null,Object? actionError = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,}) {
   return _then(_self.copyWith(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
-as OrgMembershipRole?,overrides: null == overrides ? _self.overrides : overrides // ignore: cast_nullable_to_non_nullable
-as SectionData<List<MemberChecklistOverride>>,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
-as SectionData<List<EffectiveChecklistTemplate>>,availableRoles: null == availableRoles ? _self.availableRoles : availableRoles // ignore: cast_nullable_to_non_nullable
-as SectionData<List<OrganizationRole>>,pendingTemplateIds: null == pendingTemplateIds ? _self.pendingTemplateIds : pendingTemplateIds // ignore: cast_nullable_to_non_nullable
-as Set<String>,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,
+as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
+as SectionData<List<EffectiveChecklistTemplate>>,
   ));
 }
 /// Create a copy of MemberDetailState
@@ -88,28 +83,10 @@ $MemberCopyWith<$Res> get member {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$SectionDataCopyWith<List<MemberChecklistOverride>, $Res> get overrides {
-  
-  return $SectionDataCopyWith<List<MemberChecklistOverride>, $Res>(_self.overrides, (value) {
-    return _then(_self.copyWith(overrides: value));
-  });
-}/// Create a copy of MemberDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
 $SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res> get effective {
   
   return $SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res>(_self.effective, (value) {
     return _then(_self.copyWith(effective: value));
-  });
-}/// Create a copy of MemberDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SectionDataCopyWith<List<OrganizationRole>, $Res> get availableRoles {
-  
-  return $SectionDataCopyWith<List<OrganizationRole>, $Res>(_self.availableRoles, (value) {
-    return _then(_self.copyWith(availableRoles: value));
   });
 }
 }
@@ -193,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<MemberChecklistOverride>> overrides,  SectionData<List<EffectiveChecklistTemplate>> effective,  SectionData<List<OrganizationRole>> availableRoles,  Set<String> pendingTemplateIds,  FeatureStatus actionStatus,  String? actionError)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
-return $default(_that.member,_that.viewerRole,_that.overrides,_that.effective,_that.availableRoles,_that.pendingTemplateIds,_that.actionStatus,_that.actionError);case _:
+return $default(_that.member,_that.viewerRole,_that.effective);case _:
   return orElse();
 
 }
@@ -214,10 +191,10 @@ return $default(_that.member,_that.viewerRole,_that.overrides,_that.effective,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<MemberChecklistOverride>> overrides,  SectionData<List<EffectiveChecklistTemplate>> effective,  SectionData<List<OrganizationRole>> availableRoles,  Set<String> pendingTemplateIds,  FeatureStatus actionStatus,  String? actionError)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective)  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState():
-return $default(_that.member,_that.viewerRole,_that.overrides,_that.effective,_that.availableRoles,_that.pendingTemplateIds,_that.actionStatus,_that.actionError);case _:
+return $default(_that.member,_that.viewerRole,_that.effective);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -234,10 +211,10 @@ return $default(_that.member,_that.viewerRole,_that.overrides,_that.effective,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<MemberChecklistOverride>> overrides,  SectionData<List<EffectiveChecklistTemplate>> effective,  SectionData<List<OrganizationRole>> availableRoles,  Set<String> pendingTemplateIds,  FeatureStatus actionStatus,  String? actionError)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
-return $default(_that.member,_that.viewerRole,_that.overrides,_that.effective,_that.availableRoles,_that.pendingTemplateIds,_that.actionStatus,_that.actionError);case _:
+return $default(_that.member,_that.viewerRole,_that.effective);case _:
   return null;
 
 }
@@ -249,23 +226,12 @@ return $default(_that.member,_that.viewerRole,_that.overrides,_that.effective,_t
 
 
 class _MemberDetailState extends MemberDetailState {
-  const _MemberDetailState({required this.member, this.viewerRole, this.overrides = const SectionData<List<MemberChecklistOverride>>(), this.effective = const SectionData<List<EffectiveChecklistTemplate>>(), this.availableRoles = const SectionData<List<OrganizationRole>>(), final  Set<String> pendingTemplateIds = const <String>{}, this.actionStatus = FeatureStatus.initial, this.actionError}): _pendingTemplateIds = pendingTemplateIds,super._();
+  const _MemberDetailState({required this.member, this.viewerRole, this.effective = const SectionData<List<EffectiveChecklistTemplate>>()}): super._();
   
 
 @override final  Member member;
 @override final  OrgMembershipRole? viewerRole;
-@override@JsonKey() final  SectionData<List<MemberChecklistOverride>> overrides;
 @override@JsonKey() final  SectionData<List<EffectiveChecklistTemplate>> effective;
-@override@JsonKey() final  SectionData<List<OrganizationRole>> availableRoles;
- final  Set<String> _pendingTemplateIds;
-@override@JsonKey() Set<String> get pendingTemplateIds {
-  if (_pendingTemplateIds is EqualUnmodifiableSetView) return _pendingTemplateIds;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableSetView(_pendingTemplateIds);
-}
-
-@override@JsonKey() final  FeatureStatus actionStatus;
-@override final  String? actionError;
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -277,16 +243,16 @@ _$MemberDetailStateCopyWith<_MemberDetailState> get copyWith => __$MemberDetailS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&(identical(other.effective, effective) || other.effective == effective)&&(identical(other.availableRoles, availableRoles) || other.availableRoles == availableRoles)&&const DeepCollectionEquality().equals(other._pendingTemplateIds, _pendingTemplateIds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,member,viewerRole,overrides,effective,availableRoles,const DeepCollectionEquality().hash(_pendingTemplateIds),actionStatus,actionError);
+int get hashCode => Object.hash(runtimeType,member,viewerRole,effective);
 
 @override
 String toString() {
-  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, overrides: $overrides, effective: $effective, availableRoles: $availableRoles, pendingTemplateIds: $pendingTemplateIds, actionStatus: $actionStatus, actionError: $actionError)';
+  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective)';
 }
 
 
@@ -297,11 +263,11 @@ abstract mixin class _$MemberDetailStateCopyWith<$Res> implements $MemberDetailS
   factory _$MemberDetailStateCopyWith(_MemberDetailState value, $Res Function(_MemberDetailState) _then) = __$MemberDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<MemberChecklistOverride>> overrides, SectionData<List<EffectiveChecklistTemplate>> effective, SectionData<List<OrganizationRole>> availableRoles, Set<String> pendingTemplateIds, FeatureStatus actionStatus, String? actionError
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective
 });
 
 
-@override $MemberCopyWith<$Res> get member;@override $SectionDataCopyWith<List<MemberChecklistOverride>, $Res> get overrides;@override $SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res> get effective;@override $SectionDataCopyWith<List<OrganizationRole>, $Res> get availableRoles;
+@override $MemberCopyWith<$Res> get member;@override $SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res> get effective;
 
 }
 /// @nodoc
@@ -314,17 +280,12 @@ class __$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? overrides = null,Object? effective = null,Object? availableRoles = null,Object? pendingTemplateIds = null,Object? actionStatus = null,Object? actionError = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,}) {
   return _then(_MemberDetailState(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
-as OrgMembershipRole?,overrides: null == overrides ? _self.overrides : overrides // ignore: cast_nullable_to_non_nullable
-as SectionData<List<MemberChecklistOverride>>,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
-as SectionData<List<EffectiveChecklistTemplate>>,availableRoles: null == availableRoles ? _self.availableRoles : availableRoles // ignore: cast_nullable_to_non_nullable
-as SectionData<List<OrganizationRole>>,pendingTemplateIds: null == pendingTemplateIds ? _self._pendingTemplateIds : pendingTemplateIds // ignore: cast_nullable_to_non_nullable
-as Set<String>,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,
+as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
+as SectionData<List<EffectiveChecklistTemplate>>,
   ));
 }
 
@@ -341,28 +302,10 @@ $MemberCopyWith<$Res> get member {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$SectionDataCopyWith<List<MemberChecklistOverride>, $Res> get overrides {
-  
-  return $SectionDataCopyWith<List<MemberChecklistOverride>, $Res>(_self.overrides, (value) {
-    return _then(_self.copyWith(overrides: value));
-  });
-}/// Create a copy of MemberDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
 $SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res> get effective {
   
   return $SectionDataCopyWith<List<EffectiveChecklistTemplate>, $Res>(_self.effective, (value) {
     return _then(_self.copyWith(effective: value));
-  });
-}/// Create a copy of MemberDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SectionDataCopyWith<List<OrganizationRole>, $Res> get availableRoles {
-  
-  return $SectionDataCopyWith<List<OrganizationRole>, $Res>(_self.availableRoles, (value) {
-    return _then(_self.copyWith(availableRoles: value));
   });
 }
 }

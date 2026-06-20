@@ -23,13 +23,19 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
   final OrganizationRepository _organizationRepository;
   final UserRepository _userRepository;
 
-  bool get isOwner {
+  /// Является ли текущий пользователь владельцем организации.
+  /// Owner не является участником (ADR-001) и управляет орг. через веб-админку.
+  bool get _isOwner {
     final org = state.organization.data;
     return org != null && org.ownerId == state.currentUserId;
   }
 
+  /// Участник организации (для кнопки «Покинуть»). Owner — не участник.
+  bool get isMember => state.currentMemberRole != null;
+
+  /// Доступ к admin read-only разделам (смены/статистика/расчёт).
   bool get isAdminOrOwner =>
-      isOwner ||
+      _isOwner ||
       state.currentMemberRole == MemberRole.admin ||
       state.currentUserRole == UserRole.superAdmin;
 
@@ -56,12 +62,7 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
 
     result.fold(
       onSuccess: (org) {
-        emit(
-          state.copyWith(
-            organization: state.organization.toSuccess(org),
-            inviteCode: org.inviteCode,
-          ),
-        );
+        emit(state.copyWith(organization: state.organization.toSuccess(org)));
       },
       onFailure: (error) {
         emit(
@@ -103,32 +104,6 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
     await Future.wait([_loadOrganization(), _loadMembers()]);
   }
 
-  Future<void> rotateInviteCode() async {
-    emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
-    );
-    final result = await _organizationRepository.rotateInvite(_orgId);
-
-    result.fold(
-      onSuccess: (newCode) {
-        emit(
-          state.copyWith(
-            actionStatus: FeatureStatus.success,
-            inviteCode: newCode,
-          ),
-        );
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            actionStatus: FeatureStatus.error,
-            actionError: error.message,
-          ),
-        );
-      },
-    );
-  }
-
   Future<bool> leaveOrganization() async {
     emit(
       state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
@@ -137,29 +112,6 @@ class OrganizationDetailCubit extends Cubit<OrganizationDetailState> {
       _orgId,
       state.currentUserId,
     );
-
-    return result.fold(
-      onSuccess: (_) {
-        emit(state.copyWith(actionStatus: FeatureStatus.success));
-        return true;
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            actionStatus: FeatureStatus.error,
-            actionError: error.message,
-          ),
-        );
-        return false;
-      },
-    );
-  }
-
-  Future<bool> deleteOrganization() async {
-    emit(
-      state.copyWith(actionStatus: FeatureStatus.loading, actionError: null),
-    );
-    final result = await _organizationRepository.delete(_orgId);
 
     return result.fold(
       onSuccess: (_) {

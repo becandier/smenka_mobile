@@ -10,23 +10,20 @@ class _MemberTile extends StatelessWidget {
     final l10n = context.l10n;
     final appColors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
-    final data = context
-        .select<MembersCubit, ({bool isSelf, bool canManage, String orgId})>(
-          (cubit) => (
-            isSelf: member.userId == cubit.state.currentUserId,
-            canManage: cubit.state.canManage,
-            orgId: cubit.orgId,
-          ),
-        );
+    final data = context.select<MembersCubit, ({bool isSelf, String orgId})>(
+      (cubit) => (
+        isSelf: member.userId == cubit.state.currentUserId,
+        orgId: cubit.orgId,
+      ),
+    );
     final isSelf = data.isSelf;
-    final canManage = data.canManage;
 
     final joinedDate =
         '${member.joinedAt.day.toString().padLeft(2, '0')}.'
         '${member.joinedAt.month.toString().padLeft(2, '0')}.'
         '${member.joinedAt.year}';
 
-    Widget tile = Material(
+    return Material(
       color: appColors.surface,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
@@ -86,64 +83,9 @@ class _MemberTile extends StatelessWidget {
         ),
       ),
     );
-
-    if (!isSelf && canManage) {
-      tile = Dismissible(
-        key: ValueKey(member.id),
-        direction: DismissDirection.endToStart,
-        background: Material(
-          color: appColors.error,
-          borderRadius: BorderRadius.circular(12),
-          child: const Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: Icon(Icons.delete_outline, color: Colors.white),
-            ),
-          ),
-        ),
-        confirmDismiss: (_) => _confirmRemove(context),
-        child: tile,
-      );
-    }
-
-    return tile;
   }
 
   void _openDetail(BuildContext context, String orgId) {
     context.router.push(MemberDetailRoute(orgId: orgId, member: member));
-  }
-
-  Future<bool> _confirmRemove(BuildContext context) async {
-    final l10n = context.l10n;
-
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.membersRemove),
-        content: Text(l10n.membersRemoveConfirm(member.userName)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.confirm),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true || !context.mounted) return false;
-
-    final cubit = context.read<MembersCubit>();
-    final didRemove = await cubit.removeMember(member.userId);
-
-    if (didRemove && context.mounted) {
-      context.modals.showSuccess(l10n.membersRemoved);
-    }
-
-    return didRemove;
   }
 }

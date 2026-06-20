@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MembersState {
 
- SectionData<List<Member>> get members; OrgMembershipRole? get viewerRole; FeatureStatus get actionStatus; String? get actionError; String get currentUserId;
+ SectionData<List<Member>> get members; OrgMembershipRole? get viewerRole; String get currentUserId;
 /// Create a copy of MembersState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MembersStateCopyWith<MembersState> get copyWith => _$MembersStateCopyWithImpl<M
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MembersState&&(identical(other.members, members) || other.members == members)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MembersState&&(identical(other.members, members) || other.members == members)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,members,viewerRole,actionStatus,actionError,currentUserId);
+int get hashCode => Object.hash(runtimeType,members,viewerRole,currentUserId);
 
 @override
 String toString() {
-  return 'MembersState(members: $members, viewerRole: $viewerRole, actionStatus: $actionStatus, actionError: $actionError, currentUserId: $currentUserId)';
+  return 'MembersState(members: $members, viewerRole: $viewerRole, currentUserId: $currentUserId)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MembersStateCopyWith<$Res>  {
   factory $MembersStateCopyWith(MembersState value, $Res Function(MembersState) _then) = _$MembersStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<List<Member>> members, OrgMembershipRole? viewerRole, FeatureStatus actionStatus, String? actionError, String currentUserId
+ SectionData<List<Member>> members, OrgMembershipRole? viewerRole, String currentUserId
 });
 
 
@@ -62,13 +62,11 @@ class _$MembersStateCopyWithImpl<$Res>
 
 /// Create a copy of MembersState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? members = null,Object? viewerRole = freezed,Object? actionStatus = null,Object? actionError = freezed,Object? currentUserId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? members = null,Object? viewerRole = freezed,Object? currentUserId = null,}) {
   return _then(_self.copyWith(
 members: null == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
 as SectionData<List<Member>>,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
-as OrgMembershipRole?,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,currentUserId: null == currentUserId ? _self.currentUserId : currentUserId // ignore: cast_nullable_to_non_nullable
+as OrgMembershipRole?,currentUserId: null == currentUserId ? _self.currentUserId : currentUserId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -163,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<Member>> members,  OrgMembershipRole? viewerRole,  FeatureStatus actionStatus,  String? actionError,  String currentUserId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<Member>> members,  OrgMembershipRole? viewerRole,  String currentUserId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MembersState() when $default != null:
-return $default(_that.members,_that.viewerRole,_that.actionStatus,_that.actionError,_that.currentUserId);case _:
+return $default(_that.members,_that.viewerRole,_that.currentUserId);case _:
   return orElse();
 
 }
@@ -184,10 +182,10 @@ return $default(_that.members,_that.viewerRole,_that.actionStatus,_that.actionEr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<Member>> members,  OrgMembershipRole? viewerRole,  FeatureStatus actionStatus,  String? actionError,  String currentUserId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<Member>> members,  OrgMembershipRole? viewerRole,  String currentUserId)  $default,) {final _that = this;
 switch (_that) {
 case _MembersState():
-return $default(_that.members,_that.viewerRole,_that.actionStatus,_that.actionError,_that.currentUserId);case _:
+return $default(_that.members,_that.viewerRole,_that.currentUserId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +202,10 @@ return $default(_that.members,_that.viewerRole,_that.actionStatus,_that.actionEr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<Member>> members,  OrgMembershipRole? viewerRole,  FeatureStatus actionStatus,  String? actionError,  String currentUserId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<Member>> members,  OrgMembershipRole? viewerRole,  String currentUserId)?  $default,) {final _that = this;
 switch (_that) {
 case _MembersState() when $default != null:
-return $default(_that.members,_that.viewerRole,_that.actionStatus,_that.actionError,_that.currentUserId);case _:
+return $default(_that.members,_that.viewerRole,_that.currentUserId);case _:
   return null;
 
 }
@@ -219,13 +217,11 @@ return $default(_that.members,_that.viewerRole,_that.actionStatus,_that.actionEr
 
 
 class _MembersState extends MembersState {
-  const _MembersState({this.members = const SectionData<List<Member>>(), this.viewerRole, this.actionStatus = FeatureStatus.initial, this.actionError, this.currentUserId = ''}): super._();
+  const _MembersState({this.members = const SectionData<List<Member>>(), this.viewerRole, this.currentUserId = ''}): super._();
   
 
 @override@JsonKey() final  SectionData<List<Member>> members;
 @override final  OrgMembershipRole? viewerRole;
-@override@JsonKey() final  FeatureStatus actionStatus;
-@override final  String? actionError;
 @override@JsonKey() final  String currentUserId;
 
 /// Create a copy of MembersState
@@ -238,16 +234,16 @@ _$MembersStateCopyWith<_MembersState> get copyWith => __$MembersStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MembersState&&(identical(other.members, members) || other.members == members)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MembersState&&(identical(other.members, members) || other.members == members)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,members,viewerRole,actionStatus,actionError,currentUserId);
+int get hashCode => Object.hash(runtimeType,members,viewerRole,currentUserId);
 
 @override
 String toString() {
-  return 'MembersState(members: $members, viewerRole: $viewerRole, actionStatus: $actionStatus, actionError: $actionError, currentUserId: $currentUserId)';
+  return 'MembersState(members: $members, viewerRole: $viewerRole, currentUserId: $currentUserId)';
 }
 
 
@@ -258,7 +254,7 @@ abstract mixin class _$MembersStateCopyWith<$Res> implements $MembersStateCopyWi
   factory _$MembersStateCopyWith(_MembersState value, $Res Function(_MembersState) _then) = __$MembersStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<List<Member>> members, OrgMembershipRole? viewerRole, FeatureStatus actionStatus, String? actionError, String currentUserId
+ SectionData<List<Member>> members, OrgMembershipRole? viewerRole, String currentUserId
 });
 
 
@@ -275,13 +271,11 @@ class __$MembersStateCopyWithImpl<$Res>
 
 /// Create a copy of MembersState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? members = null,Object? viewerRole = freezed,Object? actionStatus = null,Object? actionError = freezed,Object? currentUserId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? members = null,Object? viewerRole = freezed,Object? currentUserId = null,}) {
   return _then(_MembersState(
 members: null == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
 as SectionData<List<Member>>,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
-as OrgMembershipRole?,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,currentUserId: null == currentUserId ? _self.currentUserId : currentUserId // ignore: cast_nullable_to_non_nullable
+as OrgMembershipRole?,currentUserId: null == currentUserId ? _self.currentUserId : currentUserId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

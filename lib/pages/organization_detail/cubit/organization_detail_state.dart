@@ -14,7 +14,6 @@ abstract class OrganizationDetailState with _$OrganizationDetailState {
     @Default(SectionData<List<Member>>()) SectionData<List<Member>> members,
     @Default(FeatureStatus.initial) FeatureStatus actionStatus,
     String? actionError,
-    String? inviteCode,
     @Default('') String currentUserId,
     MemberRole? currentMemberRole,
     @Default(UserRole.user) UserRole currentUserRole,

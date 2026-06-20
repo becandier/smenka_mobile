@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
-import 'package:smenka_mobile/data/domain/location/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -121,19 +120,6 @@ class AppRouter extends RootStackRouter {
             ..._orgDetailRoutes('org-detail/:orgId'),
           ],
         ),
-        AutoRoute(
-          path: 'admin',
-          page: SuperAdminTab.page,
-          children: [
-            AutoRoute(path: '', initial: true, page: SuperAdminRoute.page),
-            CustomRoute<void>(
-              path: 'create-org',
-              page: CreateOrgRoute.page,
-              customRouteBuilder: _modalBottomSheetBuilder,
-            ),
-            ..._orgDetailRoutes('org-detail/:orgId'),
-          ],
-        ),
       ],
     ),
   ];
@@ -144,18 +130,6 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
   AutoRoute(path: basePath, page: OrganizationDetailRoute.page),
   AutoRoute(path: '$basePath/members', page: OrgMembersRoute.page),
   AutoRoute(path: '$basePath/members/:userId', page: MemberDetailRoute.page),
-  AutoRoute(path: '$basePath/settings', page: OrgSettingsRoute.page),
-  AutoRoute(path: '$basePath/locations', page: WorkLocationsRoute.page),
-  AutoRoute(path: '$basePath/locations/add', page: AddEditLocationRoute.page),
-  AutoRoute(path: '$basePath/roles', page: RolesRoute.page),
-  AutoRoute(
-    path: '$basePath/checklist-templates',
-    page: ChecklistTemplatesRoute.page,
-  ),
-  AutoRoute(
-    path: '$basePath/checklist-templates/:templateId',
-    page: ChecklistTemplateDetailRoute.page,
-  ),
   AutoRoute(path: '$basePath/shifts', page: OrgShiftsRoute.page),
   AutoRoute(path: '$basePath/shifts/:shiftId', page: OrgShiftDetailRoute.page),
   // Чек-листы чужой смены (read-only) — доступны из детали орг-смены
@@ -177,11 +151,6 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
   AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),
   AutoRoute(path: '$basePath/my-earnings', page: MyEarningsRoute.page),
   AutoRoute(path: '$basePath/payroll', page: PayrollRoute.page),
-  CustomRoute<bool?>(
-    path: '$basePath/rate-form',
-    page: RateFormRoute.page,
-    customRouteBuilder: _modalBottomSheetBuilder,
-  ),
 ];
 
 @RoutePage(name: 'ShiftTab')
@@ -233,13 +202,6 @@ class ProfileTabPage extends StatelessWidget {
       child: const AutoRouter(),
     );
   }
-}
-
-@RoutePage(name: 'SuperAdminTab')
-/// Super Admin Tab Page for the app
-class SuperAdminTabPage extends AutoRouter {
-  /// Super Admin Tab Page for the app
-  const SuperAdminTabPage({super.key});
 }
 
 Route<T> _modalBottomSheetBuilder<T>(

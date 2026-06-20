@@ -18,9 +18,7 @@ import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
-import 'package:smenka_mobile/data/domain/location/_location.dart';
 import 'package:smenka_mobile/data/domain/organization/_organization.dart';
-import 'package:smenka_mobile/data/domain/organization_role/_organization_role.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
 import 'package:smenka_mobile/data/domain/user/_user.dart';
@@ -105,9 +103,7 @@ class MainAppCubit extends Cubit<MainAppState> {
       await _initService(UserRepositoryInitializer(dio: dio));
       await _initService(ShiftRepositoryInitializer(dio: dio));
       await _initService(OrganizationRepositoryInitializer(dio: dio));
-      await _initService(OrganizationRoleRepositoryInitializer(dio: dio));
       await _initService(ChecklistRepositoryInitializer(dio: dio));
-      await _initService(LocationRepositoryInitializer(dio: dio));
       await _initService(PayrollRepositoryInitializer(dio: dio));
 
       // Фаза 5.5: Deep Links
@@ -129,11 +125,6 @@ class MainAppCubit extends Cubit<MainAppState> {
       // Фаза 6: Сервисы с зависимостями на SharedPreferences
       await _initService(ThemeModeServiceInitializer());
 
-      // Фаза 7: Яндекс.Карты
-      await _initService(
-        YandexMapKitInitializer(appConfig: _serviceLocator.get()),
-      );
-
       // Проверяем авторизацию при старте
       if (_serviceLocator.isRegistered<AuthRepository>()) {
         await _serviceLocator.get<AuthRepository>().checkAuthStatus();
@@ -153,11 +144,8 @@ class MainAppCubit extends Cubit<MainAppState> {
           authRepository: _serviceLocator.get<AuthRepository>(),
           shiftRepository: _serviceLocator.get<ShiftRepository>(),
           organizationRepository: _serviceLocator.get<OrganizationRepository>(),
-          organizationRoleRepository: _serviceLocator
-              .get<OrganizationRoleRepository>(),
           checklistRepository: _serviceLocator.get<ChecklistRepository>(),
           userRepository: _serviceLocator.get<UserRepository>(),
-          locationRepository: _serviceLocator.get<LocationRepository>(),
           payrollRepository: _serviceLocator.get<PayrollRepository>(),
           deepLinkService: _serviceLocator.get<DeepLinkService>(),
           pendingInviteStorage: _serviceLocator.get<PendingInviteStorage>(),

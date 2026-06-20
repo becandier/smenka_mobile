@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$MemberRatesState {
 
 /// История ставок участника (effective_from DESC, без пагинации).
- SectionData<List<Rate>> get rates;/// Статус одноразового действия (удаление записи).
- FeatureStatus get actionStatus; String? get actionError; String? get actionErrorCode;
+ SectionData<List<Rate>> get rates;
 /// Create a copy of MemberRatesState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +26,16 @@ $MemberRatesStateCopyWith<MemberRatesState> get copyWith => _$MemberRatesStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberRatesState&&(identical(other.rates, rates) || other.rates == rates)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberRatesState&&(identical(other.rates, rates) || other.rates == rates));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rates,actionStatus,actionError,actionErrorCode);
+int get hashCode => Object.hash(runtimeType,rates);
 
 @override
 String toString() {
-  return 'MemberRatesState(rates: $rates, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode)';
+  return 'MemberRatesState(rates: $rates)';
 }
 
 
@@ -47,7 +46,7 @@ abstract mixin class $MemberRatesStateCopyWith<$Res>  {
   factory $MemberRatesStateCopyWith(MemberRatesState value, $Res Function(MemberRatesState) _then) = _$MemberRatesStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<List<Rate>> rates, FeatureStatus actionStatus, String? actionError, String? actionErrorCode
+ SectionData<List<Rate>> rates
 });
 
 
@@ -64,13 +63,10 @@ class _$MemberRatesStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberRatesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? rates = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? rates = null,}) {
   return _then(_self.copyWith(
 rates: null == rates ? _self.rates : rates // ignore: cast_nullable_to_non_nullable
-as SectionData<List<Rate>>,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode : actionErrorCode // ignore: cast_nullable_to_non_nullable
-as String?,
+as SectionData<List<Rate>>,
   ));
 }
 /// Create a copy of MemberRatesState
@@ -164,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<Rate>> rates,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<Rate>> rates)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberRatesState() when $default != null:
-return $default(_that.rates,_that.actionStatus,_that.actionError,_that.actionErrorCode);case _:
+return $default(_that.rates);case _:
   return orElse();
 
 }
@@ -185,10 +181,10 @@ return $default(_that.rates,_that.actionStatus,_that.actionError,_that.actionErr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<Rate>> rates,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<Rate>> rates)  $default,) {final _that = this;
 switch (_that) {
 case _MemberRatesState():
-return $default(_that.rates,_that.actionStatus,_that.actionError,_that.actionErrorCode);case _:
+return $default(_that.rates);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +201,10 @@ return $default(_that.rates,_that.actionStatus,_that.actionError,_that.actionErr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<Rate>> rates,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<Rate>> rates)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberRatesState() when $default != null:
-return $default(_that.rates,_that.actionStatus,_that.actionError,_that.actionErrorCode);case _:
+return $default(_that.rates);case _:
   return null;
 
 }
@@ -220,15 +216,11 @@ return $default(_that.rates,_that.actionStatus,_that.actionError,_that.actionErr
 
 
 class _MemberRatesState extends MemberRatesState {
-  const _MemberRatesState({this.rates = const SectionData<List<Rate>>(), this.actionStatus = FeatureStatus.initial, this.actionError, this.actionErrorCode}): super._();
+  const _MemberRatesState({this.rates = const SectionData<List<Rate>>()}): super._();
   
 
 /// История ставок участника (effective_from DESC, без пагинации).
 @override@JsonKey() final  SectionData<List<Rate>> rates;
-/// Статус одноразового действия (удаление записи).
-@override@JsonKey() final  FeatureStatus actionStatus;
-@override final  String? actionError;
-@override final  String? actionErrorCode;
 
 /// Create a copy of MemberRatesState
 /// with the given fields replaced by the non-null parameter values.
@@ -240,16 +232,16 @@ _$MemberRatesStateCopyWith<_MemberRatesState> get copyWith => __$MemberRatesStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberRatesState&&(identical(other.rates, rates) || other.rates == rates)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberRatesState&&(identical(other.rates, rates) || other.rates == rates));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rates,actionStatus,actionError,actionErrorCode);
+int get hashCode => Object.hash(runtimeType,rates);
 
 @override
 String toString() {
-  return 'MemberRatesState(rates: $rates, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode)';
+  return 'MemberRatesState(rates: $rates)';
 }
 
 
@@ -260,7 +252,7 @@ abstract mixin class _$MemberRatesStateCopyWith<$Res> implements $MemberRatesSta
   factory _$MemberRatesStateCopyWith(_MemberRatesState value, $Res Function(_MemberRatesState) _then) = __$MemberRatesStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<List<Rate>> rates, FeatureStatus actionStatus, String? actionError, String? actionErrorCode
+ SectionData<List<Rate>> rates
 });
 
 
@@ -277,13 +269,10 @@ class __$MemberRatesStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberRatesState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? rates = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? rates = null,}) {
   return _then(_MemberRatesState(
 rates: null == rates ? _self.rates : rates // ignore: cast_nullable_to_non_nullable
-as SectionData<List<Rate>>,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode : actionErrorCode // ignore: cast_nullable_to_non_nullable
-as String?,
+as SectionData<List<Rate>>,
   ));
 }
 

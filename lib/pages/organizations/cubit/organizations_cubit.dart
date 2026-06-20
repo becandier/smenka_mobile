@@ -56,27 +56,6 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
     await _organizationRepository.fetchMyOrganizations();
   }
 
-  Future<void> createOrganization({required String name}) async {
-    emit(
-      state.copyWith(createStatus: FeatureStatus.loading, actionError: null),
-    );
-    final result = await _organizationRepository.create(name: name);
-
-    result.fold(
-      onSuccess: (_) {
-        emit(state.copyWith(createStatus: FeatureStatus.success));
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            createStatus: FeatureStatus.error,
-            actionError: error.message,
-          ),
-        );
-      },
-    );
-  }
-
   Future<void> joinOrganization({required String inviteCode}) async {
     emit(state.copyWith(joinStatus: FeatureStatus.loading, actionError: null));
     final result = await _organizationRepository.join(inviteCode);
@@ -98,12 +77,6 @@ class OrganizationsCubit extends Cubit<OrganizationsState> {
           ),
         );
       },
-    );
-  }
-
-  void resetCreateStatus() {
-    emit(
-      state.copyWith(createStatus: FeatureStatus.initial, actionError: null),
     );
   }
 
