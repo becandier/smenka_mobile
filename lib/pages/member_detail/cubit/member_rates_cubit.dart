@@ -1,15 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/pages/member_detail/cubit/member_rates_state.dart';
 
-/// История ставок участника + мутации (фича payroll).
+/// История ставок участника (read-only, фича payroll).
 /// Не зависит от MemberDetailCubit: права (viewerRole) проверяет UI.
 ///
 /// Загрузка НЕ стартует в конструкторе: GET .../rates доступен только
 /// admin/owner, а деталь участника открывает любой член организации —
 /// [loadRates] дёргает секция ставок, которая рендерится только при canManage.
+/// Управление ставками (создание/правка/удаление) вынесено в веб-админку.
 class MemberRatesCubit extends Cubit<MemberRatesState> {
   MemberRatesCubit({
     required String orgId,
@@ -42,42 +42,6 @@ class MemberRatesCubit extends Cubit<MemberRatesState> {
             rates: state.rates.toError(error.message, code: error.code),
           ),
         );
-      },
-    );
-  }
-
-  /// Удалить ошибочную запись истории. После успеха история перезагружается
-  /// (действующая ставка может измениться).
-  Future<bool> deleteRate(String rateId) async {
-    emit(
-      state.copyWith(
-        actionStatus: FeatureStatus.loading,
-        actionError: null,
-        actionErrorCode: null,
-      ),
-    );
-
-    final result = await _payrollRepository.deleteRate(
-      _orgId,
-      _memberId,
-      rateId,
-    );
-
-    return result.fold(
-      onSuccess: (_) {
-        emit(state.copyWith(actionStatus: FeatureStatus.success));
-        loadRates();
-        return true;
-      },
-      onFailure: (error) {
-        emit(
-          state.copyWith(
-            actionStatus: FeatureStatus.error,
-            actionError: error.message,
-            actionErrorCode: error.code,
-          ),
-        );
-        return false;
       },
     );
   }

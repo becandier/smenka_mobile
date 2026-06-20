@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
-import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 
 part 'member_rates_state.freezed.dart';
@@ -10,11 +9,6 @@ abstract class MemberRatesState with _$MemberRatesState {
   const factory MemberRatesState({
     /// История ставок участника (effective_from DESC, без пагинации).
     @Default(SectionData<List<Rate>>()) SectionData<List<Rate>> rates,
-
-    /// Статус одноразового действия (удаление записи).
-    @Default(FeatureStatus.initial) FeatureStatus actionStatus,
-    String? actionError,
-    String? actionErrorCode,
   }) = _MemberRatesState;
   const MemberRatesState._();
 

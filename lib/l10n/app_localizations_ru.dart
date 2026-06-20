@@ -436,9 +436,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get organizationsEmpty => 'Вы не состоите ни в одной организации';
 
   @override
-  String get organizationsCreate => 'Создать организацию';
-
-  @override
   String get organizationsJoin => 'Присоединиться';
 
   @override
@@ -488,19 +485,6 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get orgDetailInviteCode => 'Инвайт-код';
-
-  @override
-  String get orgDetailInviteCopied => 'Код скопирован';
-
-  @override
-  String get orgDetailRotateInvite => 'Обновить код';
-
-  @override
-  String get orgDetailRotateConfirm =>
-      'Старый код перестанет работать. Обновить?';
-
-  @override
   String get orgDetailLeave => 'Покинуть организацию';
 
   @override
@@ -508,20 +492,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вы уверены, что хотите покинуть организацию?';
 
   @override
-  String get orgDetailDelete => 'Удалить организацию';
-
-  @override
-  String get orgDetailDeleteConfirm =>
-      'Организация будет удалена безвозвратно. Продолжить?';
-
-  @override
-  String get orgDetailDeleted => 'Организация удалена';
-
-  @override
   String get orgDetailLeft => 'Вы покинули организацию';
-
-  @override
-  String get orgDetailSettings => 'Настройки';
 
   @override
   String get orgDetailShifts => 'Смены сотрудников';
@@ -550,17 +521,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get membersEmpty => 'Нет участников';
 
   @override
-  String get membersRemove => 'Удалить участника';
-
-  @override
-  String membersRemoveConfirm(String name) {
-    return 'Удалить $name из организации?';
-  }
-
-  @override
-  String get membersRemoved => 'Участник удалён';
-
-  @override
   String get membersMakeAdmin => 'Назначить администратором';
 
   @override
@@ -576,97 +536,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String membersJoinedAt(String date) {
     return 'С $date';
   }
-
-  @override
-  String get orgSettingsTitle => 'Настройки организации';
-
-  @override
-  String get orgSettingsGeoCheck => 'Геопроверка';
-
-  @override
-  String get orgSettingsGeoCheckDesc =>
-      'Проверять местоположение при начале смены';
-
-  @override
-  String get orgSettingsAutoFinish => 'Автозавершение';
-
-  @override
-  String get orgSettingsAutoFinishDesc =>
-      'Автоматически завершать смену через заданное время';
-
-  @override
-  String get orgSettingsAutoFinishHours => 'Часы до завершения';
-
-  @override
-  String get orgSettingsAutoFinishHoursDesc => 'Количество часов (1–48)';
-
-  @override
-  String get orgSettingsMaxPause => 'Макс. пауза (минуты)';
-
-  @override
-  String get orgSettingsMaxPauseDesc =>
-      'Максимальная продолжительность одной паузы';
-
-  @override
-  String get orgSettingsMaxPauses => 'Макс. пауз за смену';
-
-  @override
-  String get orgSettingsMaxPausesDesc =>
-      'Максимальное количество пауз за смену';
-
-  @override
-  String get orgSettingsSaved => 'Настройки сохранены';
-
-  @override
-  String get workLocationsTitle => 'Рабочие точки';
-
-  @override
-  String get workLocationsEmpty => 'Нет рабочих точек';
-
-  @override
-  String get workLocationsAdd => 'Добавить точку';
-
-  @override
-  String get workLocationsDelete => 'Удалить точку';
-
-  @override
-  String workLocationsDeleteConfirm(String name) {
-    return 'Удалить рабочую точку \"$name\"?';
-  }
-
-  @override
-  String get workLocationsDeleted => 'Точка удалена';
-
-  @override
-  String workLocationsRadius(int meters) {
-    return 'Радиус: $meters м';
-  }
-
-  @override
-  String get addLocationTitle => 'Новая точка';
-
-  @override
-  String get editLocationTitle => 'Редактирование точки';
-
-  @override
-  String get addLocationName => 'Название точки';
-
-  @override
-  String get addLocationNameHint => 'Например: Офис на Тверской';
-
-  @override
-  String get addLocationNameRequired => 'Укажите название';
-
-  @override
-  String addLocationRadius(int meters) {
-    return 'Радиус ($meters м)';
-  }
-
-  @override
-  String get addLocationSaved => 'Точка сохранена';
-
-  @override
-  String get addLocationMoveMap => 'Переместите карту для выбора точки';
 
   @override
   String get orgShiftsTitle => 'Смены сотрудников';
@@ -747,71 +616,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get orgStatsTableAvg => 'Средн.';
 
   @override
-  String get superAdminTitle => 'Админ-панель';
-
-  @override
-  String get superAdminAllOrgs => 'Все организации';
-
-  @override
-  String get superAdminEmpty => 'Нет организаций';
-
-  @override
-  String get orgDetailLocations => 'Рабочие точки';
-
-  @override
-  String get orgDetailRoles => 'Роли';
-
-  @override
-  String get orgDetailChecklists => 'Чек-листы';
-
-  @override
-  String get rolesTitle => 'Роли';
-
-  @override
-  String get rolesEmpty => 'Ролей пока нет';
-
-  @override
-  String get rolesAdd => 'Новая роль';
-
-  @override
-  String get rolesCreate => 'Создать роль';
-
-  @override
-  String get rolesRename => 'Переименовать';
-
-  @override
-  String get rolesDelete => 'Удалить роль';
-
-  @override
-  String rolesDeleteConfirm(String name) {
-    return 'Удалить роль \"$name\"? У сотрудников с этой ролью она будет снята.';
-  }
-
-  @override
-  String get rolesNameLabel => 'Название роли';
-
-  @override
-  String get rolesNameHint => 'Например: Бариста';
-
-  @override
-  String get rolesNameRequired => 'Укажите название';
-
-  @override
-  String get rolesCreated => 'Роль создана';
-
-  @override
-  String get rolesRenamed => 'Роль переименована';
-
-  @override
-  String get rolesDeleted => 'Роль удалена';
-
-  @override
-  String get rolesSaveAction => 'Сохранить';
-
-  @override
-  String get rolesCreateAction => 'Создать';
-
-  @override
   String get membersCustomRoleNone => 'Без роли';
 
   @override
@@ -880,154 +684,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get memberDetailOverrideClear => 'Снять переопределение';
 
   @override
-  String get checklistTemplatesTitle => 'Шаблоны чек-листов';
-
-  @override
-  String get checklistTemplatesEmpty => 'Шаблонов пока нет';
-
-  @override
-  String get checklistTemplatesAdd => 'Новый шаблон';
-
-  @override
-  String get checklistTemplatesCreate => 'Создать шаблон';
-
-  @override
   String get checklistTemplatesShiftStart => 'При начале смены';
 
   @override
   String get checklistTemplatesShiftEnd => 'При завершении смены';
-
-  @override
-  String get checklistTemplatesRequired => 'Обязательный';
-
-  @override
-  String get checklistTemplatesNotRequired => 'Необязательный';
-
-  @override
-  String get checklistTemplatesArchived => 'Архив';
-
-  @override
-  String checklistTemplatesItemsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count пункта',
-      many: '$count пунктов',
-      few: '$count пункта',
-      one: '$count пункт',
-      zero: 'нет пунктов',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get checklistTemplateNameLabel => 'Название шаблона';
-
-  @override
-  String get checklistTemplateNameHint => 'Например: Открытие кафе';
-
-  @override
-  String get checklistTemplateNameRequired => 'Укажите название';
-
-  @override
-  String get checklistTemplateTypeLabel => 'Тип';
-
-  @override
-  String get checklistTemplateIsRequiredLabel => 'Обязательный для всех';
-
-  @override
-  String get checklistTemplateIsRequiredDesc =>
-      'Пункты обязательны к выполнению';
-
-  @override
-  String get checklistTemplateCreated => 'Шаблон создан';
-
-  @override
-  String get checklistTemplateUpdated => 'Шаблон обновлён';
-
-  @override
-  String get checklistTemplateArchive => 'Архивировать';
-
-  @override
-  String checklistTemplateArchiveConfirm(String name) {
-    return 'Архивировать шаблон \"$name\"? Новые смены не будут получать этот чек-лист.';
-  }
-
-  @override
-  String get checklistTemplateArchived => 'Шаблон в архиве';
-
-  @override
-  String get checklistTemplateShowArchived => 'Показать архив';
-
-  @override
-  String get checklistTemplateDetailTitle => 'Шаблон чек-листа';
-
-  @override
-  String get checklistTemplateItemsSection => 'Пункты';
-
-  @override
-  String get checklistTemplateItemsEmpty => 'Пунктов пока нет';
-
-  @override
-  String get checklistTemplateItemAdd => 'Добавить пункт';
-
-  @override
-  String get checklistTemplateItemTextLabel => 'Текст пункта';
-
-  @override
-  String get checklistTemplateItemTextHint =>
-      'Например: Проверить температуру холодильника';
-
-  @override
-  String get checklistTemplateItemRequiredLabel => 'Обязательный';
-
-  @override
-  String get checklistTemplateItemAdded => 'Пункт добавлен';
-
-  @override
-  String get checklistTemplateItemUpdated => 'Пункт обновлён';
-
-  @override
-  String get checklistTemplateItemDeleted => 'Пункт удалён';
-
-  @override
-  String get checklistTemplateItemDeleteConfirm => 'Удалить пункт?';
-
-  @override
-  String get checklistTemplateItemReorderHint =>
-      'Зажмите и перетащите пункт для изменения порядка';
-
-  @override
-  String get checklistTemplateRolesSection => 'Роли';
-
-  @override
-  String get checklistTemplateRolesEmpty => 'Шаблон не назначен ни одной роли';
-
-  @override
-  String get checklistTemplateAssignRoles => 'Назначить ролям';
-
-  @override
-  String get checklistTemplateRolesAssigned => 'Назначение сохранено';
-
-  @override
-  String get checklistTemplatePersonalSection => 'Персональные назначения';
-
-  @override
-  String get checklistTemplatePersonalHint =>
-      'Назначьте шаблон поверх роли (+) или исключите из роли (−) для конкретного сотрудника';
-
-  @override
-  String get checklistTemplateArchiveEditError =>
-      'Шаблон в архиве — персональные назначения менять нельзя';
-
-  @override
-  String get checklistOverrideDefault => '—';
-
-  @override
-  String get checklistOverrideAdd => '+';
-
-  @override
-  String get checklistOverrideRemove => '−';
 
   @override
   String get shiftChecklistsTitle => 'Чек-листы смены';
@@ -1193,32 +853,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get myEarningsMissingRateHint =>
       'Некоторые смены не оплачены — для них не была задана ставка. Обратитесь к администратору.';
-
-  @override
-  String get payrollAddRate => 'Добавить ставку';
-
-  @override
-  String get payrollEditRate => 'Исправить запись';
-
-  @override
-  String get payrollDeleteRate => 'Удалить';
-
-  @override
-  String get payrollDeleteRateConfirm =>
-      'Удалить запись о ставке? Действующая ставка для затронутых периодов может измениться.';
-
-  @override
-  String get payrollRateNoteHint => 'Комментарий, напр. «повышение»';
-
-  @override
-  String get payrollEditRateHint =>
-      'Это исправление ошибки в истории. Для новой ставки используйте «Добавить ставку».';
-
-  @override
-  String get payrollRateAmountLabel => 'Ставка, ₽';
-
-  @override
-  String get payrollRateDateLabel => 'Действует с';
 
   @override
   String get payrollMissingRateBadge => 'Есть смены без ставки';

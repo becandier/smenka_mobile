@@ -4,6 +4,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +19,7 @@ import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
-import 'package:smenka_mobile/data/domain/location/_location.dart';
 import 'package:smenka_mobile/data/domain/organization/_organization.dart';
-import 'package:smenka_mobile/data/domain/organization_role/_organization_role.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
 import 'package:smenka_mobile/data/domain/user/_user.dart';
@@ -50,13 +49,23 @@ class MainAppCubit extends Cubit<MainAppState> {
 
       // Фаза 1: Базовые сервисы без зависимостей
       await _initService(FirebaseInitializer());
-      await _initService(CrashlyticsInitializer());
+      // Crashlytics не поддерживается на web — пропускаем регистрацию,
+      // чтобы фаза 2 не падала при попытке получить сервис из локатора.
+      if (!kIsWeb) {
+        await _initService(CrashlyticsInitializer());
+      }
       await _initService(SharedPreferencesInitializer());
       await _initService(RemoteConfigInitializer());
       await _initService(PackageInfoInitializer());
 
       // Фаза 2: Сервисы с зависимостями
-      await _initService(TalkerInitializer(crashlytics: _serviceLocator.get()));
+      await _initService(
+        TalkerInitializer(
+          crashlytics: _serviceLocator.isRegistered<FirebaseCrashlytics>()
+              ? _serviceLocator.get<FirebaseCrashlytics>()
+              : null,
+        ),
+      );
       await _initService(
         DebugRepositoryInitializer(sharedPreferences: _serviceLocator.get()),
       );
@@ -105,9 +114,7 @@ class MainAppCubit extends Cubit<MainAppState> {
       await _initService(UserRepositoryInitializer(dio: dio));
       await _initService(ShiftRepositoryInitializer(dio: dio));
       await _initService(OrganizationRepositoryInitializer(dio: dio));
-      await _initService(OrganizationRoleRepositoryInitializer(dio: dio));
       await _initService(ChecklistRepositoryInitializer(dio: dio));
-      await _initService(LocationRepositoryInitializer(dio: dio));
       await _initService(PayrollRepositoryInitializer(dio: dio));
 
       // Фаза 5.5: Deep Links
@@ -129,11 +136,6 @@ class MainAppCubit extends Cubit<MainAppState> {
       // Фаза 6: Сервисы с зависимостями на SharedPreferences
       await _initService(ThemeModeServiceInitializer());
 
-      // Фаза 7: Яндекс.Карты
-      await _initService(
-        YandexMapKitInitializer(appConfig: _serviceLocator.get()),
-      );
-
       // Проверяем авторизацию при старте
       if (_serviceLocator.isRegistered<AuthRepository>()) {
         await _serviceLocator.get<AuthRepository>().checkAuthStatus();
@@ -153,11 +155,8 @@ class MainAppCubit extends Cubit<MainAppState> {
           authRepository: _serviceLocator.get<AuthRepository>(),
           shiftRepository: _serviceLocator.get<ShiftRepository>(),
           organizationRepository: _serviceLocator.get<OrganizationRepository>(),
-          organizationRoleRepository: _serviceLocator
-              .get<OrganizationRoleRepository>(),
           checklistRepository: _serviceLocator.get<ChecklistRepository>(),
           userRepository: _serviceLocator.get<UserRepository>(),
-          locationRepository: _serviceLocator.get<LocationRepository>(),
           payrollRepository: _serviceLocator.get<PayrollRepository>(),
           deepLinkService: _serviceLocator.get<DeepLinkService>(),
           pendingInviteStorage: _serviceLocator.get<PendingInviteStorage>(),

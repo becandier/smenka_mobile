@@ -12,7 +12,6 @@ abstract class OrganizationsState with _$OrganizationsState {
     @Default(SectionData<List<Organization>>())
     SectionData<List<Organization>> organizations,
     @Default(SectionData<User>()) SectionData<User> currentUser,
-    @Default(FeatureStatus.initial) FeatureStatus createStatus,
     @Default(FeatureStatus.initial) FeatureStatus joinStatus,
     String? actionError,
     JoinResult? joinResult,

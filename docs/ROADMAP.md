@@ -180,3 +180,25 @@
 - [x] Новый part-виджет `shift_connectivity_bars.dart` (`_OfflineBanner`, `_ShiftActionErrorBar`); новые ключи l10n (`errorAccountLocked`/`errorRateLimitExceeded`/`errorTooManyCodeAttempts`/`commonNoConnection`/`commonRetry`/`shiftOfflineBanner`)
 - [x] **Тесты** (новые, было 1 файл): `AuthTokenStorage` (save/clear/has + миграция), `AuthInterceptor` (Bearer/401-ветка/нет цикла на auth), маппинг кодов login/verify, `ShiftTrackerCubit` (сетевые ошибки start/finish + ретрай + смена не теряется + офлайн)
 - [x] Мульти-агентное состязательное ревью пройдено; `make check` зелёный (analyze — 0 issues, 26 тестов)
+
+---
+
+## Фича — Выпил owner-режима, карты и тяжёлого org-менеджмента `[x]` (`docs/roles_capabilities_audit.md`)
+- [x] **Решение**: app только для сотрудника и **admin (read-only дашборд)**; owner и всё управление — в веб-админке. Разбор ролей и итог — `docs/roles_capabilities_audit.md`, план — `docs/refactor_remove_owner_plan.md`
+- [x] **Удалены экраны**: work_locations, add_edit_location (Yandex MapKit), org_settings, roles, checklist_templates(+detail), rate_form, super_admin таб
+- [x] **Owner-эксклюзив убран**: инвайт-код, удаление/создание организации (инвайт уезжает в админку — `../docs/tasks/invite_code_admin/`)
+- [x] **member_detail → read-only**: убраны мутации системной/кастомной роли, overrides, ставок, удаление участника; members без свайп-удаления
+- [x] **Расцеплены глобальные репозитории** `LocationRepository` и `OrganizationRoleRepository` (домен/инфра/локатор); из общих репо (checklist/payroll/organization) убраны write-методы, чтения сохранены
+- [x] **Yandex MapKit удалён полностью**: пакет `yandex_maps_mapkit_lite`, maven-репозиторий в `android/build.gradle.kts`, поле `yandexMapsApiKey` — снят главный web-блокер
+- [x] Сохранены employee-фичи и геопроверка смены (`org.geoCheckEnabled` из модели Organization); адверсариальное ревью пройдено; `make check` зелёный (analyze 0, 36 тестов)
+
+---
+
+## Фича — Поддержка Web `[x]` (`docs/web_support_analysis.md`)
+- [x] **Compile-блокеры `dart:io`** убраны: `dio_errors_interception` (SocketException → DioExceptionType), `remote_config` cache cleaner вынесен за conditional import (`_io`/`_stub`, `dart.library.io`)
+- [x] **Crashlytics web-safe**: не инициализируется на web (`if (!kIsWeb)`), `TalkerInitializer.crashlytics` стал nullable + guard `?.` — старт на web не падает
+- [x] **URL-strategy**: `usePathUrlStrategy()` на web (URL без `#`) через conditional import `lib/core/web/url_strategy*` (`dart.library.js_interop`)
+- [x] **Web-гарды**: `upgrader` пропускается на web; `Geolocator.openAppSettings/openLocationSettings` — no-op на web (геологика не тронута, geolocator поддерживает web)
+- [x] **Брендинг**: `web/index.html` + `manifest.json` (Smenka, theme `#4A90D9`); `firebase_options` уже содержит web-конфиг; добавлен `flutter_web_plugins` (sdk)
+- [x] **`flutter build web --release` собирается** (Wasm dry-run тоже OK); analyze 0, 36 тестов; mobile-поведение не сломано
+- [ ] Вне клиента (см. `../docs/tasks/web_cors/`): **CORS на бэке** (рантайм-блокер), HTTPS-хостинг, secure storage на web = IndexedDB (JWT доступны JS — осознанный риск; «правильно» = httpOnly-cookie на бэке)

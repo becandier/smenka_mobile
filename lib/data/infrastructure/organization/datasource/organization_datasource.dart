@@ -7,14 +7,6 @@ class OrganizationDataSource {
 
   final Dio _dio;
 
-  Future<OrganizationDto> create({required String name}) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/organizations',
-      data: {'name': name},
-    );
-    return OrganizationDto.fromJson(response.data!);
-  }
-
   Future<List<OrganizationDto>> getAll() async {
     final response = await _dio.get<Map<String, dynamic>>('/organizations');
     final items = response.data!['items'] as List<dynamic>;
@@ -29,25 +21,6 @@ class OrganizationDataSource {
       '/organizations/$orgId',
     );
     return OrganizationDto.fromJson(response.data!);
-  }
-
-  Future<OrganizationDto> update(String orgId, {required String name}) async {
-    final response = await _dio.patch<Map<String, dynamic>>(
-      '/organizations/$orgId',
-      data: {'name': name},
-    );
-    return OrganizationDto.fromJson(response.data!);
-  }
-
-  Future<void> delete(String orgId) async {
-    await _dio.delete<void>('/organizations/$orgId');
-  }
-
-  Future<String> rotateInvite(String orgId) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/organizations/$orgId/rotate-invite',
-    );
-    return response.data!['invite_code'] as String;
   }
 
   Future<JoinResultDto> join(String inviteCode) async {
@@ -67,35 +40,6 @@ class OrganizationDataSource {
 
   Future<void> removeMember(String orgId, String memberUserId) async {
     await _dio.delete<void>('/organizations/$orgId/members/$memberUserId');
-  }
-
-  Future<OrgSettingsDto> getSettings(String orgId) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/organizations/$orgId/settings',
-    );
-    return OrgSettingsDto.fromJson(response.data!);
-  }
-
-  Future<OrgSettingsDto> updateSettings(
-    String orgId, {
-    bool? geoCheckEnabled,
-    int? autoFinishHours,
-    int? maxPauseMinutes,
-    int? maxPausesPerShift,
-  }) async {
-    final data = <String, dynamic>{};
-    if (geoCheckEnabled != null) data['geo_check_enabled'] = geoCheckEnabled;
-    data['auto_finish_hours'] = autoFinishHours;
-    if (maxPauseMinutes != null) data['max_pause_minutes'] = maxPauseMinutes;
-    if (maxPausesPerShift != null) {
-      data['max_pauses_per_shift'] = maxPausesPerShift;
-    }
-
-    final response = await _dio.patch<Map<String, dynamic>>(
-      '/organizations/$orgId/settings',
-      data: data,
-    );
-    return OrgSettingsDto.fromJson(response.data!);
   }
 
   Future<PaginatedShiftsDto> getShifts(
@@ -129,27 +73,6 @@ class OrganizationDataSource {
       '/organizations/$orgId/shifts/$shiftId',
     );
     return ShiftDto.fromJson(response.data!);
-  }
-
-  Future<List<OrganizationDto>> getAllOrganizations() async {
-    final response = await _dio.get<Map<String, dynamic>>('/organizations/all');
-    final items = response.data!['items'] as List<dynamic>;
-    return items
-        .cast<Map<String, dynamic>>()
-        .map(OrganizationDto.fromJson)
-        .toList();
-  }
-
-  Future<MemberDto> updateMemberRole(
-    String orgId,
-    String userId, {
-    required String role,
-  }) async {
-    final response = await _dio.patch<Map<String, dynamic>>(
-      '/organizations/$orgId/members/$userId/role',
-      data: {'role': role},
-    );
-    return MemberDto.fromJson(response.data!);
   }
 
   /// Статистика организации. Окно — либо [period], либо [dateFrom]/[dateTo]

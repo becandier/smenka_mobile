@@ -19,62 +19,6 @@ class PayrollDataSource {
         .toList();
   }
 
-  /// Добавить ставку (новая строка истории).
-  Future<RateDto> createRate(
-    String orgId,
-    String memberId, {
-    required int rateAmountMinor,
-    required String rateType,
-    required DateTime effectiveFrom,
-    String? note,
-  }) async {
-    final body = <String, dynamic>{
-      'rate_amount_minor': rateAmountMinor,
-      'rate_type': rateType,
-      'effective_from': effectiveFrom.toIso8601String(),
-    };
-    if (note != null) body['note'] = note;
-
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/organizations/$orgId/members/$memberId/rates',
-      data: body,
-    );
-    return RateDto.fromJson(response.data!);
-  }
-
-  /// Исправить запись истории (поля опциональны).
-  /// `note` отправляется ВСЕГДА (явный null очищает комментарий) —
-  /// форма редактирования шлёт полное состояние записи.
-  Future<RateDto> updateRate(
-    String orgId,
-    String memberId,
-    String rateId, {
-    int? rateAmountMinor,
-    String? rateType,
-    DateTime? effectiveFrom,
-    String? note,
-  }) async {
-    final body = <String, dynamic>{'note': note};
-    if (rateAmountMinor != null) body['rate_amount_minor'] = rateAmountMinor;
-    if (rateType != null) body['rate_type'] = rateType;
-    if (effectiveFrom != null) {
-      body['effective_from'] = effectiveFrom.toIso8601String();
-    }
-
-    final response = await _dio.patch<Map<String, dynamic>>(
-      '/organizations/$orgId/members/$memberId/rates/$rateId',
-      data: body,
-    );
-    return RateDto.fromJson(response.data!);
-  }
-
-  /// Удалить запись истории.
-  Future<void> deleteRate(String orgId, String memberId, String rateId) async {
-    await _dio.delete<Map<String, dynamic>>(
-      '/organizations/$orgId/members/$memberId/rates/$rateId',
-    );
-  }
-
   /// Отчёт «кому сколько заплатить» за период.
   Future<PayrollDto> getPayroll(
     String orgId, {

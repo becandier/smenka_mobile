@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
 sealed class GeoResult {
@@ -72,7 +73,17 @@ class GeoService {
     }
   }
 
-  Future<void> openAppSettings() => Geolocator.openAppSettings();
+  /// Открытие системных настроек приложения.
+  /// На web системных настроек нет — Geolocator кинул бы ошибку, поэтому no-op.
+  Future<void> openAppSettings() async {
+    if (kIsWeb) return;
+    await Geolocator.openAppSettings();
+  }
 
-  Future<void> openLocationSettings() => Geolocator.openLocationSettings();
+  /// Открытие системных настроек геолокации.
+  /// На web недоступно — no-op.
+  Future<void> openLocationSettings() async {
+    if (kIsWeb) return;
+    await Geolocator.openLocationSettings();
+  }
 }

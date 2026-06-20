@@ -9,7 +9,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 class TalkerInitializer implements ServiceInitializer {
   TalkerInitializer({required this.crashlytics});
 
-  final FirebaseCrashlytics crashlytics;
+  final FirebaseCrashlytics? crashlytics;
 
   @override
   String get serviceName => 'Talker';
@@ -26,11 +26,11 @@ class TalkerInitializer implements ServiceInitializer {
         errorDetails.stack,
         'Flutter error',
       );
-      crashlytics.recordFlutterFatalError(errorDetails);
+      crashlytics?.recordFlutterFatalError(errorDetails);
     };
     PlatformDispatcher.instance.onError = (error, stack) {
       talker.handle(error, stack);
-      crashlytics.recordError(error, stack, fatal: true);
+      crashlytics?.recordError(error, stack, fatal: true);
       return true;
     };
   }

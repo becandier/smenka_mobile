@@ -13,7 +13,6 @@ class _OrgNavigationSection extends StatelessWidget {
       ({
         SectionData<List<Member>> members,
         bool isAdminOrOwner,
-        bool isOwner,
         bool isMember,
         String orgId,
       })
@@ -23,8 +22,7 @@ class _OrgNavigationSection extends StatelessWidget {
         return (
           members: state.members,
           isAdminOrOwner: cubit.isAdminOrOwner,
-          isOwner: cubit.isOwner,
-          isMember: state.currentMemberRole != null,
+          isMember: cubit.isMember,
           orgId: state.organization.data?.id ?? '',
         );
       },
@@ -63,29 +61,6 @@ class _OrgNavigationSection extends StatelessWidget {
               if (data.isAdminOrOwner) ...[
                 const SizedBox(height: 8),
                 _NavItem(
-                  icon: Icons.location_on_outlined,
-                  title: l10n.orgDetailLocations,
-                  onTap: () => context.router.push(
-                    WorkLocationsRoute(orgId: data.orgId),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _NavItem(
-                  icon: Icons.badge_outlined,
-                  title: l10n.orgDetailRoles,
-                  onTap: () =>
-                      context.router.push(RolesRoute(orgId: data.orgId)),
-                ),
-                const SizedBox(height: 8),
-                _NavItem(
-                  icon: Icons.checklist,
-                  title: l10n.orgDetailChecklists,
-                  onTap: () => context.router.push(
-                    ChecklistTemplatesRoute(orgId: data.orgId),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _NavItem(
                   icon: Icons.schedule_outlined,
                   title: l10n.orgDetailShifts,
                   onTap: () =>
@@ -104,15 +79,6 @@ class _OrgNavigationSection extends StatelessWidget {
                   title: l10n.payrollReportTitle,
                   onTap: () =>
                       context.router.push(PayrollRoute(orgId: data.orgId)),
-                ),
-              ],
-              if (data.isAdminOrOwner) ...[
-                const SizedBox(height: 8),
-                _NavItem(
-                  icon: Icons.settings_outlined,
-                  title: l10n.orgDetailSettings,
-                  onTap: () =>
-                      context.router.push(OrgSettingsRoute(orgId: data.orgId)),
                 ),
               ],
             ],

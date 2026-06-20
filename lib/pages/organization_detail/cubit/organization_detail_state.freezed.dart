@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OrganizationDetailState {
 
- SectionData<Organization> get organization; SectionData<List<Member>> get members; FeatureStatus get actionStatus; String? get actionError; String? get inviteCode; String get currentUserId; MemberRole? get currentMemberRole; UserRole get currentUserRole;
+ SectionData<Organization> get organization; SectionData<List<Member>> get members; FeatureStatus get actionStatus; String? get actionError; String get currentUserId; MemberRole? get currentMemberRole; UserRole get currentUserRole;
 /// Create a copy of OrganizationDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $OrganizationDetailStateCopyWith<OrganizationDetailState> get copyWith => _$Orga
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationDetailState&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.members, members) || other.members == members)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.inviteCode, inviteCode) || other.inviteCode == inviteCode)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId)&&(identical(other.currentMemberRole, currentMemberRole) || other.currentMemberRole == currentMemberRole)&&(identical(other.currentUserRole, currentUserRole) || other.currentUserRole == currentUserRole));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationDetailState&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.members, members) || other.members == members)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId)&&(identical(other.currentMemberRole, currentMemberRole) || other.currentMemberRole == currentMemberRole)&&(identical(other.currentUserRole, currentUserRole) || other.currentUserRole == currentUserRole));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organization,members,actionStatus,actionError,inviteCode,currentUserId,currentMemberRole,currentUserRole);
+int get hashCode => Object.hash(runtimeType,organization,members,actionStatus,actionError,currentUserId,currentMemberRole,currentUserRole);
 
 @override
 String toString() {
-  return 'OrganizationDetailState(organization: $organization, members: $members, actionStatus: $actionStatus, actionError: $actionError, inviteCode: $inviteCode, currentUserId: $currentUserId, currentMemberRole: $currentMemberRole, currentUserRole: $currentUserRole)';
+  return 'OrganizationDetailState(organization: $organization, members: $members, actionStatus: $actionStatus, actionError: $actionError, currentUserId: $currentUserId, currentMemberRole: $currentMemberRole, currentUserRole: $currentUserRole)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $OrganizationDetailStateCopyWith<$Res>  {
   factory $OrganizationDetailStateCopyWith(OrganizationDetailState value, $Res Function(OrganizationDetailState) _then) = _$OrganizationDetailStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<Organization> organization, SectionData<List<Member>> members, FeatureStatus actionStatus, String? actionError, String? inviteCode, String currentUserId, MemberRole? currentMemberRole, UserRole currentUserRole
+ SectionData<Organization> organization, SectionData<List<Member>> members, FeatureStatus actionStatus, String? actionError, String currentUserId, MemberRole? currentMemberRole, UserRole currentUserRole
 });
 
 
@@ -62,13 +62,12 @@ class _$OrganizationDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? organization = null,Object? members = null,Object? actionStatus = null,Object? actionError = freezed,Object? inviteCode = freezed,Object? currentUserId = null,Object? currentMemberRole = freezed,Object? currentUserRole = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? organization = null,Object? members = null,Object? actionStatus = null,Object? actionError = freezed,Object? currentUserId = null,Object? currentMemberRole = freezed,Object? currentUserRole = null,}) {
   return _then(_self.copyWith(
 organization: null == organization ? _self.organization : organization // ignore: cast_nullable_to_non_nullable
 as SectionData<Organization>,members: null == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
 as SectionData<List<Member>>,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,inviteCode: freezed == inviteCode ? _self.inviteCode : inviteCode // ignore: cast_nullable_to_non_nullable
 as String?,currentUserId: null == currentUserId ? _self.currentUserId : currentUserId // ignore: cast_nullable_to_non_nullable
 as String,currentMemberRole: freezed == currentMemberRole ? _self.currentMemberRole : currentMemberRole // ignore: cast_nullable_to_non_nullable
 as MemberRole?,currentUserRole: null == currentUserRole ? _self.currentUserRole : currentUserRole // ignore: cast_nullable_to_non_nullable
@@ -175,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Organization> organization,  SectionData<List<Member>> members,  FeatureStatus actionStatus,  String? actionError,  String? inviteCode,  String currentUserId,  MemberRole? currentMemberRole,  UserRole currentUserRole)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Organization> organization,  SectionData<List<Member>> members,  FeatureStatus actionStatus,  String? actionError,  String currentUserId,  MemberRole? currentMemberRole,  UserRole currentUserRole)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrganizationDetailState() when $default != null:
-return $default(_that.organization,_that.members,_that.actionStatus,_that.actionError,_that.inviteCode,_that.currentUserId,_that.currentMemberRole,_that.currentUserRole);case _:
+return $default(_that.organization,_that.members,_that.actionStatus,_that.actionError,_that.currentUserId,_that.currentMemberRole,_that.currentUserRole);case _:
   return orElse();
 
 }
@@ -196,10 +195,10 @@ return $default(_that.organization,_that.members,_that.actionStatus,_that.action
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Organization> organization,  SectionData<List<Member>> members,  FeatureStatus actionStatus,  String? actionError,  String? inviteCode,  String currentUserId,  MemberRole? currentMemberRole,  UserRole currentUserRole)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Organization> organization,  SectionData<List<Member>> members,  FeatureStatus actionStatus,  String? actionError,  String currentUserId,  MemberRole? currentMemberRole,  UserRole currentUserRole)  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationDetailState():
-return $default(_that.organization,_that.members,_that.actionStatus,_that.actionError,_that.inviteCode,_that.currentUserId,_that.currentMemberRole,_that.currentUserRole);case _:
+return $default(_that.organization,_that.members,_that.actionStatus,_that.actionError,_that.currentUserId,_that.currentMemberRole,_that.currentUserRole);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -216,10 +215,10 @@ return $default(_that.organization,_that.members,_that.actionStatus,_that.action
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Organization> organization,  SectionData<List<Member>> members,  FeatureStatus actionStatus,  String? actionError,  String? inviteCode,  String currentUserId,  MemberRole? currentMemberRole,  UserRole currentUserRole)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Organization> organization,  SectionData<List<Member>> members,  FeatureStatus actionStatus,  String? actionError,  String currentUserId,  MemberRole? currentMemberRole,  UserRole currentUserRole)?  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationDetailState() when $default != null:
-return $default(_that.organization,_that.members,_that.actionStatus,_that.actionError,_that.inviteCode,_that.currentUserId,_that.currentMemberRole,_that.currentUserRole);case _:
+return $default(_that.organization,_that.members,_that.actionStatus,_that.actionError,_that.currentUserId,_that.currentMemberRole,_that.currentUserRole);case _:
   return null;
 
 }
@@ -231,14 +230,13 @@ return $default(_that.organization,_that.members,_that.actionStatus,_that.action
 
 
 class _OrganizationDetailState implements OrganizationDetailState {
-  const _OrganizationDetailState({this.organization = const SectionData<Organization>(), this.members = const SectionData<List<Member>>(), this.actionStatus = FeatureStatus.initial, this.actionError, this.inviteCode, this.currentUserId = '', this.currentMemberRole, this.currentUserRole = UserRole.user});
+  const _OrganizationDetailState({this.organization = const SectionData<Organization>(), this.members = const SectionData<List<Member>>(), this.actionStatus = FeatureStatus.initial, this.actionError, this.currentUserId = '', this.currentMemberRole, this.currentUserRole = UserRole.user});
   
 
 @override@JsonKey() final  SectionData<Organization> organization;
 @override@JsonKey() final  SectionData<List<Member>> members;
 @override@JsonKey() final  FeatureStatus actionStatus;
 @override final  String? actionError;
-@override final  String? inviteCode;
 @override@JsonKey() final  String currentUserId;
 @override final  MemberRole? currentMemberRole;
 @override@JsonKey() final  UserRole currentUserRole;
@@ -253,16 +251,16 @@ _$OrganizationDetailStateCopyWith<_OrganizationDetailState> get copyWith => __$O
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationDetailState&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.members, members) || other.members == members)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.inviteCode, inviteCode) || other.inviteCode == inviteCode)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId)&&(identical(other.currentMemberRole, currentMemberRole) || other.currentMemberRole == currentMemberRole)&&(identical(other.currentUserRole, currentUserRole) || other.currentUserRole == currentUserRole));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationDetailState&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.members, members) || other.members == members)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.currentUserId, currentUserId) || other.currentUserId == currentUserId)&&(identical(other.currentMemberRole, currentMemberRole) || other.currentMemberRole == currentMemberRole)&&(identical(other.currentUserRole, currentUserRole) || other.currentUserRole == currentUserRole));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organization,members,actionStatus,actionError,inviteCode,currentUserId,currentMemberRole,currentUserRole);
+int get hashCode => Object.hash(runtimeType,organization,members,actionStatus,actionError,currentUserId,currentMemberRole,currentUserRole);
 
 @override
 String toString() {
-  return 'OrganizationDetailState(organization: $organization, members: $members, actionStatus: $actionStatus, actionError: $actionError, inviteCode: $inviteCode, currentUserId: $currentUserId, currentMemberRole: $currentMemberRole, currentUserRole: $currentUserRole)';
+  return 'OrganizationDetailState(organization: $organization, members: $members, actionStatus: $actionStatus, actionError: $actionError, currentUserId: $currentUserId, currentMemberRole: $currentMemberRole, currentUserRole: $currentUserRole)';
 }
 
 
@@ -273,7 +271,7 @@ abstract mixin class _$OrganizationDetailStateCopyWith<$Res> implements $Organiz
   factory _$OrganizationDetailStateCopyWith(_OrganizationDetailState value, $Res Function(_OrganizationDetailState) _then) = __$OrganizationDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<Organization> organization, SectionData<List<Member>> members, FeatureStatus actionStatus, String? actionError, String? inviteCode, String currentUserId, MemberRole? currentMemberRole, UserRole currentUserRole
+ SectionData<Organization> organization, SectionData<List<Member>> members, FeatureStatus actionStatus, String? actionError, String currentUserId, MemberRole? currentMemberRole, UserRole currentUserRole
 });
 
 
@@ -290,13 +288,12 @@ class __$OrganizationDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? organization = null,Object? members = null,Object? actionStatus = null,Object? actionError = freezed,Object? inviteCode = freezed,Object? currentUserId = null,Object? currentMemberRole = freezed,Object? currentUserRole = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? organization = null,Object? members = null,Object? actionStatus = null,Object? actionError = freezed,Object? currentUserId = null,Object? currentMemberRole = freezed,Object? currentUserRole = null,}) {
   return _then(_OrganizationDetailState(
 organization: null == organization ? _self.organization : organization // ignore: cast_nullable_to_non_nullable
 as SectionData<Organization>,members: null == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
 as SectionData<List<Member>>,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
-as String?,inviteCode: freezed == inviteCode ? _self.inviteCode : inviteCode // ignore: cast_nullable_to_non_nullable
 as String?,currentUserId: null == currentUserId ? _self.currentUserId : currentUserId // ignore: cast_nullable_to_non_nullable
 as String,currentMemberRole: freezed == currentMemberRole ? _self.currentMemberRole : currentMemberRole // ignore: cast_nullable_to_non_nullable
 as MemberRole?,currentUserRole: null == currentUserRole ? _self.currentUserRole : currentUserRole // ignore: cast_nullable_to_non_nullable

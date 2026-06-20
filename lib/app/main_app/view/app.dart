@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -20,9 +21,7 @@ import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
 import 'package:smenka_mobile/data/domain/auth/repositories/auth_repository.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
-import 'package:smenka_mobile/data/domain/location/_location.dart';
 import 'package:smenka_mobile/data/domain/organization/_organization.dart';
-import 'package:smenka_mobile/data/domain/organization_role/_organization_role.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
 import 'package:smenka_mobile/data/domain/user/_user.dart';
@@ -73,10 +72,8 @@ class _AppView extends StatelessWidget {
             authRepository: state.authRepository,
             shiftRepository: state.shiftRepository,
             organizationRepository: state.organizationRepository,
-            organizationRoleRepository: state.organizationRoleRepository,
             checklistRepository: state.checklistRepository,
             userRepository: state.userRepository,
-            locationRepository: state.locationRepository,
             payrollRepository: state.payrollRepository,
             deepLinkService: state.deepLinkService,
             pendingInviteStorage: state.pendingInviteStorage,

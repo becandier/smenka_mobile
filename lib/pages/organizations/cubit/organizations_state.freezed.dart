@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OrganizationsState {
 
- SectionData<List<Organization>> get organizations; SectionData<User> get currentUser; FeatureStatus get createStatus; FeatureStatus get joinStatus; String? get actionError; JoinResult? get joinResult;
+ SectionData<List<Organization>> get organizations; SectionData<User> get currentUser; FeatureStatus get joinStatus; String? get actionError; JoinResult? get joinResult;
 /// Create a copy of OrganizationsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $OrganizationsStateCopyWith<OrganizationsState> get copyWith => _$OrganizationsS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationsState&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.createStatus, createStatus) || other.createStatus == createStatus)&&(identical(other.joinStatus, joinStatus) || other.joinStatus == joinStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.joinResult, joinResult) || other.joinResult == joinResult));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationsState&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.joinStatus, joinStatus) || other.joinStatus == joinStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.joinResult, joinResult) || other.joinResult == joinResult));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizations,currentUser,createStatus,joinStatus,actionError,joinResult);
+int get hashCode => Object.hash(runtimeType,organizations,currentUser,joinStatus,actionError,joinResult);
 
 @override
 String toString() {
-  return 'OrganizationsState(organizations: $organizations, currentUser: $currentUser, createStatus: $createStatus, joinStatus: $joinStatus, actionError: $actionError, joinResult: $joinResult)';
+  return 'OrganizationsState(organizations: $organizations, currentUser: $currentUser, joinStatus: $joinStatus, actionError: $actionError, joinResult: $joinResult)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $OrganizationsStateCopyWith<$Res>  {
   factory $OrganizationsStateCopyWith(OrganizationsState value, $Res Function(OrganizationsState) _then) = _$OrganizationsStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<List<Organization>> organizations, SectionData<User> currentUser, FeatureStatus createStatus, FeatureStatus joinStatus, String? actionError, JoinResult? joinResult
+ SectionData<List<Organization>> organizations, SectionData<User> currentUser, FeatureStatus joinStatus, String? actionError, JoinResult? joinResult
 });
 
 
@@ -62,12 +62,11 @@ class _$OrganizationsStateCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? organizations = null,Object? currentUser = null,Object? createStatus = null,Object? joinStatus = null,Object? actionError = freezed,Object? joinResult = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? organizations = null,Object? currentUser = null,Object? joinStatus = null,Object? actionError = freezed,Object? joinResult = freezed,}) {
   return _then(_self.copyWith(
 organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
 as SectionData<List<Organization>>,currentUser: null == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
-as SectionData<User>,createStatus: null == createStatus ? _self.createStatus : createStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,joinStatus: null == joinStatus ? _self.joinStatus : joinStatus // ignore: cast_nullable_to_non_nullable
+as SectionData<User>,joinStatus: null == joinStatus ? _self.joinStatus : joinStatus // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
 as String?,joinResult: freezed == joinResult ? _self.joinResult : joinResult // ignore: cast_nullable_to_non_nullable
 as JoinResult?,
@@ -185,10 +184,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<Organization>> organizations,  SectionData<User> currentUser,  FeatureStatus createStatus,  FeatureStatus joinStatus,  String? actionError,  JoinResult? joinResult)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<Organization>> organizations,  SectionData<User> currentUser,  FeatureStatus joinStatus,  String? actionError,  JoinResult? joinResult)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrganizationsState() when $default != null:
-return $default(_that.organizations,_that.currentUser,_that.createStatus,_that.joinStatus,_that.actionError,_that.joinResult);case _:
+return $default(_that.organizations,_that.currentUser,_that.joinStatus,_that.actionError,_that.joinResult);case _:
   return orElse();
 
 }
@@ -206,10 +205,10 @@ return $default(_that.organizations,_that.currentUser,_that.createStatus,_that.j
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<Organization>> organizations,  SectionData<User> currentUser,  FeatureStatus createStatus,  FeatureStatus joinStatus,  String? actionError,  JoinResult? joinResult)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<Organization>> organizations,  SectionData<User> currentUser,  FeatureStatus joinStatus,  String? actionError,  JoinResult? joinResult)  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationsState():
-return $default(_that.organizations,_that.currentUser,_that.createStatus,_that.joinStatus,_that.actionError,_that.joinResult);case _:
+return $default(_that.organizations,_that.currentUser,_that.joinStatus,_that.actionError,_that.joinResult);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -226,10 +225,10 @@ return $default(_that.organizations,_that.currentUser,_that.createStatus,_that.j
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<Organization>> organizations,  SectionData<User> currentUser,  FeatureStatus createStatus,  FeatureStatus joinStatus,  String? actionError,  JoinResult? joinResult)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<Organization>> organizations,  SectionData<User> currentUser,  FeatureStatus joinStatus,  String? actionError,  JoinResult? joinResult)?  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationsState() when $default != null:
-return $default(_that.organizations,_that.currentUser,_that.createStatus,_that.joinStatus,_that.actionError,_that.joinResult);case _:
+return $default(_that.organizations,_that.currentUser,_that.joinStatus,_that.actionError,_that.joinResult);case _:
   return null;
 
 }
@@ -241,12 +240,11 @@ return $default(_that.organizations,_that.currentUser,_that.createStatus,_that.j
 
 
 class _OrganizationsState implements OrganizationsState {
-  const _OrganizationsState({this.organizations = const SectionData<List<Organization>>(), this.currentUser = const SectionData<User>(), this.createStatus = FeatureStatus.initial, this.joinStatus = FeatureStatus.initial, this.actionError, this.joinResult});
+  const _OrganizationsState({this.organizations = const SectionData<List<Organization>>(), this.currentUser = const SectionData<User>(), this.joinStatus = FeatureStatus.initial, this.actionError, this.joinResult});
   
 
 @override@JsonKey() final  SectionData<List<Organization>> organizations;
 @override@JsonKey() final  SectionData<User> currentUser;
-@override@JsonKey() final  FeatureStatus createStatus;
 @override@JsonKey() final  FeatureStatus joinStatus;
 @override final  String? actionError;
 @override final  JoinResult? joinResult;
@@ -261,16 +259,16 @@ _$OrganizationsStateCopyWith<_OrganizationsState> get copyWith => __$Organizatio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationsState&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.createStatus, createStatus) || other.createStatus == createStatus)&&(identical(other.joinStatus, joinStatus) || other.joinStatus == joinStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.joinResult, joinResult) || other.joinResult == joinResult));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationsState&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.joinStatus, joinStatus) || other.joinStatus == joinStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.joinResult, joinResult) || other.joinResult == joinResult));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizations,currentUser,createStatus,joinStatus,actionError,joinResult);
+int get hashCode => Object.hash(runtimeType,organizations,currentUser,joinStatus,actionError,joinResult);
 
 @override
 String toString() {
-  return 'OrganizationsState(organizations: $organizations, currentUser: $currentUser, createStatus: $createStatus, joinStatus: $joinStatus, actionError: $actionError, joinResult: $joinResult)';
+  return 'OrganizationsState(organizations: $organizations, currentUser: $currentUser, joinStatus: $joinStatus, actionError: $actionError, joinResult: $joinResult)';
 }
 
 
@@ -281,7 +279,7 @@ abstract mixin class _$OrganizationsStateCopyWith<$Res> implements $Organization
   factory _$OrganizationsStateCopyWith(_OrganizationsState value, $Res Function(_OrganizationsState) _then) = __$OrganizationsStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<List<Organization>> organizations, SectionData<User> currentUser, FeatureStatus createStatus, FeatureStatus joinStatus, String? actionError, JoinResult? joinResult
+ SectionData<List<Organization>> organizations, SectionData<User> currentUser, FeatureStatus joinStatus, String? actionError, JoinResult? joinResult
 });
 
 
@@ -298,12 +296,11 @@ class __$OrganizationsStateCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? organizations = null,Object? currentUser = null,Object? createStatus = null,Object? joinStatus = null,Object? actionError = freezed,Object? joinResult = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? organizations = null,Object? currentUser = null,Object? joinStatus = null,Object? actionError = freezed,Object? joinResult = freezed,}) {
   return _then(_OrganizationsState(
 organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
 as SectionData<List<Organization>>,currentUser: null == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
-as SectionData<User>,createStatus: null == createStatus ? _self.createStatus : createStatus // ignore: cast_nullable_to_non_nullable
-as FeatureStatus,joinStatus: null == joinStatus ? _self.joinStatus : joinStatus // ignore: cast_nullable_to_non_nullable
+as SectionData<User>,joinStatus: null == joinStatus ? _self.joinStatus : joinStatus // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actionError // ignore: cast_nullable_to_non_nullable
 as String?,joinResult: freezed == joinResult ? _self.joinResult : joinResult // ignore: cast_nullable_to_non_nullable
 as JoinResult?,
