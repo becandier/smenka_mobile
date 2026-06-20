@@ -54,6 +54,7 @@ lib/
 │   │   ├── organization_role/     # OrganizationRole (только для отображения, без репозитория)
 │   │   ├── payroll/               # Rate, CurrentRate, Payroll, MyEarnings (read-only)
 │   │   ├── checklist/             # ChecklistInstance*, EffectiveChecklistTemplate (read/fill)
+│   │   ├── file_storage/          # StoredFile, FileCategory + FilesRepository (платформенный слой)
 │   │   └── shift/                 # Shift, Pause, ShiftStats
 │   └── infrastructure/            # Реализации (datasource + dto + mappers + repos)
 │       ├── auth/
@@ -62,6 +63,7 @@ lib/
 │       ├── organization_role/     # только DTO + mapper (модель вкладывается в Member/Organization)
 │       ├── payroll/
 │       ├── checklist/
+│       ├── file_storage/          # FilesDataSource + FilesRepositoryImpl (без DTO: ответ 1-в-1)
 │       └── shift/
 ├── shared/                        # Глобальные cubit'ы вне страниц
 │   └── auth/                      # AuthCubit + AuthState (глобальная авторизация)
@@ -69,7 +71,8 @@ lib/
 ├── widgets/                       # Переиспользуемые виджеты
 │   ├── app_toast/                 # Toast-уведомления (AppToast, AppToastManager)
 │   ├── section_data/              # SectionDataWrapper, SectionLoader, SectionError
-│   └── paginated_section_data/    # PaginatedSectionDataList/Grid/SliverList/SliverGrid
+│   ├── paginated_section_data/    # PaginatedSectionDataList/Grid/SliverList/SliverGrid
+│   └── storage_image.dart         # Показ файла из file_storage (cache + авто-рефреш presigned)
 └── pages/                         # UI-слой (экраны)
     ├── auth/                      # Login/Register + LoginCubit + _PasswordRequirements
     ├── verify/                    # Верификация email + VerifyCubit
@@ -165,6 +168,7 @@ lib/
 | `Rate` / `CurrentRate` | `domain/payroll/models/rate.dart` | запись истории ставок / действующая; `RateType` (hourly/perShift); деньги в копейках (int) |
 | `Payroll` / `PayrollItem` / `PayrollTotals` / `PayrollPeriod` | `domain/payroll/models/payroll.dart` | отчёт «кому сколько заплатить» за период |
 | `MyEarnings` | `domain/payroll/models/my_earnings.dart` | личный заработок за период + currentRate?, hasMissingRate |
+| `StoredFile` / `FileCategory` | `domain/file_storage/models/stored_file.dart` | метаданные файла из единого хранилища + presigned `url`/`urlExpiresAt`; enum категорий (checklist_photo/knowledge_base/avatar/other) |
 | `DefaultPaginator<T>` | `core/models/default_paginator.dart` | hasMore, data, total (универсальная пагинация) |
 
 ---
@@ -181,6 +185,7 @@ lib/
 | `ShiftDataSource` | `/shifts` | getShifts (date_from/date_to), getStats (period XOR date_from/date_to), startShift, pauseShift, resumeShift, finishShift |
 | `ChecklistDataSource` | `/organizations/{orgId}` и `/shifts` | getEffectiveTemplates (member, read-only), getShiftChecklists, getInstanceDetail, updateInstanceItem |
 | `PayrollDataSource` | `/organizations/{orgId}` | getRates (read), getPayroll, getMyEarnings |
+| `FilesDataSource` | `/files` | uploadFile (multipart `file`/`category`/`organization_id`, onSendProgress), getFile (свежий presigned URL) |
 
 > Write-слой org-менеджмента (create/delete/rotateInvite/updateMemberRole/getSettings/updateSettings/getAllOrganizations), управление рабочими точками, ставками и шаблонами чек-листов вынесены в веб-админку — в мобильном API их нет.
 
@@ -196,6 +201,7 @@ lib/
 | `ShiftRepository` | ShiftDataSource | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
 | `ChecklistRepository` | ChecklistDataSource | getEffectiveTemplates, getShiftChecklists, getInstanceDetail, updateInstanceItem |
 | `PayrollRepository` | PayrollDataSource | getRates, getPayroll, getMyEarnings (всё read-only) |
+| `FilesRepository` | FilesDataSource | uploadFile, getFile (платформенный слой `file_storage`; зарегистрирован глобально, потребители — фото чек-листов/база знаний/аватары; UI-показ — виджет `StorageImage`) |
 
 > `OrganizationRole` отдельного репозитория не имеет (только DTO+mapper; модель вкладывается в `Member`/`Organization`). `LocationRepository` удалён.
 

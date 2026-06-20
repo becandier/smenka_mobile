@@ -902,6 +902,25 @@ class AppLocalizationsRu extends AppLocalizations {
       'Превышено число попыток. Запросите новый код';
 
   @override
+  String get errorFileTooLarge => 'Файл слишком большой';
+
+  @override
+  String get errorUnsupportedFileType => 'Недопустимый формат файла';
+
+  @override
+  String get errorStorageUnavailable =>
+      'Хранилище недоступно, попробуйте позже';
+
+  @override
+  String get errorFileNotFound => 'Файл не найден';
+
+  @override
+  String get errorFileInUse => 'Файл используется и не может быть удалён';
+
+  @override
+  String get errorInvalidFileCategory => 'Неизвестная категория файла';
+
+  @override
   String get commonNoConnection => 'Нет соединения';
 
   @override

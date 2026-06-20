@@ -20,6 +20,7 @@ sealed class MainAppState with _$MainAppState {
     required ChecklistRepository checklistRepository,
     required UserRepository userRepository,
     required PayrollRepository payrollRepository,
+    required FilesRepository filesRepository,
     required DeepLinkService deepLinkService,
     required PendingInviteStorage pendingInviteStorage,
     required ShiftContextStorage shiftContextStorage,

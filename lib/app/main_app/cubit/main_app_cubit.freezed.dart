@@ -128,10 +128,10 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( AppConfig appConfig,  SharedPreferences sharedPreferences,  PackageInfo packageInfo,  Talker talker,  Dio dio,  IDebugRepositoryImp debugRepository,  ThemeMode themeMode,  AuthStateNotifier authNotifier,  AuthRepository authRepository,  ShiftRepository shiftRepository,  OrganizationRepository organizationRepository,  ChecklistRepository checklistRepository,  UserRepository userRepository,  PayrollRepository payrollRepository,  DeepLinkService deepLinkService,  PendingInviteStorage pendingInviteStorage,  ShiftContextStorage shiftContextStorage)?  success,TResult Function()?  loading,TResult Function( Object? error,  StackTrace? stackTrace)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( AppConfig appConfig,  SharedPreferences sharedPreferences,  PackageInfo packageInfo,  Talker talker,  Dio dio,  IDebugRepositoryImp debugRepository,  ThemeMode themeMode,  AuthStateNotifier authNotifier,  AuthRepository authRepository,  ShiftRepository shiftRepository,  OrganizationRepository organizationRepository,  ChecklistRepository checklistRepository,  UserRepository userRepository,  PayrollRepository payrollRepository,  FilesRepository filesRepository,  DeepLinkService deepLinkService,  PendingInviteStorage pendingInviteStorage,  ShiftContextStorage shiftContextStorage)?  success,TResult Function()?  loading,TResult Function( Object? error,  StackTrace? stackTrace)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MainAppStateSuccess() when success != null:
-return success(_that.appConfig,_that.sharedPreferences,_that.packageInfo,_that.talker,_that.dio,_that.debugRepository,_that.themeMode,_that.authNotifier,_that.authRepository,_that.shiftRepository,_that.organizationRepository,_that.checklistRepository,_that.userRepository,_that.payrollRepository,_that.deepLinkService,_that.pendingInviteStorage,_that.shiftContextStorage);case MainAppStateLoading() when loading != null:
+return success(_that.appConfig,_that.sharedPreferences,_that.packageInfo,_that.talker,_that.dio,_that.debugRepository,_that.themeMode,_that.authNotifier,_that.authRepository,_that.shiftRepository,_that.organizationRepository,_that.checklistRepository,_that.userRepository,_that.payrollRepository,_that.filesRepository,_that.deepLinkService,_that.pendingInviteStorage,_that.shiftContextStorage);case MainAppStateLoading() when loading != null:
 return loading();case MainAppStateError() when error != null:
 return error(_that.error,_that.stackTrace);case _:
   return orElse();
@@ -151,10 +151,10 @@ return error(_that.error,_that.stackTrace);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( AppConfig appConfig,  SharedPreferences sharedPreferences,  PackageInfo packageInfo,  Talker talker,  Dio dio,  IDebugRepositoryImp debugRepository,  ThemeMode themeMode,  AuthStateNotifier authNotifier,  AuthRepository authRepository,  ShiftRepository shiftRepository,  OrganizationRepository organizationRepository,  ChecklistRepository checklistRepository,  UserRepository userRepository,  PayrollRepository payrollRepository,  DeepLinkService deepLinkService,  PendingInviteStorage pendingInviteStorage,  ShiftContextStorage shiftContextStorage)  success,required TResult Function()  loading,required TResult Function( Object? error,  StackTrace? stackTrace)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( AppConfig appConfig,  SharedPreferences sharedPreferences,  PackageInfo packageInfo,  Talker talker,  Dio dio,  IDebugRepositoryImp debugRepository,  ThemeMode themeMode,  AuthStateNotifier authNotifier,  AuthRepository authRepository,  ShiftRepository shiftRepository,  OrganizationRepository organizationRepository,  ChecklistRepository checklistRepository,  UserRepository userRepository,  PayrollRepository payrollRepository,  FilesRepository filesRepository,  DeepLinkService deepLinkService,  PendingInviteStorage pendingInviteStorage,  ShiftContextStorage shiftContextStorage)  success,required TResult Function()  loading,required TResult Function( Object? error,  StackTrace? stackTrace)  error,}) {final _that = this;
 switch (_that) {
 case MainAppStateSuccess():
-return success(_that.appConfig,_that.sharedPreferences,_that.packageInfo,_that.talker,_that.dio,_that.debugRepository,_that.themeMode,_that.authNotifier,_that.authRepository,_that.shiftRepository,_that.organizationRepository,_that.checklistRepository,_that.userRepository,_that.payrollRepository,_that.deepLinkService,_that.pendingInviteStorage,_that.shiftContextStorage);case MainAppStateLoading():
+return success(_that.appConfig,_that.sharedPreferences,_that.packageInfo,_that.talker,_that.dio,_that.debugRepository,_that.themeMode,_that.authNotifier,_that.authRepository,_that.shiftRepository,_that.organizationRepository,_that.checklistRepository,_that.userRepository,_that.payrollRepository,_that.filesRepository,_that.deepLinkService,_that.pendingInviteStorage,_that.shiftContextStorage);case MainAppStateLoading():
 return loading();case MainAppStateError():
 return error(_that.error,_that.stackTrace);}
 }
@@ -170,10 +170,10 @@ return error(_that.error,_that.stackTrace);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( AppConfig appConfig,  SharedPreferences sharedPreferences,  PackageInfo packageInfo,  Talker talker,  Dio dio,  IDebugRepositoryImp debugRepository,  ThemeMode themeMode,  AuthStateNotifier authNotifier,  AuthRepository authRepository,  ShiftRepository shiftRepository,  OrganizationRepository organizationRepository,  ChecklistRepository checklistRepository,  UserRepository userRepository,  PayrollRepository payrollRepository,  DeepLinkService deepLinkService,  PendingInviteStorage pendingInviteStorage,  ShiftContextStorage shiftContextStorage)?  success,TResult? Function()?  loading,TResult? Function( Object? error,  StackTrace? stackTrace)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( AppConfig appConfig,  SharedPreferences sharedPreferences,  PackageInfo packageInfo,  Talker talker,  Dio dio,  IDebugRepositoryImp debugRepository,  ThemeMode themeMode,  AuthStateNotifier authNotifier,  AuthRepository authRepository,  ShiftRepository shiftRepository,  OrganizationRepository organizationRepository,  ChecklistRepository checklistRepository,  UserRepository userRepository,  PayrollRepository payrollRepository,  FilesRepository filesRepository,  DeepLinkService deepLinkService,  PendingInviteStorage pendingInviteStorage,  ShiftContextStorage shiftContextStorage)?  success,TResult? Function()?  loading,TResult? Function( Object? error,  StackTrace? stackTrace)?  error,}) {final _that = this;
 switch (_that) {
 case MainAppStateSuccess() when success != null:
-return success(_that.appConfig,_that.sharedPreferences,_that.packageInfo,_that.talker,_that.dio,_that.debugRepository,_that.themeMode,_that.authNotifier,_that.authRepository,_that.shiftRepository,_that.organizationRepository,_that.checklistRepository,_that.userRepository,_that.payrollRepository,_that.deepLinkService,_that.pendingInviteStorage,_that.shiftContextStorage);case MainAppStateLoading() when loading != null:
+return success(_that.appConfig,_that.sharedPreferences,_that.packageInfo,_that.talker,_that.dio,_that.debugRepository,_that.themeMode,_that.authNotifier,_that.authRepository,_that.shiftRepository,_that.organizationRepository,_that.checklistRepository,_that.userRepository,_that.payrollRepository,_that.filesRepository,_that.deepLinkService,_that.pendingInviteStorage,_that.shiftContextStorage);case MainAppStateLoading() when loading != null:
 return loading();case MainAppStateError() when error != null:
 return error(_that.error,_that.stackTrace);case _:
   return null;
@@ -187,7 +187,7 @@ return error(_that.error,_that.stackTrace);case _:
 
 
 class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
-   MainAppStateSuccess({required this.appConfig, required this.sharedPreferences, required this.packageInfo, required this.talker, required this.dio, required this.debugRepository, required this.themeMode, required this.authNotifier, required this.authRepository, required this.shiftRepository, required this.organizationRepository, required this.checklistRepository, required this.userRepository, required this.payrollRepository, required this.deepLinkService, required this.pendingInviteStorage, required this.shiftContextStorage}): super._();
+   MainAppStateSuccess({required this.appConfig, required this.sharedPreferences, required this.packageInfo, required this.talker, required this.dio, required this.debugRepository, required this.themeMode, required this.authNotifier, required this.authRepository, required this.shiftRepository, required this.organizationRepository, required this.checklistRepository, required this.userRepository, required this.payrollRepository, required this.filesRepository, required this.deepLinkService, required this.pendingInviteStorage, required this.shiftContextStorage}): super._();
   
 
  final  AppConfig appConfig;
@@ -204,6 +204,7 @@ class MainAppStateSuccess extends MainAppState with DiagnosticableTreeMixin {
  final  ChecklistRepository checklistRepository;
  final  UserRepository userRepository;
  final  PayrollRepository payrollRepository;
+ final  FilesRepository filesRepository;
  final  DeepLinkService deepLinkService;
  final  PendingInviteStorage pendingInviteStorage;
  final  ShiftContextStorage shiftContextStorage;
@@ -219,21 +220,21 @@ $MainAppStateSuccessCopyWith<MainAppStateSuccess> get copyWith => _$MainAppState
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'MainAppState.success'))
-    ..add(DiagnosticsProperty('appConfig', appConfig))..add(DiagnosticsProperty('sharedPreferences', sharedPreferences))..add(DiagnosticsProperty('packageInfo', packageInfo))..add(DiagnosticsProperty('talker', talker))..add(DiagnosticsProperty('dio', dio))..add(DiagnosticsProperty('debugRepository', debugRepository))..add(DiagnosticsProperty('themeMode', themeMode))..add(DiagnosticsProperty('authNotifier', authNotifier))..add(DiagnosticsProperty('authRepository', authRepository))..add(DiagnosticsProperty('shiftRepository', shiftRepository))..add(DiagnosticsProperty('organizationRepository', organizationRepository))..add(DiagnosticsProperty('checklistRepository', checklistRepository))..add(DiagnosticsProperty('userRepository', userRepository))..add(DiagnosticsProperty('payrollRepository', payrollRepository))..add(DiagnosticsProperty('deepLinkService', deepLinkService))..add(DiagnosticsProperty('pendingInviteStorage', pendingInviteStorage))..add(DiagnosticsProperty('shiftContextStorage', shiftContextStorage));
+    ..add(DiagnosticsProperty('appConfig', appConfig))..add(DiagnosticsProperty('sharedPreferences', sharedPreferences))..add(DiagnosticsProperty('packageInfo', packageInfo))..add(DiagnosticsProperty('talker', talker))..add(DiagnosticsProperty('dio', dio))..add(DiagnosticsProperty('debugRepository', debugRepository))..add(DiagnosticsProperty('themeMode', themeMode))..add(DiagnosticsProperty('authNotifier', authNotifier))..add(DiagnosticsProperty('authRepository', authRepository))..add(DiagnosticsProperty('shiftRepository', shiftRepository))..add(DiagnosticsProperty('organizationRepository', organizationRepository))..add(DiagnosticsProperty('checklistRepository', checklistRepository))..add(DiagnosticsProperty('userRepository', userRepository))..add(DiagnosticsProperty('payrollRepository', payrollRepository))..add(DiagnosticsProperty('filesRepository', filesRepository))..add(DiagnosticsProperty('deepLinkService', deepLinkService))..add(DiagnosticsProperty('pendingInviteStorage', pendingInviteStorage))..add(DiagnosticsProperty('shiftContextStorage', shiftContextStorage));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainAppStateSuccess&&(identical(other.appConfig, appConfig) || other.appConfig == appConfig)&&(identical(other.sharedPreferences, sharedPreferences) || other.sharedPreferences == sharedPreferences)&&(identical(other.packageInfo, packageInfo) || other.packageInfo == packageInfo)&&(identical(other.talker, talker) || other.talker == talker)&&(identical(other.dio, dio) || other.dio == dio)&&(identical(other.debugRepository, debugRepository) || other.debugRepository == debugRepository)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.authNotifier, authNotifier) || other.authNotifier == authNotifier)&&(identical(other.authRepository, authRepository) || other.authRepository == authRepository)&&(identical(other.shiftRepository, shiftRepository) || other.shiftRepository == shiftRepository)&&(identical(other.organizationRepository, organizationRepository) || other.organizationRepository == organizationRepository)&&(identical(other.checklistRepository, checklistRepository) || other.checklistRepository == checklistRepository)&&(identical(other.userRepository, userRepository) || other.userRepository == userRepository)&&(identical(other.payrollRepository, payrollRepository) || other.payrollRepository == payrollRepository)&&(identical(other.deepLinkService, deepLinkService) || other.deepLinkService == deepLinkService)&&(identical(other.pendingInviteStorage, pendingInviteStorage) || other.pendingInviteStorage == pendingInviteStorage)&&(identical(other.shiftContextStorage, shiftContextStorage) || other.shiftContextStorage == shiftContextStorage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainAppStateSuccess&&(identical(other.appConfig, appConfig) || other.appConfig == appConfig)&&(identical(other.sharedPreferences, sharedPreferences) || other.sharedPreferences == sharedPreferences)&&(identical(other.packageInfo, packageInfo) || other.packageInfo == packageInfo)&&(identical(other.talker, talker) || other.talker == talker)&&(identical(other.dio, dio) || other.dio == dio)&&(identical(other.debugRepository, debugRepository) || other.debugRepository == debugRepository)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.authNotifier, authNotifier) || other.authNotifier == authNotifier)&&(identical(other.authRepository, authRepository) || other.authRepository == authRepository)&&(identical(other.shiftRepository, shiftRepository) || other.shiftRepository == shiftRepository)&&(identical(other.organizationRepository, organizationRepository) || other.organizationRepository == organizationRepository)&&(identical(other.checklistRepository, checklistRepository) || other.checklistRepository == checklistRepository)&&(identical(other.userRepository, userRepository) || other.userRepository == userRepository)&&(identical(other.payrollRepository, payrollRepository) || other.payrollRepository == payrollRepository)&&(identical(other.filesRepository, filesRepository) || other.filesRepository == filesRepository)&&(identical(other.deepLinkService, deepLinkService) || other.deepLinkService == deepLinkService)&&(identical(other.pendingInviteStorage, pendingInviteStorage) || other.pendingInviteStorage == pendingInviteStorage)&&(identical(other.shiftContextStorage, shiftContextStorage) || other.shiftContextStorage == shiftContextStorage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,appConfig,sharedPreferences,packageInfo,talker,dio,debugRepository,themeMode,authNotifier,authRepository,shiftRepository,organizationRepository,checklistRepository,userRepository,payrollRepository,deepLinkService,pendingInviteStorage,shiftContextStorage);
+int get hashCode => Object.hash(runtimeType,appConfig,sharedPreferences,packageInfo,talker,dio,debugRepository,themeMode,authNotifier,authRepository,shiftRepository,organizationRepository,checklistRepository,userRepository,payrollRepository,filesRepository,deepLinkService,pendingInviteStorage,shiftContextStorage);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, checklistRepository: $checklistRepository, userRepository: $userRepository, payrollRepository: $payrollRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage, shiftContextStorage: $shiftContextStorage)';
+  return 'MainAppState.success(appConfig: $appConfig, sharedPreferences: $sharedPreferences, packageInfo: $packageInfo, talker: $talker, dio: $dio, debugRepository: $debugRepository, themeMode: $themeMode, authNotifier: $authNotifier, authRepository: $authRepository, shiftRepository: $shiftRepository, organizationRepository: $organizationRepository, checklistRepository: $checklistRepository, userRepository: $userRepository, payrollRepository: $payrollRepository, filesRepository: $filesRepository, deepLinkService: $deepLinkService, pendingInviteStorage: $pendingInviteStorage, shiftContextStorage: $shiftContextStorage)';
 }
 
 
@@ -244,7 +245,7 @@ abstract mixin class $MainAppStateSuccessCopyWith<$Res> implements $MainAppState
   factory $MainAppStateSuccessCopyWith(MainAppStateSuccess value, $Res Function(MainAppStateSuccess) _then) = _$MainAppStateSuccessCopyWithImpl;
 @useResult
 $Res call({
- AppConfig appConfig, SharedPreferences sharedPreferences, PackageInfo packageInfo, Talker talker, Dio dio, IDebugRepositoryImp debugRepository, ThemeMode themeMode, AuthStateNotifier authNotifier, AuthRepository authRepository, ShiftRepository shiftRepository, OrganizationRepository organizationRepository, ChecklistRepository checklistRepository, UserRepository userRepository, PayrollRepository payrollRepository, DeepLinkService deepLinkService, PendingInviteStorage pendingInviteStorage, ShiftContextStorage shiftContextStorage
+ AppConfig appConfig, SharedPreferences sharedPreferences, PackageInfo packageInfo, Talker talker, Dio dio, IDebugRepositoryImp debugRepository, ThemeMode themeMode, AuthStateNotifier authNotifier, AuthRepository authRepository, ShiftRepository shiftRepository, OrganizationRepository organizationRepository, ChecklistRepository checklistRepository, UserRepository userRepository, PayrollRepository payrollRepository, FilesRepository filesRepository, DeepLinkService deepLinkService, PendingInviteStorage pendingInviteStorage, ShiftContextStorage shiftContextStorage
 });
 
 
@@ -261,7 +262,7 @@ class _$MainAppStateSuccessCopyWithImpl<$Res>
 
 /// Create a copy of MainAppState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? appConfig = null,Object? sharedPreferences = null,Object? packageInfo = null,Object? talker = null,Object? dio = null,Object? debugRepository = null,Object? themeMode = null,Object? authNotifier = null,Object? authRepository = null,Object? shiftRepository = null,Object? organizationRepository = null,Object? checklistRepository = null,Object? userRepository = null,Object? payrollRepository = null,Object? deepLinkService = null,Object? pendingInviteStorage = null,Object? shiftContextStorage = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? appConfig = null,Object? sharedPreferences = null,Object? packageInfo = null,Object? talker = null,Object? dio = null,Object? debugRepository = null,Object? themeMode = null,Object? authNotifier = null,Object? authRepository = null,Object? shiftRepository = null,Object? organizationRepository = null,Object? checklistRepository = null,Object? userRepository = null,Object? payrollRepository = null,Object? filesRepository = null,Object? deepLinkService = null,Object? pendingInviteStorage = null,Object? shiftContextStorage = null,}) {
   return _then(MainAppStateSuccess(
 appConfig: null == appConfig ? _self.appConfig : appConfig // ignore: cast_nullable_to_non_nullable
 as AppConfig,sharedPreferences: null == sharedPreferences ? _self.sharedPreferences : sharedPreferences // ignore: cast_nullable_to_non_nullable
@@ -277,7 +278,8 @@ as ShiftRepository,organizationRepository: null == organizationRepository ? _sel
 as OrganizationRepository,checklistRepository: null == checklistRepository ? _self.checklistRepository : checklistRepository // ignore: cast_nullable_to_non_nullable
 as ChecklistRepository,userRepository: null == userRepository ? _self.userRepository : userRepository // ignore: cast_nullable_to_non_nullable
 as UserRepository,payrollRepository: null == payrollRepository ? _self.payrollRepository : payrollRepository // ignore: cast_nullable_to_non_nullable
-as PayrollRepository,deepLinkService: null == deepLinkService ? _self.deepLinkService : deepLinkService // ignore: cast_nullable_to_non_nullable
+as PayrollRepository,filesRepository: null == filesRepository ? _self.filesRepository : filesRepository // ignore: cast_nullable_to_non_nullable
+as FilesRepository,deepLinkService: null == deepLinkService ? _self.deepLinkService : deepLinkService // ignore: cast_nullable_to_non_nullable
 as DeepLinkService,pendingInviteStorage: null == pendingInviteStorage ? _self.pendingInviteStorage : pendingInviteStorage // ignore: cast_nullable_to_non_nullable
 as PendingInviteStorage,shiftContextStorage: null == shiftContextStorage ? _self.shiftContextStorage : shiftContextStorage // ignore: cast_nullable_to_non_nullable
 as ShiftContextStorage,

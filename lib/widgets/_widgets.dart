@@ -13,3 +13,4 @@ export 'pin_code_field.dart';
 export 'section_data/_section_data.dart';
 export 'shift_author_block.dart';
 export 'shift_pause_list.dart';
+export 'storage_image.dart';
