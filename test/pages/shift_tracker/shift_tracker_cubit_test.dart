@@ -276,6 +276,68 @@ void main() {
     );
   });
 
+  group('фоновый поллинг авто-завершения', () {
+    test(
+      'сервер сообщил, что активной/паузной смены нет → авто-финиш + нотис',
+      () async {
+        final cubit = await buildWithActiveShift(_activeShift());
+        expect(cubit.state.hasActiveShift, isTrue);
+
+        // Бэкенд авто-завершил смену: обе выборки теперь пустые.
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.active, limit: 1),
+        ).thenAnswer((_) async => _shiftsPage(const []));
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.paused, limit: 1),
+        ).thenAnswer((_) async => _shiftsPage(const []));
+
+        cubit.onAppResumed();
+        await pumpEventQueue();
+
+        expect(cubit.state.hasActiveShift, isFalse);
+        expect(cubit.state.shiftAutoFinished, isTrue);
+        expect(cubit.state.elapsedSeconds, 0);
+
+        cubit.clearAutoFinishedNotice();
+        expect(cubit.state.shiftAutoFinished, isFalse);
+        await cubit.close();
+      },
+    );
+
+    test('смена ещё активна → состояние сохраняется, нотиса нет', () async {
+      final cubit = await buildWithActiveShift(_activeShift());
+
+      cubit.onAppResumed();
+      await pumpEventQueue();
+
+      expect(cubit.state.hasActiveShift, isTrue);
+      expect(cubit.state.shiftAutoFinished, isFalse);
+      await cubit.close();
+    });
+
+    test(
+      'сетевой сбой опроса не роняет показанную смену (нет ложного финиша)',
+      () async {
+        final cubit = await buildWithActiveShift(_activeShift());
+
+        // Опрос падает по сети — смену НЕЛЬЗЯ считать завершённой.
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.active, limit: 1),
+        ).thenAnswer(
+          (_) async =>
+              const Task<DefaultPaginator<Shift>>.failure(_networkError),
+        );
+
+        cubit.onAppResumed();
+        await pumpEventQueue();
+
+        expect(cubit.state.hasActiveShift, isTrue);
+        expect(cubit.state.shiftAutoFinished, isFalse);
+        await cubit.close();
+      },
+    );
+  });
+
   group('офлайн-индикация (connectivity)', () {
     test('реагирует на смену состояния сети', () async {
       final controller = StreamController<List<ConnectivityResult>>();

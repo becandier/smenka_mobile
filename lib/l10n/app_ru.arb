@@ -86,6 +86,7 @@
     "shiftNoPauses": "Пауз нет",
     "shiftStarted": "Смена начата",
     "shiftFinished": "Смена завершена",
+    "shiftAutoFinishedNotice": "Смена завершена автоматически",
     "shiftPauseStarted": "Пауза начата",
     "shiftResumed": "Смена продолжена",
     "shiftLocationRequired": "Для этой организации требуется геопроверка",

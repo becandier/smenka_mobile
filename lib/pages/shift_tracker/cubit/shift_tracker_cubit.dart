@@ -43,6 +43,16 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   final Connectivity _connectivity;
   Timer? _timer;
 
+  /// Период фонового опроса активной смены (сек). Бэкенд авто-завершает смены
+  /// (1–48ч) — без поллинга мобилка не узнала бы об этом, пока экран открыт.
+  static const _pollSeconds = 60;
+
+  /// Тики 1-секундного таймера до следующего опроса.
+  int _pollTick = 0;
+
+  /// Защита от наложения опросов (poll + resume + pull-to-refresh).
+  bool _syncing = false;
+
   /// Последнее действие смены — для повторной попытки после сетевой ошибки.
   Future<void> Function()? _lastAction;
 
@@ -392,18 +402,93 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     );
   }
 
+  /// Pull-to-refresh: тихая сверка активной смены и организаций (без шиммера —
+  /// спиннер показывает сам RefreshIndicator).
   Future<void> refresh() async {
     await Future.wait([
-      _loadActiveShift(),
+      _pollSync(),
       _organizationRepository.fetchMyOrganizations(),
     ]);
   }
 
+  /// Возврат приложения на передний план — мгновенная сверка: на фоне ОС могла
+  /// приморозить 1с-таймер, и авто-финиш остался бы незамеченным.
+  void onAppResumed() => unawaited(_pollSync());
+
+  void clearAutoFinishedNotice() {
+    emit(state.copyWith(shiftAutoFinished: false));
+  }
+
+  /// Тихий опрос: сверяет показанную смену с сервером и ловит авто-завершение,
+  /// не трогая UI шиммером. Сетевые/серверные сбои не меняют состояние —
+  /// повторим на следующем тике (об офлайне и так сигналит баннер).
+  Future<void> _pollSync() async {
+    if (_syncing || state.isActionLoading) return;
+    _syncing = true;
+    try {
+      var ok = true;
+      Shift? shift;
+
+      final activeRes = await _shiftRepository.getShifts(
+        status: ShiftStatus.active,
+        limit: 1,
+      );
+      activeRes.fold(
+        onSuccess: (p) {
+          final list = p.data;
+          shift = (list != null && list.isNotEmpty) ? list.first : null;
+        },
+        onFailure: (_) => ok = false,
+      );
+      if (!ok) return;
+
+      if (shift == null) {
+        final pausedRes = await _shiftRepository.getShifts(
+          status: ShiftStatus.paused,
+          limit: 1,
+        );
+        pausedRes.fold(
+          onSuccess: (p) {
+            final list = p.data;
+            shift = (list != null && list.isNotEmpty) ? list.first : null;
+          },
+          onFailure: (_) => ok = false,
+        );
+        if (!ok) return;
+      }
+
+      final found = shift;
+      if (found != null) {
+        // Смена ещё идёт — подтягиваем актуальные данные (паузы/worked).
+        emit(state.copyWith(activeShift: state.activeShift.toSuccess(found)));
+        if (_timer == null) _startTimer(found);
+      } else if (state.hasActiveShift) {
+        // Сервер: активной/приостановленной смены больше нет → авто-завершена.
+        _stopTimer();
+        emit(
+          state.copyWith(
+            activeShift: const SectionData<Shift>(),
+            elapsedSeconds: 0,
+            shiftAutoFinished: true,
+          ),
+        );
+      }
+    } finally {
+      _syncing = false;
+    }
+  }
+
   void _startTimer(Shift shift) {
     _stopTimer();
+    _pollTick = 0;
     _updateElapsed(shift);
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       _updateElapsed(state.activeShift.data);
+      _pollTick++;
+      if (_pollTick >= _pollSeconds) {
+        _pollTick = 0;
+        unawaited(_pollSync());
+      }
     });
   }
 

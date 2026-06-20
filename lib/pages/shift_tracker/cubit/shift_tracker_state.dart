@@ -34,6 +34,11 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
 
     /// Предупреждение о низкой точности GPS
     @Default(false) bool showLowAccuracyWarning,
+
+    /// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
+    /// активной/приостановленной смены больше нет). UI показывает тост и
+    /// сбрасывает флаг.
+    @Default(false) bool shiftAutoFinished,
   }) = _ShiftTrackerState;
   const ShiftTrackerState._();
 

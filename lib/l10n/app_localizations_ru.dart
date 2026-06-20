@@ -233,6 +233,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftFinished => 'Смена завершена';
 
   @override
+  String get shiftAutoFinishedNotice => 'Смена завершена автоматически';
+
+  @override
   String get shiftPauseStarted => 'Пауза начата';
 
   @override

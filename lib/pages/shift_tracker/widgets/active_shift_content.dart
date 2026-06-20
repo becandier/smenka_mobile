@@ -18,6 +18,9 @@ class _ActiveShiftContent extends StatelessWidget {
     final statusColor = isPaused ? colors.warning : colors.success;
 
     return SingleChildScrollView(
+      // AlwaysScrollable — чтобы pull-to-refresh срабатывал даже когда контент
+      // короче экрана.
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
