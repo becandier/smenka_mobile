@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-06-11 (фичи date_filters, payroll, shift_quick_start, security_hardening)
+Последнее обновление: 2026-06-20 (рефактор: remove_owner_mode, remove_map, web_support)
 
 ---
 
@@ -15,7 +15,9 @@
 - SharedPreferences (локальное хранение нечувствительных данных: тема, контекст смены)
 - flutter_secure_storage (токены `access`/`refresh` — Keychain/Keystore)
 - connectivity_plus (индикация офлайна)
-- Firebase (Crashlytics, Remote Config)
+- geolocator (геопроверка зон; на web — no-op)
+- Firebase (Crashlytics, Remote Config, Analytics)
+- Таргеты: Android, iOS, **web** (`flutter build web`; см. раздел «Web-поддержка»). Yandex MapKit и экран карты полностью удалены.
 
 ---
 
@@ -35,86 +37,108 @@ lib/
 │   └── main.dart
 ├── core/
 │   ├── bloc/                      # SectionData, PaginatedSectionData, PaginationMixin
-│   ├── models/                    # DefaultPaginator<T>
+│   ├── models/                    # DefaultPaginator<T>, PeriodPreset
 │   ├── network/                   # Dio errors, Task, TaskHandler
 │   ├── router/                    # AppRouter, AppModals (context.modals)
+│   ├── deep_link/                 # DeepLinkService, PendingInviteStorage
+│   ├── services/                  # GeoService (geolocator; no-op на web)
+│   ├── web/                       # url_strategy (conditional export web/stub)
+│   ├── utils/                     # money_format и пр.
 │   └── theme/                     # Тема, цвета
 ├── data/
-│   ├── api/local/                 # Локальное хранение (tokens, theme)
+│   ├── api/local/                 # Локальное хранение (tokens, theme, shift-context)
 │   ├── domain/                    # Domain-слой (абстрактные репо + модели)
-│   │   ├── auth/                  # AuthToken, AuthState, RegisterResult
+│   │   ├── auth/                  # AuthToken, AuthState, RegisterResult, AuthStateNotifier
 │   │   ├── user/                  # User
-│   │   ├── organization/          # Organization, Member, OrgSettings, OrgStats, JoinResult
-│   │   ├── location/              # WorkLocation
-│   │   └── shift/                 # Shift, Pause, ShiftStats, DefaultPaginator<T>
+│   │   ├── organization/          # Organization, Member, OrgStats, JoinResult
+│   │   ├── organization_role/     # OrganizationRole (только для отображения, без репозитория)
+│   │   ├── payroll/               # Rate, CurrentRate, Payroll, MyEarnings (read-only)
+│   │   ├── checklist/             # ChecklistInstance*, EffectiveChecklistTemplate (read/fill)
+│   │   └── shift/                 # Shift, Pause, ShiftStats
 │   └── infrastructure/            # Реализации (datasource + dto + mappers + repos)
 │       ├── auth/
 │       ├── user/
 │       ├── organization/
-│       ├── location/
+│       ├── organization_role/     # только DTO + mapper (модель вкладывается в Member/Organization)
+│       ├── payroll/
+│       ├── checklist/
 │       └── shift/
+├── shared/                        # Глобальные cubit'ы вне страниц
+│   └── auth/                      # AuthCubit + AuthState (глобальная авторизация)
 ├── l10n/                          # Локализация (ARB)
 ├── widgets/                       # Переиспользуемые виджеты
 │   ├── app_toast/                 # Toast-уведомления (AppToast, AppToastManager)
 │   ├── section_data/              # SectionDataWrapper, SectionLoader, SectionError
 │   └── paginated_section_data/    # PaginatedSectionDataList/Grid/SliverList/SliverGrid
 └── pages/                         # UI-слой (экраны)
-    ├── auth/                      # Login/Register + PasswordRequirements
-    ├── home/                      # ExampleHome (заглушка)
-    ├── main_router/               # Bottom tabs router
-    ├── shift_tracker/             # Трекер смены (Tab 1)
+    ├── auth/                      # Login/Register + LoginCubit + _PasswordRequirements
+    ├── verify/                    # Верификация email + VerifyCubit
+    ├── home/                      # ExampleHome (заглушка, не в основной навигации)
+    ├── main_router/               # Bottom tabs router (4 таба)
+    ├── shift_tracker/             # Трекер смены (Tab 1 «Смена»)
     │   ├── cubit/                 # ShiftTrackerCubit + State
     │   ├── view/                  # ShiftTrackerPage
-    │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent, _OrgSelector, _PauseList
-    ├── shift_history/             # История смен (Tab 2)
+    │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent, _OfflineBanner, _OrgSelector, _PauseList, _PauseCard, _ShiftActionErrorBar, _ShiftChecklistsTile
+    ├── shift_checklists/          # Чек-листы текущей смены (push)
+    │   ├── cubit/                 # ShiftChecklistsCubit + State
+    │   └── view/                  # ShiftChecklistsPage
+    ├── checklist_fill/            # Заполнение чек-листа смены (push; read-only для чужой смены)
+    │   ├── cubit/                 # ChecklistFillCubit + State
+    │   ├── view/                  # ChecklistFillPage
+    │   └── widgets/               # _FillItemTile
+    ├── shift_history/             # История смен (Tab 2 «История»)
     │   ├── cubit/                 # ShiftHistoryCubit, ShiftStatsCubit + States
     │   ├── view/                  # ShiftHistoryPage
-    │   └── widgets/               # _StatsSection, _ShiftFilters, _ShiftCard
+    │   └── widgets/               # _StatsSection, _ShiftFilters, _ShiftCard, _FilterChip
     ├── shift_detail/              # Детали смены (push)
     │   ├── cubit/                 # ShiftDetailCubit + State
     │   ├── view/                  # ShiftDetailPage
-    │   └── widgets/               # _DetailInfoSection, _DetailPauseList
-    ├── organizations/             # Список организаций (Tab 3)
+    │   └── widgets/               # _DetailInfoSection, _DetailChecklistsSection, _StatusBadge
+    ├── organizations/             # Список организаций (Tab 3 «Организации»)
     │   ├── cubit/                 # OrganizationsCubit + State
     │   ├── view/                  # OrganizationsPage
-    │   └── widgets/               # _OrgListCard, CreateOrgModal, JoinOrgModal
-    ├── organization_detail/       # Детали организации — навигационный хаб (push)
+    │   └── widgets/               # _OrgListCard, JoinOrgModal
+    ├── organization_detail/       # Детали организации — навигационный хаб (push, read-only)
     │   ├── cubit/                 # OrganizationDetailCubit + State
     │   ├── view/                  # OrganizationDetailPage
-    │   └── widgets/               # _OrgHeader, _OrgMembersSection, _OrgInviteSection, _OrgActionsSection
-    ├── members/                   # Участники организации (push)
+    │   └── widgets/               # _OrgHeader, _OrgNavigationSection, _OrgActionsSection, _NavItem
+    ├── members/                   # Участники организации (push, read-only)
     │   ├── cubit/                 # MembersCubit + State
     │   ├── view/                  # MembersPage
     │   └── widgets/               # _MemberTile
-    ├── org_settings/              # Настройки организации (push)
-    │   ├── cubit/                 # OrgSettingsCubit + State
-    │   └── view/                  # OrgSettingsPage
-    ├── work_locations/            # Рабочие точки (push)
-    │   ├── cubit/                 # LocationsCubit + State
-    │   ├── view/                  # WorkLocationsPage
-    │   └── widgets/               # _LocationTile
-    ├── add_edit_location/         # Добавить/ред. точку (push)
-    │   ├── cubit/                 # AddEditLocationCubit + State
-    │   ├── view/                  # AddEditLocationPage (Yandex Map)
-    │   └── widgets/               # _CenterMarker, _LocationForm
+    ├── member_detail/             # Деталь участника (push, READ-ONLY)
+    │   ├── cubit/                 # MemberDetailCubit, MemberRatesCubit + States
+    │   ├── view/                  # MemberDetailPage
+    │   └── widgets/               # _HeaderSection, _EffectiveSection, _RatesSection, _CurrentRateBlock
     ├── org_shifts/                # Смены сотрудников (push)
     │   ├── cubit/                 # OrgShiftsCubit + State
     │   ├── view/                  # OrgShiftsPage
-    │   └── widgets/               # _OrgShiftCard, _OrgShiftsFilters
+    │   └── widgets/               # _OrgShiftCard, _OrgShiftsFilters, _EmployeeFilterChip
+    ├── org_shift_detail/          # Деталь чужой орг-смены (push, read-only)
+    │   ├── cubit/                 # OrgShiftDetailCubit + State
+    │   ├── view/                  # OrgShiftDetailPage
+    │   └── widgets/               # _OrgShiftInfoSection, _OrgShiftDetailChecklists, _OrgStatusBadge
     ├── org_stats/                 # Статистика организации (push)
     │   ├── cubit/                 # OrgStatsCubit + State
     │   ├── view/                  # OrgStatsPage (fl_chart)
     │   └── widgets/               # _StatsCards, _StatsChart, _StatsTable
-    ├── super_admin/               # Панель super_admin (Tab 5)
-    │   ├── cubit/                 # SuperAdminCubit + State
-    │   ├── view/                  # SuperAdminPage
-    │   └── widgets/               # _AdminOrgCard
-    ├── profile/                   # Профиль (Tab 4)
+    ├── employee_picker/           # Модалка выбора сотрудника для фильтра (CustomRoute)
+    │   ├── cubit/                 # EmployeePickerCubit + State
+    │   └── view/                  # EmployeePickerPage
+    ├── my_earnings/               # «Мой заработок» (push)
+    │   ├── cubit/                 # MyEarningsCubit + State
+    │   └── view/                  # MyEarningsPage
+    ├── payroll/                   # «Зарплата» — отчёт по сотрудникам (push)
+    │   ├── cubit/                 # PayrollCubit + State
+    │   └── view/                  # PayrollPage
+    ├── date_range_picker/         # Общий date-range picker (CustomRoute-модалка)
+    │   └── view/                  # DateRangePickerPage
+    ├── profile/                   # Профиль (Tab 4 «Профиль»)
     │   ├── cubit/                 # ProfileCubit + State
     │   ├── view/                  # ProfilePage
     │   └── widgets/               # _ProfileHeader, _PersonalInfoSection, _OrganizationsSection, _SettingsSection, EditProfileModal
     ├── theme/                     # ThemeCubit + виджет переключения
-    └── debug/                     # Debug-страница
+    └── debug/                     # Debug-страница + DebugCubit
 ```
 
 ---
@@ -126,33 +150,39 @@ lib/
 | `AuthToken` | `domain/auth/models/auth_token.dart` | access_token + refresh_token |
 | `AuthState` | `domain/auth/models/auth_state.dart` | Sealed: Authenticated / Unauthenticated / Unknown |
 | `RegisterResult` | `domain/auth/models/register_result.dart` | userId + message |
-| `User` | `domain/user/models/user.dart` | id, email, name, phone, isVerified, role (UserRole: superAdmin/user), createdAt |
-| `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt |
-| `Member` | `domain/organization/models/member.dart` | id, orgId, userId, userName, userEmail, role (enum), joinedAt, currentRate (nullable, payroll) |
-| `OrgSettings` | `domain/organization/models/org_settings.dart` | geoCheck, autoFinish, pauseLimits |
-| `OrgStats` | `domain/organization/models/org_stats.dart` | period (nullable), totals + perEmployee list, rangeFrom/rangeTo |
-| `JoinResult` | `domain/organization/models/join_result.dart` | orgId, orgName, role |
-| `WorkLocation` | `domain/location/models/work_location.dart` | id, orgId, name, lat, lng, radius |
-| `Shift` | `domain/shift/models/shift.dart` | id, userId, orgId, times, status (enum), pauses, workedSeconds |
-| `Pause` | `domain/shift/models/shift.dart` | id, shiftId, startedAt, finishedAt |
-| `ShiftStats` | `domain/shift/models/shift_stats.dart` | period (nullable), totalWorked, count, average, rangeFrom/rangeTo |
+| `User` | `domain/user/models/user.dart` | id, email, name, isVerified, role (UserRole: superAdmin/user), createdAt, phone? |
+| `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt, geoCheckEnabled; `myRole` (OrgMembershipRole: owner/admin/employee, nullable), `myCustomRole` (nullable) |
+| `Member` | `domain/organization/models/member.dart` | id, organizationId, userId, userName, userEmail, role (MemberRole: admin/employee), joinedAt, customRole?, currentRate? (payroll) |
+| `OrganizationRole` | `domain/organization_role/models/organization_role.dart` | id, name, createdAt (кастомная роль; только для отображения, без write-слоя) |
+| `OrgStats` / `EmployeeStats` | `domain/organization/models/org_stats.dart` | агрегаты org (totalWorked, shiftCount, average, perEmployee), period? + rangeFrom/rangeTo |
+| `JoinResult` | `domain/organization/models/join_result.dart` | результат присоединения по инвайту |
+| `Shift` | `domain/shift/models/shift.dart` | id, userId, startedAt, status (ShiftStatus), pauses, workedSeconds, organizationId?, finishedAt?, hasIncompleteRequiredChecklists; в орг-ответах — userName/userEmail/role/customRoleName |
+| `Pause` | `domain/shift/models/shift.dart` | id, shiftId, startedAt, finishedAt? |
+| `ShiftStats` | `domain/shift/models/shift_stats.dart` | totalWorked, shiftCount, average, period? + rangeFrom/rangeTo |
+| `ChecklistInstance` / `ChecklistInstanceDetail` / `ChecklistInstanceItem` / `ChecklistItemsSummary` | `domain/checklist/models/checklist_instance.dart` | экземпляры чек-листов смены (`ChecklistInstanceStatus`: pending/completed/incomplete) и их пункты |
+| `EffectiveChecklistTemplate` | `domain/checklist/models/effective_template.dart` | эффективный шаблон участника (read-only; `ChecklistTemplateSource`: role/personalAdd) |
+| `ChecklistType` | `domain/checklist/models/checklist_template.dart` | enum shiftStart/shiftEnd |
 | `Rate` / `CurrentRate` | `domain/payroll/models/rate.dart` | запись истории ставок / действующая; `RateType` (hourly/perShift); деньги в копейках (int) |
 | `Payroll` / `PayrollItem` / `PayrollTotals` / `PayrollPeriod` | `domain/payroll/models/payroll.dart` | отчёт «кому сколько заплатить» за период |
-| `MyEarnings` | `domain/payroll/models/my_earnings.dart` | личный заработок за период + currentRate, hasMissingRate |
+| `MyEarnings` | `domain/payroll/models/my_earnings.dart` | личный заработок за период + currentRate?, hasMissingRate |
 | `DefaultPaginator<T>` | `core/models/default_paginator.dart` | hasMore, data, total (универсальная пагинация) |
 
 ---
 
 ## API DataSources
 
+Все пути относительные; Dio добавляет базовый префикс `/api/v1`.
+
 | DataSource | Base Path | Методы |
 |------------|-----------|--------|
-| `AuthDataSource` | `/api/v1/auth` | register, verify, resendCode, login, refresh, logout |
-| `UserDataSource` | `/api/v1/users` | getMe, updateMe |
-| `OrganizationDataSource` | `/api/v1/organizations` | create, getAll, getById, update, delete, rotateInvite, join, getMembers, removeMember, getSettings, updateSettings, getShifts, getStats |
-| `LocationDataSource` | `/api/v1/organizations/{orgId}/locations` | create, getAll, update, delete |
-| `ShiftDataSource` | `/api/v1/shifts` | getShifts (date_from/date_to), getStats (period XOR date_from/date_to), startShift, pauseShift, resumeShift, finishShift |
-| `PayrollDataSource` | `/api/v1/organizations/{orgId}` | getRates, createRate, updateRate, deleteRate, getPayroll, getMyEarnings |
+| `AuthDataSource` | `/auth` | register, verify, resendCode, login, refresh, logout |
+| `UserDataSource` | `/users` | getMe, updateMe |
+| `OrganizationDataSource` | `/organizations` | getAll, getById, join, getMembers, removeMember (self-leave), getShifts (user_id/status/date_from/date_to), getShiftDetail, getStats (period XOR date_from/date_to) |
+| `ShiftDataSource` | `/shifts` | getShifts (date_from/date_to), getStats (period XOR date_from/date_to), startShift, pauseShift, resumeShift, finishShift |
+| `ChecklistDataSource` | `/organizations/{orgId}` и `/shifts` | getEffectiveTemplates (member, read-only), getShiftChecklists, getInstanceDetail, updateInstanceItem |
+| `PayrollDataSource` | `/organizations/{orgId}` | getRates (read), getPayroll, getMyEarnings |
+
+> Write-слой org-менеджмента (create/delete/rotateInvite/updateMemberRole/getSettings/updateSettings/getAllOrganizations), управление рабочими точками, ставками и шаблонами чек-листов вынесены в веб-админку — в мобильном API их нет.
 
 ---
 
@@ -162,10 +192,12 @@ lib/
 |-------------|-------------|--------|
 | `AuthRepository` | AuthDataSource, AuthTokenStorage, AuthStateNotifier | checkAuthStatus, register, verify, resendCode, login, refresh, logout |
 | `UserRepository` | UserDataSource | getMe, updateMe |
-| `OrganizationRepository` | OrganizationDataSource | create, getAll, getById, update, delete, rotateInvite, join, getMembers, removeMember, getSettings, updateSettings, getShifts, getStats |
-| `LocationRepository` | LocationDataSource | create, getAll, update, delete |
+| `OrganizationRepository` | OrganizationDataSource | getAll, getById, join, getMembers, removeMember (self-leave), getShifts, getShiftDetail, getStats, watchMyOrganizations, fetchMyOrganizations, clearCache |
 | `ShiftRepository` | ShiftDataSource | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
-| `PayrollRepository` | PayrollDataSource | getRates, createRate, updateRate, deleteRate, getPayroll, getMyEarnings |
+| `ChecklistRepository` | ChecklistDataSource | getEffectiveTemplates, getShiftChecklists, getInstanceDetail, updateInstanceItem |
+| `PayrollRepository` | PayrollDataSource | getRates, getPayroll, getMyEarnings (всё read-only) |
+
+> `OrganizationRole` отдельного репозитория не имеет (только DTO+mapper; модель вкладывается в `Member`/`Organization`). `LocationRepository` удалён.
 
 ---
 
@@ -176,62 +208,87 @@ lib/
 | `MainAppCubit` | Готов | Инициализация приложения |
 | `ThemeCubit` | Готов | Управление темой |
 | `DebugCubit` | Готов | Debug-информация |
-| `AuthCubit` | Готов | Глобальное состояние авторизации (shared) |
+| `AuthCubit` | Готов | Глобальное состояние авторизации (`lib/shared/auth/`) |
 | `LoginCubit` | Готов | Login/Register форма с валидацией |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
-| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; предвыбор и запоминание контекста (`ShiftContextStorage`) |
+| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор и запоминание контекста (`ShiftContextStorage`) |
+| `ShiftChecklistsCubit` | Готов | Список чек-листов текущей смены (read) |
+| `ChecklistFillCubit` | Готов | Заполнение пунктов чек-листа (toggle + debounced комментарий); read-only для чужой смены |
 | `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, диапазон дат через общий пикер) |
 | `ShiftStatsCubit` | Готов | Статистика смен: пресет день/неделя/месяц XOR произвольный диапазон; request-token от устаревших ответов |
-| `ShiftDetailCubit` | Готов | Детали одной смены |
-| `OrganizationsCubit` | Готов | Список организаций, создание, присоединение, текущий юзер |
-| `OrganizationDetailCubit` | Готов | Детали орг: участники, инвайт, покинуть, удалить |
-| `ProfileCubit` | Готов | Профиль: загрузка юзера, организаций, обновление, logout |
-| `MembersCubit` | Готов | Участники: список, удаление, смена роли |
-| `OrgSettingsCubit` | Готов | Настройки организации |
-| `LocationsCubit` | Готов | Рабочие точки: список, удаление |
-| `AddEditLocationCubit` | Готов | Добавление/редактирование рабочей точки (Yandex Map) |
+| `ShiftDetailCubit` | Готов | Детали одной смены (read-only) |
+| `OrganizationsCubit` | Готов | Список организаций (watch), присоединение по инвайту, текущий юзер |
+| `OrganizationDetailCubit` | Готов | Хаб организации (read-only); единственная мутация — `leaveOrganization` (self-leave) |
+| `ProfileCubit` | Готов | Профиль: загрузка юзера, организаций (watch), обновление, logout |
+| `MembersCubit` | Готов | Участники: список (read-only; гейтинг UI по роли наблюдателя) |
+| `MemberDetailCubit` | Готов | Деталь участника: эффективные чек-листы (read-only) |
 | `OrgShiftsCubit` | Готов | Смены сотрудников (пагинация + фильтры: статус, дата, **сотрудник `?user_id`**) |
-| `OrgShiftDetailCubit` | Готов | Деталь чужой орг-смены (owner/admin, read-only); ошибки по `error.code` |
+| `OrgShiftDetailCubit` | Готов | Деталь чужой орг-смены (admin, read-only); ошибки по `error.code` |
 | `EmployeePickerCubit` | Готов | Список участников для модалки фильтра по сотруднику |
 | `OrgStatsCubit` | Готов | Статистика организации (пресет XOR произвольный диапазон + chart) |
-| `MemberRatesCubit` | Готов | История ставок участника + удаление; действующая ставка (getter); ленивая загрузка из секции |
-| `RateFormCubit` | Готов | Сабмит формы ставки (POST/PATCH), подсветка RATE_EFFECTIVE_FROM_TAKEN |
+| `MemberRatesCubit` | Готов | История ставок участника (read-only); действующая ставка (getter); ленивая загрузка из секции |
 | `MyEarningsCubit` | Готов | «Мой заработок»: окно периода (PeriodPreset XOR произвольный), сводка + текущая ставка |
 | `PayrollCubit` | Готов | Отчёт «Зарплата»: окно периода, totals + items, карта участников для перехода на деталь |
-| `SuperAdminCubit` | Готов | Все организации системы (super_admin) |
 
 ---
 
 ## Навигация (auto_route)
+
+`MainRouterRoute` (`/`) — **4 таба** bottom navigation: Смена, История, Организации, Профиль. Пятого (super_admin) таба нет.
+
+Граф организации (`OrganizationDetailRoute` и вложенные) переиспользуется в **двух** табах через общий хелпер `_orgDetailRoutes`: из таба «Организации» (basePath `detail/:orgId`) и из таба «Профиль» (basePath `org-detail/:orgId`).
 
 | Route | Path | Описание |
 |-------|------|----------|
 | `LoginRoute` | `/login` | Авторизация |
 | `VerifyRoute` | `/verify` | Подтверждение email |
 | `DebugRoute` | `/debug` | Debug-страница |
-| `MainRouterRoute` | `/` | Bottom tabs (Смена, История, Профиль) |
-| `ShiftTrackerRoute` | `/shift` | Трекер смены (Tab 1) |
-| `ShiftHistoryRoute` | `/history` | История смен (Tab 2) |
+| `MainRouterRoute` | `/` | Bottom tabs (Смена · История · Организации · Профиль) |
+| `ShiftTrackerRoute` | `/shift` | Трекер смены (Tab 1, initial) |
+| `ShiftChecklistsRoute` | `<tab>/shifts/:shiftId/checklists` | Чек-листы смены (push; в табах Смена/История) |
+| `ChecklistFillRoute` | `<tab>/shifts/:shiftId/checklists/:instanceId` | Заполнение чек-листа (push) |
+| `ShiftHistoryRoute` | `/history` | История смен (Tab 2, initial) |
 | `ShiftDetailRoute` | `/history/detail` | Детали смены (push) |
-| `OrganizationsRoute` | `/organizations` | Список организаций (Tab 3) |
-| `OrganizationDetailRoute` | `/organizations/detail/:orgId` | Детали организации (push) |
-| `CreateOrgRoute` | `/organizations/create` | Модалка создания орг (CustomRoute) |
+| `OrganizationsRoute` | `/organizations` | Список организаций (Tab 3, initial) |
 | `JoinOrgRoute` | `/organizations/join` | Модалка присоединения (CustomRoute) |
-| `ProfileRoute` | `/profile` | Экран профиля (Tab 4) |
+| `ProfileRoute` | `/profile` | Экран профиля (Tab 4, initial) |
 | `EditProfileRoute` | `/profile/edit` | Модалка редактирования профиля (CustomRoute) |
-| `OrgMembersRoute` | `/organizations/detail/:orgId/members` | Участники организации |
-| `OrgSettingsRoute` | `/organizations/detail/:orgId/settings` | Настройки организации |
-| `WorkLocationsRoute` | `/organizations/detail/:orgId/locations` | Рабочие точки |
-| `AddEditLocationRoute` | `/organizations/detail/:orgId/locations/add` | Добавить/ред. точку |
-| `OrgShiftsRoute` | `/organizations/detail/:orgId/shifts` | Смены сотрудников |
-| `OrgStatsRoute` | `/organizations/detail/:orgId/stats` | Статистика организации |
-| `DateRangePickerRoute` | `history/date-range` + `<org-detail>/date-range` | Общий date-range picker (CustomRoute-модалка, `DateRangePickerResult?`) |
-| `MyEarningsRoute` | `<org-detail>/my-earnings` | «Мой заработок» (org_member) |
-| `PayrollRoute` | `<org-detail>/payroll` | «Зарплата» — отчёт по сотрудникам (admin/owner) |
-| `RateFormRoute` | `<org-detail>/rate-form` | Модалка добавления/исправления ставки (CustomRoute, `bool?`) |
-| `SuperAdminRoute` | `/admin` | Панель super_admin (Tab 5, conditional) |
+| `OrganizationDetailRoute` | `<org-base>` | Детали организации — навигационный хаб (push) |
+| `OrgMembersRoute` | `<org-base>/members` | Участники организации |
+| `MemberDetailRoute` | `<org-base>/members/:userId` | Деталь участника (read-only) |
+| `OrgShiftsRoute` | `<org-base>/shifts` | Смены сотрудников |
+| `OrgShiftDetailRoute` | `<org-base>/shifts/:shiftId` | Деталь чужой орг-смены (read-only) |
+| `OrgStatsRoute` | `<org-base>/stats` | Статистика организации |
+| `MyEarningsRoute` | `<org-base>/my-earnings` | «Мой заработок» (org_member) |
+| `PayrollRoute` | `<org-base>/payroll` | «Зарплата» — отчёт по сотрудникам (admin) |
+| `EmployeePickerRoute` | `<org-base>/employee-picker` | Модалка выбора сотрудника (CustomRoute, `EmployeePickerResult?`) |
+| `DateRangePickerRoute` | `/history/date-range` + `<org-base>/date-range` | Общий date-range picker (CustomRoute-модалка, `DateRangePickerResult?`) |
 
-**Guard**: Если не авторизован → редирект на `LoginRoute`
+> `<org-base>` = `detail/:orgId` (таб «Организации») или `org-detail/:orgId` (таб «Профиль»).
+> CustomRoute-модалки строятся через `ModalBottomSheetRoute` (`_modalBottomSheetBuilder`).
+
+Удалены (нет в роутере): `CreateOrgRoute`, `OrgSettingsRoute`, `WorkLocationsRoute`, `AddEditLocationRoute`, `RolesRoute`, `ChecklistTemplate*Route`, `RateFormRoute`, `SuperAdminRoute`.
+
+**Guard**: Если не авторизован → редирект на `LoginRoute` (через `redirectUntil`)
+
+---
+
+## Web-поддержка
+
+Приложение собирается под web (`flutter build web`). Платформенные различия изолированы через `kIsWeb` и conditional import.
+
+**Что сделано в клиенте:**
+- **URL-strategy**: `usePathUrlStrategy()` (без `#` в адресе) — `lib/core/web/url_strategy.dart` через conditional export (`url_strategy_web.dart` / `url_strategy_stub.dart`), вызывается из `main.dart`. Зависимость `flutter_web_plugins` в `pubspec.yaml`.
+- **Remote Config cache cleaner**: conditional import `dart:io` — `lib/app/config/remote_config/remote_config_cache_cleaner_io.dart` (реальная очистка кэша) и `..._stub.dart` (no-op для web, где `dart:io` недоступен).
+- **Crashlytics не инициализируется на web**: `MainAppCubit._init` пропускает `CrashlyticsInitializer()` под `if (!kIsWeb)`; в `TalkerInitializer` поле `crashlytics` nullable, запись ошибок — `crashlytics?.recordError/recordFlutterFatalError`.
+- **Geolocator на web — no-op**: `lib/core/services/geo_service.dart` — `getCurrentPosition`, `openAppSettings`, `openLocationSettings` под `kIsWeb` возвращают рано (геопроверка зон фактически отключена на web).
+- **Upgrader замьючен на web**: `lib/app/main_app/view/success_app.dart` — проверка версии в сторе включается только когда `!kIsWeb`.
+- **Firebase**: `lib/firebase_options.dart` содержит web-конфиг (`FirebaseOptions web`).
+
+**Вне клиента (нужно на стороне инфраструктуры):**
+- CORS на бэке для домена web-хостинга.
+- HTTPS-хостинг собранного бандла.
+- `flutter_secure_storage` на web использует IndexedDB — JWT-токены доступны JavaScript (не Keychain/Keystore, как на native).
 
 ---
 
@@ -271,6 +328,7 @@ lib/
 - `AppTextField` — кастомное текстовое поле с валидацией (файл: `lib/widgets/app_text_field.dart`)
 - `AppButton` — кнопка с состоянием загрузки (файл: `lib/widgets/app_button.dart`)
 - `PinCodeField` — поле ввода PIN/кода подтверждения (файл: `lib/widgets/pin_code_field.dart`)
+- `AppBottomSheet` — каркас bottom-sheet для CustomRoute-модалок (файл: `lib/widgets/app_bottom_sheet.dart`)
 - `AppEmptyState` — переиспользуемый empty state (иконка + заголовок + опц. подзаголовок + опц. кнопка) (файл: `lib/widgets/app_empty_state.dart`)
 - `AppShimmerLoader` — shimmer placeholder для загрузки списков (файл: `lib/widgets/app_shimmer_loader.dart`)
 - `MemberRoleBadges` — бейджи системной + кастомной роли (поддерживает плоский `customRoleName`) (файл: `lib/widgets/member_role_badges.dart`)
