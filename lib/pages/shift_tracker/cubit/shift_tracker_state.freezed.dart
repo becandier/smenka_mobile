@@ -25,7 +25,9 @@ mixin _$ShiftTrackerState {
  bool get showLowAccuracyWarning;/// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
 /// активной/приостановленной смены больше нет). UI показывает тост и
 /// сбрасывает флаг.
- bool get shiftAutoFinished;
+ bool get shiftAutoFinished;/// Выбранная сотрудником рабочая точка для старта смены (когда гео
+/// выключена). `null` — точка не выбрана. При смене организации сбрасывается.
+ WorkLocation? get selectedWorkLocation;
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +38,16 @@ $ShiftTrackerStateCopyWith<ShiftTrackerState> get copyWith => _$ShiftTrackerStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,shiftAutoFinished);
+int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,shiftAutoFinished,selectedWorkLocation);
 
 @override
 String toString() {
-  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, shiftAutoFinished: $shiftAutoFinished)';
+  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation)';
 }
 
 
@@ -56,11 +58,11 @@ abstract mixin class $ShiftTrackerStateCopyWith<$Res>  {
   factory $ShiftTrackerStateCopyWith(ShiftTrackerState value, $Res Function(ShiftTrackerState) _then) = _$ShiftTrackerStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, bool shiftAutoFinished
+ SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, bool shiftAutoFinished, WorkLocation? selectedWorkLocation
 });
 
 
-$SectionDataCopyWith<Shift, $Res> get activeShift;$SectionDataCopyWith<List<Organization>, $Res> get organizations;
+$SectionDataCopyWith<Shift, $Res> get activeShift;$SectionDataCopyWith<List<Organization>, $Res> get organizations;$WorkLocationCopyWith<$Res>? get selectedWorkLocation;
 
 }
 /// @nodoc
@@ -73,7 +75,7 @@ class _$ShiftTrackerStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? shiftAutoFinished = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,}) {
   return _then(_self.copyWith(
 activeShift: null == activeShift ? _self.activeShift : activeShift // ignore: cast_nullable_to_non_nullable
 as SectionData<Shift>,organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
@@ -85,7 +87,8 @@ as String?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode :
 as String?,isOffline: null == isOffline ? _self.isOffline : isOffline // ignore: cast_nullable_to_non_nullable
 as bool,showLowAccuracyWarning: null == showLowAccuracyWarning ? _self.showLowAccuracyWarning : showLowAccuracyWarning // ignore: cast_nullable_to_non_nullable
 as bool,shiftAutoFinished: null == shiftAutoFinished ? _self.shiftAutoFinished : shiftAutoFinished // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,selectedWorkLocation: freezed == selectedWorkLocation ? _self.selectedWorkLocation : selectedWorkLocation // ignore: cast_nullable_to_non_nullable
+as WorkLocation?,
   ));
 }
 /// Create a copy of ShiftTrackerState
@@ -105,6 +108,18 @@ $SectionDataCopyWith<List<Organization>, $Res> get organizations {
   
   return $SectionDataCopyWith<List<Organization>, $Res>(_self.organizations, (value) {
     return _then(_self.copyWith(organizations: value));
+  });
+}/// Create a copy of ShiftTrackerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WorkLocationCopyWith<$Res>? get selectedWorkLocation {
+    if (_self.selectedWorkLocation == null) {
+    return null;
+  }
+
+  return $WorkLocationCopyWith<$Res>(_self.selectedWorkLocation!, (value) {
+    return _then(_self.copyWith(selectedWorkLocation: value));
   });
 }
 }
@@ -188,10 +203,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState() when $default != null:
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished,_that.selectedWorkLocation);case _:
   return orElse();
 
 }
@@ -209,10 +224,10 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState():
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished,_that.selectedWorkLocation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -229,10 +244,10 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState() when $default != null:
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished,_that.selectedWorkLocation);case _:
   return null;
 
 }
@@ -244,7 +259,7 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 
 
 class _ShiftTrackerState extends ShiftTrackerState {
-  const _ShiftTrackerState({this.activeShift = const SectionData<Shift>(), this.organizations = const SectionData<List<Organization>>(), this.selectedOrganizationId, this.elapsedSeconds = 0, this.actionStatus = FeatureStatus.initial, this.actionError, this.actionErrorCode, this.isOffline = false, this.showLowAccuracyWarning = false, this.shiftAutoFinished = false}): super._();
+  const _ShiftTrackerState({this.activeShift = const SectionData<Shift>(), this.organizations = const SectionData<List<Organization>>(), this.selectedOrganizationId, this.elapsedSeconds = 0, this.actionStatus = FeatureStatus.initial, this.actionError, this.actionErrorCode, this.isOffline = false, this.showLowAccuracyWarning = false, this.shiftAutoFinished = false, this.selectedWorkLocation}): super._();
   
 
 /// Активная смена (SectionData — loading/error на init, success при наличии)
@@ -268,6 +283,9 @@ class _ShiftTrackerState extends ShiftTrackerState {
 /// активной/приостановленной смены больше нет). UI показывает тост и
 /// сбрасывает флаг.
 @override@JsonKey() final  bool shiftAutoFinished;
+/// Выбранная сотрудником рабочая точка для старта смены (когда гео
+/// выключена). `null` — точка не выбрана. При смене организации сбрасывается.
+@override final  WorkLocation? selectedWorkLocation;
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
@@ -279,16 +297,16 @@ _$ShiftTrackerStateCopyWith<_ShiftTrackerState> get copyWith => __$ShiftTrackerS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,shiftAutoFinished);
+int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,shiftAutoFinished,selectedWorkLocation);
 
 @override
 String toString() {
-  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, shiftAutoFinished: $shiftAutoFinished)';
+  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation)';
 }
 
 
@@ -299,11 +317,11 @@ abstract mixin class _$ShiftTrackerStateCopyWith<$Res> implements $ShiftTrackerS
   factory _$ShiftTrackerStateCopyWith(_ShiftTrackerState value, $Res Function(_ShiftTrackerState) _then) = __$ShiftTrackerStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, bool shiftAutoFinished
+ SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, bool shiftAutoFinished, WorkLocation? selectedWorkLocation
 });
 
 
-@override $SectionDataCopyWith<Shift, $Res> get activeShift;@override $SectionDataCopyWith<List<Organization>, $Res> get organizations;
+@override $SectionDataCopyWith<Shift, $Res> get activeShift;@override $SectionDataCopyWith<List<Organization>, $Res> get organizations;@override $WorkLocationCopyWith<$Res>? get selectedWorkLocation;
 
 }
 /// @nodoc
@@ -316,7 +334,7 @@ class __$ShiftTrackerStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? shiftAutoFinished = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,}) {
   return _then(_ShiftTrackerState(
 activeShift: null == activeShift ? _self.activeShift : activeShift // ignore: cast_nullable_to_non_nullable
 as SectionData<Shift>,organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
@@ -328,7 +346,8 @@ as String?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode :
 as String?,isOffline: null == isOffline ? _self.isOffline : isOffline // ignore: cast_nullable_to_non_nullable
 as bool,showLowAccuracyWarning: null == showLowAccuracyWarning ? _self.showLowAccuracyWarning : showLowAccuracyWarning // ignore: cast_nullable_to_non_nullable
 as bool,shiftAutoFinished: null == shiftAutoFinished ? _self.shiftAutoFinished : shiftAutoFinished // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,selectedWorkLocation: freezed == selectedWorkLocation ? _self.selectedWorkLocation : selectedWorkLocation // ignore: cast_nullable_to_non_nullable
+as WorkLocation?,
   ));
 }
 
@@ -349,6 +368,18 @@ $SectionDataCopyWith<List<Organization>, $Res> get organizations {
   
   return $SectionDataCopyWith<List<Organization>, $Res>(_self.organizations, (value) {
     return _then(_self.copyWith(organizations: value));
+  });
+}/// Create a copy of ShiftTrackerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WorkLocationCopyWith<$Res>? get selectedWorkLocation {
+    if (_self.selectedWorkLocation == null) {
+    return null;
+  }
+
+  return $WorkLocationCopyWith<$Res>(_self.selectedWorkLocation!, (value) {
+    return _then(_self.copyWith(selectedWorkLocation: value));
   });
 }
 }

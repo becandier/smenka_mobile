@@ -20,3 +20,4 @@ export 'shift_detail/_shift_detail.dart';
 export 'shift_history/_shift_history.dart';
 export 'shift_tracker/_shift_tracker.dart';
 export 'verify/_verify.dart';
+export 'work_location_picker/_work_location_picker.dart';

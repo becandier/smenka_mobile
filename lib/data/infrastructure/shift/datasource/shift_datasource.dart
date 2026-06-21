@@ -56,11 +56,13 @@ class ShiftDataSource {
     String? organizationId,
     double? latitude,
     double? longitude,
+    String? workLocationId,
   }) async {
     final data = <String, dynamic>{};
     if (organizationId != null) data['organization_id'] = organizationId;
     if (latitude != null) data['latitude'] = latitude;
     if (longitude != null) data['longitude'] = longitude;
+    if (workLocationId != null) data['work_location_id'] = workLocationId;
 
     final response = await _dio.post<Map<String, dynamic>>(
       '/shifts/start',

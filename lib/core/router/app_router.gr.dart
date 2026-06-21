@@ -1180,3 +1180,79 @@ class VerifyRouteArgs {
   @override
   int get hashCode => email.hashCode ^ key.hashCode;
 }
+
+/// generated route for
+/// [WorkLocationPickerPage]
+class WorkLocationPickerRoute
+    extends PageRouteInfo<WorkLocationPickerRouteArgs> {
+  WorkLocationPickerRoute({
+    required String orgId,
+    String? selectedLocationId,
+    bool allowNone = false,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         WorkLocationPickerRoute.name,
+         args: WorkLocationPickerRouteArgs(
+           orgId: orgId,
+           selectedLocationId: selectedLocationId,
+           allowNone: allowNone,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'WorkLocationPickerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<WorkLocationPickerRouteArgs>();
+      return WorkLocationPickerPage(
+        orgId: args.orgId,
+        selectedLocationId: args.selectedLocationId,
+        allowNone: args.allowNone,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class WorkLocationPickerRouteArgs {
+  const WorkLocationPickerRouteArgs({
+    required this.orgId,
+    this.selectedLocationId,
+    this.allowNone = false,
+    this.key,
+  });
+
+  final String orgId;
+
+  final String? selectedLocationId;
+
+  final bool allowNone;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'WorkLocationPickerRouteArgs{orgId: $orgId, selectedLocationId: $selectedLocationId, allowNone: $allowNone, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! WorkLocationPickerRouteArgs) return false;
+    return orgId == other.orgId &&
+        selectedLocationId == other.selectedLocationId &&
+        allowNone == other.allowNone &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      orgId.hashCode ^
+      selectedLocationId.hashCode ^
+      allowNone.hashCode ^
+      key.hashCode;
+}

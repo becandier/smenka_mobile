@@ -66,6 +66,27 @@ class _ActiveShiftContent extends StatelessWidget {
               style: textTheme.bodyMedium?.copyWith(color: colors.secondary),
             ),
           ),
+          if (shift.workLocation case final loc?) ...[
+            const SizedBox(height: 12),
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.place_outlined, size: 16, color: colors.secondary),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      loc.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colors.secondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 32),
 
           // Pause/Resume button

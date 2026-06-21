@@ -23,6 +23,7 @@ abstract class ShiftRepository {
     String? organizationId,
     double? latitude,
     double? longitude,
+    String? workLocationId,
   });
 
   Future<Task<Shift>> pauseShift(String shiftId);

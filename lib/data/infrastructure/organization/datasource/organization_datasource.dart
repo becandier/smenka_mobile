@@ -38,6 +38,17 @@ class OrganizationDataSource {
     return items.cast<Map<String, dynamic>>().map(MemberDto.fromJson).toList();
   }
 
+  Future<List<WorkLocationDto>> getWorkLocations(String orgId) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/organizations/$orgId/locations',
+    );
+    final items = response.data!['items'] as List<dynamic>;
+    return items
+        .cast<Map<String, dynamic>>()
+        .map(WorkLocationDto.fromJson)
+        .toList();
+  }
+
   Future<void> removeMember(String orgId, String memberUserId) async {
     await _dio.delete<void>('/organizations/$orgId/members/$memberUserId');
   }

@@ -44,6 +44,9 @@ String localizedErrorMessage(
     'SHIFT_FINISHED' => l10n.errorShiftFinished,
     'INSTANCE_NOT_FOUND' => l10n.errorInstanceNotFound,
     'ITEM_NOT_FOUND' => l10n.errorItemNotFound,
+    // shift_work_location: привязка рабочей точки к смене
+    'WORK_LOCATION_REQUIRED' => l10n.errorWorkLocationRequired,
+    'WORK_LOCATION_NOT_FOUND' => l10n.errorWorkLocationNotFound,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,

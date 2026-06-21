@@ -196,12 +196,25 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
   void selectOrganization(String? organizationId) {
     _contextSelectedManually = true;
-    emit(state.copyWith(selectedOrganizationId: organizationId));
+    // Смена контекста сбрасывает выбранную точку: точка принадлежит конкретной
+    // организации и не должна «перетекать» в другую org или персональную смену.
+    emit(
+      state.copyWith(
+        selectedOrganizationId: organizationId,
+        selectedWorkLocation: null,
+      ),
+    );
     unawaited(
       _contextStorage.save(
         organizationId ?? ShiftContextStorage.personalMarker,
       ),
     );
+  }
+
+  /// Выбор рабочей точки в модалке. `null` — пункт «Без точки» (необязательная
+  /// привязка).
+  void selectWorkLocation(WorkLocation? location) {
+    emit(state.copyWith(selectedWorkLocation: location));
   }
 
   Future<StartShiftResult> startShift() async {
@@ -254,6 +267,9 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
       organizationId: state.selectedOrganizationId,
       latitude: lat,
       longitude: lng,
+      // При гео точку определяет сервер (selectedWorkLocation тогда null —
+      // селектор скрыт). При гео выкл шлём выбранную точку (или null).
+      workLocationId: state.selectedWorkLocation?.id,
     );
 
     return result.fold(

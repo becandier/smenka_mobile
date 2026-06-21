@@ -213,3 +213,9 @@
 - [x] **Брендинг**: `web/index.html` + `manifest.json` (Smenka, theme `#4A90D9`); `firebase_options` уже содержит web-конфиг; добавлен `flutter_web_plugins` (sdk)
 - [x] **`flutter build web --release` собирается** (Wasm dry-run тоже OK); analyze 0, 36 тестов; mobile-поведение не сломано
 - [ ] Вне клиента (см. `../docs/tasks/web_cors/`): **CORS на бэке** (рантайм-блокер), HTTPS-хостинг, secure storage на web = IndexedDB (JWT доступны JS — осознанный риск; «правильно» = httpOnly-cookie на бэке)
+
+## Фича — Привязка рабочей точки к смене `[~]` (`../docs/tasks/shift_work_location/mobile.md`)
+- [x] **Data**: модель `WorkLocation {id,name,address}` (org-домен; одна модель и для списка точек, и для вложенного объекта смены); `OrganizationRepository.getWorkLocations(orgId)` → `GET /organizations/{org_id}/locations` (`{items:[...]}`); `require_work_location` в `Organization`; `work_location_id` + вложенный `work_location` в `Shift`; параметр `work_location_id` в старте смены
+- [x] **UI**: экран выбора точки `work_location_picker` (модалка `CustomRoute`, паттерн `employee_picker`); селектор точки на idle-экране по матрице `geo_check_enabled × require_work_location` (гео вкл → точку определяет сервер, селектор скрыт; гео выкл + require → обязательный выбор + гейтинг кнопки старта; гео выкл → опционально, пункт «Без точки»); показ точки в активной смене, истории, деталях персон/орг (реюз `WorkLocationLine`)
+- [x] Локализация; маппинг `WORK_LOCATION_REQUIRED`/`WORK_LOCATION_NOT_FOUND` по `error.code`; все новые поля nullable/additive (обратная совместимость со старым бэком); 3 новых cubit-теста; мульти-агентное ревью (12 агентов, состязательная верификация) + `make check` зелёный
+- [ ] **End-to-end**: бэкенд фичи на момент реализации не задеплоен — мобилка построена против согласованного контракта (`backend.md`); полноценно заработает после деплоя бэка

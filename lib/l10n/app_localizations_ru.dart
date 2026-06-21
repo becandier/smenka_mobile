@@ -253,6 +253,21 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вы находитесь за пределами рабочей зоны';
 
   @override
+  String get shiftWorkLocation => 'Рабочая точка';
+
+  @override
+  String get shiftWorkLocationSelect => 'Выберите рабочую точку';
+
+  @override
+  String get shiftWorkLocationPickerTitle => 'Рабочая точка';
+
+  @override
+  String get shiftWorkLocationPickerNone => 'Без точки';
+
+  @override
+  String get shiftWorkLocationPickerEmpty => 'У организации нет рабочих точек';
+
+  @override
   String get geoPermissionDenied =>
       'Для начала смены необходим доступ к геолокации';
 
@@ -360,6 +375,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get detailOrganization => 'Организация';
+
+  @override
+  String get detailWorkLocation => 'Рабочая точка';
 
   @override
   String get detailPauses => 'Паузы';
@@ -985,6 +1003,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorItemNotFound => 'Пункт чек-листа не найден';
+
+  @override
+  String get errorWorkLocationRequired =>
+      'Выберите рабочую точку, чтобы начать смену';
+
+  @override
+  String get errorWorkLocationNotFound => 'Рабочая точка не найдена';
 
   @override
   String get commonNoConnection => 'Нет соединения';

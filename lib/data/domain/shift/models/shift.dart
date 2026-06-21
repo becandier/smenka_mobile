@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:smenka_mobile/data/domain/organization/models/work_location.dart';
 
 part 'shift.freezed.dart';
 
@@ -26,6 +27,11 @@ abstract class Shift with _$Shift {
     String? organizationId,
     DateTime? finishedAt,
     @Default(false) bool hasIncompleteRequiredChecklists,
+
+    /// Рабочая точка, на которой открыта смена. `null` — не определена
+    /// (персональная смена, гео-старт старого билда, либо точку не выбирали).
+    String? workLocationId,
+    WorkLocation? workLocation,
 
     /// Данные автора смены. Заполняются только в орг-ответах
     /// (`GET /organizations/{org_id}/shifts[/{shift_id}]`); в персональном

@@ -556,6 +556,36 @@ abstract class AppLocalizations {
   /// **'Вы находитесь за пределами рабочей зоны'**
   String get shiftLocationOutOfRange;
 
+  /// No description provided for @shiftWorkLocation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочая точка'**
+  String get shiftWorkLocation;
+
+  /// No description provided for @shiftWorkLocationSelect.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите рабочую точку'**
+  String get shiftWorkLocationSelect;
+
+  /// No description provided for @shiftWorkLocationPickerTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочая точка'**
+  String get shiftWorkLocationPickerTitle;
+
+  /// No description provided for @shiftWorkLocationPickerNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Без точки'**
+  String get shiftWorkLocationPickerNone;
+
+  /// No description provided for @shiftWorkLocationPickerEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'У организации нет рабочих точек'**
+  String get shiftWorkLocationPickerEmpty;
+
   /// No description provided for @geoPermissionDenied.
   ///
   /// In ru, this message translates to:
@@ -759,6 +789,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Организация'**
   String get detailOrganization;
+
+  /// No description provided for @detailWorkLocation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочая точка'**
+  String get detailWorkLocation;
 
   /// No description provided for @detailPauses.
   ///
@@ -1905,6 +1941,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Пункт чек-листа не найден'**
   String get errorItemNotFound;
+
+  /// No description provided for @errorWorkLocationRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите рабочую точку, чтобы начать смену'**
+  String get errorWorkLocationRequired;
+
+  /// No description provided for @errorWorkLocationNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рабочая точка не найдена'**
+  String get errorWorkLocationNotFound;
 
   /// No description provided for @commonNoConnection.
   ///

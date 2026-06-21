@@ -15,6 +15,7 @@ abstract class OrganizationDto with _$OrganizationDto {
     required bool isDeleted,
     required DateTime createdAt,
     @Default(false) bool geoCheckEnabled,
+    @Default(false) bool requireWorkLocation,
     String? myRole,
     OrganizationRoleDto? myCustomRole,
   }) = _OrganizationDto;

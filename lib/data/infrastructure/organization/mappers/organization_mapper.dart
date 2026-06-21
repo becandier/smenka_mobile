@@ -19,6 +19,7 @@ extension OrganizationMapper on OrganizationDto {
       isDeleted: isDeleted,
       createdAt: createdAt,
       geoCheckEnabled: geoCheckEnabled,
+      requireWorkLocation: requireWorkLocation,
       myRole: _parseMyRole(myRole),
       myCustomRole: myCustomRole?.toDomain(),
     );

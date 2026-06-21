@@ -71,6 +71,14 @@ class OrganizationRepositoryImpl
   }
 
   @override
+  Future<Task<List<WorkLocation>>> getWorkLocations(String orgId) {
+    return execute(() async {
+      final dtos = await _dataSource.getWorkLocations(orgId);
+      return dtos.map((d) => d.toDomain()).toList();
+    });
+  }
+
+  @override
   Future<Task<void>> removeMember(String orgId, String memberUserId) {
     return executeVoid(() => _dataSource.removeMember(orgId, memberUserId));
   }

@@ -79,6 +79,12 @@ class AppRouter extends RootStackRouter {
               initial: true,
               page: ShiftTrackerRoute.page,
             ),
+            // Выбор рабочей точки при старте смены — модальный bottom sheet.
+            CustomRoute<WorkLocationPickerResult?>(
+              path: 'work-location-picker',
+              page: WorkLocationPickerRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
             AutoRoute(
               path: 'shifts/:shiftId/checklists',
               page: ShiftChecklistsRoute.page,
