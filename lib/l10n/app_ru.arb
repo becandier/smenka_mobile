@@ -86,6 +86,7 @@
     "shiftNoPauses": "Пауз нет",
     "shiftStarted": "Смена начата",
     "shiftFinished": "Смена завершена",
+    "shiftAutoFinishedNotice": "Смена завершена автоматически",
     "shiftPauseStarted": "Пауза начата",
     "shiftResumed": "Смена продолжена",
     "shiftLocationRequired": "Для этой организации требуется геопроверка",
@@ -306,6 +307,35 @@
     "checklistFillSaved": "Сохранено",
     "checklistFillSaveError": "Не удалось сохранить",
 
+    "checklistPhotoAdd": "Добавить фото",
+    "checklistPhotoTakePhoto": "Снять фото",
+    "checklistPhotoChooseGallery": "Выбрать из галереи",
+    "checklistPhotoSourceTitle": "Добавить фото",
+    "checklistPhotoRequiredBadge": "Нужно фото",
+    "checklistPhotoDeleteConfirmTitle": "Удалить фото?",
+    "checklistPhotoDelete": "Удалить",
+    "checklistPhotoGeoUnavailable": "Координаты недоступны",
+    "checklistPhotoShiftFinished": "Смена завершена",
+    "checklistPhotoCaptionTaken": "Снято: {datetime}",
+    "@checklistPhotoCaptionTaken": {
+        "placeholders": {
+            "datetime": {"type": "String"}
+        }
+    },
+    "checklistPhotoCaptionAdded": "Добавлено: {datetime}",
+    "@checklistPhotoCaptionAdded": {
+        "placeholders": {
+            "datetime": {"type": "String"}
+        }
+    },
+    "checklistPhotoCaptionCoords": "Координаты: {lat}, {lng}",
+    "@checklistPhotoCaptionCoords": {
+        "placeholders": {
+            "lat": {"type": "String"},
+            "lng": {"type": "String"}
+        }
+    },
+
     "shiftFinishIncompleteWarning": "Есть незаполненные обязательные чек-листы",
     "shiftIncompleteRequiredBadge": "Чек-листы не выполнены",
 
@@ -401,6 +431,13 @@
     "errorFileNotFound": "Файл не найден",
     "errorFileInUse": "Файл используется и не может быть удалён",
     "errorInvalidFileCategory": "Неизвестная категория файла",
+    "errorPhotoNotAllowed": "К этому пункту нельзя прикреплять фото",
+    "errorPhotoLimitExceeded": "Достигнут лимит фото для пункта",
+    "errorPhotoNotFound": "Фото не найдено",
+    "errorPhotoFileInvalid": "Файл недоступен, снимите фото заново",
+    "errorShiftFinished": "Смена завершена",
+    "errorInstanceNotFound": "Чек-лист не найден",
+    "errorItemNotFound": "Пункт чек-листа не найден",
     "commonNoConnection": "Нет соединения",
     "commonRetry": "Повторить",
     "shiftOfflineBanner": "Нет соединения. Проверьте интернет"

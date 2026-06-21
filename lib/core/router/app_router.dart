@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -50,6 +52,20 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: LoginRoute.page, path: '/login'),
     AutoRoute(page: VerifyRoute.page, path: '/verify'),
     AutoRoute(page: DebugRoute.page, path: '/debug'),
+    // Полноэкранный просмотр фото чек-листа — поверх табов (root), один на все
+    // вкладки; пушится через `context.router.root.push(...)`.
+    CustomRoute<void>(
+      path: '/checklist-photo-viewer',
+      page: ChecklistPhotoViewerRoute.page,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+      duration: const Duration(milliseconds: 200),
+    ),
+    // Выбор источника фото (камера/галерея) — модальный bottom sheet поверх табов.
+    CustomRoute<PhotoCaptureSource?>(
+      path: '/checklist-photo-source',
+      page: ChecklistPhotoSourceRoute.page,
+      customRouteBuilder: _modalBottomSheetBuilder,
+    ),
     AutoRoute(
       path: '/',
       page: MainRouterRoute.page,

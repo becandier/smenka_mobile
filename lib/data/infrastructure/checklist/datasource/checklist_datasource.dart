@@ -56,4 +56,39 @@ class ChecklistDataSource {
     );
     return ChecklistInstanceItemDto.fromJson(response.data!);
   }
+
+  // --- Item photos ---
+
+  Future<ChecklistItemPhotoDto> addItemPhoto(
+    String shiftId,
+    String instanceId,
+    String itemId, {
+    required String fileId,
+    DateTime? capturedAt,
+    double? latitude,
+    double? longitude,
+  }) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/shifts/$shiftId/checklists/$instanceId/items/$itemId/photos',
+      data: {
+        'file_id': fileId,
+        if (capturedAt != null)
+          'captured_at': capturedAt.toUtc().toIso8601String(),
+        if (latitude != null) 'latitude': latitude,
+        if (longitude != null) 'longitude': longitude,
+      },
+    );
+    return ChecklistItemPhotoDto.fromJson(response.data!);
+  }
+
+  Future<void> deleteItemPhoto(
+    String shiftId,
+    String instanceId,
+    String itemId,
+    String photoId,
+  ) async {
+    await _dio.delete<void>(
+      '/shifts/$shiftId/checklists/$instanceId/items/$itemId/photos/$photoId',
+    );
+  }
 }

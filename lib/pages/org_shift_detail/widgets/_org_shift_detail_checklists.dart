@@ -17,13 +17,15 @@ class _OrgShiftDetailChecklists extends StatelessWidget {
         shiftId: shiftId,
         checklistRepository: context.read<ChecklistRepository>(),
       ),
-      child: const _OrgShiftChecklistsBody(),
+      child: _OrgShiftChecklistsBody(organizationId: orgId),
     );
   }
 }
 
 class _OrgShiftChecklistsBody extends StatelessWidget {
-  const _OrgShiftChecklistsBody();
+  const _OrgShiftChecklistsBody({this.organizationId});
+
+  final String? organizationId;
 
   Future<void> _open(BuildContext context, ChecklistInstance instance) async {
     final cubit = context.read<ShiftChecklistsCubit>();
@@ -31,6 +33,7 @@ class _OrgShiftChecklistsBody extends StatelessWidget {
       ChecklistFillRoute(
         shiftId: cubit.shiftId,
         instanceId: instance.id,
+        organizationId: organizationId,
         readOnly: true,
       ),
     );

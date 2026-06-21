@@ -9,9 +9,42 @@ ChecklistInstanceStatus _parseStatus(String value) => switch (value) {
   _ => throw ArgumentError('Unknown checklist instance status: $value'),
 };
 
+// Незнакомое значение → безопасный дефолт (none/camera), не бросаем: бэк может
+// со временем добавить варианты, старая мобилка не должна падать.
+PhotoRequirement _parsePhotoRequirement(String value) => switch (value) {
+  'none' => PhotoRequirement.none,
+  'optional' => PhotoRequirement.optional,
+  'required' => PhotoRequirement.required,
+  _ => PhotoRequirement.none,
+};
+
+PhotoSource _parsePhotoSource(String value) => switch (value) {
+  'camera' => PhotoSource.camera,
+  'camera_or_gallery' => PhotoSource.cameraOrGallery,
+  _ => PhotoSource.camera,
+};
+
 extension ChecklistItemsSummaryDtoMapper on ChecklistItemsSummaryDto {
-  ChecklistItemsSummary toDomain() =>
-      ChecklistItemsSummary(total: total, completed: completed);
+  ChecklistItemsSummary toDomain() => ChecklistItemsSummary(
+    total: total,
+    completed: completed,
+    // Старый бэк без satisfied_count → честный прогресс по completed.
+    satisfiedCount: satisfiedCount ?? completed,
+    photosRequiredMissing: photosRequiredMissing,
+  );
+}
+
+extension ChecklistItemPhotoDtoMapper on ChecklistItemPhotoDto {
+  ChecklistItemPhoto toDomain() => ChecklistItemPhoto(
+    id: id,
+    fileId: fileId,
+    position: position,
+    url: url,
+    urlExpiresAt: urlExpiresAt,
+    capturedAt: capturedAt,
+    latitude: latitude,
+    longitude: longitude,
+  );
 }
 
 extension ChecklistInstanceDtoMapper on ChecklistInstanceDto {
@@ -37,6 +70,10 @@ extension ChecklistInstanceItemDtoMapper on ChecklistInstanceItemDto {
     comment: comment,
     completedAt: completedAt,
     changeCount: changeCount,
+    photoRequirement: _parsePhotoRequirement(photoRequirement),
+    photoSource: _parsePhotoSource(photoSource),
+    photosCount: photosCount,
+    photos: photos.map((e) => e.toDomain()).toList(),
   );
 }
 
@@ -50,5 +87,6 @@ extension ChecklistInstanceDetailDtoMapper on ChecklistInstanceDetailDto {
     completedAt: completedAt,
     createdAt: createdAt,
     items: items.map((e) => e.toDomain()).toList(),
+    maxPhotosPerItem: maxPhotosPerItem,
   );
 }

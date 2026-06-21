@@ -11,6 +11,9 @@ _ChecklistItemsSummaryDto _$ChecklistItemsSummaryDtoFromJson(
 ) => _ChecklistItemsSummaryDto(
   total: (json['total'] as num).toInt(),
   completed: (json['completed'] as num).toInt(),
+  satisfiedCount: (json['satisfied_count'] as num?)?.toInt(),
+  photosRequiredMissing:
+      (json['photos_required_missing'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$ChecklistItemsSummaryDtoToJson(
@@ -18,6 +21,8 @@ Map<String, dynamic> _$ChecklistItemsSummaryDtoToJson(
 ) => <String, dynamic>{
   'total': instance.total,
   'completed': instance.completed,
+  'satisfied_count': instance.satisfiedCount,
+  'photos_required_missing': instance.photosRequiredMissing,
 };
 
 _ChecklistInstanceDto _$ChecklistInstanceDtoFromJson(
@@ -65,6 +70,7 @@ _ChecklistInstanceDetailDto _$ChecklistInstanceDetailDtoFromJson(
   completedAt: json['completed_at'] == null
       ? null
       : DateTime.parse(json['completed_at'] as String),
+  maxPhotosPerItem: (json['max_photos_per_item'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
@@ -78,6 +84,7 @@ Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
   'created_at': instance.createdAt.toIso8601String(),
   'items': instance.items,
   'completed_at': instance.completedAt?.toIso8601String(),
+  'max_photos_per_item': instance.maxPhotosPerItem,
 };
 
 _ChecklistInstanceItemDto _$ChecklistInstanceItemDtoFromJson(
@@ -93,6 +100,16 @@ _ChecklistInstanceItemDto _$ChecklistInstanceItemDtoFromJson(
   completedAt: json['completed_at'] == null
       ? null
       : DateTime.parse(json['completed_at'] as String),
+  photoRequirement: json['photo_requirement'] as String? ?? 'none',
+  photoSource: json['photo_source'] as String? ?? 'camera',
+  photosCount: (json['photos_count'] as num?)?.toInt() ?? 0,
+  photos:
+      (json['photos'] as List<dynamic>?)
+          ?.map(
+            (e) => ChecklistItemPhotoDto.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const <ChecklistItemPhotoDto>[],
 );
 
 Map<String, dynamic> _$ChecklistInstanceItemDtoToJson(
@@ -106,4 +123,38 @@ Map<String, dynamic> _$ChecklistInstanceItemDtoToJson(
   'change_count': instance.changeCount,
   'comment': instance.comment,
   'completed_at': instance.completedAt?.toIso8601String(),
+  'photo_requirement': instance.photoRequirement,
+  'photo_source': instance.photoSource,
+  'photos_count': instance.photosCount,
+  'photos': instance.photos,
+};
+
+_ChecklistItemPhotoDto _$ChecklistItemPhotoDtoFromJson(
+  Map<String, dynamic> json,
+) => _ChecklistItemPhotoDto(
+  id: json['id'] as String,
+  fileId: json['file_id'] as String,
+  position: (json['position'] as num).toInt(),
+  url: json['url'] as String?,
+  urlExpiresAt: json['url_expires_at'] == null
+      ? null
+      : DateTime.parse(json['url_expires_at'] as String),
+  capturedAt: json['captured_at'] == null
+      ? null
+      : DateTime.parse(json['captured_at'] as String),
+  latitude: (json['latitude'] as num?)?.toDouble(),
+  longitude: (json['longitude'] as num?)?.toDouble(),
+);
+
+Map<String, dynamic> _$ChecklistItemPhotoDtoToJson(
+  _ChecklistItemPhotoDto instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'file_id': instance.fileId,
+  'position': instance.position,
+  'url': instance.url,
+  'url_expires_at': instance.urlExpiresAt?.toIso8601String(),
+  'captured_at': instance.capturedAt?.toIso8601String(),
+  'latitude': instance.latitude,
+  'longitude': instance.longitude,
 };

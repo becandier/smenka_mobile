@@ -1,9 +1,10 @@
 part of '../view/shift_tracker_page.dart';
 
 class _ShiftChecklistsTile extends StatefulWidget {
-  const _ShiftChecklistsTile({required this.shiftId});
+  const _ShiftChecklistsTile({required this.shiftId, this.organizationId});
 
   final String shiftId;
+  final String? organizationId;
 
   @override
   State<_ShiftChecklistsTile> createState() => _ShiftChecklistsTileState();
@@ -28,7 +29,12 @@ class _ShiftChecklistsTileState extends State<_ShiftChecklistsTile> {
   }
 
   Future<void> _open() async {
-    await context.router.push(ShiftChecklistsRoute(shiftId: widget.shiftId));
+    await context.router.push(
+      ShiftChecklistsRoute(
+        shiftId: widget.shiftId,
+        organizationId: widget.organizationId,
+      ),
+    );
     if (!mounted) return;
     setState(() => _future = _fetch());
   }
