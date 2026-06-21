@@ -22,8 +22,8 @@ mixin _$ShiftTrackerState {
  FeatureStatus get actionStatus; String? get actionError;/// Машинный `error.code` последнего действия (для маппинга сетевых ошибок)
  String? get actionErrorCode;/// Нет сетевого подключения (по данным connectivity_plus)
  bool get isOffline;/// Предупреждение о низкой точности GPS
- bool get showLowAccuracyWarning;/// Одноразовый нотис: смену авто-завершил бэкенд (фоновый поллинг обнаружил,
-/// что активной/приостановленной смены больше нет). UI показывает тост и
+ bool get showLowAccuracyWarning;/// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
+/// активной/приостановленной смены больше нет). UI показывает тост и
 /// сбрасывает флаг.
  bool get shiftAutoFinished;
 /// Create a copy of ShiftTrackerState
@@ -264,8 +264,8 @@ class _ShiftTrackerState extends ShiftTrackerState {
 @override@JsonKey() final  bool isOffline;
 /// Предупреждение о низкой точности GPS
 @override@JsonKey() final  bool showLowAccuracyWarning;
-/// Одноразовый нотис: смену авто-завершил бэкенд (фоновый поллинг обнаружил,
-/// что активной/приостановленной смены больше нет). UI показывает тост и
+/// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
+/// активной/приостановленной смены больше нет). UI показывает тост и
 /// сбрасывает флаг.
 @override@JsonKey() final  bool shiftAutoFinished;
 
