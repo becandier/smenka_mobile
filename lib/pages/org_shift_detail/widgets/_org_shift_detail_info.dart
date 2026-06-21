@@ -38,6 +38,10 @@ class _OrgShiftInfoSection extends StatelessWidget {
               label: l10n.detailStatus,
               trailing: _OrgStatusBadge(status: shift.status),
             ),
+            if (shift.workLocation case final loc?) ...[
+              const Divider(),
+              _InfoRow(label: l10n.detailWorkLocation, value: loc.name),
+            ],
             if (shift.hasIncompleteRequiredChecklists) ...[
               const Divider(),
               Row(

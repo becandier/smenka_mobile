@@ -361,4 +361,92 @@ void main() {
       await cubit.close();
     });
   });
+
+  group('привязка рабочей точки (shift_work_location)', () {
+    final orgGeoOff = Organization(
+      id: 'org1',
+      name: 'Org 1',
+      ownerId: 'owner1',
+      inviteCode: 'INV12345',
+      isDeleted: false,
+      createdAt: DateTime.utc(2026),
+      requireWorkLocation: true,
+    );
+    const point = WorkLocation(id: 'wl1', name: 'Точка А');
+
+    setUp(() {
+      when(() => contextStorage.save(any())).thenAnswer((_) async {});
+    });
+
+    ShiftTrackerCubit buildWithOrgs(List<Organization> orgs) {
+      when(
+        () => orgRepo.watchMyOrganizations(),
+      ).thenAnswer((_) => Stream<List<Organization>>.value(orgs));
+      return buildCubit();
+    }
+
+    test(
+      'гео выкл + require: кнопка старта заблокирована до выбора точки',
+      () async {
+        final cubit = buildWithOrgs([orgGeoOff]);
+        await pumpEventQueue();
+        cubit.selectOrganization('org1');
+
+        expect(cubit.state.showWorkLocationSelector, isTrue);
+        expect(cubit.state.requiresWorkLocation, isTrue);
+        expect(cubit.state.canStartShift, isFalse);
+
+        cubit.selectWorkLocation(point);
+        expect(cubit.state.canStartShift, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test(
+      'startShift шлёт work_location_id выбранной точки (без гео)',
+      () async {
+        when(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+        final cubit = buildWithOrgs([orgGeoOff]);
+        await pumpEventQueue();
+        cubit
+          ..selectOrganization('org1')
+          ..selectWorkLocation(point);
+
+        await cubit.startShift();
+
+        verify(
+          () => shiftRepo.startShift(
+            organizationId: 'org1',
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+            workLocationId: 'wl1',
+          ),
+        ).called(1);
+        verifyNever(() => geo.getCurrentPosition());
+        await cubit.close();
+      },
+    );
+
+    test('смена организации сбрасывает выбранную точку', () async {
+      final orgB = orgGeoOff.copyWith(id: 'org2', name: 'Org 2');
+      final cubit = buildWithOrgs([orgGeoOff, orgB]);
+      await pumpEventQueue();
+      cubit
+        ..selectOrganization('org1')
+        ..selectWorkLocation(point);
+      expect(cubit.state.selectedWorkLocation, isNotNull);
+
+      cubit.selectOrganization('org2');
+      expect(cubit.state.selectedWorkLocation, isNull);
+      await cubit.close();
+    });
+  });
 }

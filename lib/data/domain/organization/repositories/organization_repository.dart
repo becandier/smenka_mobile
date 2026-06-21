@@ -9,6 +9,9 @@ abstract class OrganizationRepository {
   Future<Task<JoinResult>> join(String inviteCode);
   Future<Task<List<Member>>> getMembers(String orgId);
 
+  /// Список рабочих точек организации (для выбора точки при старте смены).
+  Future<Task<List<WorkLocation>>> getWorkLocations(String orgId);
+
   /// Покинуть организацию — участник удаляет собственное членство (self-leave).
   Future<Task<void>> removeMember(String orgId, String memberUserId);
 

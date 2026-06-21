@@ -43,6 +43,10 @@ class _DetailInfoSection extends StatelessWidget {
                   ? l10n.detailOrganization
                   : l10n.detailPersonal,
             ),
+            if (shift.workLocation case final loc?) ...[
+              const Divider(),
+              _InfoRow(label: l10n.detailWorkLocation, value: loc.name),
+            ],
           ],
         ),
       ),

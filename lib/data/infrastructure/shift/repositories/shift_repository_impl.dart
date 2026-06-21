@@ -52,12 +52,14 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
     String? organizationId,
     double? latitude,
     double? longitude,
+    String? workLocationId,
   }) {
     return execute(() async {
       final dto = await _dataSource.startShift(
         organizationId: organizationId,
         latitude: latitude,
         longitude: longitude,
+        workLocationId: workLocationId,
       );
       return dto.toDomain();
     });

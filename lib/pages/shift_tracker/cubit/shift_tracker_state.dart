@@ -39,6 +39,10 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
     /// активной/приостановленной смены больше нет). UI показывает тост и
     /// сбрасывает флаг.
     @Default(false) bool shiftAutoFinished,
+
+    /// Выбранная сотрудником рабочая точка для старта смены (когда гео
+    /// выключена). `null` — не выбрана; при смене организации сбрасывается.
+    WorkLocation? selectedWorkLocation,
   }) = _ShiftTrackerState;
   const ShiftTrackerState._();
 
@@ -63,4 +67,22 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
     if (orgs == null) return null;
     return orgs.where((o) => o.id == selectedOrganizationId).firstOrNull;
   }
+
+  /// Показывать ли селектор точки: гео у выбранной org выключена, значит
+  /// точку выбирает сотрудник. При включённой гео её определяет сервер.
+  bool get showWorkLocationSelector {
+    final org = selectedOrganization;
+    return org != null && !org.geoCheckEnabled;
+  }
+
+  /// Привязка точки обязательна: гео выключена и org требует точку
+  /// (`require_work_location`). Кнопка старта заблокирована до выбора.
+  bool get requiresWorkLocation {
+    final org = selectedOrganization;
+    return org != null && !org.geoCheckEnabled && org.requireWorkLocation;
+  }
+
+  /// Можно ли начать смену: если точка обязательна — она должна быть выбрана.
+  bool get canStartShift =>
+      !requiresWorkLocation || selectedWorkLocation != null;
 }

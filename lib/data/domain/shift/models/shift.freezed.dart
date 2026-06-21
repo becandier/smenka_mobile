@@ -280,7 +280,9 @@ as DateTime?,
 /// @nodoc
 mixin _$Shift {
 
- String get id; String get userId; DateTime get startedAt; ShiftStatus get status; List<Pause> get pauses; int get workedSeconds; String? get organizationId; DateTime? get finishedAt; bool get hasIncompleteRequiredChecklists;/// Данные автора смены. Заполняются только в орг-ответах
+ String get id; String get userId; DateTime get startedAt; ShiftStatus get status; List<Pause> get pauses; int get workedSeconds; String? get organizationId; DateTime? get finishedAt; bool get hasIncompleteRequiredChecklists;/// Рабочая точка, на которой открыта смена. `null` — не определена
+/// (персональная смена, гео-старт старого билда, либо точку не выбирали).
+ String? get workLocationId; WorkLocation? get workLocation;/// Данные автора смены. Заполняются только в орг-ответах
 /// (`GET /organizations/{org_id}/shifts[/{shift_id}]`); в персональном
 /// трекере (`GET /shifts`) всегда `null`.
  String? get userName; String? get userEmail;/// Системная роль автора в этой организации: `admin` | `employee`.
@@ -297,16 +299,16 @@ $ShiftCopyWith<Shift> get copyWith => _$ShiftCopyWithImpl<Shift>(this as Shift, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Shift&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.pauses, pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Shift&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.pauses, pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,userName,userEmail,role,customRoleName);
+int get hashCode => Object.hash(runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName);
 
 @override
 String toString() {
-  return 'Shift(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
+  return 'Shift(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
 }
 
 
@@ -317,11 +319,11 @@ abstract mixin class $ShiftCopyWith<$Res>  {
   factory $ShiftCopyWith(Shift value, $Res Function(Shift) _then) = _$ShiftCopyWithImpl;
 @useResult
 $Res call({
- String id, String userId, DateTime startedAt, ShiftStatus status, List<Pause> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? userName, String? userEmail, String? role, String? customRoleName
+ String id, String userId, DateTime startedAt, ShiftStatus status, List<Pause> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocation? workLocation, String? userName, String? userEmail, String? role, String? customRoleName
 });
 
 
-
+$WorkLocationCopyWith<$Res>? get workLocation;
 
 }
 /// @nodoc
@@ -334,7 +336,7 @@ class _$ShiftCopyWithImpl<$Res>
 
 /// Create a copy of Shift
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -345,14 +347,28 @@ as List<Pause>,workedSeconds: null == workedSeconds ? _self.workedSeconds : work
 as int,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as String?,finishedAt: freezed == finishedAt ? _self.finishedAt : finishedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,hasIncompleteRequiredChecklists: null == hasIncompleteRequiredChecklists ? _self.hasIncompleteRequiredChecklists : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
-as bool,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
+as bool,workLocationId: freezed == workLocationId ? _self.workLocationId : workLocationId // ignore: cast_nullable_to_non_nullable
+as String?,workLocation: freezed == workLocation ? _self.workLocation : workLocation // ignore: cast_nullable_to_non_nullable
+as WorkLocation?,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String?,userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String?,customRoleName: freezed == customRoleName ? _self.customRoleName : customRoleName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
+/// Create a copy of Shift
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WorkLocationCopyWith<$Res>? get workLocation {
+    if (_self.workLocation == null) {
+    return null;
+  }
 
+  return $WorkLocationCopyWith<$Res>(_self.workLocation!, (value) {
+    return _then(_self.copyWith(workLocation: value));
+  });
+}
 }
 
 
@@ -434,10 +450,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  ShiftStatus status,  List<Pause> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? userName,  String? userEmail,  String? role,  String? customRoleName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  ShiftStatus status,  List<Pause> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocation? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Shift() when $default != null:
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
   return orElse();
 
 }
@@ -455,10 +471,10 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  ShiftStatus status,  List<Pause> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? userName,  String? userEmail,  String? role,  String? customRoleName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  ShiftStatus status,  List<Pause> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocation? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName)  $default,) {final _that = this;
 switch (_that) {
 case _Shift():
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -475,10 +491,10 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  DateTime startedAt,  ShiftStatus status,  List<Pause> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? userName,  String? userEmail,  String? role,  String? customRoleName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  DateTime startedAt,  ShiftStatus status,  List<Pause> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocation? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName)?  $default,) {final _that = this;
 switch (_that) {
 case _Shift() when $default != null:
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
   return null;
 
 }
@@ -490,7 +506,7 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 
 
 class _Shift implements Shift {
-  const _Shift({required this.id, required this.userId, required this.startedAt, required this.status, required final  List<Pause> pauses, required this.workedSeconds, this.organizationId, this.finishedAt, this.hasIncompleteRequiredChecklists = false, this.userName, this.userEmail, this.role, this.customRoleName}): _pauses = pauses;
+  const _Shift({required this.id, required this.userId, required this.startedAt, required this.status, required final  List<Pause> pauses, required this.workedSeconds, this.organizationId, this.finishedAt, this.hasIncompleteRequiredChecklists = false, this.workLocationId, this.workLocation, this.userName, this.userEmail, this.role, this.customRoleName}): _pauses = pauses;
   
 
 @override final  String id;
@@ -508,6 +524,10 @@ class _Shift implements Shift {
 @override final  String? organizationId;
 @override final  DateTime? finishedAt;
 @override@JsonKey() final  bool hasIncompleteRequiredChecklists;
+/// Рабочая точка, на которой открыта смена. `null` — не определена
+/// (персональная смена, гео-старт старого билда, либо точку не выбирали).
+@override final  String? workLocationId;
+@override final  WorkLocation? workLocation;
 /// Данные автора смены. Заполняются только в орг-ответах
 /// (`GET /organizations/{org_id}/shifts[/{shift_id}]`); в персональном
 /// трекере (`GET /shifts`) всегда `null`.
@@ -529,16 +549,16 @@ _$ShiftCopyWith<_Shift> get copyWith => __$ShiftCopyWithImpl<_Shift>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Shift&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._pauses, _pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Shift&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._pauses, _pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(_pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,userName,userEmail,role,customRoleName);
+int get hashCode => Object.hash(runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(_pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName);
 
 @override
 String toString() {
-  return 'Shift(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
+  return 'Shift(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
 }
 
 
@@ -549,11 +569,11 @@ abstract mixin class _$ShiftCopyWith<$Res> implements $ShiftCopyWith<$Res> {
   factory _$ShiftCopyWith(_Shift value, $Res Function(_Shift) _then) = __$ShiftCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String userId, DateTime startedAt, ShiftStatus status, List<Pause> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? userName, String? userEmail, String? role, String? customRoleName
+ String id, String userId, DateTime startedAt, ShiftStatus status, List<Pause> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocation? workLocation, String? userName, String? userEmail, String? role, String? customRoleName
 });
 
 
-
+@override $WorkLocationCopyWith<$Res>? get workLocation;
 
 }
 /// @nodoc
@@ -566,7 +586,7 @@ class __$ShiftCopyWithImpl<$Res>
 
 /// Create a copy of Shift
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,}) {
   return _then(_Shift(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -577,7 +597,9 @@ as List<Pause>,workedSeconds: null == workedSeconds ? _self.workedSeconds : work
 as int,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as String?,finishedAt: freezed == finishedAt ? _self.finishedAt : finishedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,hasIncompleteRequiredChecklists: null == hasIncompleteRequiredChecklists ? _self.hasIncompleteRequiredChecklists : hasIncompleteRequiredChecklists // ignore: cast_nullable_to_non_nullable
-as bool,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
+as bool,workLocationId: freezed == workLocationId ? _self.workLocationId : workLocationId // ignore: cast_nullable_to_non_nullable
+as String?,workLocation: freezed == workLocation ? _self.workLocation : workLocation // ignore: cast_nullable_to_non_nullable
+as WorkLocation?,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String?,userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String?,customRoleName: freezed == customRoleName ? _self.customRoleName : customRoleName // ignore: cast_nullable_to_non_nullable
@@ -585,7 +607,19 @@ as String?,
   ));
 }
 
+/// Create a copy of Shift
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WorkLocationCopyWith<$Res>? get workLocation {
+    if (_self.workLocation == null) {
+    return null;
+  }
 
+  return $WorkLocationCopyWith<$Res>(_self.workLocation!, (value) {
+    return _then(_self.copyWith(workLocation: value));
+  });
+}
 }
 
 // dart format on

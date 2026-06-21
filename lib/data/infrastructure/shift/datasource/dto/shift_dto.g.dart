@@ -37,6 +37,10 @@ _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
       : DateTime.parse(json['finished_at'] as String),
   hasIncompleteRequiredChecklists:
       json['has_incomplete_required_checklists'] as bool? ?? false,
+  workLocationId: json['work_location_id'] as String?,
+  workLocation: json['work_location'] == null
+      ? null
+      : WorkLocationDto.fromJson(json['work_location'] as Map<String, dynamic>),
   userName: json['user_name'] as String?,
   userEmail: json['user_email'] as String?,
   role: json['role'] as String?,
@@ -54,6 +58,8 @@ Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
   'finished_at': instance.finishedAt?.toIso8601String(),
   'has_incomplete_required_checklists':
       instance.hasIncompleteRequiredChecklists,
+  'work_location_id': instance.workLocationId,
+  'work_location': instance.workLocation,
   'user_name': instance.userName,
   'user_email': instance.userEmail,
   'role': instance.role,

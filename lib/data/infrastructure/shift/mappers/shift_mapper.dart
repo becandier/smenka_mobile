@@ -1,4 +1,5 @@
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
+import 'package:smenka_mobile/data/infrastructure/organization/mappers/work_location_mapper.dart';
 import 'package:smenka_mobile/data/infrastructure/shift/datasource/dto/_dto.dart';
 
 extension PauseMapper on PauseDto {
@@ -24,6 +25,8 @@ extension ShiftMapper on ShiftDto {
       pauses: pauses.map((p) => p.toDomain()).toList(),
       workedSeconds: workedSeconds,
       hasIncompleteRequiredChecklists: hasIncompleteRequiredChecklists,
+      workLocationId: workLocationId,
+      workLocation: workLocation?.toDomain(),
       userName: userName,
       userEmail: userEmail,
       role: role,

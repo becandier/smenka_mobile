@@ -50,6 +50,10 @@ class _ShiftCard extends StatelessWidget {
                         color: colors.secondary,
                       ),
                     ),
+                    if (shift.workLocation case final loc?) ...[
+                      const SizedBox(height: 2),
+                      WorkLocationLine(name: loc.name),
+                    ],
                   ],
                 ),
               ),

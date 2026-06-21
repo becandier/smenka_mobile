@@ -17,11 +17,13 @@ import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_cubit.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_state.dart';
+import 'package:smenka_mobile/pages/work_location_picker/view/work_location_picker_page.dart';
 import 'package:smenka_mobile/widgets/app_button.dart';
 
 part '../widgets/idle_shift_content.dart';
 part '../widgets/active_shift_content.dart';
 part '../widgets/org_selector.dart';
+part '../widgets/work_location_selector.dart';
 part '../widgets/pause_list.dart';
 part '../widgets/shift_checklists_tile.dart';
 part '../widgets/shift_connectivity_bars.dart';

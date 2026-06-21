@@ -39,9 +39,14 @@ class _IdleShiftContent extends StatelessWidget {
               ),
               const SizedBox(height: 24),
             ],
+            if (state.showWorkLocationSelector) ...[
+              _WorkLocationSelector(state: state),
+              const SizedBox(height: 24),
+            ],
             AppButton(
               label: l10n.shiftStart,
               isLoading: state.isActionLoading,
+              isEnabled: state.canStartShift,
               onPressed: () => _onStartShift(context),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:smenka_mobile/data/infrastructure/organization/datasource/dto/work_location_dto.dart';
 
 part 'shift_dto.freezed.dart';
 part 'shift_dto.g.dart';
@@ -30,6 +31,10 @@ abstract class ShiftDto with _$ShiftDto {
     String? organizationId,
     DateTime? finishedAt,
     @Default(false) bool hasIncompleteRequiredChecklists,
+
+    /// Рабочая точка смены (additive, nullable). Старый бэк не шлёт → `null`.
+    String? workLocationId,
+    WorkLocationDto? workLocation,
 
     /// Additive-поля автора смены (орг-ответ). В персональном — `null`.
     String? userName,

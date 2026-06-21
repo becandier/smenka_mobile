@@ -16,6 +16,11 @@ abstract class Organization with _$Organization {
     required bool isDeleted,
     required DateTime createdAt,
     @Default(false) bool geoCheckEnabled,
+
+    /// Требовать привязку рабочей точки к смене. При гео-проверке точка
+    /// определяется сервером; при выключенной гео — выбирается сотрудником
+    /// (обязательно, если флаг включён).
+    @Default(false) bool requireWorkLocation,
     OrgMembershipRole? myRole,
     OrganizationRole? myCustomRole,
   }) = _Organization;
