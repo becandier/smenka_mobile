@@ -44,8 +44,35 @@ class ShiftTrackerPage extends StatelessWidget {
   }
 }
 
-class _ShiftTrackerView extends StatelessWidget {
+class _ShiftTrackerView extends StatefulWidget {
   const _ShiftTrackerView();
+
+  @override
+  State<_ShiftTrackerView> createState() => _ShiftTrackerViewState();
+}
+
+class _ShiftTrackerViewState extends State<_ShiftTrackerView>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState lifecycle) {
+    // Возврат на передний план → сразу сверяем активную смену с сервером
+    // (мог сработать авто-финиш, пока приложение было свёрнуто).
+    if (lifecycle == AppLifecycleState.resumed) {
+      context.read<ShiftTrackerCubit>().onAppResumed();
+    }
+  }
 
   Widget _buildContent(ShiftTrackerState state) {
     if (state.activeShift.isLoading) {
@@ -61,6 +88,14 @@ class _ShiftTrackerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<ShiftTrackerCubit, ShiftTrackerState>(
+          listenWhen: (prev, curr) =>
+              !prev.shiftAutoFinished && curr.shiftAutoFinished,
+          listener: (context, state) {
+            context.modals.showInfo(context.l10n.shiftAutoFinishedNotice);
+            context.read<ShiftTrackerCubit>().clearAutoFinishedNotice();
+          },
+        ),
         BlocListener<ShiftTrackerCubit, ShiftTrackerState>(
           listenWhen: (prev, curr) => prev.actionStatus != curr.actionStatus,
           listener: (context, state) {
@@ -99,7 +134,13 @@ class _ShiftTrackerView extends StatelessWidget {
               return Column(
                 children: [
                   if (state.isOffline) const _OfflineBanner(),
-                  Expanded(child: _buildContent(state)),
+                  Expanded(
+                    child: RefreshIndicator.adaptive(
+                      onRefresh: () =>
+                          context.read<ShiftTrackerCubit>().refresh(),
+                      child: _buildContent(state),
+                    ),
+                  ),
                   if (state.hasActionError && state.isActionNetworkError)
                     _ShiftActionErrorBar(state: state),
                 ],

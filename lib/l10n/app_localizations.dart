@@ -520,6 +520,12 @@ abstract class AppLocalizations {
   /// **'Смена завершена'**
   String get shiftFinished;
 
+  /// No description provided for @shiftAutoFinishedNotice.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена завершена автоматически'**
+  String get shiftAutoFinishedNotice;
+
   /// No description provided for @shiftPauseStarted.
   ///
   /// In ru, this message translates to:
