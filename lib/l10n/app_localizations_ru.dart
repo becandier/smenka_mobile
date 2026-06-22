@@ -1046,10 +1046,29 @@ class AppLocalizationsRu extends AppLocalizations {
   String get payrollIncludePenalties => 'Учитывать штрафы';
 
   @override
+  String get knowledgeBaseTitle => 'База знаний';
+
+  @override
+  String get knowledgeTreeEmpty => 'Нет доступных материалов';
+
+  @override
+  String get knowledgePageEmpty => 'Страница пока пустая';
+
+  @override
+  String get knowledgeBlockUnsupported =>
+      'Этот блок не поддерживается в текущей версии приложения';
+
+  @override
+  String get knowledgeOpenYoutube => 'Открыть на YouTube';
+
+  @override
   String get errorPenaltyNotFound => 'Штраф не найден';
 
   @override
   String get errorPenaltyTemplateNotFound => 'Шаблон штрафа не найден';
+
+  @override
+  String get errorKnowledgeNodeNotFound => 'Материал недоступен';
 
   @override
   String get errorRateNotFound => 'Запись о ставке не найдена';

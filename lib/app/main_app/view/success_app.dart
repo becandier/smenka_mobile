@@ -129,6 +129,13 @@ class _SuccessAppState extends State<_SuccessApp> {
             dataSource: PenaltyDataSource(dio: widget.dio),
           ),
         ),
+        // Фиче-репозиторий knowledge_base (read-only): принимает готовый Dio →
+        // создаётся лениво здесь (не в локаторе, см. конвенции DI).
+        RepositoryProvider<KnowledgeRepository>(
+          create: (_) => KnowledgeRepositoryImpl(
+            dataSource: KnowledgeDataSource(dio: widget.dio),
+          ),
+        ),
         RepositoryProvider<FilesRepository>.value(
           value: widget.filesRepository,
         ),

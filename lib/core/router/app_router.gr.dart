@@ -413,6 +413,137 @@ class JoinOrgRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [KnowledgePageScreen]
+class KnowledgePageRoute extends PageRouteInfo<KnowledgePageRouteArgs> {
+  KnowledgePageRoute({
+    required String orgId,
+    required String nodeId,
+    String? initialTitle,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         KnowledgePageRoute.name,
+         args: KnowledgePageRouteArgs(
+           orgId: orgId,
+           nodeId: nodeId,
+           initialTitle: initialTitle,
+           key: key,
+         ),
+         rawPathParams: {'orgId': orgId, 'nodeId': nodeId},
+         initialChildren: children,
+       );
+
+  static const String name = 'KnowledgePageRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<KnowledgePageRouteArgs>(
+        orElse: () => KnowledgePageRouteArgs(
+          orgId: pathParams.getString('orgId'),
+          nodeId: pathParams.getString('nodeId'),
+        ),
+      );
+      return KnowledgePageScreen(
+        orgId: args.orgId,
+        nodeId: args.nodeId,
+        initialTitle: args.initialTitle,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class KnowledgePageRouteArgs {
+  const KnowledgePageRouteArgs({
+    required this.orgId,
+    required this.nodeId,
+    this.initialTitle,
+    this.key,
+  });
+
+  final String orgId;
+
+  final String nodeId;
+
+  final String? initialTitle;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'KnowledgePageRouteArgs{orgId: $orgId, nodeId: $nodeId, initialTitle: $initialTitle, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! KnowledgePageRouteArgs) return false;
+    return orgId == other.orgId &&
+        nodeId == other.nodeId &&
+        initialTitle == other.initialTitle &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      orgId.hashCode ^ nodeId.hashCode ^ initialTitle.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [KnowledgeTreePage]
+class KnowledgeTreeRoute extends PageRouteInfo<KnowledgeTreeRouteArgs> {
+  KnowledgeTreeRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         KnowledgeTreeRoute.name,
+         args: KnowledgeTreeRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
+
+  static const String name = 'KnowledgeTreeRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<KnowledgeTreeRouteArgs>(
+        orElse: () =>
+            KnowledgeTreeRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return KnowledgeTreePage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class KnowledgeTreeRouteArgs {
+  const KnowledgeTreeRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'KnowledgeTreeRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! KnowledgeTreeRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [LoginPage]
 class LoginRoute extends PageRouteInfo<LoginRouteArgs> {
   LoginRoute({

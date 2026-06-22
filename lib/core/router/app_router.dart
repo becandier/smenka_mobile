@@ -187,6 +187,13 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
     page: ShiftPickerRoute.page,
     customRouteBuilder: _modalBottomSheetBuilder,
   ),
+  // База знаний (knowledge_base, read-only): дерево разделов/страниц +
+  // экран страницы с нативным рендером блоков.
+  AutoRoute(path: '$basePath/knowledge-base', page: KnowledgeTreeRoute.page),
+  AutoRoute(
+    path: '$basePath/knowledge-base/:nodeId',
+    page: KnowledgePageRoute.page,
+  ),
 ];
 
 @RoutePage(name: 'ShiftTab')

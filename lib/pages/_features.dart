@@ -4,6 +4,7 @@ export 'date_range_picker/_date_range_picker.dart';
 export 'debug/_debug.dart';
 export 'employee_picker/_employee_picker.dart';
 export 'home/_home.dart';
+export 'knowledge_base/_knowledge_base.dart';
 export 'main_router/_main_router.dart';
 export 'member_detail/_member_detail.dart';
 export 'members/_members.dart';
