@@ -19,6 +19,9 @@ extension PayrollItemMapper on PayrollItemDto {
       unpaidSeconds: unpaidSeconds,
       unpaidShiftsCount: unpaidShiftsCount,
       hasMissingRate: hasMissingRate,
+      penaltyAmountMinor: penaltyAmountMinor,
+      penaltiesCount: penaltiesCount,
+      netAmountMinor: netAmountMinor,
     );
   }
 }
@@ -33,6 +36,9 @@ extension PayrollMapper on PayrollDto {
         workedSeconds: totals.workedSeconds,
         shiftsCount: totals.shiftsCount,
         grossAmountMinor: totals.grossAmountMinor,
+        penaltyAmountMinor: totals.penaltyAmountMinor,
+        penaltiesCount: totals.penaltiesCount,
+        netAmountMinor: totals.netAmountMinor,
       ),
     );
   }
@@ -47,6 +53,9 @@ extension MyEarningsMapper on MyEarningsDto {
       shiftsCount: shiftsCount,
       grossAmountMinor: grossAmountMinor,
       hasMissingRate: hasMissingRate,
+      penaltyAmountMinor: penaltyAmountMinor,
+      penaltiesCount: penaltiesCount,
+      netAmountMinor: netAmountMinor,
       currentRate: currentRate?.toDomainOrNull(),
     );
   }

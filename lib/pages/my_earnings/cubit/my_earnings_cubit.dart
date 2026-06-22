@@ -18,6 +18,8 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
   final String _orgId;
   final PayrollRepository _payrollRepository;
 
+  String get orgId => _orgId;
+
   /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
   int _requestId = 0;
 

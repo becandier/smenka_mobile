@@ -275,7 +275,11 @@ as DateTime?,
 mixin _$PayrollItem {
 
  String get userId; String get userName; int get workedSeconds; int get shiftsCount; int get grossAmountMinor;/// Время/число смен без действующей ставки (не вошли в gross).
- int get unpaidSeconds; int get unpaidShiftsCount; bool get hasMissingRate;
+ int get unpaidSeconds; int get unpaidShiftsCount; bool get hasMissingRate;/// Сумма штрафов сотрудника за период (фича fines). `0` при
+/// `include_penalties=false` или отсутствии поля (старый бэк).
+ int get penaltyAmountMinor; int get penaltiesCount;/// К выплате = gross − penalty. Может быть отрицательным
+/// (штрафы > начислений) — показываем как есть, без обрезки до нуля.
+ int get netAmountMinor;
 /// Create a copy of PayrollItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -286,16 +290,16 @@ $PayrollItemCopyWith<PayrollItem> get copyWith => _$PayrollItemCopyWithImpl<Payr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollItem&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollItem&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate);
+int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollItem(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate)';
+  return 'PayrollItem(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -306,7 +310,7 @@ abstract mixin class $PayrollItemCopyWith<$Res>  {
   factory $PayrollItemCopyWith(PayrollItem value, $Res Function(PayrollItem) _then) = _$PayrollItemCopyWithImpl;
 @useResult
 $Res call({
- String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate
+ String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -323,7 +327,7 @@ class _$PayrollItemCopyWithImpl<$Res>
 
 /// Create a copy of PayrollItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
@@ -333,7 +337,10 @@ as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : gro
 as int,unpaidSeconds: null == unpaidSeconds ? _self.unpaidSeconds : unpaidSeconds // ignore: cast_nullable_to_non_nullable
 as int,unpaidShiftsCount: null == unpaidShiftsCount ? _self.unpaidShiftsCount : unpaidShiftsCount // ignore: cast_nullable_to_non_nullable
 as int,hasMissingRate: null == hasMissingRate ? _self.hasMissingRate : hasMissingRate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -418,10 +425,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PayrollItem() when $default != null:
-return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate);case _:
+return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return orElse();
 
 }
@@ -439,10 +446,10 @@ return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCoun
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)  $default,) {final _that = this;
 switch (_that) {
 case _PayrollItem():
-return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate);case _:
+return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -459,10 +466,10 @@ return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCoun
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,) {final _that = this;
 switch (_that) {
 case _PayrollItem() when $default != null:
-return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate);case _:
+return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return null;
 
 }
@@ -474,7 +481,7 @@ return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCoun
 
 
 class _PayrollItem implements PayrollItem {
-  const _PayrollItem({required this.userId, required this.userName, required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, required this.unpaidSeconds, required this.unpaidShiftsCount, required this.hasMissingRate});
+  const _PayrollItem({required this.userId, required this.userName, required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, required this.unpaidSeconds, required this.unpaidShiftsCount, required this.hasMissingRate, this.penaltyAmountMinor = 0, this.penaltiesCount = 0, this.netAmountMinor = 0});
   
 
 @override final  String userId;
@@ -486,6 +493,13 @@ class _PayrollItem implements PayrollItem {
 @override final  int unpaidSeconds;
 @override final  int unpaidShiftsCount;
 @override final  bool hasMissingRate;
+/// Сумма штрафов сотрудника за период (фича fines). `0` при
+/// `include_penalties=false` или отсутствии поля (старый бэк).
+@override@JsonKey() final  int penaltyAmountMinor;
+@override@JsonKey() final  int penaltiesCount;
+/// К выплате = gross − penalty. Может быть отрицательным
+/// (штрафы > начислений) — показываем как есть, без обрезки до нуля.
+@override@JsonKey() final  int netAmountMinor;
 
 /// Create a copy of PayrollItem
 /// with the given fields replaced by the non-null parameter values.
@@ -497,16 +511,16 @@ _$PayrollItemCopyWith<_PayrollItem> get copyWith => __$PayrollItemCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollItem&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollItem&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate);
+int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollItem(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate)';
+  return 'PayrollItem(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -517,7 +531,7 @@ abstract mixin class _$PayrollItemCopyWith<$Res> implements $PayrollItemCopyWith
   factory _$PayrollItemCopyWith(_PayrollItem value, $Res Function(_PayrollItem) _then) = __$PayrollItemCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate
+ String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -534,7 +548,7 @@ class __$PayrollItemCopyWithImpl<$Res>
 
 /// Create a copy of PayrollItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_PayrollItem(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
@@ -544,7 +558,10 @@ as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : gro
 as int,unpaidSeconds: null == unpaidSeconds ? _self.unpaidSeconds : unpaidSeconds // ignore: cast_nullable_to_non_nullable
 as int,unpaidShiftsCount: null == unpaidShiftsCount ? _self.unpaidShiftsCount : unpaidShiftsCount // ignore: cast_nullable_to_non_nullable
 as int,hasMissingRate: null == hasMissingRate ? _self.hasMissingRate : hasMissingRate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -554,7 +571,9 @@ as bool,
 /// @nodoc
 mixin _$PayrollTotals {
 
- int get workedSeconds; int get shiftsCount; int get grossAmountMinor;
+ int get workedSeconds; int get shiftsCount; int get grossAmountMinor;/// Итоги штрафов по орг (фича fines). `0` при `include_penalties=false`.
+ int get penaltyAmountMinor; int get penaltiesCount;/// К выплате по орг = gross − penalty (может быть отрицательным).
+ int get netAmountMinor;
 /// Create a copy of PayrollTotals
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -565,16 +584,16 @@ $PayrollTotalsCopyWith<PayrollTotals> get copyWith => _$PayrollTotalsCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollTotals&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollTotals&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor);
+int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollTotals(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor)';
+  return 'PayrollTotals(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -585,7 +604,7 @@ abstract mixin class $PayrollTotalsCopyWith<$Res>  {
   factory $PayrollTotalsCopyWith(PayrollTotals value, $Res Function(PayrollTotals) _then) = _$PayrollTotalsCopyWithImpl;
 @useResult
 $Res call({
- int workedSeconds, int shiftsCount, int grossAmountMinor
+ int workedSeconds, int shiftsCount, int grossAmountMinor, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -602,11 +621,14 @@ class _$PayrollTotalsCopyWithImpl<$Res>
 
 /// Create a copy of PayrollTotals
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_self.copyWith(
 workedSeconds: null == workedSeconds ? _self.workedSeconds : workedSeconds // ignore: cast_nullable_to_non_nullable
 as int,shiftsCount: null == shiftsCount ? _self.shiftsCount : shiftsCount // ignore: cast_nullable_to_non_nullable
 as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : grossAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -692,10 +714,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PayrollTotals() when $default != null:
-return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);case _:
+return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return orElse();
 
 }
@@ -713,10 +735,10 @@ return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)  $default,) {final _that = this;
 switch (_that) {
 case _PayrollTotals():
-return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);case _:
+return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -733,10 +755,10 @@ return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,) {final _that = this;
 switch (_that) {
 case _PayrollTotals() when $default != null:
-return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);case _:
+return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return null;
 
 }
@@ -748,12 +770,17 @@ return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);ca
 
 
 class _PayrollTotals implements PayrollTotals {
-  const _PayrollTotals({required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor});
+  const _PayrollTotals({required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, this.penaltyAmountMinor = 0, this.penaltiesCount = 0, this.netAmountMinor = 0});
   
 
 @override final  int workedSeconds;
 @override final  int shiftsCount;
 @override final  int grossAmountMinor;
+/// Итоги штрафов по орг (фича fines). `0` при `include_penalties=false`.
+@override@JsonKey() final  int penaltyAmountMinor;
+@override@JsonKey() final  int penaltiesCount;
+/// К выплате по орг = gross − penalty (может быть отрицательным).
+@override@JsonKey() final  int netAmountMinor;
 
 /// Create a copy of PayrollTotals
 /// with the given fields replaced by the non-null parameter values.
@@ -765,16 +792,16 @@ _$PayrollTotalsCopyWith<_PayrollTotals> get copyWith => __$PayrollTotalsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollTotals&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollTotals&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor);
+int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollTotals(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor)';
+  return 'PayrollTotals(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -785,7 +812,7 @@ abstract mixin class _$PayrollTotalsCopyWith<$Res> implements $PayrollTotalsCopy
   factory _$PayrollTotalsCopyWith(_PayrollTotals value, $Res Function(_PayrollTotals) _then) = __$PayrollTotalsCopyWithImpl;
 @override @useResult
 $Res call({
- int workedSeconds, int shiftsCount, int grossAmountMinor
+ int workedSeconds, int shiftsCount, int grossAmountMinor, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -802,11 +829,14 @@ class __$PayrollTotalsCopyWithImpl<$Res>
 
 /// Create a copy of PayrollTotals
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_PayrollTotals(
 workedSeconds: null == workedSeconds ? _self.workedSeconds : workedSeconds // ignore: cast_nullable_to_non_nullable
 as int,shiftsCount: null == shiftsCount ? _self.shiftsCount : shiftsCount // ignore: cast_nullable_to_non_nullable
 as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : grossAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

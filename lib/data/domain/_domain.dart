@@ -3,5 +3,6 @@ export 'checklist/_checklist.dart';
 export 'organization/_organization.dart';
 export 'organization_role/_organization_role.dart';
 export 'payroll/_payroll.dart';
+export 'penalty/_penalty.dart';
 export 'shift/_shift.dart';
 export 'user/_user.dart';

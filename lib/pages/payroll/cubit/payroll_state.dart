@@ -22,6 +22,10 @@ abstract class PayrollState with _$PayrollState {
     /// Границы произвольного окна (UTC); активны при `preset == null`.
     DateTime? customFrom,
     DateTime? customTo,
+
+    /// Учитывать штрафы в отчёте (фича fines) → query `include_penalties`.
+    /// Бэк default `true`; при `false` поля штрафов обнулены, `net = gross`.
+    @Default(true) bool includePenalties,
   }) = _PayrollState;
   const PayrollState._();
 

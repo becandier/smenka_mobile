@@ -122,6 +122,13 @@ class _SuccessAppState extends State<_SuccessApp> {
         RepositoryProvider<PayrollRepository>.value(
           value: widget.payrollRepository,
         ),
+        // Фиче-репозиторий fines: принимает готовый Dio → создаётся лениво
+        // здесь (не в локаторе, см. конвенции DI).
+        RepositoryProvider<PenaltyRepository>(
+          create: (_) => PenaltyRepositoryImpl(
+            dataSource: PenaltyDataSource(dio: widget.dio),
+          ),
+        ),
         RepositoryProvider<FilesRepository>.value(
           value: widget.filesRepository,
         ),

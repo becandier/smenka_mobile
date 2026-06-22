@@ -638,6 +638,58 @@ class MyEarningsRouteArgs {
 }
 
 /// generated route for
+/// [MyPenaltiesPage]
+class MyPenaltiesRoute extends PageRouteInfo<MyPenaltiesRouteArgs> {
+  MyPenaltiesRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         MyPenaltiesRoute.name,
+         args: MyPenaltiesRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
+
+  static const String name = 'MyPenaltiesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<MyPenaltiesRouteArgs>(
+        orElse: () =>
+            MyPenaltiesRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return MyPenaltiesPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class MyPenaltiesRouteArgs {
+  const MyPenaltiesRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'MyPenaltiesRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MyPenaltiesRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [OrgShiftDetailPage]
 class OrgShiftDetailRoute extends PageRouteInfo<OrgShiftDetailRouteArgs> {
   OrgShiftDetailRoute({
@@ -942,6 +994,113 @@ class PayrollRouteArgs {
 }
 
 /// generated route for
+/// [PenaltyFormPage]
+class PenaltyFormRoute extends PageRouteInfo<PenaltyFormRouteArgs> {
+  PenaltyFormRoute({
+    required String orgId,
+    required String memberId,
+    required String userId,
+    required String userName,
+    String? shiftId,
+    DateTime? initialOccurredAt,
+    Penalty? penalty,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         PenaltyFormRoute.name,
+         args: PenaltyFormRouteArgs(
+           orgId: orgId,
+           memberId: memberId,
+           userId: userId,
+           userName: userName,
+           shiftId: shiftId,
+           initialOccurredAt: initialOccurredAt,
+           penalty: penalty,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'PenaltyFormRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PenaltyFormRouteArgs>();
+      return PenaltyFormPage(
+        orgId: args.orgId,
+        memberId: args.memberId,
+        userId: args.userId,
+        userName: args.userName,
+        shiftId: args.shiftId,
+        initialOccurredAt: args.initialOccurredAt,
+        penalty: args.penalty,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class PenaltyFormRouteArgs {
+  const PenaltyFormRouteArgs({
+    required this.orgId,
+    required this.memberId,
+    required this.userId,
+    required this.userName,
+    this.shiftId,
+    this.initialOccurredAt,
+    this.penalty,
+    this.key,
+  });
+
+  final String orgId;
+
+  final String memberId;
+
+  final String userId;
+
+  final String userName;
+
+  final String? shiftId;
+
+  final DateTime? initialOccurredAt;
+
+  final Penalty? penalty;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'PenaltyFormRouteArgs{orgId: $orgId, memberId: $memberId, userId: $userId, userName: $userName, shiftId: $shiftId, initialOccurredAt: $initialOccurredAt, penalty: $penalty, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PenaltyFormRouteArgs) return false;
+    return orgId == other.orgId &&
+        memberId == other.memberId &&
+        userId == other.userId &&
+        userName == other.userName &&
+        shiftId == other.shiftId &&
+        initialOccurredAt == other.initialOccurredAt &&
+        penalty == other.penalty &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      orgId.hashCode ^
+      memberId.hashCode ^
+      userId.hashCode ^
+      userName.hashCode ^
+      shiftId.hashCode ^
+      initialOccurredAt.hashCode ^
+      penalty.hashCode ^
+      key.hashCode;
+}
+
+/// generated route for
 /// [ProfilePage]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})
@@ -1103,6 +1262,81 @@ class ShiftHistoryRoute extends PageRouteInfo<void> {
       return const ShiftHistoryPage();
     },
   );
+}
+
+/// generated route for
+/// [ShiftPickerPage]
+class ShiftPickerRoute extends PageRouteInfo<ShiftPickerRouteArgs> {
+  ShiftPickerRoute({
+    required String orgId,
+    required String userId,
+    String? selectedShiftId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         ShiftPickerRoute.name,
+         args: ShiftPickerRouteArgs(
+           orgId: orgId,
+           userId: userId,
+           selectedShiftId: selectedShiftId,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'ShiftPickerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ShiftPickerRouteArgs>();
+      return ShiftPickerPage(
+        orgId: args.orgId,
+        userId: args.userId,
+        selectedShiftId: args.selectedShiftId,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class ShiftPickerRouteArgs {
+  const ShiftPickerRouteArgs({
+    required this.orgId,
+    required this.userId,
+    this.selectedShiftId,
+    this.key,
+  });
+
+  final String orgId;
+
+  final String userId;
+
+  final String? selectedShiftId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ShiftPickerRouteArgs{orgId: $orgId, userId: $userId, selectedShiftId: $selectedShiftId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ShiftPickerRouteArgs) return false;
+    return orgId == other.orgId &&
+        userId == other.userId &&
+        selectedShiftId == other.selectedShiftId &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      orgId.hashCode ^
+      userId.hashCode ^
+      selectedShiftId.hashCode ^
+      key.hashCode;
 }
 
 /// generated route for

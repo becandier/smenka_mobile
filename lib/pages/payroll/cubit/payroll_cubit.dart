@@ -44,6 +44,7 @@ class PayrollCubit extends Cubit<PayrollState> {
       _orgId,
       dateFrom: dateFrom,
       dateTo: dateTo,
+      includePenalties: state.includePenalties,
     );
     if (requestId != _requestId) return;
 
@@ -85,6 +86,13 @@ class PayrollCubit extends Cubit<PayrollState> {
   void setPreset(PeriodPreset preset) {
     if (preset == state.preset) return;
     emit(state.copyWith(preset: preset, customFrom: null, customTo: null));
+    load();
+  }
+
+  /// Переключить учёт штрафов (фича fines) — перезапрос отчёта.
+  void setIncludePenalties({required bool value}) {
+    if (value == state.includePenalties) return;
+    emit(state.copyWith(includePenalties: value));
     load();
   }
 

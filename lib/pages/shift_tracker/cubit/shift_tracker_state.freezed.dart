@@ -26,7 +26,7 @@ mixin _$ShiftTrackerState {
 /// активной/приостановленной смены больше нет). UI показывает тост и
 /// сбрасывает флаг.
  bool get shiftAutoFinished;/// Выбранная сотрудником рабочая точка для старта смены (когда гео
-/// выключена). `null` — точка не выбрана. При смене организации сбрасывается.
+/// выключена). `null` — не выбрана; при смене организации сбрасывается.
  WorkLocation? get selectedWorkLocation;
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
@@ -284,7 +284,7 @@ class _ShiftTrackerState extends ShiftTrackerState {
 /// сбрасывает флаг.
 @override@JsonKey() final  bool shiftAutoFinished;
 /// Выбранная сотрудником рабочая точка для старта смены (когда гео
-/// выключена). `null` — точка не выбрана. При смене организации сбрасывается.
+/// выключена). `null` — не выбрана; при смене организации сбрасывается.
 @override final  WorkLocation? selectedWorkLocation;
 
 /// Create a copy of ShiftTrackerState

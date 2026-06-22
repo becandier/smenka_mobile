@@ -281,7 +281,7 @@ as DateTime?,
 /// @nodoc
 mixin _$PayrollItemDto {
 
- String get userId; String get userName; int get workedSeconds; int get shiftsCount; int get grossAmountMinor; int get unpaidSeconds; int get unpaidShiftsCount; bool get hasMissingRate;
+ String get userId; String get userName; int get workedSeconds; int get shiftsCount; int get grossAmountMinor; int get unpaidSeconds; int get unpaidShiftsCount; bool get hasMissingRate; int get penaltyAmountMinor; int get penaltiesCount; int get netAmountMinor;
 /// Create a copy of PayrollItemDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -294,16 +294,16 @@ $PayrollItemDtoCopyWith<PayrollItemDto> get copyWith => _$PayrollItemDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollItemDto&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollItemDto&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate);
+int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollItemDto(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate)';
+  return 'PayrollItemDto(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -314,7 +314,7 @@ abstract mixin class $PayrollItemDtoCopyWith<$Res>  {
   factory $PayrollItemDtoCopyWith(PayrollItemDto value, $Res Function(PayrollItemDto) _then) = _$PayrollItemDtoCopyWithImpl;
 @useResult
 $Res call({
- String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate
+ String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -331,7 +331,7 @@ class _$PayrollItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of PayrollItemDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
@@ -341,7 +341,10 @@ as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : gro
 as int,unpaidSeconds: null == unpaidSeconds ? _self.unpaidSeconds : unpaidSeconds // ignore: cast_nullable_to_non_nullable
 as int,unpaidShiftsCount: null == unpaidShiftsCount ? _self.unpaidShiftsCount : unpaidShiftsCount // ignore: cast_nullable_to_non_nullable
 as int,hasMissingRate: null == hasMissingRate ? _self.hasMissingRate : hasMissingRate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -426,10 +429,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PayrollItemDto() when $default != null:
-return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate);case _:
+return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return orElse();
 
 }
@@ -447,10 +450,10 @@ return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCoun
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)  $default,) {final _that = this;
 switch (_that) {
 case _PayrollItemDto():
-return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate);case _:
+return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -467,10 +470,10 @@ return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCoun
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String userName,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int unpaidSeconds,  int unpaidShiftsCount,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,) {final _that = this;
 switch (_that) {
 case _PayrollItemDto() when $default != null:
-return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate);case _:
+return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.unpaidSeconds,_that.unpaidShiftsCount,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return null;
 
 }
@@ -482,7 +485,7 @@ return $default(_that.userId,_that.userName,_that.workedSeconds,_that.shiftsCoun
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _PayrollItemDto implements PayrollItemDto {
-  const _PayrollItemDto({required this.userId, required this.userName, required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, required this.unpaidSeconds, required this.unpaidShiftsCount, required this.hasMissingRate});
+  const _PayrollItemDto({required this.userId, required this.userName, required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, required this.unpaidSeconds, required this.unpaidShiftsCount, required this.hasMissingRate, this.penaltyAmountMinor = 0, this.penaltiesCount = 0, this.netAmountMinor = 0});
   factory _PayrollItemDto.fromJson(Map<String, dynamic> json) => _$PayrollItemDtoFromJson(json);
 
 @override final  String userId;
@@ -493,6 +496,9 @@ class _PayrollItemDto implements PayrollItemDto {
 @override final  int unpaidSeconds;
 @override final  int unpaidShiftsCount;
 @override final  bool hasMissingRate;
+@override@JsonKey() final  int penaltyAmountMinor;
+@override@JsonKey() final  int penaltiesCount;
+@override@JsonKey() final  int netAmountMinor;
 
 /// Create a copy of PayrollItemDto
 /// with the given fields replaced by the non-null parameter values.
@@ -507,16 +513,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollItemDto&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollItemDto&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.unpaidSeconds, unpaidSeconds) || other.unpaidSeconds == unpaidSeconds)&&(identical(other.unpaidShiftsCount, unpaidShiftsCount) || other.unpaidShiftsCount == unpaidShiftsCount)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate);
+int get hashCode => Object.hash(runtimeType,userId,userName,workedSeconds,shiftsCount,grossAmountMinor,unpaidSeconds,unpaidShiftsCount,hasMissingRate,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollItemDto(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate)';
+  return 'PayrollItemDto(userId: $userId, userName: $userName, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, unpaidSeconds: $unpaidSeconds, unpaidShiftsCount: $unpaidShiftsCount, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -527,7 +533,7 @@ abstract mixin class _$PayrollItemDtoCopyWith<$Res> implements $PayrollItemDtoCo
   factory _$PayrollItemDtoCopyWith(_PayrollItemDto value, $Res Function(_PayrollItemDto) _then) = __$PayrollItemDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate
+ String userId, String userName, int workedSeconds, int shiftsCount, int grossAmountMinor, int unpaidSeconds, int unpaidShiftsCount, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -544,7 +550,7 @@ class __$PayrollItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of PayrollItemDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? unpaidSeconds = null,Object? unpaidShiftsCount = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_PayrollItemDto(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
@@ -554,7 +560,10 @@ as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : gro
 as int,unpaidSeconds: null == unpaidSeconds ? _self.unpaidSeconds : unpaidSeconds // ignore: cast_nullable_to_non_nullable
 as int,unpaidShiftsCount: null == unpaidShiftsCount ? _self.unpaidShiftsCount : unpaidShiftsCount // ignore: cast_nullable_to_non_nullable
 as int,hasMissingRate: null == hasMissingRate ? _self.hasMissingRate : hasMissingRate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -565,7 +574,7 @@ as bool,
 /// @nodoc
 mixin _$PayrollTotalsDto {
 
- int get workedSeconds; int get shiftsCount; int get grossAmountMinor;
+ int get workedSeconds; int get shiftsCount; int get grossAmountMinor; int get penaltyAmountMinor; int get penaltiesCount; int get netAmountMinor;
 /// Create a copy of PayrollTotalsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -578,16 +587,16 @@ $PayrollTotalsDtoCopyWith<PayrollTotalsDto> get copyWith => _$PayrollTotalsDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollTotalsDto&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollTotalsDto&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor);
+int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollTotalsDto(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor)';
+  return 'PayrollTotalsDto(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -598,7 +607,7 @@ abstract mixin class $PayrollTotalsDtoCopyWith<$Res>  {
   factory $PayrollTotalsDtoCopyWith(PayrollTotalsDto value, $Res Function(PayrollTotalsDto) _then) = _$PayrollTotalsDtoCopyWithImpl;
 @useResult
 $Res call({
- int workedSeconds, int shiftsCount, int grossAmountMinor
+ int workedSeconds, int shiftsCount, int grossAmountMinor, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -615,11 +624,14 @@ class _$PayrollTotalsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PayrollTotalsDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_self.copyWith(
 workedSeconds: null == workedSeconds ? _self.workedSeconds : workedSeconds // ignore: cast_nullable_to_non_nullable
 as int,shiftsCount: null == shiftsCount ? _self.shiftsCount : shiftsCount // ignore: cast_nullable_to_non_nullable
 as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : grossAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -705,10 +717,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PayrollTotalsDto() when $default != null:
-return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);case _:
+return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return orElse();
 
 }
@@ -726,10 +738,10 @@ return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)  $default,) {final _that = this;
 switch (_that) {
 case _PayrollTotalsDto():
-return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);case _:
+return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -746,10 +758,10 @@ return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int workedSeconds,  int shiftsCount,  int grossAmountMinor,  int penaltyAmountMinor,  int penaltiesCount,  int netAmountMinor)?  $default,) {final _that = this;
 switch (_that) {
 case _PayrollTotalsDto() when $default != null:
-return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);case _:
+return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.penaltyAmountMinor,_that.penaltiesCount,_that.netAmountMinor);case _:
   return null;
 
 }
@@ -761,12 +773,15 @@ return $default(_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor);ca
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _PayrollTotalsDto implements PayrollTotalsDto {
-  const _PayrollTotalsDto({required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor});
+  const _PayrollTotalsDto({required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, this.penaltyAmountMinor = 0, this.penaltiesCount = 0, this.netAmountMinor = 0});
   factory _PayrollTotalsDto.fromJson(Map<String, dynamic> json) => _$PayrollTotalsDtoFromJson(json);
 
 @override final  int workedSeconds;
 @override final  int shiftsCount;
 @override final  int grossAmountMinor;
+@override@JsonKey() final  int penaltyAmountMinor;
+@override@JsonKey() final  int penaltiesCount;
+@override@JsonKey() final  int netAmountMinor;
 
 /// Create a copy of PayrollTotalsDto
 /// with the given fields replaced by the non-null parameter values.
@@ -781,16 +796,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollTotalsDto&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollTotalsDto&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor);
+int get hashCode => Object.hash(runtimeType,workedSeconds,shiftsCount,grossAmountMinor,penaltyAmountMinor,penaltiesCount,netAmountMinor);
 
 @override
 String toString() {
-  return 'PayrollTotalsDto(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor)';
+  return 'PayrollTotalsDto(workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, netAmountMinor: $netAmountMinor)';
 }
 
 
@@ -801,7 +816,7 @@ abstract mixin class _$PayrollTotalsDtoCopyWith<$Res> implements $PayrollTotalsD
   factory _$PayrollTotalsDtoCopyWith(_PayrollTotalsDto value, $Res Function(_PayrollTotalsDto) _then) = __$PayrollTotalsDtoCopyWithImpl;
 @override @useResult
 $Res call({
- int workedSeconds, int shiftsCount, int grossAmountMinor
+ int workedSeconds, int shiftsCount, int grossAmountMinor, int penaltyAmountMinor, int penaltiesCount, int netAmountMinor
 });
 
 
@@ -818,11 +833,14 @@ class __$PayrollTotalsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PayrollTotalsDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? netAmountMinor = null,}) {
   return _then(_PayrollTotalsDto(
 workedSeconds: null == workedSeconds ? _self.workedSeconds : workedSeconds // ignore: cast_nullable_to_non_nullable
 as int,shiftsCount: null == shiftsCount ? _self.shiftsCount : shiftsCount // ignore: cast_nullable_to_non_nullable
 as int,grossAmountMinor: null == grossAmountMinor ? _self.grossAmountMinor : grossAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltyAmountMinor: null == penaltyAmountMinor ? _self.penaltyAmountMinor : penaltyAmountMinor // ignore: cast_nullable_to_non_nullable
+as int,penaltiesCount: null == penaltiesCount ? _self.penaltiesCount : penaltiesCount // ignore: cast_nullable_to_non_nullable
+as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

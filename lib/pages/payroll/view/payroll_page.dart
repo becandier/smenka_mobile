@@ -79,6 +79,8 @@ class _PayrollView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
+          const _IncludePenaltiesToggle(),
+          const SizedBox(height: 4),
           Expanded(
             child: SectionDataWrapper<PayrollCubit, PayrollState, Payroll>(
               selector: (state) => state.payroll,
@@ -140,6 +142,28 @@ class _PayrollView extends StatelessWidget {
   }
 }
 
+/// Тумблер «Учитывать штрафы» (фича fines) → query `include_penalties`.
+class _IncludePenaltiesToggle extends StatelessWidget {
+  const _IncludePenaltiesToggle();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<PayrollCubit, PayrollState, bool>(
+      selector: (state) => state.includePenalties,
+      builder: (context, includePenalties) {
+        return SwitchListTile.adaptive(
+          value: includePenalties,
+          onChanged: (value) =>
+              context.read<PayrollCubit>().setIncludePenalties(value: value),
+          title: Text(context.l10n.payrollIncludePenalties),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          dense: true,
+        );
+      },
+    );
+  }
+}
+
 class _TotalsCard extends StatelessWidget {
   const _TotalsCard({required this.totals});
 
@@ -155,26 +179,51 @@ class _TotalsCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
+        child: Column(
           children: [
-            Expanded(
-              child: _TotalsItem(
-                value: formatMoneyMinor(totals.grossAmountMinor),
-                label: l10n.payrollAccrued,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: _TotalsItem(
+                    value: formatMoneyMinor(totals.grossAmountMinor),
+                    label: l10n.payrollAccrued,
+                  ),
+                ),
+                Expanded(
+                  child: _TotalsItem(
+                    value: _formatWorkedDuration(context, totals.workedSeconds),
+                    label: l10n.payrollWorked,
+                  ),
+                ),
+                Expanded(
+                  child: _TotalsItem(
+                    value: totals.shiftsCount.toString(),
+                    label: l10n.payrollShiftsCount,
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: _TotalsItem(
-                value: _formatWorkedDuration(context, totals.workedSeconds),
-                label: l10n.payrollWorked,
+            if (totals.penaltyAmountMinor > 0) ...[
+              const Divider(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: _TotalsItem(
+                      value: '−${formatMoneyMinor(totals.penaltyAmountMinor)}',
+                      label:
+                          '${l10n.finesAmount} · '
+                          '${l10n.finesCount(totals.penaltiesCount)}',
+                    ),
+                  ),
+                  Expanded(
+                    child: _TotalsItem(
+                      value: formatMoneyMinor(totals.netAmountMinor),
+                      label: l10n.finesToPay,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Expanded(
-              child: _TotalsItem(
-                value: totals.shiftsCount.toString(),
-                label: l10n.payrollShiftsCount,
-              ),
-            ),
+            ],
           ],
         ),
       ),
@@ -262,9 +311,10 @@ class _PayrollItemTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        formatMoneyMinor(item.grossAmountMinor),
+                        formatMoneyMinor(item.netAmountMinor),
                         style: textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w700,
+                          color: item.netAmountMinor < 0 ? colors.error : null,
                         ),
                       ),
                       Text(
@@ -283,6 +333,16 @@ class _PayrollItemTile extends StatelessWidget {
                 '${l10n.payrollShiftsCount}: ${item.shiftsCount}',
                 style: textTheme.bodySmall?.copyWith(color: colors.secondary),
               ),
+              if (item.penaltyAmountMinor > 0) ...[
+                const SizedBox(height: 2),
+                Text(
+                  '${l10n.payrollAccrued}: '
+                  '${formatMoneyMinor(item.grossAmountMinor)} · '
+                  '${l10n.finesAmount}: '
+                  '−${formatMoneyMinor(item.penaltyAmountMinor)}',
+                  style: textTheme.bodySmall?.copyWith(color: colors.secondary),
+                ),
+              ],
               if (item.hasMissingRate) ...[
                 const SizedBox(height: 6),
                 Row(

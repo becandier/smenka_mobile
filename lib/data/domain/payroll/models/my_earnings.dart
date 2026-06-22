@@ -16,6 +16,13 @@ abstract class MyEarnings with _$MyEarnings {
     required int grossAmountMinor,
     required bool hasMissingRate,
 
+    /// Штрафы сотрудника за период (фича fines); для self учитываются всегда.
+    @Default(0) int penaltyAmountMinor,
+    @Default(0) int penaltiesCount,
+
+    /// К выплате = gross − penalty. Может быть отрицательным.
+    @Default(0) int netAmountMinor,
+
     /// Действующая ставка; null — ставка ещё не задана.
     CurrentRate? currentRate,
   }) = _MyEarnings;

@@ -25,6 +25,9 @@ abstract class PayrollItemDto with _$PayrollItemDto {
     required int unpaidSeconds,
     required int unpaidShiftsCount,
     required bool hasMissingRate,
+    @Default(0) int penaltyAmountMinor,
+    @Default(0) int penaltiesCount,
+    @Default(0) int netAmountMinor,
   }) = _PayrollItemDto;
 
   factory PayrollItemDto.fromJson(Map<String, dynamic> json) =>
@@ -38,6 +41,9 @@ abstract class PayrollTotalsDto with _$PayrollTotalsDto {
     required int workedSeconds,
     required int shiftsCount,
     required int grossAmountMinor,
+    @Default(0) int penaltyAmountMinor,
+    @Default(0) int penaltiesCount,
+    @Default(0) int netAmountMinor,
   }) = _PayrollTotalsDto;
 
   factory PayrollTotalsDto.fromJson(Map<String, dynamic> json) =>

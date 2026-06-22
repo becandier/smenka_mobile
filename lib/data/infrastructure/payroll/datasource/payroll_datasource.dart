@@ -20,14 +20,22 @@ class PayrollDataSource {
   }
 
   /// Отчёт «кому сколько заплатить» за период.
+  ///
+  /// [includePenalties] (фича fines) → query `include_penalties`; на бэке
+  /// default `true`. При `false` поля штрафов в ответе обнулены, `net = gross`.
   Future<PayrollDto> getPayroll(
     String orgId, {
     DateTime? dateFrom,
     DateTime? dateTo,
+    bool? includePenalties,
   }) async {
+    final query = _periodQuery(dateFrom, dateTo);
+    if (includePenalties != null) {
+      query['include_penalties'] = includePenalties;
+    }
     final response = await _dio.get<Map<String, dynamic>>(
       '/organizations/$orgId/payroll',
-      queryParameters: _periodQuery(dateFrom, dateTo),
+      queryParameters: query,
     );
     return PayrollDto.fromJson(response.data!);
   }

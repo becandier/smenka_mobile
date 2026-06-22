@@ -14,6 +14,9 @@ _MyEarningsDto _$MyEarningsDtoFromJson(Map<String, dynamic> json) =>
       shiftsCount: (json['shifts_count'] as num).toInt(),
       grossAmountMinor: (json['gross_amount_minor'] as num).toInt(),
       hasMissingRate: json['has_missing_rate'] as bool,
+      penaltyAmountMinor: (json['penalty_amount_minor'] as num?)?.toInt() ?? 0,
+      penaltiesCount: (json['penalties_count'] as num?)?.toInt() ?? 0,
+      netAmountMinor: (json['net_amount_minor'] as num?)?.toInt() ?? 0,
       currentRate: json['current_rate'] == null
           ? null
           : CurrentRateDto.fromJson(
@@ -29,5 +32,8 @@ Map<String, dynamic> _$MyEarningsDtoToJson(_MyEarningsDto instance) =>
       'shifts_count': instance.shiftsCount,
       'gross_amount_minor': instance.grossAmountMinor,
       'has_missing_rate': instance.hasMissingRate,
+      'penalty_amount_minor': instance.penaltyAmountMinor,
+      'penalties_count': instance.penaltiesCount,
+      'net_amount_minor': instance.netAmountMinor,
       'current_rate': instance.currentRate?.toJson(),
     };

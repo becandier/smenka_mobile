@@ -19,7 +19,9 @@ mixin _$PayrollState {
  Map<String, Member> get membersByUserId;/// Пресет окна; null — произвольный диапазон ([customFrom]/[customTo]).
 /// По умолчанию — текущий месяц (ТЗ payroll).
  PeriodPreset? get preset;/// Границы произвольного окна (UTC); активны при `preset == null`.
- DateTime? get customFrom; DateTime? get customTo;
+ DateTime? get customFrom; DateTime? get customTo;/// Учитывать штрафы в отчёте (фича fines) → query `include_penalties`.
+/// Бэк default `true`; при `false` поля штрафов обнулены, `net = gross`.
+ bool get includePenalties;
 /// Create a copy of PayrollState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,16 +32,16 @@ $PayrollStateCopyWith<PayrollState> get copyWith => _$PayrollStateCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollState&&(identical(other.payroll, payroll) || other.payroll == payroll)&&const DeepCollectionEquality().equals(other.membersByUserId, membersByUserId)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PayrollState&&(identical(other.payroll, payroll) || other.payroll == payroll)&&const DeepCollectionEquality().equals(other.membersByUserId, membersByUserId)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo)&&(identical(other.includePenalties, includePenalties) || other.includePenalties == includePenalties));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,payroll,const DeepCollectionEquality().hash(membersByUserId),preset,customFrom,customTo);
+int get hashCode => Object.hash(runtimeType,payroll,const DeepCollectionEquality().hash(membersByUserId),preset,customFrom,customTo,includePenalties);
 
 @override
 String toString() {
-  return 'PayrollState(payroll: $payroll, membersByUserId: $membersByUserId, preset: $preset, customFrom: $customFrom, customTo: $customTo)';
+  return 'PayrollState(payroll: $payroll, membersByUserId: $membersByUserId, preset: $preset, customFrom: $customFrom, customTo: $customTo, includePenalties: $includePenalties)';
 }
 
 
@@ -50,7 +52,7 @@ abstract mixin class $PayrollStateCopyWith<$Res>  {
   factory $PayrollStateCopyWith(PayrollState value, $Res Function(PayrollState) _then) = _$PayrollStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<Payroll> payroll, Map<String, Member> membersByUserId, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo
+ SectionData<Payroll> payroll, Map<String, Member> membersByUserId, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo, bool includePenalties
 });
 
 
@@ -67,14 +69,15 @@ class _$PayrollStateCopyWithImpl<$Res>
 
 /// Create a copy of PayrollState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? payroll = null,Object? membersByUserId = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? payroll = null,Object? membersByUserId = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,Object? includePenalties = null,}) {
   return _then(_self.copyWith(
 payroll: null == payroll ? _self.payroll : payroll // ignore: cast_nullable_to_non_nullable
 as SectionData<Payroll>,membersByUserId: null == membersByUserId ? _self.membersByUserId : membersByUserId // ignore: cast_nullable_to_non_nullable
 as Map<String, Member>,preset: freezed == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
 as PeriodPreset?,customFrom: freezed == customFrom ? _self.customFrom : customFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,customTo: freezed == customTo ? _self.customTo : customTo // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,includePenalties: null == includePenalties ? _self.includePenalties : includePenalties // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of PayrollState
@@ -168,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Payroll> payroll,  Map<String, Member> membersByUserId,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Payroll> payroll,  Map<String, Member> membersByUserId,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo,  bool includePenalties)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PayrollState() when $default != null:
-return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFrom,_that.customTo);case _:
+return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFrom,_that.customTo,_that.includePenalties);case _:
   return orElse();
 
 }
@@ -189,10 +192,10 @@ return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFro
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Payroll> payroll,  Map<String, Member> membersByUserId,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Payroll> payroll,  Map<String, Member> membersByUserId,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo,  bool includePenalties)  $default,) {final _that = this;
 switch (_that) {
 case _PayrollState():
-return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFrom,_that.customTo);case _:
+return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFrom,_that.customTo,_that.includePenalties);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +212,10 @@ return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFro
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Payroll> payroll,  Map<String, Member> membersByUserId,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Payroll> payroll,  Map<String, Member> membersByUserId,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo,  bool includePenalties)?  $default,) {final _that = this;
 switch (_that) {
 case _PayrollState() when $default != null:
-return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFrom,_that.customTo);case _:
+return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFrom,_that.customTo,_that.includePenalties);case _:
   return null;
 
 }
@@ -224,7 +227,7 @@ return $default(_that.payroll,_that.membersByUserId,_that.preset,_that.customFro
 
 
 class _PayrollState extends PayrollState {
-  const _PayrollState({this.payroll = const SectionData<Payroll>(), final  Map<String, Member> membersByUserId = const <String, Member>{}, this.preset = PeriodPreset.month, this.customFrom, this.customTo}): _membersByUserId = membersByUserId,super._();
+  const _PayrollState({this.payroll = const SectionData<Payroll>(), final  Map<String, Member> membersByUserId = const <String, Member>{}, this.preset = PeriodPreset.month, this.customFrom, this.customTo, this.includePenalties = true}): _membersByUserId = membersByUserId,super._();
   
 
 @override@JsonKey() final  SectionData<Payroll> payroll;
@@ -245,6 +248,9 @@ class _PayrollState extends PayrollState {
 /// Границы произвольного окна (UTC); активны при `preset == null`.
 @override final  DateTime? customFrom;
 @override final  DateTime? customTo;
+/// Учитывать штрафы в отчёте (фича fines) → query `include_penalties`.
+/// Бэк default `true`; при `false` поля штрафов обнулены, `net = gross`.
+@override@JsonKey() final  bool includePenalties;
 
 /// Create a copy of PayrollState
 /// with the given fields replaced by the non-null parameter values.
@@ -256,16 +262,16 @@ _$PayrollStateCopyWith<_PayrollState> get copyWith => __$PayrollStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollState&&(identical(other.payroll, payroll) || other.payroll == payroll)&&const DeepCollectionEquality().equals(other._membersByUserId, _membersByUserId)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PayrollState&&(identical(other.payroll, payroll) || other.payroll == payroll)&&const DeepCollectionEquality().equals(other._membersByUserId, _membersByUserId)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo)&&(identical(other.includePenalties, includePenalties) || other.includePenalties == includePenalties));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,payroll,const DeepCollectionEquality().hash(_membersByUserId),preset,customFrom,customTo);
+int get hashCode => Object.hash(runtimeType,payroll,const DeepCollectionEquality().hash(_membersByUserId),preset,customFrom,customTo,includePenalties);
 
 @override
 String toString() {
-  return 'PayrollState(payroll: $payroll, membersByUserId: $membersByUserId, preset: $preset, customFrom: $customFrom, customTo: $customTo)';
+  return 'PayrollState(payroll: $payroll, membersByUserId: $membersByUserId, preset: $preset, customFrom: $customFrom, customTo: $customTo, includePenalties: $includePenalties)';
 }
 
 
@@ -276,7 +282,7 @@ abstract mixin class _$PayrollStateCopyWith<$Res> implements $PayrollStateCopyWi
   factory _$PayrollStateCopyWith(_PayrollState value, $Res Function(_PayrollState) _then) = __$PayrollStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<Payroll> payroll, Map<String, Member> membersByUserId, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo
+ SectionData<Payroll> payroll, Map<String, Member> membersByUserId, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo, bool includePenalties
 });
 
 
@@ -293,14 +299,15 @@ class __$PayrollStateCopyWithImpl<$Res>
 
 /// Create a copy of PayrollState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? payroll = null,Object? membersByUserId = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? payroll = null,Object? membersByUserId = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,Object? includePenalties = null,}) {
   return _then(_PayrollState(
 payroll: null == payroll ? _self.payroll : payroll // ignore: cast_nullable_to_non_nullable
 as SectionData<Payroll>,membersByUserId: null == membersByUserId ? _self._membersByUserId : membersByUserId // ignore: cast_nullable_to_non_nullable
 as Map<String, Member>,preset: freezed == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
 as PeriodPreset?,customFrom: freezed == customFrom ? _self.customFrom : customFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,customTo: freezed == customTo ? _self.customTo : customTo // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,includePenalties: null == includePenalties ? _self.includePenalties : includePenalties // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
