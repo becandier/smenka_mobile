@@ -50,6 +50,8 @@ String localizedErrorMessage(
     // fines: штрафы
     'PENALTY_NOT_FOUND' => l10n.errorPenaltyNotFound,
     'PENALTY_TEMPLATE_NOT_FOUND' => l10n.errorPenaltyTemplateNotFound,
+    // knowledge_base: база знаний (узел не найден / доступ отозван / чужая org)
+    'KNOWLEDGE_NODE_NOT_FOUND' => l10n.errorKnowledgeNodeNotFound,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,

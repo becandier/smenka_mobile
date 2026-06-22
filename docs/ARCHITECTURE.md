@@ -170,6 +170,9 @@ lib/
 | `Payroll` / `PayrollItem` / `PayrollTotals` / `PayrollPeriod` | `domain/payroll/models/payroll.dart` | отчёт «кому сколько заплатить» за период |
 | `MyEarnings` | `domain/payroll/models/my_earnings.dart` | личный заработок за период + currentRate?, hasMissingRate |
 | `StoredFile` / `FileCategory` | `domain/file_storage/models/stored_file.dart` | метаданные файла из единого хранилища + presigned `url`/`urlExpiresAt`; enum категорий (checklist_photo/knowledge_base/avatar/other) |
+| `KnowledgeNode` / `KnowledgeNodeKind` | `domain/knowledge/models/knowledge_node.dart` | узел дерева базы знаний (id, kind: section/page/unknown, title, icon?, position, allMembers?, children); `unknown` — безопасный фолбэк форвард-компат |
+| `KnowledgeNodeDetail` / `KnowledgeBreadcrumb` | `domain/knowledge/models/knowledge_node.dart` | деталь узла: обогащённый `content` (для page) + `breadcrumbs`; для section `content=null` |
+| `KnowledgeBlock` (sealed) / `KnowledgeSpan` | `domain/knowledge/models/knowledge_block.dart` | блок контента (heading/paragraph/bulleted_list/numbered_list/quote/callout/divider/image/file/video/table + **`unknown`**-фолбэк); `KnowledgeSpan` — inline rich (bold/italic/underline/strike/code/link) |
 | `DefaultPaginator<T>` | `core/models/default_paginator.dart` | hasMore, data, total (универсальная пагинация) |
 
 ---
@@ -187,6 +190,7 @@ lib/
 | `ChecklistDataSource` | `/organizations/{orgId}` и `/shifts` | getEffectiveTemplates (member, read-only), getShiftChecklists, getInstanceDetail, updateInstanceItem |
 | `PayrollDataSource` | `/organizations/{orgId}` | getRates (read), getPayroll, getMyEarnings |
 | `FilesDataSource` | `/files` | uploadFile (multipart `file`/`category`/`organization_id`, onSendProgress), getFile (свежий presigned URL) |
+| `KnowledgeDataSource` | `/organizations/{orgId}/knowledge` | getTree (`?tree=true`), getNode (деталь узла) — только чтение |
 
 > Write-слой org-менеджмента (create/delete/rotateInvite/updateMemberRole/getSettings/updateSettings/getAllOrganizations), управление рабочими точками, ставками и шаблонами чек-листов вынесены в веб-админку — в мобильном API их нет.
 
@@ -203,6 +207,7 @@ lib/
 | `ChecklistRepository` | ChecklistDataSource | getEffectiveTemplates, getShiftChecklists, getInstanceDetail, updateInstanceItem, addItemPhoto, deleteItemPhoto |
 | `PayrollRepository` | PayrollDataSource | getRates, getPayroll, getMyEarnings (всё read-only) |
 | `FilesRepository` | FilesDataSource | uploadFile, getFile (платформенный слой `file_storage`; зарегистрирован глобально, потребители — фото чек-листов/база знаний/аватары; UI-показ — виджет `StorageImage`) |
+| `KnowledgeRepository` | KnowledgeDataSource | getTree, getNode (всё read-only; файлы блоков рефрешит через `FilesRepository`/`StorageImage`) |
 
 > `OrganizationRole` отдельного репозитория не имеет (только DTO+mapper; модель вкладывается в `Member`/`Organization`). `LocationRepository` удалён.
 
@@ -236,6 +241,8 @@ lib/
 | `MemberRatesCubit` | Готов | История ставок участника (read-only); действующая ставка (getter); ленивая загрузка из секции |
 | `MyEarningsCubit` | Готов | «Мой заработок»: окно периода (PeriodPreset XOR произвольный), сводка + текущая ставка |
 | `PayrollCubit` | Готов | Отчёт «Зарплата»: окно периода, totals + items, карта участников для перехода на деталь |
+| `KnowledgeTreeCubit` | Готов | Дерево базы знаний (read-only); хранит локальную развёрнутость разделов (`expandedIds`) |
+| `KnowledgePageCubit` | Готов | Деталь страницы базы знаний (read-only); `KNOWLEDGE_NODE_NOT_FOUND` → error по коду |
 
 ---
 
@@ -272,6 +279,8 @@ lib/
 | `PayrollRoute` | `<org-base>/payroll` | «Зарплата» — отчёт по сотрудникам (admin) |
 | `EmployeePickerRoute` | `<org-base>/employee-picker` | Модалка выбора сотрудника (CustomRoute, `EmployeePickerResult?`) |
 | `DateRangePickerRoute` | `/history/date-range` + `<org-base>/date-range` | Общий date-range picker (CustomRoute-модалка, `DateRangePickerResult?`) |
+| `KnowledgeTreeRoute` | `<org-base>/knowledge-base` | Дерево базы знаний (org_member, read-only) |
+| `KnowledgePageRoute` | `<org-base>/knowledge-base/:nodeId` | Страница базы знаний — нативный рендер блоков (`initialTitle?`) |
 
 > `<org-base>` = `detail/:orgId` (таб «Организации») или `org-detail/:orgId` (таб «Профиль»).
 > CustomRoute-модалки строятся через `ModalBottomSheetRoute` (`_modalBottomSheetBuilder`).
@@ -385,6 +394,19 @@ lib/
 - **Навигация**: `MyPenaltiesRoute`; модалки `PenaltyFormRoute`/`ShiftPickerRoute` (`CustomRoute`, bottom sheet); дата штрафа — `showDatePicker` (один день).
 - **DI**: `PenaltyRepository` создаётся в `success_app` через `RepositoryProvider(create:)` с готовым `dio` (не в локаторе).
 - **⚠️ Первое пишущее действие мобильного admin/owner над сотрудником** (назначить/исправить/снять штраф) — раньше мобильный admin был read-only по сотрудникам/сменам; для штрафов сделано явное исключение, одобренное заказчиком.
+
+---
+
+## База знаний (knowledge_base)
+
+Фича `knowledge_base` (`../docs/tasks/knowledge_base/mobile.md`, ветка `feat/knowledge-base-mobile`) — **только-читательский** клиент базы знаний организации (только орг-режим; для всех ролей, сервер фильтрует дерево по ACL).
+- **Домен/инфра** `knowledge/`: `KnowledgeNode`/`KnowledgeNodeDetail`/`KnowledgeBreadcrumb`, sealed `KnowledgeBlock` (11 типов + `unknown`-фолбэк) и `KnowledgeSpan`; `KnowledgeDataSource` (getTree `?tree=true`, getNode), `KnowledgeRepositoryImpl` (`Task<…>`). DTO + extension-mapper; `content` хранится сырым (`List<dynamic>?`) и разбирается диспетчером по `type` с `whereType`-фильтрацией (forward-compat: битый/неизвестный блок не роняет страницу).
+- **Cubits**: `KnowledgeTreeCubit` (дерево + локальная развёрнутость `expandedIds`), `KnowledgePageCubit` (деталь страницы). Независимы; ошибки строго по `error.code` (`KNOWLEDGE_NODE_NOT_FOUND` → «Материал недоступен»).
+- **Экраны**: `KnowledgeTreePage` — раскрываемое дерево (любой узел с детьми раскрывается; страница открывает контент — контракт: и section, и page могут иметь детей); `KnowledgePageScreen` — нативный рендер блоков (heading/paragraph/списки/quote/callout/divider/table/inline-rich; `image` через `StorageImage`; `file` — карточка, открытие свежим presigned url через `FilesRepository.getFile`; `video` — обложка YouTube + open во внешнем браузере через `url_launcher`).
+- **Файлы блоков** — по presigned url через платформенный `file_storage` (`StorageImage`/`FilesRepository`); голый `file_id` не показывается; `url=null` дотягивается по `fileId`.
+- **Навигация**: `KnowledgeTreeRoute`/`KnowledgePageRoute` в `_orgDetailRoutes`; точка входа — пункт «База знаний» в `_org_navigation_section` (для всех ролей). **DI**: `KnowledgeRepository` создаётся в `success_app` через `RepositoryProvider(create:)` с готовым `dio`.
+- **Read-only гарантия**: ни одного пишущего вызова (POST/PATCH/DELETE/PUT, POST /files) по базе знаний; управление узлами/блоками/ACL — только веб-админка.
+- **Решение**: `KnowledgeNodeKind` парсится вручную (`_parseKind` switch с фолбэком `unknown`), а не через `@JsonValue`/json_serializable — в проекте нет прецедента `@JsonValue`, конвенция — ручной маппинг enum (как `FileCategory.fromValue`); поведение (строгие snake-строки + безопасный фолбэк) контракту соответствует. `video` показан обложкой+внешним открытием (без `youtube_player_flutter`/webview) — допустимый спецификацией путь, без тяжёлых нативных зависимостей в read-only вьюере.
 
 ---
 

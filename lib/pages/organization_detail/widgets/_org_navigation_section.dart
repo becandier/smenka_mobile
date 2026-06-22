@@ -48,6 +48,14 @@ class _OrgNavigationSection extends StatelessWidget {
                 onTap: () =>
                     context.router.push(OrgMembersRoute(orgId: data.orgId)),
               ),
+              // База знаний — read-only для всех ролей.
+              const SizedBox(height: 8),
+              _NavItem(
+                icon: Icons.menu_book_outlined,
+                title: l10n.knowledgeBaseTitle,
+                onTap: () =>
+                    context.router.push(KnowledgeTreeRoute(orgId: data.orgId)),
+              ),
               // «Мой заработок» — для участников (owner не member, ADR-001)
               if (data.isMember) ...[
                 const SizedBox(height: 8),

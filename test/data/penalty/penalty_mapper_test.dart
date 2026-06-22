@@ -100,8 +100,8 @@ void main() {
     });
 
     test('пустой результат total=0 → нет догрузки', () {
-      final paginator = PaginatedPenaltiesDto(
-        items: const [],
+      final paginator = const PaginatedPenaltiesDto(
+        items: [],
         total: 0,
         limit: 20,
         offset: 0,
@@ -149,7 +149,7 @@ void main() {
       expect(payroll.totals.netAmountMinor, -50000);
     });
 
-    test('старый ответ без полей штрафов → дефолт 0 (additive-совместимость)', () {
+    test('старый ответ без полей штрафов → дефолт 0 (additive)', () {
       final payroll = PayrollDto.fromJson({
         'period': {'date_from': null, 'date_to': null},
         'currency': 'RUB',

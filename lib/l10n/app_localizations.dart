@@ -2026,6 +2026,36 @@ abstract class AppLocalizations {
   /// **'Учитывать штрафы'**
   String get payrollIncludePenalties;
 
+  /// No description provided for @knowledgeBaseTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'База знаний'**
+  String get knowledgeBaseTitle;
+
+  /// No description provided for @knowledgeTreeEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет доступных материалов'**
+  String get knowledgeTreeEmpty;
+
+  /// No description provided for @knowledgePageEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Страница пока пустая'**
+  String get knowledgePageEmpty;
+
+  /// No description provided for @knowledgeBlockUnsupported.
+  ///
+  /// In ru, this message translates to:
+  /// **'Этот блок не поддерживается в текущей версии приложения'**
+  String get knowledgeBlockUnsupported;
+
+  /// No description provided for @knowledgeOpenYoutube.
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть на YouTube'**
+  String get knowledgeOpenYoutube;
+
   /// No description provided for @errorPenaltyNotFound.
   ///
   /// In ru, this message translates to:
@@ -2037,6 +2067,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Шаблон штрафа не найден'**
   String get errorPenaltyTemplateNotFound;
+
+  /// No description provided for @errorKnowledgeNodeNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Материал недоступен'**
+  String get errorKnowledgeNodeNotFound;
 
   /// No description provided for @errorRateNotFound.
   ///
