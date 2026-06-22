@@ -118,6 +118,11 @@ class _MyEarningsView extends StatelessWidget {
                             ),
                           _SummaryCard(earnings: earnings),
                           const SizedBox(height: 16),
+                          _PenaltiesEarningsCard(
+                            earnings: earnings,
+                            orgId: context.read<MyEarningsCubit>().orgId,
+                          ),
+                          const SizedBox(height: 16),
                           _CurrentRateCard(currentRate: earnings.currentRate),
                           if (earnings.hasMissingRate) ...[
                             const SizedBox(height: 16),
@@ -210,6 +215,67 @@ class _SummaryItem extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ],
+    );
+  }
+}
+
+/// Блок штрафов на «Мой заработок» (фича fines): штрафы за период, «К выплате»
+/// (net = начислено − штрафы; может быть отрицательным) и переход на список
+/// «Мои штрафы». Для self штрафы учитываются всегда (флага нет).
+class _PenaltiesEarningsCard extends StatelessWidget {
+  const _PenaltiesEarningsCard({required this.earnings, required this.orgId});
+
+  final MyEarnings earnings;
+  final String orgId;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = context.appColors;
+    final hasPenalties = earnings.penaltyAmountMinor > 0;
+
+    return Material(
+      color: colors.surface,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (hasPenalties) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: _SummaryItem(
+                      value:
+                          '−${formatMoneyMinor(earnings.penaltyAmountMinor)}',
+                      label:
+                          '${l10n.finesAmount} · '
+                          '${l10n.finesCount(earnings.penaltiesCount)}',
+                    ),
+                  ),
+                  Expanded(
+                    child: _SummaryItem(
+                      value: formatMoneyMinor(earnings.netAmountMinor),
+                      label: l10n.finesToPay,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+            ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () =>
+                    context.router.push(MyPenaltiesRoute(orgId: orgId)),
+                icon: const Icon(Icons.gavel_outlined, size: 18),
+                label: Text(l10n.finesMyTitle),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

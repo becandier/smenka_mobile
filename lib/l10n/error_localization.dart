@@ -47,6 +47,9 @@ String localizedErrorMessage(
     // shift_work_location: привязка рабочей точки к смене
     'WORK_LOCATION_REQUIRED' => l10n.errorWorkLocationRequired,
     'WORK_LOCATION_NOT_FOUND' => l10n.errorWorkLocationNotFound,
+    // fines: штрафы
+    'PENALTY_NOT_FOUND' => l10n.errorPenaltyNotFound,
+    'PENALTY_TEMPLATE_NOT_FOUND' => l10n.errorPenaltyTemplateNotFound,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,

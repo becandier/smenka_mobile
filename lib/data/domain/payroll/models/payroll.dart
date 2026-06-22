@@ -24,6 +24,15 @@ abstract class PayrollItem with _$PayrollItem {
     required int unpaidSeconds,
     required int unpaidShiftsCount,
     required bool hasMissingRate,
+
+    /// Сумма штрафов сотрудника за период (фича fines). `0` при
+    /// `include_penalties=false` или отсутствии поля (старый бэк).
+    @Default(0) int penaltyAmountMinor,
+    @Default(0) int penaltiesCount,
+
+    /// К выплате = gross − penalty. Может быть отрицательным
+    /// (штрафы > начислений) — показываем как есть, без обрезки до нуля.
+    @Default(0) int netAmountMinor,
   }) = _PayrollItem;
 }
 
@@ -34,6 +43,13 @@ abstract class PayrollTotals with _$PayrollTotals {
     required int workedSeconds,
     required int shiftsCount,
     required int grossAmountMinor,
+
+    /// Итоги штрафов по орг (фича fines). `0` при `include_penalties=false`.
+    @Default(0) int penaltyAmountMinor,
+    @Default(0) int penaltiesCount,
+
+    /// К выплате по орг = gross − penalty (может быть отрицательным).
+    @Default(0) int netAmountMinor,
   }) = _PayrollTotals;
 }
 

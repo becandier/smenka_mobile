@@ -1822,6 +1822,222 @@ abstract class AppLocalizations {
   /// **'Ставок пока нет'**
   String get payrollRatesEmpty;
 
+  /// No description provided for @showMore.
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать ещё'**
+  String get showMore;
+
+  /// No description provided for @finesMyTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Мои штрафы'**
+  String get finesMyTitle;
+
+  /// No description provided for @finesMemberSectionTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Штрафы'**
+  String get finesMemberSectionTitle;
+
+  /// No description provided for @finesAssign.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначить штраф'**
+  String get finesAssign;
+
+  /// No description provided for @finesQuickAssign.
+  ///
+  /// In ru, this message translates to:
+  /// **'Оштрафовать'**
+  String get finesQuickAssign;
+
+  /// No description provided for @finesAssignedSuccess.
+  ///
+  /// In ru, this message translates to:
+  /// **'Штраф назначен'**
+  String get finesAssignedSuccess;
+
+  /// No description provided for @finesRemove.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять штраф'**
+  String get finesRemove;
+
+  /// No description provided for @finesEdit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Исправить запись'**
+  String get finesEdit;
+
+  /// No description provided for @finesRemoveConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять этот штраф? Действие можно посмотреть в истории.'**
+  String get finesRemoveConfirm;
+
+  /// No description provided for @finesSourceTemplate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Из шаблона'**
+  String get finesSourceTemplate;
+
+  /// No description provided for @finesSourceCustom.
+  ///
+  /// In ru, this message translates to:
+  /// **'Свой'**
+  String get finesSourceCustom;
+
+  /// No description provided for @finesFieldReason.
+  ///
+  /// In ru, this message translates to:
+  /// **'Причина'**
+  String get finesFieldReason;
+
+  /// No description provided for @finesFieldAmount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сумма, ₽'**
+  String get finesFieldAmount;
+
+  /// No description provided for @finesFieldShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена (необязательно)'**
+  String get finesFieldShift;
+
+  /// No description provided for @finesFieldDate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дата'**
+  String get finesFieldDate;
+
+  /// No description provided for @finesFieldComment.
+  ///
+  /// In ru, this message translates to:
+  /// **'Комментарий (необязательно)'**
+  String get finesFieldComment;
+
+  /// No description provided for @finesTemplatePick.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите шаблон'**
+  String get finesTemplatePick;
+
+  /// No description provided for @finesTemplateEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблоны не заданы — добавьте в веб-админке'**
+  String get finesTemplateEmpty;
+
+  /// No description provided for @finesAmount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Штрафы'**
+  String get finesAmount;
+
+  /// No description provided for @finesToPay.
+  ///
+  /// In ru, this message translates to:
+  /// **'К выплате'**
+  String get finesToPay;
+
+  /// No description provided for @finesCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count} шт.'**
+  String finesCount(int count);
+
+  /// No description provided for @finesAttachedToShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'По смене'**
+  String get finesAttachedToShift;
+
+  /// No description provided for @finesMyEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Штрафов нет за выбранный период'**
+  String get finesMyEmpty;
+
+  /// No description provided for @finesMemberEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Штрафов нет'**
+  String get finesMemberEmpty;
+
+  /// No description provided for @finesEditHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Это исправление ошибочной записи. Снять штраф — отдельным действием.'**
+  String get finesEditHint;
+
+  /// No description provided for @finesReasonInvalid.
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите причину (до 200 символов)'**
+  String get finesReasonInvalid;
+
+  /// No description provided for @finesAmountInvalid.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сумма должна быть больше нуля'**
+  String get finesAmountInvalid;
+
+  /// No description provided for @finesDateRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите дату или привяжите смену'**
+  String get finesDateRequired;
+
+  /// No description provided for @finesDateRequiredHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите дату'**
+  String get finesDateRequiredHint;
+
+  /// No description provided for @finesDateFromShift.
+  ///
+  /// In ru, this message translates to:
+  /// **'Возьмётся из смены'**
+  String get finesDateFromShift;
+
+  /// No description provided for @finesShiftNone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Без смены'**
+  String get finesShiftNone;
+
+  /// No description provided for @finesShiftPickerTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите смену'**
+  String get finesShiftPickerTitle;
+
+  /// No description provided for @finesShiftPickerEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'У сотрудника нет смен'**
+  String get finesShiftPickerEmpty;
+
+  /// No description provided for @payrollIncludePenalties.
+  ///
+  /// In ru, this message translates to:
+  /// **'Учитывать штрафы'**
+  String get payrollIncludePenalties;
+
+  /// No description provided for @errorPenaltyNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Штраф не найден'**
+  String get errorPenaltyNotFound;
+
+  /// No description provided for @errorPenaltyTemplateNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаблон штрафа не найден'**
+  String get errorPenaltyTemplateNotFound;
+
   /// No description provided for @errorRateNotFound.
   ///
   /// In ru, this message translates to:

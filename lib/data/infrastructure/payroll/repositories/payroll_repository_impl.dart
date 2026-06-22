@@ -25,12 +25,14 @@ class PayrollRepositoryImpl with TaskHandler implements PayrollRepository {
     String orgId, {
     DateTime? dateFrom,
     DateTime? dateTo,
+    bool? includePenalties,
   }) {
     return execute(() async {
       final dto = await _dataSource.getPayroll(
         orgId,
         dateFrom: dateFrom,
         dateTo: dateTo,
+        includePenalties: includePenalties,
       );
       return dto.toDomain();
     });

@@ -940,6 +940,118 @@ class AppLocalizationsRu extends AppLocalizations {
   String get payrollRatesEmpty => 'Ставок пока нет';
 
   @override
+  String get showMore => 'Показать ещё';
+
+  @override
+  String get finesMyTitle => 'Мои штрафы';
+
+  @override
+  String get finesMemberSectionTitle => 'Штрафы';
+
+  @override
+  String get finesAssign => 'Назначить штраф';
+
+  @override
+  String get finesQuickAssign => 'Оштрафовать';
+
+  @override
+  String get finesAssignedSuccess => 'Штраф назначен';
+
+  @override
+  String get finesRemove => 'Снять штраф';
+
+  @override
+  String get finesEdit => 'Исправить запись';
+
+  @override
+  String get finesRemoveConfirm =>
+      'Снять этот штраф? Действие можно посмотреть в истории.';
+
+  @override
+  String get finesSourceTemplate => 'Из шаблона';
+
+  @override
+  String get finesSourceCustom => 'Свой';
+
+  @override
+  String get finesFieldReason => 'Причина';
+
+  @override
+  String get finesFieldAmount => 'Сумма, ₽';
+
+  @override
+  String get finesFieldShift => 'Смена (необязательно)';
+
+  @override
+  String get finesFieldDate => 'Дата';
+
+  @override
+  String get finesFieldComment => 'Комментарий (необязательно)';
+
+  @override
+  String get finesTemplatePick => 'Выберите шаблон';
+
+  @override
+  String get finesTemplateEmpty => 'Шаблоны не заданы — добавьте в веб-админке';
+
+  @override
+  String get finesAmount => 'Штрафы';
+
+  @override
+  String get finesToPay => 'К выплате';
+
+  @override
+  String finesCount(int count) {
+    return '$count шт.';
+  }
+
+  @override
+  String get finesAttachedToShift => 'По смене';
+
+  @override
+  String get finesMyEmpty => 'Штрафов нет за выбранный период';
+
+  @override
+  String get finesMemberEmpty => 'Штрафов нет';
+
+  @override
+  String get finesEditHint =>
+      'Это исправление ошибочной записи. Снять штраф — отдельным действием.';
+
+  @override
+  String get finesReasonInvalid => 'Укажите причину (до 200 символов)';
+
+  @override
+  String get finesAmountInvalid => 'Сумма должна быть больше нуля';
+
+  @override
+  String get finesDateRequired => 'Выберите дату или привяжите смену';
+
+  @override
+  String get finesDateRequiredHint => 'Выберите дату';
+
+  @override
+  String get finesDateFromShift => 'Возьмётся из смены';
+
+  @override
+  String get finesShiftNone => 'Без смены';
+
+  @override
+  String get finesShiftPickerTitle => 'Выберите смену';
+
+  @override
+  String get finesShiftPickerEmpty => 'У сотрудника нет смен';
+
+  @override
+  String get payrollIncludePenalties => 'Учитывать штрафы';
+
+  @override
+  String get errorPenaltyNotFound => 'Штраф не найден';
+
+  @override
+  String get errorPenaltyTemplateNotFound => 'Шаблон штрафа не найден';
+
+  @override
   String get errorRateNotFound => 'Запись о ставке не найдена';
 
   @override

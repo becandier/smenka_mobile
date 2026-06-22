@@ -6,6 +6,7 @@ import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
+import 'package:smenka_mobile/data/domain/penalty/_penalty.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
 import 'package:smenka_mobile/pages/_features.dart';
@@ -173,6 +174,19 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
   AutoRoute(path: '$basePath/stats', page: OrgStatsRoute.page),
   AutoRoute(path: '$basePath/my-earnings', page: MyEarningsRoute.page),
   AutoRoute(path: '$basePath/payroll', page: PayrollRoute.page),
+  // Штрафы (фича fines): свой список (employee) + модалки назначения штрафа
+  // и выбора смены (admin/owner) — модалки через bottom sheet.
+  AutoRoute(path: '$basePath/my-penalties', page: MyPenaltiesRoute.page),
+  CustomRoute<bool>(
+    path: '$basePath/penalty-form',
+    page: PenaltyFormRoute.page,
+    customRouteBuilder: _modalBottomSheetBuilder,
+  ),
+  CustomRoute<ShiftPickerResult?>(
+    path: '$basePath/shift-picker',
+    page: ShiftPickerRoute.page,
+    customRouteBuilder: _modalBottomSheetBuilder,
+  ),
 ];
 
 @RoutePage(name: 'ShiftTab')

@@ -15,6 +15,9 @@ abstract class MyEarningsDto with _$MyEarningsDto {
     required int shiftsCount,
     required int grossAmountMinor,
     required bool hasMissingRate,
+    @Default(0) int penaltyAmountMinor,
+    @Default(0) int penaltiesCount,
+    @Default(0) int netAmountMinor,
     CurrentRateDto? currentRate,
   }) = _MyEarningsDto;
 

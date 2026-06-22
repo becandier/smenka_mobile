@@ -12,10 +12,12 @@ abstract class PayrollRepository {
 
   /// Отчёт «кому сколько заплатить» за период (admin/owner).
   /// Окно: UTC, `dateTo` включительно; открытые границы допустимы.
+  /// [includePenalties] (фича fines) — учитывать штрафы (бэк default `true`).
   Future<Task<Payroll>> getPayroll(
     String orgId, {
     DateTime? dateFrom,
     DateTime? dateTo,
+    bool? includePenalties,
   });
 
   /// Свой заработок за период + текущая ставка (org_member).

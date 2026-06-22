@@ -32,6 +32,9 @@ _PayrollItemDto _$PayrollItemDtoFromJson(Map<String, dynamic> json) =>
       unpaidSeconds: (json['unpaid_seconds'] as num).toInt(),
       unpaidShiftsCount: (json['unpaid_shifts_count'] as num).toInt(),
       hasMissingRate: json['has_missing_rate'] as bool,
+      penaltyAmountMinor: (json['penalty_amount_minor'] as num?)?.toInt() ?? 0,
+      penaltiesCount: (json['penalties_count'] as num?)?.toInt() ?? 0,
+      netAmountMinor: (json['net_amount_minor'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$PayrollItemDtoToJson(_PayrollItemDto instance) =>
@@ -44,6 +47,9 @@ Map<String, dynamic> _$PayrollItemDtoToJson(_PayrollItemDto instance) =>
       'unpaid_seconds': instance.unpaidSeconds,
       'unpaid_shifts_count': instance.unpaidShiftsCount,
       'has_missing_rate': instance.hasMissingRate,
+      'penalty_amount_minor': instance.penaltyAmountMinor,
+      'penalties_count': instance.penaltiesCount,
+      'net_amount_minor': instance.netAmountMinor,
     };
 
 _PayrollTotalsDto _$PayrollTotalsDtoFromJson(Map<String, dynamic> json) =>
@@ -51,6 +57,9 @@ _PayrollTotalsDto _$PayrollTotalsDtoFromJson(Map<String, dynamic> json) =>
       workedSeconds: (json['worked_seconds'] as num).toInt(),
       shiftsCount: (json['shifts_count'] as num).toInt(),
       grossAmountMinor: (json['gross_amount_minor'] as num).toInt(),
+      penaltyAmountMinor: (json['penalty_amount_minor'] as num?)?.toInt() ?? 0,
+      penaltiesCount: (json['penalties_count'] as num?)?.toInt() ?? 0,
+      netAmountMinor: (json['net_amount_minor'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$PayrollTotalsDtoToJson(_PayrollTotalsDto instance) =>
@@ -58,6 +67,9 @@ Map<String, dynamic> _$PayrollTotalsDtoToJson(_PayrollTotalsDto instance) =>
       'worked_seconds': instance.workedSeconds,
       'shifts_count': instance.shiftsCount,
       'gross_amount_minor': instance.grossAmountMinor,
+      'penalty_amount_minor': instance.penaltyAmountMinor,
+      'penalties_count': instance.penaltiesCount,
+      'net_amount_minor': instance.netAmountMinor,
     };
 
 _PayrollDto _$PayrollDtoFromJson(Map<String, dynamic> json) => _PayrollDto(

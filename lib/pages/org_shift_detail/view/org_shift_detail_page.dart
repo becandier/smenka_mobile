@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
+import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
@@ -108,6 +110,10 @@ class _Content extends StatelessWidget {
           role: shift.role,
           customRoleName: shift.customRoleName,
         ),
+        const SizedBox(height: 16),
+        // Единственное пишущее действие на этом экране (фича fines):
+        // быстро оштрафовать сотрудника по этой смене.
+        _FineShiftButton(orgId: orgId, shift: shift),
         const SizedBox(height: 20),
         _OrgShiftInfoSection(shift: shift),
         const SizedBox(height: 24),
@@ -115,6 +121,75 @@ class _Content extends StatelessWidget {
         const SizedBox(height: 24),
         _OrgShiftDetailChecklists(orgId: orgId, shiftId: shiftId),
       ],
+    );
+  }
+}
+
+/// Кнопка «Оштрафовать» по конкретной смене (admin/owner).
+///
+/// Разрешает `member_id` сотрудника смены по `user_id` (через список
+/// участников орг), затем открывает форму штрафа с предзаполнением
+/// (`shift_id` = id смены, `occurred_at` = `started_at`).
+class _FineShiftButton extends StatefulWidget {
+  const _FineShiftButton({required this.orgId, required this.shift});
+
+  final String orgId;
+  final Shift shift;
+
+  @override
+  State<_FineShiftButton> createState() => _FineShiftButtonState();
+}
+
+class _FineShiftButtonState extends State<_FineShiftButton> {
+  bool _loading = false;
+
+  Future<void> _fine() async {
+    final l10n = context.l10n;
+    final orgRepository = context.read<OrganizationRepository>();
+    setState(() => _loading = true);
+
+    final result = await orgRepository.getMembers(widget.orgId);
+    if (!mounted) return;
+
+    final member = result.fold(
+      onSuccess: (members) {
+        for (final m in members) {
+          if (m.userId == widget.shift.userId) return m;
+        }
+        return null;
+      },
+      onFailure: (_) => null,
+    );
+
+    if (member == null) {
+      setState(() => _loading = false);
+      if (mounted) context.modals.showError(l10n.errorMemberNotFound);
+      return;
+    }
+
+    final created = await context.router.push<bool>(
+      PenaltyFormRoute(
+        orgId: widget.orgId,
+        memberId: member.id,
+        userId: member.userId,
+        userName: member.userName,
+        shiftId: widget.shift.id,
+        initialOccurredAt: widget.shift.startedAt,
+      ),
+    );
+    if (!mounted) return;
+    setState(() => _loading = false);
+    if (created ?? false) {
+      context.modals.showSuccess(l10n.finesAssignedSuccess);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppButton(
+      label: context.l10n.finesQuickAssign,
+      isLoading: _loading,
+      onPressed: _fine,
     );
   }
 }
