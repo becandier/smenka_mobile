@@ -219,3 +219,15 @@
 - [x] **UI**: экран выбора точки `work_location_picker` (модалка `CustomRoute`, паттерн `employee_picker`); селектор точки на idle-экране по матрице `geo_check_enabled × require_work_location` (гео вкл → точку определяет сервер, селектор скрыт; гео выкл + require → обязательный выбор + гейтинг кнопки старта; гео выкл → опционально, пункт «Без точки»); показ точки в активной смене, истории, деталях персон/орг (реюз `WorkLocationLine`)
 - [x] Локализация; маппинг `WORK_LOCATION_REQUIRED`/`WORK_LOCATION_NOT_FOUND` по `error.code`; все новые поля nullable/additive (обратная совместимость со старым бэком); 3 новых cubit-теста; мульти-агентное ревью (12 агентов, состязательная верификация) + `make check` зелёный
 - [ ] **End-to-end**: бэкенд фичи на момент реализации не задеплоен — мобилка построена против согласованного контракта (`backend.md`); полноценно заработает после деплоя бэка
+
+---
+
+## Фича — Штрафы (fines) `[x]` (`../docs/tasks/fines/mobile.md`, смержено `50c1824`/`474c075`)
+- [x] **Data**: новый домен `penalty` (`PenaltyTemplate`/`Penalty`/`MyPenalty` + `CreatePenaltyInput`/`UpdatePenaltyInput`), инфра `penalty` (DTO+mappers+`PenaltyDataSource`+`PenaltyRepositoryImpl`, 10 методов: шаблоны, CRUD штрафов, my-penalties); деньги — `int` копейки; `member_id = OrganizationMember.id`
+- [x] **Payroll/my-earnings additive**: поля `penalty_amount_minor`/`penalties_count`/`net_amount_minor` (домен+DTO `@Default(0)`), query `include_penalties` (только payroll); `net` может быть отрицательным (не обрезается)
+- [x] **State**: `MyPenaltiesCubit`/`MemberPenaltiesCubit` (offset-пагинация), `PenaltyFormCubit` (шаблоны+submit), `ShiftPickerCubit`; `PayrollCubit.setIncludePenalties`
+- [x] **UI**: экран «Мои штрафы» (employee); секция «Штрафы» + модалка «Назначить/Исправить» (источник шаблон/кастом, выбор смены, дата одним днём, клиентская валидация) + пикер смены на `member_detail`; «Оштрафовать» на `OrgShiftDetail` (резолв member по `user_id` смены); тумблер + колонки/итоги «Штраф»/«К выплате» на `PayrollPage`; net-блок + ссылка «Мои штрафы» на `MyEarnings`
+- [x] **DI** `PenaltyRepository` через `RepositoryProvider` (готовый Dio); роуты `MyPenaltiesRoute` + `CustomRoute` `PenaltyFormRoute`/`ShiftPickerRoute`; l10n; коды `PENALTY_NOT_FOUND`/`PENALTY_TEMPLATE_NOT_FOUND` по `error.code`
+- [x] **⚠️ Первое пишущее действие мобильного admin/owner над сотрудником** (назначить/исправить/снять штраф) — исключение из read-only мобильного admin, одобрено заказчиком
+- [x] `flutter analyze` чисто, `flutter build web` зелёная, 51+8 тестов (маппер penalty); адверсариальное ревью — одиночный проход (параллельные агенты упали по лимиту сессии), найдена+исправлена CRITICAL: пропущенный импорт `Penalty` в `app_router.dart` (скрыт исключением `.gr.dart` из analyze)
+- [ ] **End-to-end**: заработает после деплоя бэка (бэк смержен в `main`, но прод-сервера пока нет)
