@@ -2206,6 +2206,12 @@ abstract class AppLocalizations {
   /// **'Рабочая точка не найдена'**
   String get errorWorkLocationNotFound;
 
+  /// No description provided for @errorGeoUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось определить геопозицию. Проверьте доступ к геолокации и повторите.'**
+  String get errorGeoUnavailable;
+
   /// No description provided for @commonNoConnection.
   ///
   /// In ru, this message translates to:

@@ -1,0 +1,24 @@
+# Артефакты сборки и кэши — не нужны в контексте образа (build идёт внутри).
+build/
+.dart_tool/
+.git/
+.github/
+.idea/
+.vscode/
+.fvm/
+
+# Нативные платформы и тесты не участвуют в web-сборке.
+android/
+ios/
+macos/
+linux/
+windows/
+test/
+coverage/
+
+# Локальное окружение и временное.
+*.iml
+*.log
+.DS_Store
+.flutter-plugins
+.flutter-plugins-dependencies

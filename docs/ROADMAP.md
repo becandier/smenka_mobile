@@ -231,3 +231,14 @@
 - [x] **⚠️ Первое пишущее действие мобильного admin/owner над сотрудником** (назначить/исправить/снять штраф) — исключение из read-only мобильного admin, одобрено заказчиком
 - [x] `flutter analyze` чисто, `flutter build web` зелёная, 51+8 тестов (маппер penalty); адверсариальное ревью — одиночный проход (параллельные агенты упали по лимиту сессии), найдена+исправлена CRITICAL: пропущенный импорт `Penalty` в `app_router.dart` (скрыт исключением `.gr.dart` из analyze)
 - [ ] **End-to-end**: заработает после деплоя бэка (бэк смержен в `main`, но прод-сервера пока нет)
+
+---
+
+## Фича — Web: прод-готовая сборка для деплоя `[x]` (`../docs/tasks/flutter_web_release/mobile.md`)
+- [x] **RC-fallback (главный блокер)**: `setDefaults` (`ENDPOINT_PROD=https://api.smenka.pro` хост-only, dio добавляет `/api/v1`; `ENDPOINT_DEV`/`PRIVACY_POLICY`/`MIN_VERSION=0.0.0`/`TECH_WORK=false`) **до** `fetchAndActivate`; широкий `catch` (на web реджекты RC — не `FirebaseException`); `init()` в `timeout(8s)` + `.catchError` — старт не блокируется и сервис всегда регистрируется; бэкстоп `AppConfigException` → экран ошибки конфигурации (не белый). На web без кэша RC приложение стартует на дефолтах и ходит в прод-API.
+- [x] **Гео на web**: `getCurrentPosition` целиком в try/catch; отказ → `GeoDenied`→локализованное сообщение; непредвиденная ошибка → `GeoError(code: GEO_UNAVAILABLE)` → `error_localization` → понятный текст, без краша. Геопроверка `geoCheckEnabled` работает как на нативе.
+- [x] **Токены на web** (verify-only): `flutter_secure_storage` через IndexedDB, `init()` web-safe (try/catch), рефреш/разлогин корректны — правок не потребовалось.
+- [x] **CSP-meta** в `index.html` (self+API+Firebase/Google+объектное хранилище; `wasm-unsafe-eval` для CanvasKit); сборка с `--csp` (dart2js без eval).
+- [x] **Воспроизводимая сборка**: `Dockerfile` (multi-stage `cirruslabs/flutter:3.41.2`→`nginx:1.27` SPA-fallback `nginx.conf`), `make build-web`/`docker-web`, CI `release-web.yml`→`ghcr.io/becandier/smenka_web` + `ci.yml` (analyze+test на PR). `firebase_options.dart` закоммичен (web-конфиг не секрет; нужен CI).
+- [x] `make check` зелёный (analyze 0, 71 тест); адверсариальное мульти-агентное ревью (5 измерений + верификация) — найдено и исправлено 3 блокера (RC `on FirebaseException` не ловит web-реджекты; CSP без `--csp`/`unsafe-eval` → белый экран; `firebase_options.dart` в `.gitignore` ломал CI) + 2 major (CSP-хост хранилища; nginx gzip для `.js`).
+- [ ] **Деплой**: образ собирается в CI; поднятие сервиса `web` в compose/Caddy и DNS `app.smenka.pro` — DevOps корня (VPS пока нет).

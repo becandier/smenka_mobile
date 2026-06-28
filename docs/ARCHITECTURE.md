@@ -297,16 +297,19 @@ lib/
 
 **Что сделано в клиенте:**
 - **URL-strategy**: `usePathUrlStrategy()` (без `#` в адресе) — `lib/core/web/url_strategy.dart` через conditional export (`url_strategy_web.dart` / `url_strategy_stub.dart`), вызывается из `main.dart`. Зависимость `flutter_web_plugins` в `pubspec.yaml`.
+- **Remote Config: defaults + non-blocking fetch (прод-критично для web)**: `lib/app/config/remote_config/remote_config_firebase.dart` задаёт `setDefaults` (`remoteConfigDefaults`: `ENDPOINT_PROD=https://api.smenka.pro` — хост, dio добавляет `/api/v1`; `ENDPOINT_DEV`, `PRIVACY_POLICY`, `MIN_VERSION=0.0.0`, `TECH_WORK=false`) **первым делом**, до `fetchAndActivate`. На web нет кэша RC — без дефолтов пустой `endPoint` = мёртвое приложение. `init()` ловит исключения **широко** (на web `firebase_remote_config_web` не оборачивает реджекты в `FirebaseException`), а `RemoteConfigInitializer` оборачивает `init()` в `timeout(8s)` + `.catchError` — старт не блокируется и регистрация сервиса гарантирована. Бэкстоп: `MainAppCubit` бросает `AppConfigException` при пустом `endPoint` → понятный экран ошибки (`error_app.dart`), не белый.
 - **Remote Config cache cleaner**: conditional import `dart:io` — `lib/app/config/remote_config/remote_config_cache_cleaner_io.dart` (реальная очистка кэша) и `..._stub.dart` (no-op для web, где `dart:io` недоступен).
 - **Crashlytics не инициализируется на web**: `MainAppCubit._init` пропускает `CrashlyticsInitializer()` под `if (!kIsWeb)`; в `TalkerInitializer` поле `crashlytics` nullable, запись ошибок — `crashlytics?.recordError/recordFlutterFatalError`.
-- **Geolocator на web — no-op**: `lib/core/services/geo_service.dart` — `getCurrentPosition`, `openAppSettings`, `openLocationSettings` под `kIsWeb` возвращают рано (геопроверка зон фактически отключена на web).
+- **Geolocator на web — работает (HTTPS), ошибки безопасны**: `lib/core/services/geo_service.dart` — `getCurrentPosition` целиком обёрнут в try/catch; отказ/недоступность → структурный результат (`GeoDenied`/`GeoServiceDisabled`) или `GeoError(code: GEO_UNAVAILABLE)`. Код маппится в `error_localization.dart` → локализованный текст вместо сырого исключения; приложение не падает. `openAppSettings`/`openLocationSettings` — no-op на web. Геопроверка зон (`org.geoCheckEnabled`) на web работает как на нативе.
 - **Upgrader замьючен на web**: `lib/app/main_app/view/success_app.dart` — проверка версии в сторе включается только когда `!kIsWeb`.
-- **Firebase**: `lib/firebase_options.dart` содержит web-конфиг (`FirebaseOptions web`).
+- **Firebase**: `lib/firebase_options.dart` содержит web-конфиг (`FirebaseOptions web`); файл закоммичен (для web эти значения не секрет — уезжают в бандл; защита — Auth + Security Rules; нужен CI-чекауту).
+- **CSP-meta в `web/index.html`**: ограничивает источники (self + `api.smenka.pro` + домены Firebase/Google + объектное хранилище). `'wasm-unsafe-eval'` для CanvasKit; eval/`new Function` не нужны, т.к. web собирается с `--csp` (см. `Dockerfile`/`Makefile`). In-app картинки на CanvasKit идут через `connect-src` (XHR), не `img-src`.
+- **Воспроизводимая сборка + Docker-образ web**: `Dockerfile` (multi-stage: `cirruslabs/flutter:3.41.2` → `flutter build web --release --csp` → `nginx:1.27-alpine` со SPA-fallback, конфиг `nginx.conf`), `make build-web`/`make docker-web`, CI `.github/workflows/release-web.yml` (push `main`/тег → `ghcr.io/becandier/smenka_web`) и `ci.yml` (analyze+test на PR).
 
 **Вне клиента (нужно на стороне инфраструктуры):**
-- CORS на бэке для домена web-хостинга.
-- HTTPS-хостинг собранного бандла.
-- `flutter_secure_storage` на web использует IndexedDB — JWT-токены доступны JavaScript (не Keychain/Keystore, как на native).
+- CORS на бэке для домена web-хостинга (готово — фича `web_cors`).
+- DevOps корня: сервис `web` в `docker-compose.prod.yml`, Caddy `reverse_proxy web:80`, DNS `app.smenka.pro` (см. `../docs/DEPLOY_AUDIT.md`).
+- `flutter_secure_storage` на web использует IndexedDB — JWT-токены доступны JavaScript (не Keychain/Keystore, как на native) — осознанный MVP-риск; «правильно» = httpOnly-cookie (отдельная будущая фича).
 
 ---
 

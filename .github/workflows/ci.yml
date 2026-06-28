@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  analyze-test:
+    runs-on: ubuntu-latest
+    # Тот же тулчейн, что и в Dockerfile/локально (Dart 3.11).
+    container: ghcr.io/cirruslabs/flutter:3.41.2
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test

@@ -62,6 +62,19 @@ check:
 	flutter test
 	@echo "$(GREEN)All checks passed!$(NC)"
 
+# ==================== Web ====================
+
+build-web:
+	@echo "$(BLUE)Building Flutter web (release, prod-флейвор)...$(NC)"
+	flutter build web --release --csp --base-href=/
+	@echo "$(GREEN)Web build complete: build/web$(NC)"
+
+# Локальная проверка Docker-образа web (как в проде: nginx + SPA-fallback).
+docker-web:
+	@echo "$(BLUE)Building web Docker image...$(NC)"
+	docker build -t smenka_web:local .
+	@echo "$(GREEN)Image built: smenka_web:local (запуск: docker run --rm -p 8080:80 smenka_web:local)$(NC)"
+
 # ==================== Icons ====================
 
 icons:

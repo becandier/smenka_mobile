@@ -494,6 +494,7 @@
     "errorItemNotFound": "Пункт чек-листа не найден",
     "errorWorkLocationRequired": "Выберите рабочую точку, чтобы начать смену",
     "errorWorkLocationNotFound": "Рабочая точка не найдена",
+    "errorGeoUnavailable": "Не удалось определить геопозицию. Проверьте доступ к геолокации и повторите.",
     "commonNoConnection": "Нет соединения",
     "commonRetry": "Повторить",
     "shiftOfflineBanner": "Нет соединения. Проверьте интернет"

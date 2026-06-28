@@ -1143,6 +1143,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorWorkLocationNotFound => 'Рабочая точка не найдена';
 
   @override
+  String get errorGeoUnavailable =>
+      'Не удалось определить геопозицию. Проверьте доступ к геолокации и повторите.';
+
+  @override
   String get commonNoConnection => 'Нет соединения';
 
   @override
