@@ -35,3 +35,18 @@ class AppConfig {
   bool _getBool(String key) => _remoteConfig.getBool(key);
   // int _getInt(String key) => _remoteConfig.getInt(key);
 }
+
+/// Фатальная ошибка конфигурации: обязательный параметр (например
+/// [AppConfig.endPoint]) пуст даже после применения дефолтов Remote Config.
+///
+/// Текст специально содержит подстроку «AppConfig» — экран ошибки
+/// (`error_app.dart`) по ней показывает понятное сообщение про конфигурацию
+/// вместо общего «что-то пошло не так», а не мёртвый белый экран.
+class AppConfigException implements Exception {
+  const AppConfigException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => 'AppConfigException: $message';
+}

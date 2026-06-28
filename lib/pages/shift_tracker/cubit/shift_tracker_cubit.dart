@@ -253,10 +253,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
           return StartShiftResult.geoDeniedForever;
         case GeoError():
+          // На web сюда попадают непредвиденные отказы геолокации: показываем
+          // локализованный текст по коду, а не сырой текст исключения.
           emit(
             state.copyWith(
               actionStatus: FeatureStatus.error,
               actionError: geoResult.message,
+              actionErrorCode: geoResult.code,
             ),
           );
           return StartShiftResult.error;

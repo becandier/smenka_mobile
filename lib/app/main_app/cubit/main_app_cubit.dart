@@ -79,6 +79,17 @@ class MainAppCubit extends Cubit<MainAppState> {
         ),
       );
 
+      // Фатальная проверка конфигурации: с дефолтами Remote Config endPoint
+      // пустым быть не должен. Если он всё же пуст (нет дефолтов И неудачный
+      // fetch) — нет смысла поднимать Dio в никуда: показываем понятный экран
+      // ошибки конфигурации (error_app.dart) вместо мёртвого белого экрана.
+      final appConfig = _serviceLocator.get<AppConfig>();
+      if (appConfig.endPoint.isEmpty) {
+        throw const AppConfigException(
+          'ENDPOINT пуст — проверьте Remote Config',
+        );
+      }
+
       // Фаза 3.5: Auth инфраструктура
       // init() наполняет in-memory кэш из secure storage и однократно
       // мигрирует токены из открытого SharedPreferences — до создания Dio

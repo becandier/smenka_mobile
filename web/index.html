@@ -20,6 +20,31 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Smenka — учёт рабочего времени">
 
+  <!--
+    Content-Security-Policy: отсекаем «дикие» источники, не ломая приложение.
+    Разрешаем: self, прод-API (api.smenka.pro), домены Firebase/Google (Auth,
+    Remote Config, Installations, Analytics), CanvasKit/шрифты с gstatic и
+    presigned-ссылки файлового хранилища.
+    'wasm-unsafe-eval' нужен CanvasKit; eval/new Function не используется т.к.
+    web собирается с флагом --csp (см. Dockerfile/Makefile).
+    ВАЖНО: на web (CanvasKit) in-app картинки (CachedNetworkImage/StorageImage)
+    скачиваются через XHR/fetch и регулируются connect-src, а НЕ img-src —
+    поэтому хост объектного хранилища обязан быть в connect-src. Держать его в
+    синхроне с S3_PUBLIC_ENDPOINT_URL бэка (провайдер пока не закреплён: дефолтом
+    добавлены AWS S3 и рекомендованный в DEPLOY_AUDIT Yandex Object Storage).
+  -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com https://www.googletagmanager.com;
+    connect-src 'self' https://api.smenka.pro https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.firebasestorage.app https://*.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.amazonaws.com https://*.storage.yandexcloud.net;
+    img-src 'self' data: blob: https:;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' data: https://fonts.gstatic.com;
+    media-src 'self' blob: https:;
+    worker-src 'self' blob:;
+    frame-src 'self' https://*.firebaseapp.com;
+  ">
+
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">

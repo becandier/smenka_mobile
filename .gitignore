@@ -1,7 +1,10 @@
-# Firebase secrets
-lib/firebase_options.dart
+# Firebase secrets (нативные плагин-конфиги — НЕ коммитим)
 **/GoogleService-Info.plist
 **/google-services.json
+# firebase_options.dart НЕ игнорируем: для web эти значения (apiKey, appId…)
+# всё равно уезжают в браузерный бандл и не являются секретом; защита — Firebase
+# Auth + Security Rules. Файл нужен CI/Docker-чекауту, иначе web-сборка не
+# компилируется (firebase.dart импортирует его безусловно).
 
 # AI / IDE configs
 CLAUDE.md

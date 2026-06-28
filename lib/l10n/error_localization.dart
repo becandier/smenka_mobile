@@ -52,6 +52,9 @@ String localizedErrorMessage(
     'PENALTY_TEMPLATE_NOT_FOUND' => l10n.errorPenaltyTemplateNotFound,
     // knowledge_base: база знаний (узел не найден / доступ отозван / чужая org)
     'KNOWLEDGE_NODE_NOT_FOUND' => l10n.errorKnowledgeNodeNotFound,
+    // гео (клиентский код из geo_service.dart): недоступность позиции на
+    // web/нативе показываем понятным текстом, а не сырым текстом исключения.
+    'GEO_UNAVAILABLE' => l10n.errorGeoUnavailable,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,
