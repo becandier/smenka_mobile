@@ -3,6 +3,13 @@
 
 part of 'app.dart';
 
+// Автономный fallback-экран: показывается до/без сборки темы, поэтому бренд-цвета
+// заданы локальными константами (без ThemeData / context.appColors).
+// Значения — байт-в-байт из Smenka Brand Kit v1.0.
+const Color _kErrPaper = Color(0xFFFFFFFF); // paper — поверхность
+const Color _kErrInk = Color(0xFF1D2530); // ink — текст
+const Color _kErrBlue = Color(0xFF4A90D9); // Smenka Blue — акцент
+
 class _ErrorApp extends StatefulWidget {
   const _ErrorApp({required this.error, required this.stackTrace});
 
@@ -66,14 +73,9 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFFF6B6B), Color(0xFFFF8E8E), Color(0xFFFFB3B3)],
-            ),
-          ),
+        backgroundColor: _kErrPaper,
+        body: DecoratedBox(
+          decoration: const BoxDecoration(color: _kErrPaper),
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24),
@@ -91,11 +93,11 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                             width: 120,
                             height: 120,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: _kErrBlue,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
+                                  color: _kErrBlue.withValues(alpha: 0.25),
                                   blurRadius: 20,
                                   offset: const Offset(0, 10),
                                 ),
@@ -120,7 +122,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: _kErrInk,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -134,9 +136,9 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                         errorMessage(),
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: _kErrInk.withValues(alpha: 0.7),
                           height: 1.5,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -150,8 +152,8 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                         context.read<MainAppCubit>().refreshApp();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFFFF6B6B),
+                        backgroundColor: _kErrBlue,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 32,
                           vertical: 16,
@@ -160,7 +162,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         elevation: 8,
-                        shadowColor: Colors.black.withValues(alpha: 0.3),
+                        shadowColor: _kErrBlue.withValues(alpha: 0.35),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -195,7 +197,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                             AppLocalizations.of(context)?.errorDetails ??
                                 'Детали ошибки',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.8),
+                              color: _kErrInk.withValues(alpha: 0.6),
                               fontSize: 14,
                             ),
                           ),
@@ -205,7 +207,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                             duration: const Duration(milliseconds: 300),
                             child: Icon(
                               Icons.keyboard_arrow_down,
-                              color: Colors.white.withValues(alpha: 0.8),
+                              color: _kErrInk.withValues(alpha: 0.6),
                               size: 20,
                             ),
                           ),
@@ -221,7 +223,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                             margin: const EdgeInsets.only(top: 16),
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.2),
+                              color: _kErrInk.withValues(alpha: 0.06),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: SingleChildScrollView(
@@ -232,9 +234,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                                     Text(
                                       'Error: ${widget.error}',
                                       style: TextStyle(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.9,
-                                        ),
+                                        color: _kErrInk.withValues(alpha: 0.9),
                                         fontSize: 12,
                                         fontFamily: 'monospace',
                                       ),
@@ -245,9 +245,7 @@ class _ErrorAppState extends State<_ErrorApp> with TickerProviderStateMixin {
                                     Text(
                                       widget.stackTrace.toString(),
                                       style: TextStyle(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.7,
-                                        ),
+                                        color: _kErrInk.withValues(alpha: 0.7),
                                         fontSize: 10,
                                         fontFamily: 'monospace',
                                       ),

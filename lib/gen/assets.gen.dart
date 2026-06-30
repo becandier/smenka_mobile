@@ -15,9 +15,11 @@ class Assets {
   const Assets._();
 
   static const AssetGenImage logo = AssetGenImage('assets/logo.png');
+  static const String smenkaLockupColor = 'assets/smenka-lockup-color.svg';
+  static const String smenkaMarkColor = 'assets/smenka-mark-color.svg';
 
   /// List of all assets
-  static List<AssetGenImage> get values => [logo];
+  static List<dynamic> get values => [logo, smenkaLockupColor, smenkaMarkColor];
 }
 
 class AssetGenImage {

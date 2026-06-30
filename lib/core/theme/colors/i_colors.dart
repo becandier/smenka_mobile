@@ -32,6 +32,27 @@ abstract class IColors {
   /// Surface color for cards, sheets, and elevated surfaces
   Color get surface;
 
+  /// Primary text color (brand neutral `ink`)
+  Color get ink;
+
+  /// Secondary / muted text color (brand neutral `muted`)
+  Color get muted;
+
+  /// Border / divider color (brand neutral `line`)
+  Color get line;
+
+  /// Subtle blue-tinted fill / selected background (brand neutral `wash`)
+  Color get wash;
+
+  /// Deep blue accent — pressed states (brand `blueDeep`)
+  Color get blueDeep;
+
+  /// Mid blue — links / hover (brand `blueMid`)
+  Color get blueMid;
+
+  /// Pale blue — soft accent (brand `bluePale`)
+  Color get bluePale;
+
   /// Error color for validation and error states
   Color get error;
 

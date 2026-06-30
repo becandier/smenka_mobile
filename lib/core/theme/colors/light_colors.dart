@@ -4,20 +4,42 @@ import 'package:smenka_mobile/core/theme/colors/i_colors.dart';
 
 /// Light theme color palette implementation.
 ///
-/// Calm blue primary (#4A90D9) with neutral gray-blue secondary.
-/// TickTick-inspired: clean, minimal, soft surfaces.
+/// Smenka Brand Kit v1.0: Smenka Blue primary (#4A90D9), Deep Blue accent,
+/// neutral ink/muted/line/wash. Clean, minimal, soft surfaces.
 class LightColors implements IColors {
   @override
-  Color get primary => const Color(0xFF4A90D9);
+  Color get primary => const Color(0xFF4A90D9); // Smenka Blue
 
+  // Deep Blue (in-family accent / pressed)
   @override
-  Color get secondary => const Color(0xFF5C6B7A);
+  Color get secondary => const Color(0xFF1B4E7A);
 
   @override
   Color get background => const Color(0xFFFAFBFC);
 
   @override
-  Color get surface => const Color(0xFFFFFFFF);
+  Color get surface => const Color(0xFFFFFFFF); // paper
+
+  @override
+  Color get ink => const Color(0xFF1D2530);
+
+  @override
+  Color get muted => const Color(0xFF6B7785);
+
+  @override
+  Color get line => const Color(0xFFE7EBF0);
+
+  @override
+  Color get wash => const Color(0xFFEAF2FB);
+
+  @override
+  Color get blueDeep => const Color(0xFF1B4E7A);
+
+  @override
+  Color get blueMid => const Color(0xFF2E6DB0);
+
+  @override
+  Color get bluePale => const Color(0xFF9CC4EA);
 
   @override
   Color get error => const Color(0xFFE53935);

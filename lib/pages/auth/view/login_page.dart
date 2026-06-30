@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
@@ -131,6 +132,8 @@ class _LoginViewState extends State<_LoginView> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        _buildLockup(context),
+                        const SizedBox(height: 40),
                         _buildTitle(context, state),
                         const SizedBox(height: 32),
                         if (state.isRegister) ...[
@@ -161,6 +164,35 @@ class _LoginViewState extends State<_LoginView> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Фирменный лок-ап Smenka (знак + словесный знак) по центру над формой.
+  ///
+  /// Знак рендерится из SVG через flutter_svg; словесный знак — текстом в Arimo
+  /// (flutter_svg не отрисовывает `<text>` из лок-ап-SVG), цвет — Deep Blue.
+  Widget _buildLockup(BuildContext context) {
+    final colors = context.appColors;
+    return Semantics(
+      label: 'Smenka',
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset('assets/smenka-mark-color.svg', height: 40),
+          const SizedBox(width: 10),
+          Text(
+            'smenka',
+            style: TextStyle(
+              fontFamily: 'Arimo',
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.64,
+              color: colors.blueDeep,
+            ),
+          ),
+        ],
       ),
     );
   }
