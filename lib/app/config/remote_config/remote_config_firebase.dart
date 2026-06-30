@@ -16,13 +16,13 @@ import 'package:smenka_mobile/app/config/remote_config/remote_config_cache_clean
 /// `fetchAndActivate` лишь обновляет эти значения свежими из консоли Firebase.
 const remoteConfigDefaults = <String, Object>{
   // dio.dart добавляет суффикс `/api/v1`, поэтому здесь только хост → итоговый
-  // baseUrl = https://api.smenka.pro/api/v1.
-  'ENDPOINT_PROD': 'https://api.smenka.pro',
+  // baseUrl = https://api.smenka.space/api/v1.
+  'ENDPOINT_PROD': 'https://api.smenka.space',
   // Реальный dev-URL живёт в Firebase RC и перетирает дефолт на dev-флейворе.
   // web собирается prod-флейвором, поэтому дефолт держим на прод-хосте, чтобы
   // значение никогда не было пустым.
-  'ENDPOINT_DEV': 'https://api.smenka.pro',
-  'PRIVACY_POLICY': 'https://smenka.pro/privacy',
+  'ENDPOINT_DEV': 'https://api.smenka.space',
+  'PRIVACY_POLICY': 'https://smenka.space/privacy',
   // 0.0.0 — не форсим обновление, пока реальный минимум не придёт из RC.
   'MIN_VERSION': '0.0.0',
   'TECH_WORK': false,
