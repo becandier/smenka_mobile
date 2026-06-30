@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
@@ -82,6 +83,11 @@ class _LoginViewState extends State<_LoginView> {
     final state = cubit.state;
 
     if (!state.isFormValid || state.isLoading) return;
+
+    // Завершаем autofill-контекст: на web коммитим скрытую DOM-форму (значения
+    // автозаполнения долетают до контроллеров), и браузер/менеджер паролей
+    // предлагает сохранить/обновить пару логин-пароль. На нативе — то же поведение.
+    TextInput.finishAutofillContext();
 
     final LoginResult result;
     if (state.isLogin) {
@@ -228,7 +234,10 @@ class _LoginViewState extends State<_LoginView> {
       label: context.l10n.authEmail,
       hint: context.l10n.authEmailHint,
       keyboardType: TextInputType.emailAddress,
-      autofillHints: const [AutofillHints.email],
+      // username первым: на web это даёт <input autocomplete="username">, и
+      // менеджер паролей пейрит идентификатор с current-password. email — как
+      // запасной хинт (та же подсказка сохранённых аккаунтов, что и раньше).
+      autofillHints: const [AutofillHints.username, AutofillHints.email],
       textInputAction: TextInputAction.next,
     );
   }
