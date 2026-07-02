@@ -62,4 +62,41 @@ class AuthDataSource {
       data: {'refresh_token': refreshToken},
     );
   }
+
+  Future<OAuthConfigDto> getOAuthConfig({required String clientType}) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/auth/oauth/config',
+      queryParameters: {'client_type': clientType},
+    );
+    return OAuthConfigDto.fromJson(response.data!);
+  }
+
+  Future<AuthTokenDto> loginWithGoogle({
+    required String idToken,
+    required String clientType,
+  }) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/auth/oauth/google',
+      data: {'id_token': idToken, 'client_type': clientType},
+    );
+    return AuthTokenDto.fromJson(response.data!);
+  }
+
+  Future<AuthTokenDto> loginWithApple({
+    required String identityToken,
+    required String clientType,
+    String? email,
+    String? name,
+  }) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/auth/oauth/apple',
+      data: {
+        'identity_token': identityToken,
+        'client_type': clientType,
+        if (email != null) 'email': email,
+        if (name != null) 'name': name,
+      },
+    );
+    return AuthTokenDto.fromJson(response.data!);
+  }
 }

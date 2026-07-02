@@ -34,4 +34,24 @@ abstract class AuthRepository {
 
   /// Выход — очищает токены локально и на сервере
   Future<Task<void>> logout();
+
+  /// Публичная конфигурация OAuth-провайдеров для платформы (флаг `enabled`
+  /// и `client_id`, используемый как `serverClientId`/`WebAuthenticationOptions.clientId`
+  /// на Android — см. `docs/tasks/oauth_login/STATUS.md`, «Открытые вопросы»)
+  Future<Task<OAuthConfig>> getOAuthConfig({required String clientType});
+
+  /// Вход/регистрация через Google id-токен — возвращает тот же результат, что [login]
+  Future<Task<AuthToken>> loginWithGoogle({
+    required String idToken,
+    required String clientType,
+  });
+
+  /// Вход/регистрация через Apple identity-токен — [email]/[name] приходят от
+  /// Apple только при первой авторизации пользователя в приложении
+  Future<Task<AuthToken>> loginWithApple({
+    required String identityToken,
+    required String clientType,
+    String? email,
+    String? name,
+  });
 }

@@ -340,6 +340,24 @@ abstract class AppLocalizations {
   /// **'Уже есть аккаунт? Войти'**
   String get authHasAccount;
 
+  /// No description provided for @authOrDivider.
+  ///
+  /// In ru, this message translates to:
+  /// **'или'**
+  String get authOrDivider;
+
+  /// No description provided for @authContinueWithGoogle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить с Google'**
+  String get authContinueWithGoogle;
+
+  /// No description provided for @authContinueWithApple.
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить с Apple'**
+  String get authContinueWithApple;
+
   /// No description provided for @authVerifyTitle.
   ///
   /// In ru, this message translates to:
@@ -2211,6 +2229,30 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не удалось определить геопозицию. Проверьте доступ к геолокации и повторите.'**
   String get errorGeoUnavailable;
+
+  /// No description provided for @errorInvalidOauthToken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось подтвердить вход. Попробуйте снова'**
+  String get errorInvalidOauthToken;
+
+  /// No description provided for @errorOauthEmailNotVerified.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email в аккаунте не подтверждён. Используйте другой способ входа'**
+  String get errorOauthEmailNotVerified;
+
+  /// No description provided for @errorOauthProviderUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сервис входа временно недоступен. Попробуйте позже'**
+  String get errorOauthProviderUnavailable;
+
+  /// No description provided for @errorOauthClientError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось выполнить вход. Попробуйте снова'**
+  String get errorOauthClientError;
 
   /// No description provided for @commonNoConnection.
   ///

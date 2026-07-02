@@ -41,6 +41,9 @@
     "authNameHint": "Иван Иванов",
     "authNoAccount": "Нет аккаунта? Зарегистрироваться",
     "authHasAccount": "Уже есть аккаунт? Войти",
+    "authOrDivider": "или",
+    "authContinueWithGoogle": "Продолжить с Google",
+    "authContinueWithApple": "Продолжить с Apple",
     "authVerifyTitle": "Подтверждение email",
     "authVerifySubtitle": "Код отправлен на {email}",
     "@authVerifySubtitle": {
@@ -495,6 +498,10 @@
     "errorWorkLocationRequired": "Выберите рабочую точку, чтобы начать смену",
     "errorWorkLocationNotFound": "Рабочая точка не найдена",
     "errorGeoUnavailable": "Не удалось определить геопозицию. Проверьте доступ к геолокации и повторите.",
+    "errorInvalidOauthToken": "Не удалось подтвердить вход. Попробуйте снова",
+    "errorOauthEmailNotVerified": "Email в аккаунте не подтверждён. Используйте другой способ входа",
+    "errorOauthProviderUnavailable": "Сервис входа временно недоступен. Попробуйте позже",
+    "errorOauthClientError": "Не удалось выполнить вход. Попробуйте снова",
     "commonNoConnection": "Нет соединения",
     "commonRetry": "Повторить",
     "shiftOfflineBanner": "Нет соединения. Проверьте интернет"

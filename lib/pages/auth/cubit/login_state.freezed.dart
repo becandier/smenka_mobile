@@ -15,7 +15,10 @@ T _$identity<T>(T value) => value;
 mixin _$LoginState {
 
  AuthMode get mode; String get email; String get password; String get name; bool get obscurePassword; FeatureStatus get status; String? get error;/// Машинный `error.code` последней ошибки (для маппинга 423/429)
- String? get errorCode;
+ String? get errorCode;/// Конфигурация OAuth-провайдеров с бэка (`null` — ещё не загружена).
+/// На web остаётся `null` всегда — OAuth-вход вне scope web-сборки.
+ OAuthConfig? get oauthConfig;/// Провайдер, чья кнопка сейчас показывает спиннер
+ OAuthSignInProvider? get activeOAuthProvider;
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +29,16 @@ $LoginStateCopyWith<LoginState> get copyWith => _$LoginStateCopyWithImpl<LoginSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginState&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.name, name) || other.name == name)&&(identical(other.obscurePassword, obscurePassword) || other.obscurePassword == obscurePassword)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginState&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.name, name) || other.name == name)&&(identical(other.obscurePassword, obscurePassword) || other.obscurePassword == obscurePassword)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode)&&(identical(other.oauthConfig, oauthConfig) || other.oauthConfig == oauthConfig)&&(identical(other.activeOAuthProvider, activeOAuthProvider) || other.activeOAuthProvider == activeOAuthProvider));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,mode,email,password,name,obscurePassword,status,error,errorCode);
+int get hashCode => Object.hash(runtimeType,mode,email,password,name,obscurePassword,status,error,errorCode,oauthConfig,activeOAuthProvider);
 
 @override
 String toString() {
-  return 'LoginState(mode: $mode, email: $email, password: $password, name: $name, obscurePassword: $obscurePassword, status: $status, error: $error, errorCode: $errorCode)';
+  return 'LoginState(mode: $mode, email: $email, password: $password, name: $name, obscurePassword: $obscurePassword, status: $status, error: $error, errorCode: $errorCode, oauthConfig: $oauthConfig, activeOAuthProvider: $activeOAuthProvider)';
 }
 
 
@@ -46,11 +49,11 @@ abstract mixin class $LoginStateCopyWith<$Res>  {
   factory $LoginStateCopyWith(LoginState value, $Res Function(LoginState) _then) = _$LoginStateCopyWithImpl;
 @useResult
 $Res call({
- AuthMode mode, String email, String password, String name, bool obscurePassword, FeatureStatus status, String? error, String? errorCode
+ AuthMode mode, String email, String password, String name, bool obscurePassword, FeatureStatus status, String? error, String? errorCode, OAuthConfig? oauthConfig, OAuthSignInProvider? activeOAuthProvider
 });
 
 
-
+$OAuthConfigCopyWith<$Res>? get oauthConfig;
 
 }
 /// @nodoc
@@ -63,7 +66,7 @@ class _$LoginStateCopyWithImpl<$Res>
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? mode = null,Object? email = null,Object? password = null,Object? name = null,Object? obscurePassword = null,Object? status = null,Object? error = freezed,Object? errorCode = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mode = null,Object? email = null,Object? password = null,Object? name = null,Object? obscurePassword = null,Object? status = null,Object? error = freezed,Object? errorCode = freezed,Object? oauthConfig = freezed,Object? activeOAuthProvider = freezed,}) {
   return _then(_self.copyWith(
 mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as AuthMode,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -73,10 +76,24 @@ as String,obscurePassword: null == obscurePassword ? _self.obscurePassword : obs
 as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorCode: freezed == errorCode ? _self.errorCode : errorCode // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,oauthConfig: freezed == oauthConfig ? _self.oauthConfig : oauthConfig // ignore: cast_nullable_to_non_nullable
+as OAuthConfig?,activeOAuthProvider: freezed == activeOAuthProvider ? _self.activeOAuthProvider : activeOAuthProvider // ignore: cast_nullable_to_non_nullable
+as OAuthSignInProvider?,
   ));
 }
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$OAuthConfigCopyWith<$Res>? get oauthConfig {
+    if (_self.oauthConfig == null) {
+    return null;
+  }
 
+  return $OAuthConfigCopyWith<$Res>(_self.oauthConfig!, (value) {
+    return _then(_self.copyWith(oauthConfig: value));
+  });
+}
 }
 
 
@@ -158,10 +175,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthMode mode,  String email,  String password,  String name,  bool obscurePassword,  FeatureStatus status,  String? error,  String? errorCode)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthMode mode,  String email,  String password,  String name,  bool obscurePassword,  FeatureStatus status,  String? error,  String? errorCode,  OAuthConfig? oauthConfig,  OAuthSignInProvider? activeOAuthProvider)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginState() when $default != null:
-return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePassword,_that.status,_that.error,_that.errorCode);case _:
+return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePassword,_that.status,_that.error,_that.errorCode,_that.oauthConfig,_that.activeOAuthProvider);case _:
   return orElse();
 
 }
@@ -179,10 +196,10 @@ return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthMode mode,  String email,  String password,  String name,  bool obscurePassword,  FeatureStatus status,  String? error,  String? errorCode)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthMode mode,  String email,  String password,  String name,  bool obscurePassword,  FeatureStatus status,  String? error,  String? errorCode,  OAuthConfig? oauthConfig,  OAuthSignInProvider? activeOAuthProvider)  $default,) {final _that = this;
 switch (_that) {
 case _LoginState():
-return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePassword,_that.status,_that.error,_that.errorCode);case _:
+return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePassword,_that.status,_that.error,_that.errorCode,_that.oauthConfig,_that.activeOAuthProvider);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +216,10 @@ return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthMode mode,  String email,  String password,  String name,  bool obscurePassword,  FeatureStatus status,  String? error,  String? errorCode)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthMode mode,  String email,  String password,  String name,  bool obscurePassword,  FeatureStatus status,  String? error,  String? errorCode,  OAuthConfig? oauthConfig,  OAuthSignInProvider? activeOAuthProvider)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginState() when $default != null:
-return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePassword,_that.status,_that.error,_that.errorCode);case _:
+return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePassword,_that.status,_that.error,_that.errorCode,_that.oauthConfig,_that.activeOAuthProvider);case _:
   return null;
 
 }
@@ -214,7 +231,7 @@ return $default(_that.mode,_that.email,_that.password,_that.name,_that.obscurePa
 
 
 class _LoginState extends LoginState {
-  const _LoginState({this.mode = AuthMode.login, this.email = '', this.password = '', this.name = '', this.obscurePassword = false, this.status = FeatureStatus.initial, this.error, this.errorCode}): super._();
+  const _LoginState({this.mode = AuthMode.login, this.email = '', this.password = '', this.name = '', this.obscurePassword = false, this.status = FeatureStatus.initial, this.error, this.errorCode, this.oauthConfig, this.activeOAuthProvider}): super._();
   
 
 @override@JsonKey() final  AuthMode mode;
@@ -226,6 +243,11 @@ class _LoginState extends LoginState {
 @override final  String? error;
 /// Машинный `error.code` последней ошибки (для маппинга 423/429)
 @override final  String? errorCode;
+/// Конфигурация OAuth-провайдеров с бэка (`null` — ещё не загружена).
+/// На web остаётся `null` всегда — OAuth-вход вне scope web-сборки.
+@override final  OAuthConfig? oauthConfig;
+/// Провайдер, чья кнопка сейчас показывает спиннер
+@override final  OAuthSignInProvider? activeOAuthProvider;
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +259,16 @@ _$LoginStateCopyWith<_LoginState> get copyWith => __$LoginStateCopyWithImpl<_Log
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginState&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.name, name) || other.name == name)&&(identical(other.obscurePassword, obscurePassword) || other.obscurePassword == obscurePassword)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginState&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.name, name) || other.name == name)&&(identical(other.obscurePassword, obscurePassword) || other.obscurePassword == obscurePassword)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode)&&(identical(other.oauthConfig, oauthConfig) || other.oauthConfig == oauthConfig)&&(identical(other.activeOAuthProvider, activeOAuthProvider) || other.activeOAuthProvider == activeOAuthProvider));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,mode,email,password,name,obscurePassword,status,error,errorCode);
+int get hashCode => Object.hash(runtimeType,mode,email,password,name,obscurePassword,status,error,errorCode,oauthConfig,activeOAuthProvider);
 
 @override
 String toString() {
-  return 'LoginState(mode: $mode, email: $email, password: $password, name: $name, obscurePassword: $obscurePassword, status: $status, error: $error, errorCode: $errorCode)';
+  return 'LoginState(mode: $mode, email: $email, password: $password, name: $name, obscurePassword: $obscurePassword, status: $status, error: $error, errorCode: $errorCode, oauthConfig: $oauthConfig, activeOAuthProvider: $activeOAuthProvider)';
 }
 
 
@@ -257,11 +279,11 @@ abstract mixin class _$LoginStateCopyWith<$Res> implements $LoginStateCopyWith<$
   factory _$LoginStateCopyWith(_LoginState value, $Res Function(_LoginState) _then) = __$LoginStateCopyWithImpl;
 @override @useResult
 $Res call({
- AuthMode mode, String email, String password, String name, bool obscurePassword, FeatureStatus status, String? error, String? errorCode
+ AuthMode mode, String email, String password, String name, bool obscurePassword, FeatureStatus status, String? error, String? errorCode, OAuthConfig? oauthConfig, OAuthSignInProvider? activeOAuthProvider
 });
 
 
-
+@override $OAuthConfigCopyWith<$Res>? get oauthConfig;
 
 }
 /// @nodoc
@@ -274,7 +296,7 @@ class __$LoginStateCopyWithImpl<$Res>
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? mode = null,Object? email = null,Object? password = null,Object? name = null,Object? obscurePassword = null,Object? status = null,Object? error = freezed,Object? errorCode = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mode = null,Object? email = null,Object? password = null,Object? name = null,Object? obscurePassword = null,Object? status = null,Object? error = freezed,Object? errorCode = freezed,Object? oauthConfig = freezed,Object? activeOAuthProvider = freezed,}) {
   return _then(_LoginState(
 mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as AuthMode,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -284,11 +306,25 @@ as String,obscurePassword: null == obscurePassword ? _self.obscurePassword : obs
 as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorCode: freezed == errorCode ? _self.errorCode : errorCode // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,oauthConfig: freezed == oauthConfig ? _self.oauthConfig : oauthConfig // ignore: cast_nullable_to_non_nullable
+as OAuthConfig?,activeOAuthProvider: freezed == activeOAuthProvider ? _self.activeOAuthProvider : activeOAuthProvider // ignore: cast_nullable_to_non_nullable
+as OAuthSignInProvider?,
   ));
 }
 
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$OAuthConfigCopyWith<$Res>? get oauthConfig {
+    if (_self.oauthConfig == null) {
+    return null;
+  }
 
+  return $OAuthConfigCopyWith<$Res>(_self.oauthConfig!, (value) {
+    return _then(_self.copyWith(oauthConfig: value));
+  });
+}
 }
 
 // dart format on

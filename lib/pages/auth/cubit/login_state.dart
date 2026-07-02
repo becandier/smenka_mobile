@@ -1,9 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
+import 'package:smenka_mobile/data/domain/auth/models/_models.dart';
 
 part 'login_state.freezed.dart';
 
 enum AuthMode { login, register }
+
+/// Провайдер, чей OAuth-флоу сейчас в процессе (для спиннера нужной кнопки)
+enum OAuthSignInProvider { google, apple }
 
 @freezed
 abstract class LoginState with _$LoginState {
@@ -18,6 +22,13 @@ abstract class LoginState with _$LoginState {
 
     /// Машинный `error.code` последней ошибки (для маппинга 423/429)
     String? errorCode,
+
+    /// Конфигурация OAuth-провайдеров с бэка (`null` — ещё не загружена).
+    /// На web остаётся `null` всегда — OAuth-вход вне scope web-сборки.
+    OAuthConfig? oauthConfig,
+
+    /// Провайдер, чья кнопка сейчас показывает спиннер
+    OAuthSignInProvider? activeOAuthProvider,
   }) = _LoginState;
   const LoginState._();
 
@@ -43,4 +54,13 @@ abstract class LoginState with _$LoginState {
   }
 
   bool get isLoading => status == FeatureStatus.loading;
+
+  bool get googleEnabled => oauthConfig?.google?.enabled ?? false;
+  bool get appleEnabled => oauthConfig?.apple?.enabled ?? false;
+  bool get showOAuthSection => googleEnabled || appleEnabled;
+
+  bool get isGoogleLoading =>
+      isLoading && activeOAuthProvider == OAuthSignInProvider.google;
+  bool get isAppleLoading =>
+      isLoading && activeOAuthProvider == OAuthSignInProvider.apple;
 }

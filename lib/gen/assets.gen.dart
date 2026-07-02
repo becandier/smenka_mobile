@@ -14,12 +14,18 @@ import 'package:flutter/widgets.dart';
 class Assets {
   const Assets._();
 
+  static const String googleLogo = 'assets/google_logo.svg';
   static const AssetGenImage logo = AssetGenImage('assets/logo.png');
   static const String smenkaLockupColor = 'assets/smenka-lockup-color.svg';
   static const String smenkaMarkColor = 'assets/smenka-mark-color.svg';
 
   /// List of all assets
-  static List<dynamic> get values => [logo, smenkaLockupColor, smenkaMarkColor];
+  static List<dynamic> get values => [
+    googleLogo,
+    logo,
+    smenkaLockupColor,
+    smenkaMarkColor,
+  ];
 }
 
 class AssetGenImage {
