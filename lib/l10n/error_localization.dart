@@ -55,6 +55,12 @@ String localizedErrorMessage(
     // гео (клиентский код из geo_service.dart): недоступность позиции на
     // web/нативе показываем понятным текстом, а не сырым текстом исключения.
     'GEO_UNAVAILABLE' => l10n.errorGeoUnavailable,
+    // oauth_login: вход через Google/Apple
+    'INVALID_OAUTH_TOKEN' => l10n.errorInvalidOauthToken,
+    'OAUTH_EMAIL_NOT_VERIFIED' => l10n.errorOauthEmailNotVerified,
+    'OAUTH_PROVIDER_UNAVAILABLE' => l10n.errorOauthProviderUnavailable,
+    // клиентский код (google_sign_in/sign_in_with_apple SDK) — LoginCubit
+    'OAUTH_CLIENT_ERROR' => l10n.errorOauthClientError,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,

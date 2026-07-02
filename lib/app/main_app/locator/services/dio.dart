@@ -46,8 +46,19 @@ class DioInitializer implements ServiceInitializer {
         // security_hardening: не светим Bearer-токен в логах. По умолчанию
         // printErrorHeaders=true, поэтому на ошибочных ответах заголовки
         // (включая Authorization) попали бы в Talker/Crashlytics.
-        settings: const TalkerDioLoggerSettings(
-          hiddenHeaders: {'Authorization', 'authorization'},
+        //
+        // oauth_login: пакет не умеет маскировать отдельные поля тела —
+        // только целиком включать/выключать лог запроса/ответа
+        // (requestFilter/responseFilter). Тела `/auth/*` содержат пароль,
+        // access/refresh_token, а теперь и id_token/identity_token — эти
+        // логи доступны в проде через debug-экран (пароль + 3 тапа), поэтому
+        // тело запросов/ответов `/auth/*` целиком исключаем из лога.
+        settings: TalkerDioLoggerSettings(
+          hiddenHeaders: const {'Authorization', 'authorization'},
+          requestFilter: (options) => !options.path.contains('/auth/'),
+          responseFilter: (response) =>
+              !response.requestOptions.path.contains('/auth/'),
+          errorFilter: (error) => !error.requestOptions.path.contains('/auth/'),
         ),
       ),
       ApiResponseInterceptor(),

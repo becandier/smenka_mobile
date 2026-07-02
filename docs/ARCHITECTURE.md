@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-06-21 (фичи: checklist_photos, shift_work_location)
+Последнее обновление: 2026-07-02 (фича: oauth_login)
 
 ---
 
@@ -153,6 +153,8 @@ lib/
 | `AuthToken` | `domain/auth/models/auth_token.dart` | access_token + refresh_token |
 | `AuthState` | `domain/auth/models/auth_state.dart` | Sealed: Authenticated / Unauthenticated / Unknown |
 | `RegisterResult` | `domain/auth/models/register_result.dart` | userId + message |
+| `OAuthConfig` | `domain/auth/models/oauth_config.dart` | `google?`/`apple?` (`OAuthProviderConfig`) — публичная конфигурация OAuth-провайдеров для платформы (`oauth_login`) |
+| `OAuthProviderConfig` | `domain/auth/models/oauth_config.dart` | `clientId`, `enabled` — `null` у провайдера в `OAuthConfig` = не настроен супер-админом |
 | `User` | `domain/user/models/user.dart` | id, email, name, isVerified, role (UserRole: superAdmin/user), createdAt, phone? |
 | `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt, geoCheckEnabled; `myRole` (OrgMembershipRole: owner/admin/employee, nullable), `myCustomRole` (nullable) |
 | `Member` | `domain/organization/models/member.dart` | id, organizationId, userId, userName, userEmail, role (MemberRole: admin/employee), joinedAt, customRole?, currentRate? (payroll) |
@@ -183,7 +185,7 @@ lib/
 
 | DataSource | Base Path | Методы |
 |------------|-----------|--------|
-| `AuthDataSource` | `/auth` | register, verify, resendCode, login, refresh, logout |
+| `AuthDataSource` | `/auth` | register, verify, resendCode, login, refresh, logout, getOAuthConfig (`GET /auth/oauth/config?client_type=`), loginWithGoogle (`POST /auth/oauth/google`), loginWithApple (`POST /auth/oauth/apple`) |
 | `UserDataSource` | `/users` | getMe, updateMe |
 | `OrganizationDataSource` | `/organizations` | getAll, getById, join, getMembers, removeMember (self-leave), getShifts (user_id/status/date_from/date_to), getShiftDetail, getStats (period XOR date_from/date_to) |
 | `ShiftDataSource` | `/shifts` | getShifts (date_from/date_to), getStats (period XOR date_from/date_to), startShift, pauseShift, resumeShift, finishShift |
@@ -200,7 +202,7 @@ lib/
 
 | Репозиторий | Зависимости | Методы |
 |-------------|-------------|--------|
-| `AuthRepository` | AuthDataSource, AuthTokenStorage, AuthStateNotifier | checkAuthStatus, register, verify, resendCode, login, refresh, logout |
+| `AuthRepository` | AuthDataSource, AuthTokenStorage, AuthStateNotifier | checkAuthStatus, register, verify, resendCode, login, refresh, logout, getOAuthConfig, loginWithGoogle, loginWithApple (общий паттерн «получить токены → сохранить → `authNotifier.authenticated`» вынесен в приватный `_authenticateAndPersist()`, используется в login/verify/loginWithGoogle/loginWithApple) |
 | `UserRepository` | UserDataSource | getMe, updateMe |
 | `OrganizationRepository` | OrganizationDataSource | getAll, getById, join, getMembers, removeMember (self-leave), getShifts, getShiftDetail, getStats, watchMyOrganizations, fetchMyOrganizations, clearCache |
 | `ShiftRepository` | ShiftDataSource | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
@@ -221,7 +223,7 @@ lib/
 | `ThemeCubit` | Готов | Управление темой |
 | `DebugCubit` | Готов | Debug-информация |
 | `AuthCubit` | Готов | Глобальное состояние авторизации (`lib/shared/auth/`) |
-| `LoginCubit` | Готов | Login/Register форма с валидацией |
+| `LoginCubit` | Готов | Login/Register форма с валидацией + OAuth-вход Google/Apple (`oauth_login`, см. раздел ниже) |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
 | `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор и запоминание контекста (`ShiftContextStorage`) |
 | `ShiftChecklistsCubit` | Готов | Список чек-листов текущей смены (read) |
@@ -347,7 +349,7 @@ lib/
 
 ### Общие виджеты (`lib/widgets/`)
 - `AppTextField` — кастомное текстовое поле с валидацией (файл: `lib/widgets/app_text_field.dart`)
-- `AppButton` — кнопка с состоянием загрузки (файл: `lib/widgets/app_button.dart`)
+- `AppButton` — кнопка с состоянием загрузки, опц. `icon` (leading-иконка слева от текста, напр. лого OAuth-провайдера; обратно совместим) (файл: `lib/widgets/app_button.dart`)
 - `PinCodeField` — поле ввода PIN/кода подтверждения (файл: `lib/widgets/pin_code_field.dart`)
 - `AppBottomSheet` — каркас bottom-sheet для CustomRoute-модалок (файл: `lib/widgets/app_bottom_sheet.dart`)
 - `AppEmptyState` — переиспользуемый empty state (иконка + заголовок + опц. подзаголовок + опц. кнопка) (файл: `lib/widgets/app_empty_state.dart`)
@@ -410,6 +412,31 @@ lib/
 - **Навигация**: `KnowledgeTreeRoute`/`KnowledgePageRoute` в `_orgDetailRoutes`; точка входа — пункт «База знаний» в `_org_navigation_section` (для всех ролей). **DI**: `KnowledgeRepository` создаётся в `success_app` через `RepositoryProvider(create:)` с готовым `dio`.
 - **Read-only гарантия**: ни одного пишущего вызова (POST/PATCH/DELETE/PUT, POST /files) по базе знаний; управление узлами/блоками/ACL — только веб-админка.
 - **Решение**: `KnowledgeNodeKind` парсится вручную (`_parseKind` switch с фолбэком `unknown`), а не через `@JsonValue`/json_serializable — в проекте нет прецедента `@JsonValue`, конвенция — ручной маппинг enum (как `FileCategory.fromValue`); поведение (строгие snake-строки + безопасный фолбэк) контракту соответствует. `video` показан обложкой+внешним открытием (без `youtube_player_flutter`/webview) — допустимый спецификацией путь, без тяжёлых нативных зависимостей в read-only вьюере.
+
+---
+
+## OAuth-вход (Google/Apple)
+
+Фича `oauth_login` (`../docs/tasks/oauth_login/mobile.md`) — вход/регистрация через Google (iOS+Android) и Apple (**только iOS** — продуктовое решение от 2026-07-02, на Android Apple Sign-In не предлагаем) как альтернатива email/паролю на `LoginPage`. Только мобильные таргеты — на web (`kIsWeb`) OAuth полностью выключен (вне scope фичи, хотя код общий с мобилкой).
+
+- **Домен/инфра**: `OAuthConfig{google?, apple?}` + `OAuthProviderConfig{clientId, enabled}` (`domain/auth/models/oauth_config.dart`) + DTO (`infrastructure/auth/datasource/dto/oauth_config_dto.dart`) + маппер (`infrastructure/auth/mappers/oauth_config_mapper.dart`). `AuthRepository` расширен методами `getOAuthConfig({clientType})`, `loginWithGoogle({idToken, clientType})`, `loginWithApple({identityToken, clientType, email?, name?})` — все три поверх общего `_authenticateAndPersist()` в `AuthRepositoryImpl` (тот же паттерн, что у `login`/`verify`). `AuthDataSource` — новые вызовы `GET /auth/oauth/config?client_type=`, `POST /auth/oauth/google`, `POST /auth/oauth/apple`.
+- **`LoginCubit`**: конструктор — только `required AuthRepository authRepository` (без доп. зависимостей); в конструкторе фоном (`unawaited`) запускается `_loadOAuthConfig()`. Прямая интеграция нативных SDK `google_sign_in: ^7.2.0` и `sign_in_with_apple: ^8.1.0` — без отдельного Service-слоя (решение ТЗ). `enum LoginResult` расширен значением `cancelled` (пользователь закрыл системный диалог OAuth, повторный тап во время загрузки, неподдерживаемая платформа — ошибка не показывается).
+  - **Платформенная логика конфига**: iOS — один запрос `client_type=ios` (отдаёт и google, и apple). Android — **только один** запрос `client_type=android` для Google (Apple на Android не запрашиваем и не показываем).
+  - **⚠️ Технический нюанс (не буквально из ТЗ, а из требований `google_sign_in` v7 на Android)**: `serverClientId` для получения `id_token` на Android берётся из ответа `GET /auth/oauth/config?client_type=android` (`google.clientId`), а не «зашивается» в приложение — `google_sign_in` v7 на Android отдаёт `id_token` только при явном `serverClientId`, и по требованиям Google это должен быть Web-тип OAuth-клиента (аудиенс токена всегда Web, не Android-специфичный клиент).
+  - `signInWithApple()` — guard `!_isIOS` в начале метода (Apple Sign-In кнопка и так не рендерится на Android, но метод дополнительно не-op на любой не-iOS платформе); вызывает `SignInWithApple.getAppleIDCredential()` без `webAuthenticationOptions` (нужен только для web/Android-флоу, которого больше нет).
+  - Ошибки нативных SDK (не-cancel `GoogleSignInException`/`SignInWithAppleAuthorizationException`, любые прочие исключения) маппятся в синтетический клиентский код `OAUTH_CLIENT_ERROR` (не серверный).
+  - Guard от гонок: `isClosed`-проверка перед `emit()` в асинхронных завершающих хелперах (cubit может закрыться, пока SDK-диалог висит) + guard `state.isLoading` в начале `signInWithGoogle`/`signInWithApple` (повторный тап не создаёт конкурентный вызов).
+- **`LoginState`**: поля `oauthConfig` (`OAuthConfig?`), `activeOAuthProvider` (`OAuthSignInProvider?`, enum `google`/`apple` — для спиннера нужной кнопки); геттеры `googleEnabled`/`appleEnabled`/`showOAuthSection`/`isGoogleLoading`/`isAppleLoading` (`appleEnabled` на Android всегда `false`, т.к. `oauthConfig.apple` там не заполняется).
+- **UI**: `LoginPage` — под кнопкой email/password разделитель «или» + кнопки «Продолжить с Google»/«Продолжить с Apple» (видны только если `googleEnabled`/`appleEnabled` — иначе скрыты, не задизейблены; Apple фактически видна только на iOS). `AppButton` получил опц. `icon` (leading-иконка) для этих кнопок. Новый ассет `assets/google_logo.svg` (Google — без офиц. ассета Apple, использует `Icons.apple`).
+- **Ошибки**: новые коды в `error_localization.dart`/`app_ru.arb` — серверные `INVALID_OAUTH_TOKEN`, `OAUTH_EMAIL_NOT_VERIFIED`, `OAUTH_PROVIDER_UNAVAILABLE` (из `backend.md`) и клиентский `OAUTH_CLIENT_ERROR` (из `LoginCubit`).
+- **Безопасность**: `TalkerDioLoggerSettings` в `dio.dart` получил `requestFilter`/`responseFilter`/`errorFilter` — тела запросов/ответов на путях `/auth/*` (пароль, access/refresh_token, id_token/identity_token) целиком исключены из Talker-логов (доступны в проде через debug-экран).
+- **Платформенная настройка**:
+  - iOS: `ios/Runner/Info.plist` — TODO-заглушки под `GIDClientID` и `CFBundleURLTypes` (`REVERSED_CLIENT_ID`); реальных значений ещё нет. `ios/Runner/Runner.entitlements` (`com.apple.developer.applesignin`) подключён в `project.pbxproj` (`CODE_SIGN_ENTITLEMENTS`) для всех 3 build config таргета Runner.
+  - Android: изменений манифеста не требуется — браузерный колбэк Apple Sign-In (`SignInWithAppleCallback` activity/intent-filter) не заводился, т.к. Apple на Android не используется.
+- **Тесты**: `test/pages/auth/login_cubit_test.dart` — группа «LoginCubit OAuth config» (7 тестов: одиночный запрос на Android только для Google + `signInWithApple()` на Android no-op, одиночный на iOS, провайдер не настроен, ошибка запроса конфига не ломает email/password-форму, неподдерживаемая платформа macOS, защита от повторного тапа). Прямые вызовы нативных SDK (`signInWithGoogle`/`signInWithApple`) не юнит-тестируются по существу (untestable без platform-channel мока) — верифицируются вручную на устройстве.
+- **⚠️ Незакрытые внешние зависимости** (не решаются в этом репозитории, отслеживаются в `../docs/tasks/oauth_login/STATUS.md`, «Открытые вопросы к аналитику»):
+  1. реальные `REVERSED_CLIENT_ID`/`GIDClientID`/entitlements-провижининг на стороне Apple Developer консоли и Firebase/GCP;
+  2. уточнение в `admin.md`, что для `(google, android)` в `oauth_provider_settings` должен вводиться Web Client ID, а не Android Client ID.
 
 ---
 

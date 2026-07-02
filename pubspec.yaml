@@ -5,8 +5,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 # Flutter SDK: глобальный (3.41.x, Dart 3.11). FVM убран.
+# sdk: ^3.11.0 — минимум, требуемый sign_in_with_apple ^8.1.0 (oauth_login);
+# фактический тулчейн команды/CI и так уже на Dart 3.11+.
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.11.0
 
 dependencies:
   flutter:
@@ -51,6 +53,8 @@ dependencies:
   image: ^4.3.0
   flutter_image_compress: ^2.3.0
   photo_view: ^0.15.0
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^8.1.0
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +81,7 @@ flutter:
     - assets/logo.png
     - assets/smenka-mark-color.svg
     - assets/smenka-lockup-color.svg
+    - assets/google_logo.svg
 
   fonts:
     - family: Arimo

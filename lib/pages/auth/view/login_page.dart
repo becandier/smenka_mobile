@@ -109,15 +109,47 @@ class _LoginViewState extends State<_LoginView> {
         context.modals.showInfo(message);
         await context.router.push(VerifyRoute(email: email));
       case LoginResult.error:
-        final errorState = cubit.state;
-        context.modals.showError(
-          localizedErrorMessage(
-            context,
-            code: errorState.errorCode,
-            fallback: errorState.error,
-          ),
-        );
+        _showLoginError(cubit.state);
+      case LoginResult.cancelled:
+      // Email/password-флоу никогда не возвращает cancelled — только OAuth
     }
+  }
+
+  Future<void> _onGoogleSignIn() async {
+    final cubit = context.read<LoginCubit>();
+    if (cubit.state.isLoading) return;
+    final result = await cubit.signInWithGoogle();
+    if (!mounted) return;
+    _handleOAuthCompletion(result);
+  }
+
+  Future<void> _onAppleSignIn() async {
+    final cubit = context.read<LoginCubit>();
+    if (cubit.state.isLoading) return;
+    final result = await cubit.signInWithApple();
+    if (!mounted) return;
+    _handleOAuthCompletion(result);
+  }
+
+  /// Cancelled/needsVerification игнорируются: пользователь сам отменил вход
+  /// либо (needsVerification) OAuth-вход этого не возвращает в принципе.
+  void _handleOAuthCompletion(LoginResult result) {
+    if (result == LoginResult.success) {
+      widget.onResult?.call(didLogin: true);
+      return;
+    }
+    if (result != LoginResult.error) return;
+    _showLoginError(context.read<LoginCubit>().state);
+  }
+
+  void _showLoginError(LoginState state) {
+    context.modals.showError(
+      localizedErrorMessage(
+        context,
+        code: state.errorCode,
+        fallback: state.error,
+      ),
+    );
   }
 
   @override
@@ -160,6 +192,17 @@ class _LoginViewState extends State<_LoginView> {
                         ],
                         const SizedBox(height: 24),
                         _buildSubmitButton(context, state),
+                        if (state.showOAuthSection) ...[
+                          const SizedBox(height: 20),
+                          _buildOAuthDivider(context),
+                          const SizedBox(height: 16),
+                          if (state.googleEnabled)
+                            _buildGoogleButton(context, state),
+                          if (state.googleEnabled && state.appleEnabled)
+                            const SizedBox(height: 12),
+                          if (state.appleEnabled)
+                            _buildAppleButton(context, state),
+                        ],
                         const SizedBox(height: 16),
                         _buildToggleButton(context, state),
                       ],
@@ -264,6 +307,45 @@ class _LoginViewState extends State<_LoginView> {
       // 423 ACCOUNT_LOCKED — временно блокируем повторные попытки входа
       isEnabled: state.isFormValid && !state.isLocked,
       onPressed: _onSubmit,
+    );
+  }
+
+  Widget _buildOAuthDivider(BuildContext context) {
+    final colors = context.appColors;
+    return Row(
+      children: [
+        Expanded(child: Divider(color: colors.line)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            context.l10n.authOrDivider,
+            style: TextStyle(color: colors.muted),
+          ),
+        ),
+        Expanded(child: Divider(color: colors.line)),
+      ],
+    );
+  }
+
+  Widget _buildGoogleButton(BuildContext context, LoginState state) {
+    return AppButton(
+      label: context.l10n.authContinueWithGoogle,
+      isOutlined: true,
+      isLoading: state.isGoogleLoading,
+      isEnabled: !state.isLoading,
+      icon: SvgPicture.asset('assets/google_logo.svg', width: 20, height: 20),
+      onPressed: _onGoogleSignIn,
+    );
+  }
+
+  Widget _buildAppleButton(BuildContext context, LoginState state) {
+    return AppButton(
+      label: context.l10n.authContinueWithApple,
+      isOutlined: true,
+      isLoading: state.isAppleLoading,
+      isEnabled: !state.isLoading,
+      icon: Icon(Icons.apple, size: 20, color: context.appColors.ink),
+      onPressed: _onAppleSignIn,
     );
   }
 

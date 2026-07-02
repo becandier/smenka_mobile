@@ -7,6 +7,7 @@ class AppButton extends StatelessWidget {
     this.isLoading = false,
     this.isEnabled = true,
     this.isOutlined = false,
+    this.icon,
     super.key,
   });
 
@@ -16,15 +17,24 @@ class AppButton extends StatelessWidget {
   final bool isEnabled;
   final bool isOutlined;
 
+  /// Иконка слева от текста (напр. лого провайдера в OAuth-кнопке)
+  final Widget? icon;
+
   @override
   Widget build(BuildContext context) {
-    final child = isLoading
-        ? const SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-          )
-        : Text(label);
+    final child = switch ((isLoading, icon)) {
+      (true, _) => const SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+      ),
+      (false, null) => Text(label),
+      (false, final icon?) => Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [icon, const SizedBox(width: 8), Text(label)],
+      ),
+    };
 
     final callback = isEnabled && !isLoading ? onPressed : null;
 

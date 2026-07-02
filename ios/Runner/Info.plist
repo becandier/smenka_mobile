@@ -84,6 +84,30 @@
 				<string>smenka</string>
 			</array>
 		</dict>
+		<!--
+			Google Sign-In (oauth_login): требуется REVERSED_CLIENT_ID из
+			GoogleService-Info.plist — появится только после того, как в этом
+			Firebase-проекте будет включён Google Sign-In OAuth-клиент для iOS
+			и файл будет перескачан (сейчас ключ REVERSED_CLIENT_ID в файле
+			отсутствует). См. docs/tasks/oauth_login/STATUS.md, «Открытые
+			вопросы к аналитику» (mobile).
+			TODO(oauth_login): заменить на реальный REVERSED_CLIENT_ID.
+		-->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>REPLACE_WITH_REVERSED_CLIENT_ID_FROM_GoogleService-Info.plist</string>
+			</array>
+		</dict>
 	</array>
+	<!--
+		Google Sign-In (oauth_login): CLIENT_ID из GoogleService-Info.plist —
+		см. комментарий у CFBundleURLTypes выше.
+		TODO(oauth_login): заменить на реальный CLIENT_ID.
+	-->
+	<key>GIDClientID</key>
+	<string>REPLACE_WITH_CLIENT_ID_FROM_GoogleService-Info.plist</string>
 </dict>
 </plist>

@@ -3,6 +3,7 @@ import 'package:smenka_mobile/core/network/task_handler.dart';
 import 'package:smenka_mobile/data/api/local/auth_token_storage.dart';
 import 'package:smenka_mobile/data/domain/auth/_auth.dart';
 import 'package:smenka_mobile/data/infrastructure/auth/datasource/auth_datasource.dart';
+import 'package:smenka_mobile/data/infrastructure/auth/datasource/dto/_dto.dart';
 import 'package:smenka_mobile/data/infrastructure/auth/mappers/_mappers.dart';
 
 /// Реализация репозитория авторизации с реактивным управлением состоянием.
@@ -54,16 +55,9 @@ class AuthRepositoryImpl with TaskHandler implements AuthRepository {
     required String email,
     required String code,
   }) {
-    return execute(() async {
-      final dto = await _dataSource.verify(email: email, code: code);
-      final token = dto.toDomain();
-      await _tokenStorage.saveTokens(
-        accessToken: token.accessToken,
-        refreshToken: token.refreshToken,
-      );
-      _authNotifier.setState(const AuthState.authenticated());
-      return token;
-    });
+    return _authenticateAndPersist(
+      () => _dataSource.verify(email: email, code: code),
+    );
   }
 
   @override
@@ -76,8 +70,54 @@ class AuthRepositoryImpl with TaskHandler implements AuthRepository {
     required String email,
     required String password,
   }) {
+    return _authenticateAndPersist(
+      () => _dataSource.login(email: email, password: password),
+    );
+  }
+
+  @override
+  Future<Task<OAuthConfig>> getOAuthConfig({required String clientType}) {
     return execute(() async {
-      final dto = await _dataSource.login(email: email, password: password);
+      final dto = await _dataSource.getOAuthConfig(clientType: clientType);
+      return dto.toDomain();
+    });
+  }
+
+  @override
+  Future<Task<AuthToken>> loginWithGoogle({
+    required String idToken,
+    required String clientType,
+  }) {
+    return _authenticateAndPersist(
+      () =>
+          _dataSource.loginWithGoogle(idToken: idToken, clientType: clientType),
+    );
+  }
+
+  @override
+  Future<Task<AuthToken>> loginWithApple({
+    required String identityToken,
+    required String clientType,
+    String? email,
+    String? name,
+  }) {
+    return _authenticateAndPersist(
+      () => _dataSource.loginWithApple(
+        identityToken: identityToken,
+        clientType: clientType,
+        email: email,
+        name: name,
+      ),
+    );
+  }
+
+  /// Общий паттерн для login/verify/OAuth: получить токены, сохранить их и
+  /// пометить пользователя авторизованным
+  Future<Task<AuthToken>> _authenticateAndPersist(
+    Future<AuthTokenDto> Function() request,
+  ) {
+    return execute(() async {
+      final dto = await request();
       final token = dto.toDomain();
       await _tokenStorage.saveTokens(
         accessToken: token.accessToken,

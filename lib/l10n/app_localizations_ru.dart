@@ -137,6 +137,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authHasAccount => 'Уже есть аккаунт? Войти';
 
   @override
+  String get authOrDivider => 'или';
+
+  @override
+  String get authContinueWithGoogle => 'Продолжить с Google';
+
+  @override
+  String get authContinueWithApple => 'Продолжить с Apple';
+
+  @override
   String get authVerifyTitle => 'Подтверждение email';
 
   @override
@@ -1145,6 +1154,22 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get errorGeoUnavailable =>
       'Не удалось определить геопозицию. Проверьте доступ к геолокации и повторите.';
+
+  @override
+  String get errorInvalidOauthToken =>
+      'Не удалось подтвердить вход. Попробуйте снова';
+
+  @override
+  String get errorOauthEmailNotVerified =>
+      'Email в аккаунте не подтверждён. Используйте другой способ входа';
+
+  @override
+  String get errorOauthProviderUnavailable =>
+      'Сервис входа временно недоступен. Попробуйте позже';
+
+  @override
+  String get errorOauthClientError =>
+      'Не удалось выполнить вход. Попробуйте снова';
 
   @override
   String get commonNoConnection => 'Нет соединения';
