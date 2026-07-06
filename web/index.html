@@ -35,17 +35,21 @@
     поэтому хост объектного хранилища обязан быть в connect-src. Держать его в
     синхроне с S3_PUBLIC_ENDPOINT_URL бэка (провайдер пока не закреплён: дефолтом
     добавлены AWS S3 и рекомендованный в DEPLOY_AUDIT Yandex Object Storage).
+    oauth_login (web): accounts.google.com — GIS-скрипт/iframe/эндпоинты
+    (https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid);
+    appleid.cdn-apple.com/appleid.apple.com — Apple JS SDK (script.js в body ниже) +
+    его auth-эндпоинт.
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com https://www.googletagmanager.com;
-    connect-src 'self' https://api.smenka.space https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.firebasestorage.app https://*.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.amazonaws.com https://*.storage.yandexcloud.net https://s3.twcstorage.ru;
+    script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com https://www.googletagmanager.com https://accounts.google.com https://appleid.cdn-apple.com;
+    connect-src 'self' https://api.smenka.space https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.firebasestorage.app https://*.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.amazonaws.com https://*.storage.yandexcloud.net https://s3.twcstorage.ru https://accounts.google.com https://appleid.apple.com;
     img-src 'self' data: blob: https:;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com;
     font-src 'self' data: https://fonts.gstatic.com;
     media-src 'self' blob: https:;
     worker-src 'self' blob:;
-    frame-src 'self' https://*.firebaseapp.com;
+    frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://appleid.apple.com;
   ">
 
   <!-- iOS meta tags & icons -->
@@ -66,6 +70,11 @@
 
   <title>Smenka</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- oauth_login: Apple JS SDK — по документации пакета sign_in_with_apple
+       обязателен для web (сам инициализируется при загрузке страницы, нельзя
+       подключить лениво по требованию). -->
+  <script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

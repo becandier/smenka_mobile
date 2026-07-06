@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,16 +22,28 @@ class LoginCubit extends Cubit<LoginState> {
 
   final AuthRepository _authRepository;
 
+  /// На web `GoogleSignIn.instance.authenticate()` бросает `UnsupportedError`
+  /// (GIS-виджет — единственный способ инициировать вход, см. `LoginPage` —
+  /// `google_web.renderButton()`); реальный сигнал об успехе приходит через
+  /// этот стрим, а не через `signInWithGoogle()`.
+  StreamSubscription<GoogleSignInAuthenticationEvent>? _googleWebEventsSub;
+
   bool get _isIOS => defaultTargetPlatform == TargetPlatform.iOS;
 
-  /// OAuth-вход целится только в iOS/Android (см. mobile.md) — на web и
-  /// десктоп-таргетах (macOS/Windows/Linux, шаблонные каталоги flutter
-  /// create, не входящие в поставку — см. docs/ARCHITECTURE.md) у пакетов
-  /// нет нужной платформенной реализации, поэтому OAuth полностью выключен.
+  /// OAuth-вход поддержан на iOS/Android/web — на десктоп-таргетах (macOS/
+  /// Windows/Linux, шаблонные каталоги flutter create, не входящие в
+  /// поставку — см. docs/ARCHITECTURE.md) у пакетов нет платформенной
+  /// реализации, поэтому там OAuth выключен.
   bool get _isOAuthSupportedPlatform =>
-      !kIsWeb &&
-      (defaultTargetPlatform == TargetPlatform.iOS ||
-          defaultTargetPlatform == TargetPlatform.android);
+      kIsWeb ||
+      defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.android;
+
+  @override
+  Future<void> close() {
+    unawaited(_googleWebEventsSub?.cancel());
+    return super.close();
+  }
 
   void toggleMode() {
     emit(
@@ -134,12 +148,25 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> _loadOAuthConfig() async {
     if (!_isOAuthSupportedPlatform) return;
 
+    if (kIsWeb) {
+      final config = (await _authRepository.getOAuthConfig(
+        clientType: 'web',
+      )).dataOrNull;
+      // Cubit мог закрыться, пока запрос был в полёте (например, страница
+      // уже размонтирована) — emit() после close() бросает StateError.
+      if (isClosed || config == null) return;
+      emit(state.copyWith(oauthConfig: config));
+      final googleClientId = config.google?.clientId;
+      if ((config.google?.enabled ?? false) && googleClientId != null) {
+        await _initGoogleWebSignIn(googleClientId);
+      }
+      return;
+    }
+
     if (_isIOS) {
       final config = (await _authRepository.getOAuthConfig(
         clientType: 'ios',
       )).dataOrNull;
-      // Cubit мог закрыться, пока запрос был в полёте (например, страница
-      // уже размонтирована) — emit() после close() бросает StateError.
       if (isClosed || config == null) return;
       emit(state.copyWith(oauthConfig: config));
       return;
@@ -152,6 +179,36 @@ class LoginCubit extends Cubit<LoginState> {
     emit(state.copyWith(oauthConfig: OAuthConfig(google: google)));
   }
 
+  /// Google на web не поддерживает `authenticate()` (GIS-SDK требует
+  /// собственный рендер-виджет — см. `google_web.renderButton()` в
+  /// `LoginPage`). Результат входа приходит асинхронно через
+  /// `authenticationEvents`, поэтому слушаем стрим один раз после
+  /// инициализации, а не по тапу кнопки.
+  Future<void> _initGoogleWebSignIn(String clientId) async {
+    await GoogleSignIn.instance.initialize(clientId: clientId);
+    if (isClosed) return;
+    _googleWebEventsSub = GoogleSignIn.instance.authenticationEvents.listen(
+      _handleGoogleWebAuthEvent,
+      onError: (Object _) {},
+    );
+  }
+
+  Future<void> _handleGoogleWebAuthEvent(
+    GoogleSignInAuthenticationEvent event,
+  ) async {
+    if (isClosed || event is! GoogleSignInAuthenticationEventSignIn) return;
+
+    final idToken = event.user.authentication.idToken;
+    if (idToken == null) return;
+
+    _emitOAuthLoading(OAuthSignInProvider.google);
+    final result = await _authRepository.loginWithGoogle(
+      idToken: idToken,
+      clientType: 'web',
+    );
+    _handleOAuthResult(result);
+  }
+
   /// Вход через Google. На Android `google_sign_in` v7 выдаёт `id_token`
   /// только при явном `serverClientId` — и это должен быть Web-клиент (аудиенс
   /// токена всегда Web, а не Android-специфичный клиент), поэтому берём
@@ -159,7 +216,8 @@ class LoginCubit extends Cubit<LoginState> {
   /// значение, зашитое в `google-services.json` (см. STATUS.md, «Открытые
   /// вопросы к аналитику»).
   Future<LoginResult> signInWithGoogle() async {
-    if (!_isOAuthSupportedPlatform || state.isLoading) {
+    // На web вход идёт через рендер-виджет Google (_handleGoogleWebAuthEvent)
+    if (!_isOAuthSupportedPlatform || kIsWeb || state.isLoading) {
       return LoginResult.cancelled;
     }
 
@@ -191,15 +249,21 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  /// Вход через Apple — только iOS (продуктовое решение: на Android Apple
-  /// Sign-In не предлагаем, там только Google). Нативный флоу, `aud` токена
-  /// = App ID `com.becandier.smenka`.
+  /// Вход через Apple — iOS (нативно, `aud` = App ID `com.becandier.smenka`)
+  /// и web (браузерный флоу через Apple JS SDK, `aud` = Services ID
+  /// `com.becandier.smenka.web`). На Android не предлагаем вовсе (продуктовое
+  /// решение — только Google).
   Future<LoginResult> signInWithApple() async {
-    if (!_isOAuthSupportedPlatform || !_isIOS || state.isLoading) {
+    if (!_isOAuthSupportedPlatform || (!kIsWeb && !_isIOS) || state.isLoading) {
       return LoginResult.cancelled;
     }
 
     _emitOAuthLoading(OAuthSignInProvider.apple);
+
+    // CSRF-защита браузерного флоу (та же находка, что уже закрыта в
+    // admin-треке для их Apple JS-кнопки): Apple возвращает `state`
+    // неизменным — на iOS (нативный ASAuthorizationController) не нужен.
+    final expectedState = kIsWeb ? _generateOAuthState() : null;
 
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
@@ -207,7 +271,21 @@ class LoginCubit extends Cubit<LoginState> {
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        state: expectedState,
+        webAuthenticationOptions: kIsWeb
+            ? WebAuthenticationOptions(
+                clientId: state.oauthConfig?.apple?.clientId ?? '',
+                // Возврат на текущий домен (app.smenka.space в проде) —
+                // Apple должен знать этот Return URL заранее в консоли
+                // (Services ID → Sign In with Apple → Domains/Return URLs).
+                redirectUri: Uri.parse('${Uri.base.origin}/'),
+              )
+            : null,
       );
+
+      if (expectedState != null && credential.state != expectedState) {
+        return _emitOAuthClientError();
+      }
 
       final identityToken = credential.identityToken;
       if (identityToken == null) {
@@ -216,7 +294,7 @@ class LoginCubit extends Cubit<LoginState> {
 
       final result = await _authRepository.loginWithApple(
         identityToken: identityToken,
-        clientType: 'ios',
+        clientType: kIsWeb ? 'web' : 'ios',
         email: credential.email,
         name: _fullName(credential),
       );
@@ -229,6 +307,11 @@ class LoginCubit extends Cubit<LoginState> {
     } catch (_) {
       return _emitOAuthClientError();
     }
+  }
+
+  String _generateOAuthState() {
+    final bytes = List<int>.generate(16, (_) => Random.secure().nextInt(256));
+    return base64Url.encode(bytes);
   }
 
   String? _fullName(AuthorizationCredentialAppleID credential) {

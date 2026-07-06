@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in_web/web_only.dart' as google_web;
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
@@ -328,6 +330,24 @@ class _LoginViewState extends State<_LoginView> {
   }
 
   Widget _buildGoogleButton(BuildContext context, LoginState state) {
+    // На web `google_sign_in` не поддерживает программный вход — единственный
+    // способ инициировать флоу это официальный GIS-виджет Google (нельзя
+    // оформить как обычную AppButton); результат обрабатывается в LoginCubit
+    // через authenticationEvents, а не через _onGoogleSignIn.
+    if (kIsWeb) {
+      return Center(
+        child: google_web.renderButton(
+          configuration: google_web.GSIButtonConfiguration(
+            type: google_web.GSIButtonType.standard,
+            theme: google_web.GSIButtonTheme.outline,
+            size: google_web.GSIButtonSize.large,
+            text: google_web.GSIButtonText.continueWith,
+            shape: google_web.GSIButtonShape.pill,
+            minimumWidth: 400,
+          ),
+        ),
+      );
+    }
     return AppButton(
       label: context.l10n.authContinueWithGoogle,
       isOutlined: true,
