@@ -19,6 +19,7 @@ import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_cubit.dart
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_state.dart';
 import 'package:smenka_mobile/pages/work_location_picker/view/work_location_picker_page.dart';
 import 'package:smenka_mobile/widgets/app_button.dart';
+import 'package:smenka_mobile/widgets/geo/geo_permission_dialogs.dart';
 
 part '../widgets/idle_shift_content.dart';
 part '../widgets/active_shift_content.dart';

@@ -52,9 +52,11 @@ String localizedErrorMessage(
     'PENALTY_TEMPLATE_NOT_FOUND' => l10n.errorPenaltyTemplateNotFound,
     // knowledge_base: база знаний (узел не найден / доступ отозван / чужая org)
     'KNOWLEDGE_NODE_NOT_FOUND' => l10n.errorKnowledgeNodeNotFound,
-    // гео (клиентский код из geo_service.dart): недоступность позиции на
-    // web/нативе показываем понятным текстом, а не сырым текстом исключения.
-    'GEO_UNAVAILABLE' => l10n.errorGeoUnavailable,
+    // Гео-отказы здесь НЕ маппятся: они клиентские (geo_service.dart) и никогда
+    // не приходят как error.code с бэка. Отказы геолокации доводятся до UI
+    // типизированно — StartShiftResult (shift_tracker → idle_shift_content) и
+    // PhotoNotice (checklist_fill) — и локализуются напрямую через l10n.*,
+    // а не через этот маппинг. Не добавлять сюда GEO_* коды: будут dead code.
     // oauth_login: вход через Google/Apple
     'INVALID_OAUTH_TOKEN' => l10n.errorInvalidOauthToken,
     'OAUTH_EMAIL_NOT_VERIFIED' => l10n.errorOauthEmailNotVerified,

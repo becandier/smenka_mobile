@@ -305,6 +305,24 @@ class AppLocalizationsRu extends AppLocalizations {
       'Низкая точность GPS — координаты могут быть неточными';
 
   @override
+  String get geoPermissionWebTitle => 'Доступ к геолокации заблокирован';
+
+  @override
+  String get geoPermissionWebMessage =>
+      'Разрешите доступ к геолокации в настройках сайта (значок 🔒 или ⓘ слева от адреса) и повторите.';
+
+  @override
+  String get geoRetry => 'Повторить';
+
+  @override
+  String get geoUnsupportedMessage =>
+      'Геолокация не поддерживается этим браузером. Обновите браузер или используйте другой.';
+
+  @override
+  String get geoInsecureContextMessage =>
+      'Для доступа к геолокации откройте сайт по защищённому соединению (HTTPS).';
+
+  @override
   String get shiftConfirmFinish => 'Завершить смену?';
 
   @override
