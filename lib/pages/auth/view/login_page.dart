@@ -11,6 +11,7 @@ import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/auth/repositories/auth_repository.dart';
 import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/auth/auth_feature_flags.dart';
 import 'package:smenka_mobile/pages/auth/cubit/login_cubit.dart';
 import 'package:smenka_mobile/pages/auth/cubit/login_state.dart';
 import 'package:smenka_mobile/widgets/app_button.dart';
@@ -194,7 +195,7 @@ class _LoginViewState extends State<_LoginView> {
                         ],
                         const SizedBox(height: 24),
                         _buildSubmitButton(context, state),
-                        if (state.showOAuthSection) ...[
+                        if (kOAuthLoginEnabled && state.showOAuthSection) ...[
                           const SizedBox(height: 20),
                           _buildOAuthDivider(context),
                           const SizedBox(height: 16),
