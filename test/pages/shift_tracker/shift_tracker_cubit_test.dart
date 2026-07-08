@@ -449,4 +449,107 @@ void main() {
       await cubit.close();
     });
   });
+
+  group('гео-отказы при старте → StartShiftResult (org с geoCheckEnabled)', () {
+    final orgGeoOn = Organization(
+      id: 'orgGeo',
+      name: 'Geo Org',
+      ownerId: 'owner1',
+      inviteCode: 'INVGEO01',
+      isDeleted: false,
+      createdAt: DateTime.utc(2026),
+      geoCheckEnabled: true,
+    );
+
+    setUp(() {
+      when(() => contextStorage.save(any())).thenAnswer((_) async {});
+    });
+
+    // Кубит с единственной гео-org, уже выбранной как контекст старта.
+    Future<ShiftTrackerCubit> buildWithGeoOrgSelected() async {
+      when(
+        () => orgRepo.watchMyOrganizations(),
+      ).thenAnswer((_) => Stream<List<Organization>>.value([orgGeoOn]));
+      final cubit = buildCubit();
+      await pumpEventQueue();
+      cubit.selectOrganization('orgGeo');
+      return cubit;
+    }
+
+    // Матрица «GeoFailure → ожидаемый StartShiftResult».
+    final cases = <(GeoResult, StartShiftResult)>[
+      (const GeoServiceDisabled(), StartShiftResult.geoServiceDisabled),
+      (const GeoPermissionDenied(), StartShiftResult.geoPermissionDenied),
+      (
+        const GeoPermissionDeniedForever(),
+        StartShiftResult.geoPermissionDeniedForever,
+      ),
+      (const GeoUnavailable(), StartShiftResult.geoUnavailable),
+      (const GeoInsecureContext(), StartShiftResult.geoInsecureContext),
+      (const GeoUnsupported(), StartShiftResult.geoUnsupported),
+    ];
+
+    for (final (geoResult, expected) in cases) {
+      test('${geoResult.runtimeType} → $expected', () async {
+        when(() => geo.getCurrentPosition()).thenAnswer((_) async => geoResult);
+
+        final cubit = await buildWithGeoOrgSelected();
+        final result = await cubit.startShift();
+
+        expect(result, expected);
+        // Гео-отказ обрывает старт до сети и не помечает action-ошибку
+        // (иначе BlocListener сетевых ошибок показал бы ложный тост).
+        expect(cubit.state.actionStatus, FeatureStatus.initial);
+        verifyNever(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+          ),
+        );
+        await cubit.close();
+      });
+    }
+
+    test('GeoSuccess → координаты уходят в старт, результат success', () async {
+      when(() => geo.getCurrentPosition()).thenAnswer(
+        (_) async => const GeoSuccess(
+          latitude: 55.75,
+          longitude: 37.61,
+          lowAccuracy: false,
+        ),
+      );
+      stubStartShift(Task<Shift>.success(_activeShift()));
+
+      final cubit = await buildWithGeoOrgSelected();
+      final result = await cubit.startShift();
+
+      expect(result, StartShiftResult.success);
+      verify(
+        () => shiftRepo.startShift(
+          organizationId: 'orgGeo',
+          latitude: 55.75,
+          longitude: 37.61,
+        ),
+      ).called(1);
+      await cubit.close();
+    });
+
+    test('GeoSuccess c низкой точностью → предупреждение', () async {
+      when(() => geo.getCurrentPosition()).thenAnswer(
+        (_) async => const GeoSuccess(
+          latitude: 55.75,
+          longitude: 37.61,
+          lowAccuracy: true,
+        ),
+      );
+      stubStartShift(Task<Shift>.success(_activeShift()));
+
+      final cubit = await buildWithGeoOrgSelected();
+      await cubit.startShift();
+
+      expect(cubit.state.showLowAccuracyWarning, isTrue);
+      await cubit.close();
+    });
+  });
 }

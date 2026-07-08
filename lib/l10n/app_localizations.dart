@@ -652,6 +652,36 @@ abstract class AppLocalizations {
   /// **'Низкая точность GPS — координаты могут быть неточными'**
   String get geoLowAccuracy;
 
+  /// No description provided for @geoPermissionWebTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступ к геолокации заблокирован'**
+  String get geoPermissionWebTitle;
+
+  /// No description provided for @geoPermissionWebMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешите доступ к геолокации в настройках сайта (значок 🔒 или ⓘ слева от адреса) и повторите.'**
+  String get geoPermissionWebMessage;
+
+  /// No description provided for @geoRetry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get geoRetry;
+
+  /// No description provided for @geoUnsupportedMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация не поддерживается этим браузером. Обновите браузер или используйте другой.'**
+  String get geoUnsupportedMessage;
+
+  /// No description provided for @geoInsecureContextMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Для доступа к геолокации откройте сайт по защищённому соединению (HTTPS).'**
+  String get geoInsecureContextMessage;
+
   /// No description provided for @shiftConfirmFinish.
   ///
   /// In ru, this message translates to:

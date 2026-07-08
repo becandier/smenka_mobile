@@ -243,26 +243,28 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           if (geoResult.lowAccuracy) {
             emit(state.copyWith(showLowAccuracyWarning: true));
           }
+        // Гео-отказы не пишем в actionStatus/actionError: конкретный
+        // платформо-зависимый UX (диалог/тост) выбирает вызывающий код по
+        // возвращённому StartShiftResult. Статус возвращаем в initial, чтобы
+        // BlocListener сетевых ошибок не показал ложный тост.
         case GeoServiceDisabled():
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
           return StartShiftResult.geoServiceDisabled;
-        case GeoDenied():
+        case GeoPermissionDenied():
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoDenied;
-        case GeoDeniedForever():
+          return StartShiftResult.geoPermissionDenied;
+        case GeoPermissionDeniedForever():
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoDeniedForever;
-        case GeoError():
-          // На web сюда попадают непредвиденные отказы геолокации: показываем
-          // локализованный текст по коду, а не сырой текст исключения.
-          emit(
-            state.copyWith(
-              actionStatus: FeatureStatus.error,
-              actionError: geoResult.message,
-              actionErrorCode: geoResult.code,
-            ),
-          );
-          return StartShiftResult.error;
+          return StartShiftResult.geoPermissionDeniedForever;
+        case GeoUnavailable():
+          emit(state.copyWith(actionStatus: FeatureStatus.initial));
+          return StartShiftResult.geoUnavailable;
+        case GeoInsecureContext():
+          emit(state.copyWith(actionStatus: FeatureStatus.initial));
+          return StartShiftResult.geoInsecureContext;
+        case GeoUnsupported():
+          emit(state.copyWith(actionStatus: FeatureStatus.initial));
+          return StartShiftResult.geoUnsupported;
       }
     }
 
@@ -540,10 +542,31 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }
 }
 
+/// Исход попытки старта смены — определяет, какой UX показать вызывающему коду.
+/// Гео-ветки повторяют таксономию [GeoResult] (`geo_service.dart`), чтобы UI
+/// выбрал платформо-корректную реакцию (диалог настроек / web-инструкция / тост).
 enum StartShiftResult {
   success,
+
+  /// Бизнес-/сетевая ошибка старта — показывает BlocListener (тост/плашка).
   error,
+
+  /// Сервис геолокации выключен (native) → диалог + настройки геолокации.
   geoServiceDisabled,
-  geoDenied,
-  geoDeniedForever,
+
+  /// Доступ отклонён (можно повторить) → короткий тост + повтор.
+  geoPermissionDenied,
+
+  /// Доступ отклонён навсегда → native: диалог + настройки приложения;
+  /// web: диалог-инструкция по браузеру + «Повторить».
+  geoPermissionDeniedForever,
+
+  /// Позиция не получена (таймаут/недоступна) → тост + повтор.
+  geoUnavailable,
+
+  /// Web без HTTPS → сообщение о необходимости защищённого соединения.
+  geoInsecureContext,
+
+  /// Геолокация не поддерживается браузером → сообщение об обновлении браузера.
+  geoUnsupported,
 }
