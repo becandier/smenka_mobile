@@ -86,11 +86,6 @@ class _LoginViewState extends State<_LoginView> {
 
     if (!state.isFormValid || state.isLoading) return;
 
-    // Завершаем autofill-контекст: на web коммитим скрытую DOM-форму (значения
-    // автозаполнения долетают до контроллеров), и браузер/менеджер паролей
-    // предлагает сохранить/обновить пару логин-пароль. На нативе — то же поведение.
-    TextInput.finishAutofillContext();
-
     final LoginResult result;
     if (state.isLogin) {
       result = await cubit.login();
@@ -102,6 +97,13 @@ class _LoginViewState extends State<_LoginView> {
 
     switch (result) {
       case LoginResult.success:
+        // Коммитим autofill-контекст ТОЛЬКО после успешного входа: web-движок
+        // сабмитит скрытую DOM-форму, и браузер/менеджер паролей предлагает
+        // сохранить/обновить пару логин-пароль (если введённый пароль отличается
+        // от сохранённого). shouldSave по умолчанию true. При ошибке/
+        // needsVerification не коммитим — тогда предложения «Обновить пароль?»
+        // нет. На нативе — то же поведение.
+        TextInput.finishAutofillContext();
         widget.onResult?.call(didLogin: true);
       case LoginResult.needsVerification:
         final email = cubit.state.email.trim();
@@ -109,6 +111,14 @@ class _LoginViewState extends State<_LoginView> {
             ? context.l10n.authEmailNotVerified
             : context.l10n.authCodeSent;
         context.modals.showInfo(message);
+        // Регистрация (register() → needsVerification) — тоже успешный ввод
+        // новой пары логин-пароль: коммитим autofill-контекст перед уходом
+        // на экран верификации, чтобы web-браузер предложил сохранить новый
+        // пароль (autofillHints.newPassword). Для login-needsVerification
+        // (email не верифицирован) пароль не менялся — не коммитим.
+        if (cubit.state.isRegister) {
+          TextInput.finishAutofillContext();
+        }
         await context.router.push(VerifyRoute(email: email));
       case LoginResult.error:
         _showLoginError(cubit.state);
@@ -161,57 +171,94 @@ class _LoginViewState extends State<_LoginView> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: BlocBuilder<LoginCubit, LoginState>(
-              builder: (context, state) {
-                return AutofillGroup(
-                  child: AnimatedSize(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    alignment: Alignment.topCenter,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _buildLockup(context),
-                        const SizedBox(height: 40),
-                        _buildTitle(context, state),
-                        const SizedBox(height: 32),
-                        if (state.isRegister) ...[
-                          _buildNameField(context, state),
-                          const SizedBox(height: 16),
-                        ],
-                        _buildEmailField(context, state),
-                        const SizedBox(height: 16),
-                        _buildPasswordField(context, state),
-                        if (state.isRegister) ...[
-                          const SizedBox(height: 12),
-                          _PasswordRequirements(
-                            isLongEnough: state.isPasswordLongEnough,
-                            hasLetter: state.passwordHasLetter,
-                            hasDigit: state.passwordHasDigit,
-                            passwordNotEmpty: state.password.isNotEmpty,
-                          ),
-                        ],
-                        const SizedBox(height: 24),
-                        _buildSubmitButton(context, state),
-                        if (state.showOAuthSection) ...[
-                          const SizedBox(height: 20),
-                          _buildOAuthDivider(context),
-                          const SizedBox(height: 16),
-                          if (state.googleEnabled)
-                            _buildGoogleButton(context, state),
-                          if (state.googleEnabled && state.appleEnabled)
-                            const SizedBox(height: 12),
-                          if (state.appleEnabled)
-                            _buildAppleButton(context, state),
-                        ],
-                        const SizedBox(height: 16),
-                        _buildToggleButton(context, state),
-                      ],
+            child: AutofillGroup(
+              // Сохранять пару логин-пароль только при явном успешном входе
+              // (см. _onSubmit → LoginResult.success), поэтому dispose группы
+              // не должен коммитить контекст: cancel вместо дефолтного commit,
+              // иначе браузер предлагал бы сохранить при уходе со страницы.
+              onDisposeAction: AutofillContextAction.cancel,
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                alignment: Alignment.topCenter,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildLockup(context),
+                    const SizedBox(height: 40),
+                    // Заголовок и поля перестраиваются только при смене режима
+                    // (login↔register) или видимости пароля, но НЕ на каждый
+                    // символ. Это удерживает layout-трансформацию полей
+                    // автозаполнения неизменной: web-движок не перефокусирует
+                    // и не переразмещает скрытую <form> на каждый символ (см.
+                    // GloballyPositionedTextEditingStrategy.placeElement →
+                    // focusedFormElement.focusWithoutScroll), и Chrome при
+                    // сохранённой паре не показывает «Обновить пароль?».
+                    BlocBuilder<LoginCubit, LoginState>(
+                      buildWhen: (previous, current) =>
+                          previous.mode != current.mode ||
+                          previous.obscurePassword != current.obscurePassword,
+                      builder: (context, state) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildTitle(context, state),
+                            const SizedBox(height: 32),
+                            if (state.isRegister) ...[
+                              _buildNameField(context, state),
+                              const SizedBox(height: 16),
+                            ],
+                            _buildEmailField(context, state),
+                            const SizedBox(height: 16),
+                            _buildPasswordField(context, state),
+                          ],
+                        );
+                      },
                     ),
-                  ),
-                );
-              },
+                    // Реактивная часть (требования к паролю, кнопка входа,
+                    // OAuth, переключатель режима) обновляется на каждый
+                    // символ, но лежит НИЖЕ полей — при alignment topCenter
+                    // рост высоты не сдвигает поля выше, их трансформация
+                    // остаётся стабильной.
+                    BlocBuilder<LoginCubit, LoginState>(
+                      builder: (context, state) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (state.isRegister) ...[
+                              const SizedBox(height: 12),
+                              _PasswordRequirements(
+                                isLongEnough: state.isPasswordLongEnough,
+                                hasLetter: state.passwordHasLetter,
+                                hasDigit: state.passwordHasDigit,
+                                passwordNotEmpty: state.password.isNotEmpty,
+                              ),
+                            ],
+                            const SizedBox(height: 24),
+                            _buildSubmitButton(context, state),
+                            if (state.showOAuthSection) ...[
+                              const SizedBox(height: 20),
+                              _buildOAuthDivider(context),
+                              const SizedBox(height: 16),
+                              if (state.googleEnabled)
+                                _buildGoogleButton(context, state),
+                              if (state.googleEnabled && state.appleEnabled)
+                                const SizedBox(height: 12),
+                              if (state.appleEnabled)
+                                _buildAppleButton(context, state),
+                            ],
+                            const SizedBox(height: 16),
+                            _buildToggleButton(context, state),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
