@@ -35,6 +35,14 @@
     поэтому хост объектного хранилища обязан быть в connect-src. Держать его в
     синхроне с S3_PUBLIC_ENDPOINT_URL бэка (провайдер пока не закреплён: дефолтом
     добавлены AWS S3 и рекомендованный в DEPLOY_AUDIT Yandex Object Storage).
+    ВАЖНО: `blob:` в connect-src обязателен для фото чек-листов. На web
+    XFile.readAsBytes() (image_picker/cross_file) читает выбранный кадр по его
+    blob:-URL через XMLHttpRequest — то есть чтение регулируется connect-src (как
+    и XHR-загрузка CanvasKit-картинок выше), а НЕ img-src/media-src. Без `blob:`
+    здесь XHR режется CSP → readAsBytes бросает «Could not load Blob from its
+    URL» → фото не прикрепляется. blob:-URL привязаны к origin-создателю и
+    внешних соединений не открывают — добавление безопасно; не удалять при
+    аудите.
     oauth_login (web): accounts.google.com — GIS-скрипт/iframe/эндпоинты
     (https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid);
     appleid.cdn-apple.com/appleid.apple.com — Apple JS SDK (script.js в body ниже) +
@@ -43,7 +51,7 @@
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com https://www.googletagmanager.com https://accounts.google.com https://appleid.cdn-apple.com;
-    connect-src 'self' https://api.smenka.space https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.firebasestorage.app https://*.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.amazonaws.com https://*.storage.yandexcloud.net https://s3.twcstorage.ru https://accounts.google.com https://appleid.apple.com;
+    connect-src 'self' blob: https://api.smenka.space https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.firebasestorage.app https://*.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.amazonaws.com https://*.storage.yandexcloud.net https://s3.twcstorage.ru https://accounts.google.com https://appleid.apple.com;
     img-src 'self' data: blob: https:;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com;
     font-src 'self' data: https://fonts.gstatic.com;
