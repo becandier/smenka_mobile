@@ -1154,6 +1154,26 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorPhotoFileInvalid => 'Файл недоступен, снимите фото заново';
 
   @override
+  String get errorPhotoPermissionDenied =>
+      'Нет доступа к камере или галерее. Разрешите доступ в настройках и повторите';
+
+  @override
+  String get errorPhotoReadFailed =>
+      'Не удалось прочитать фото. Снимите фото заново';
+
+  @override
+  String get errorPhotoFileEmpty =>
+      'Не удалось прочитать фото. Снимите фото заново';
+
+  @override
+  String get errorPhotoDecodeFailed =>
+      'Не удалось обработать фото. Попробуйте другой снимок';
+
+  @override
+  String get errorPhotoPickFailed =>
+      'Не удалось открыть камеру или галерею. Повторите';
+
+  @override
   String get errorShiftFinished => 'Смена завершена';
 
   @override

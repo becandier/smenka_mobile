@@ -2224,6 +2224,36 @@ abstract class AppLocalizations {
   /// **'Файл недоступен, снимите фото заново'**
   String get errorPhotoFileInvalid;
 
+  /// No description provided for @errorPhotoPermissionDenied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет доступа к камере или галерее. Разрешите доступ в настройках и повторите'**
+  String get errorPhotoPermissionDenied;
+
+  /// No description provided for @errorPhotoReadFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось прочитать фото. Снимите фото заново'**
+  String get errorPhotoReadFailed;
+
+  /// No description provided for @errorPhotoFileEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось прочитать фото. Снимите фото заново'**
+  String get errorPhotoFileEmpty;
+
+  /// No description provided for @errorPhotoDecodeFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось обработать фото. Попробуйте другой снимок'**
+  String get errorPhotoDecodeFailed;
+
+  /// No description provided for @errorPhotoPickFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось открыть камеру или галерею. Повторите'**
+  String get errorPhotoPickFailed;
+
   /// No description provided for @errorShiftFinished.
   ///
   /// In ru, this message translates to:

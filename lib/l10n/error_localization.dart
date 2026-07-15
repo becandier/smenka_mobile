@@ -41,6 +41,12 @@ String localizedErrorMessage(
     'PHOTO_LIMIT_EXCEEDED' => l10n.errorPhotoLimitExceeded,
     'PHOTO_NOT_FOUND' => l10n.errorPhotoNotFound,
     'PHOTO_FILE_INVALID' => l10n.errorPhotoFileInvalid,
+    // photo_picker_service: клиентские коды выбора/подготовки кадра
+    'PHOTO_PERMISSION_DENIED' => l10n.errorPhotoPermissionDenied,
+    'PHOTO_READ_FAILED' => l10n.errorPhotoReadFailed,
+    'PHOTO_FILE_EMPTY' => l10n.errorPhotoFileEmpty,
+    'PHOTO_DECODE_FAILED' => l10n.errorPhotoDecodeFailed,
+    'PHOTO_PICK_FAILED' => l10n.errorPhotoPickFailed,
     'SHIFT_FINISHED' => l10n.errorShiftFinished,
     'INSTANCE_NOT_FOUND' => l10n.errorInstanceNotFound,
     'ITEM_NOT_FOUND' => l10n.errorItemNotFound,

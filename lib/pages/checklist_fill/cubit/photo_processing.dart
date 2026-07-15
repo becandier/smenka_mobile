@@ -1,32 +1,17 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
 
-/// Антифрод-обработка фото перед загрузкой: нативный ресайз/сжатие в JPEG +
-/// вжигание видимого штампа (дата/время + координаты) в пиксели.
+/// Антифрод-штамп: вжигание видимого штампа (дата/время + координаты) в пиксели
+/// уже подготовленного (ресайзнутого JPEG) кадра.
 ///
 /// Почему так: хранилище стрипает EXIF, поэтому метаданные нельзя полагать на
-/// EXIF — штамп вжигается прямо в кадр. Пакет `image` не декодит HEIC, поэтому
-/// сначала прогоняем кадр через `flutter_image_compress` (нативно декодит HEIC,
-/// выправляет ориентацию по EXIF и отдаёт JPEG), а штамп рисуем уже на
-/// уменьшённом JPEG. Тяжёлый decode/draw/encode уносим в фоновый изолят через
-/// [compute] (web-safe: там выполнится на main-потоке).
-Future<Uint8List> processChecklistPhoto({
-  required Uint8List original,
-  required String stampText,
-}) async {
-  // Нативный ресайз ~1600px по большей стороне + перекодирование в JPEG.
-  // autoCorrectionAngle — впекаем ориентацию, т.к. EXIF дальше стрипается.
-  // autoCorrectionAngle по умолчанию true — впекаем ориентацию по EXIF (он
-  // дальше стрипается хранилищем).
-  final resized = await FlutterImageCompress.compressWithList(
-    original,
-    minWidth: 1600,
-    minHeight: 1600,
-    quality: 88,
-  );
-
-  return compute(_burnStamp, _StampRequest(bytes: resized, text: stampText));
+/// EXIF — штамп вжигается прямо в кадр. Ресайз/пере-кодирование (в т.ч. нативный
+/// декод HEIC и выправление ориентации) делает `PhotoPickerService` до вызова
+/// этого метода — здесь остаётся только decode/draw/encode на уже уменьшённом
+/// (`<= 1600px`) JPEG. Тяжёлую работу уносим в фоновый изолят через [compute]
+/// (web-safe: там выполнится на main-потоке, ~2 МП — приемлемо).
+Future<Uint8List> burnStamp(Uint8List bytes, String stampText) {
+  return compute(_burnStamp, _StampRequest(bytes: bytes, text: stampText));
 }
 
 class _StampRequest {

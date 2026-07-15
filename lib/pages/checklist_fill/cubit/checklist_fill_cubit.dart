@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
-import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
+import 'package:smenka_mobile/core/services/photo_picker_service.dart';
+// Скрываем доменный PhotoSource (camera/cameraOrGallery — конфиг требования
+// пункта): в кубите PhotoSource — это выбранный источник из PhotoPickerService.
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart'
+    hide PhotoSource;
 import 'package:smenka_mobile/data/domain/file_storage/_file_storage.dart';
 import 'package:smenka_mobile/pages/checklist_fill/cubit/checklist_fill_state.dart';
 import 'package:smenka_mobile/pages/checklist_fill/cubit/checklist_photo_draft.dart';
@@ -20,14 +23,18 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     required ChecklistRepository checklistRepository,
     required FilesRepository filesRepository,
     required GeoService geoService,
+    required PhotoPickerService photoPickerService,
     String? organizationId,
     bool readOnly = false,
+    Future<Uint8List> Function(Uint8List bytes, String stampText)? photoStamper,
   }) : _shiftId = shiftId,
        _instanceId = instanceId,
        _organizationId = organizationId,
        _checklistRepository = checklistRepository,
        _filesRepository = filesRepository,
        _geoService = geoService,
+       _photoPickerService = photoPickerService,
+       _photoStamper = photoStamper ?? burnStamp,
        super(ChecklistFillState(readOnly: readOnly)) {
     loadInstance();
   }
@@ -38,13 +45,18 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
   final ChecklistRepository _checklistRepository;
   final FilesRepository _filesRepository;
   final GeoService _geoService;
+  final PhotoPickerService _photoPickerService;
+
+  /// Вжигание антифрод-штампа (по умолчанию [burnStamp]). Инъекция — для тестов
+  /// инварианта «отказ после показа черновика убирает черновик».
+  final Future<Uint8List> Function(Uint8List bytes, String stampText)
+  _photoStamper;
 
   final Map<String, Timer> _commentDebouncers = {};
 
   /// Тяжёлые данные черновиков загрузки (байты кадра + `file_id` для ретрая
   /// привязки) — вне стейта, чтобы не сравнивать мегабайты при каждом emit.
   final Map<String, _PhotoUpload> _uploads = {};
-  final ImagePicker _picker = ImagePicker();
   int _draftCounter = 0;
 
   static final DateFormat _stampDateFormat = DateFormat('dd.MM.yyyy HH:mm');
@@ -161,40 +173,35 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
 
   // --- Photos ---
 
-  /// Антифрод-флоу: pick → плейсхолдер → гео → штамп+сжатие в изоляте → upload
-  /// (`POST /files`) → привязка (`POST .../photos`). Гео-отказ не прерывает —
-  /// штамп вжигается только со временем, показывается нотис.
-  Future<void> addPhoto(
-    ChecklistInstanceItem item,
-    PhotoCaptureSource source,
-  ) async {
+  /// Антифрод-флоу: pick+подготовка (`PhotoPickerService`) → плейсхолдер →
+  /// гео → штамп в изоляте → upload (`POST /files`) → привязка
+  /// (`POST .../photos`). Гео-отказ не прерывает — штамп вжигается только со
+  /// временем, показывается нотис. Выбор/подготовка кадра типизированы: отмена —
+  /// молча, любой failure — локализованный тост по коду сервиса (клиентский
+  /// `PHOTO_FILE_INVALID` больше не эмитится).
+  Future<void> addPhoto(ChecklistInstanceItem item, PhotoSource source) async {
     if (state.readOnly) return;
     if (_organizationId == null) return; // орг-смена всегда имеет org
 
-    final XFile? picked;
-    try {
-      picked = await _picker.pickImage(
-        source: source == PhotoCaptureSource.camera
-            ? ImageSource.camera
-            : ImageSource.gallery,
-        // Полное качество: ресайз/сжатие делаем сами (нужен decode под штамп).
-        imageQuality: 100,
-        maxWidth: 4000,
-      );
-    } on Exception {
-      emit(state.copyWith(actionErrorCode: 'PHOTO_FILE_INVALID'));
-      return;
+    final result = await _photoPickerService.pickPhoto(source: source);
+    switch (result) {
+      case PhotoPickCancelled():
+        return; // отменили выбор — молча
+      case PhotoPickFailure(:final code):
+        emit(state.copyWith(actionErrorCode: code));
+        return;
+      case PhotoPickSuccess(:final bytes):
+        await _stampAndUpload(item, bytes);
     }
-    if (picked == null) return; // отменили выбор
+  }
 
-    final Uint8List original;
-    try {
-      original = await picked.readAsBytes();
-    } on Exception {
-      emit(state.copyWith(actionErrorCode: 'PHOTO_FILE_INVALID'));
-      return;
-    }
-
+  /// Показ плейсхолдера → гео → штамп → upload. Инвариант: **любой** отказ
+  /// после [_addDraft] обязан вызвать [_removeDraft] (иначе плитка виснет в
+  /// «uploading»).
+  Future<void> _stampAndUpload(
+    ChecklistInstanceItem item,
+    Uint8List bytes,
+  ) async {
     final draftId = 'd${_draftCounter++}';
     _addDraft(item.id, draftId);
 
@@ -211,23 +218,23 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
 
     final capturedAt = DateTime.now().toUtc();
 
-    final Uint8List processed;
+    final Uint8List stamped;
     try {
-      processed = await processChecklistPhoto(
-        original: original,
-        stampText: _stampText(capturedAt, latitude, longitude),
+      stamped = await _photoStamper(
+        bytes,
+        _stampText(capturedAt, latitude, longitude),
       );
-    } on Exception {
-      // Кадр не декодится/не обрабатывается — ретрай тех же байтов не поможет,
-      // убираем черновик и показываем тост.
+    } on Object {
+      // Штамп не удался (decode/encode кадра) — ретрай тех же байтов не поможет.
+      // Убираем черновик (инвариант) и показываем тост.
       _removeDraft(item.id, draftId);
-      emit(state.copyWith(actionErrorCode: 'PHOTO_FILE_INVALID'));
+      emit(state.copyWith(actionErrorCode: photoDecodeFailedCode));
       return;
     }
 
     _uploads[draftId] = _PhotoUpload(
       itemId: item.id,
-      bytes: processed,
+      bytes: stamped,
       filename: 'checklist_${item.id}_${capturedAt.millisecondsSinceEpoch}.jpg',
       capturedAt: capturedAt,
       latitude: latitude,

@@ -2,8 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smenka_mobile/core/services/photo_picker_service.dart'
+    show PhotoSource;
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
-import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
+// Скрываем доменный PhotoSource (конфиг требования пункта) — здесь тип pop
+// bottom-sheet выбора источника, это PhotoSource из PhotoPickerService.
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart'
+    hide PhotoSource;
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/penalty/_penalty.dart';
@@ -62,7 +67,7 @@ class AppRouter extends RootStackRouter {
       duration: const Duration(milliseconds: 200),
     ),
     // Выбор источника фото (камера/галерея) — модальный bottom sheet поверх табов.
-    CustomRoute<PhotoCaptureSource?>(
+    CustomRoute<PhotoSource?>(
       path: '/checklist-photo-source',
       page: ChecklistPhotoSourceRoute.page,
       customRouteBuilder: _modalBottomSheetBuilder,
