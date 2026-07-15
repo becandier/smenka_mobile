@@ -5,6 +5,11 @@ import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
+// Префикс: доменный PhotoSource (item.photoSource в _item_photos_section)
+// соседствует с PhotoSource сервиса (аргумент addPhoto).
+import 'package:smenka_mobile/core/services/photo_logger.dart';
+import 'package:smenka_mobile/core/services/photo_picker_service.dart'
+    as photo_picker;
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/file_storage/_file_storage.dart';
@@ -42,15 +47,24 @@ class ChecklistFillPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ChecklistFillCubit(
-        shiftId: shiftId,
-        instanceId: instanceId,
-        organizationId: organizationId,
-        readOnly: readOnly,
-        checklistRepository: context.read<ChecklistRepository>(),
-        filesRepository: context.read<FilesRepository>(),
-        geoService: GeoService(),
-      ),
+      create: (_) {
+        // Один PhotoLogger на сервис и кубит — крошки/репорты фото (pick,
+        // подготовка, штамп) уходят в Crashlytics одной цепочкой.
+        final photoLogger = PhotoLogger();
+        return ChecklistFillCubit(
+          shiftId: shiftId,
+          instanceId: instanceId,
+          organizationId: organizationId,
+          readOnly: readOnly,
+          checklistRepository: context.read<ChecklistRepository>(),
+          filesRepository: context.read<FilesRepository>(),
+          geoService: GeoService(),
+          photoPickerService: photo_picker.PhotoPickerService(
+            logger: photoLogger,
+          ),
+          photoLogger: photoLogger,
+        );
+      },
       child: const _ChecklistFillView(),
     );
   }

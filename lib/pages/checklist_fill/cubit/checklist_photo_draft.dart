@@ -2,9 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'checklist_photo_draft.freezed.dart';
 
-/// Источник кадра, выбранный пользователем.
-enum PhotoCaptureSource { camera, gallery }
-
 /// Статус локального черновика загрузки фото.
 enum PhotoDraftStatus { uploading, error }
 

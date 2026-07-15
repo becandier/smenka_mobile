@@ -315,6 +315,32 @@ lib/
 
 ---
 
+## Выбор и подготовка фото: `PhotoPickerService`
+
+Единая точка выбора + подготовки фото (`lib/core/services/photo_picker_service.dart`). Спроектирован по образцу `GeoService`: **никогда не бросает** — всегда возвращает типизированный `sealed`-результат. Пока единственный потребитель — заполнение чек-листов (`ChecklistFillCubit`), но сервис общий (аватарки и др. в будущем).
+
+**Контракт.** `pickPhoto({required PhotoSource source, int maxSide = 1600, int quality = 88})` → `PhotoPickResult`:
+- `PhotoPickSuccess(bytes, sourceName?, sourceMimeType?, unprocessed)` — кадр выбран, прочитан, подготовлен (JPEG, ориентация впечатана). **Меньшая** сторона приведена к ~`maxSide`; большая сторона **не гарантируется** — `compressWithList` расходится по платформам (native скейлит по min-сторонам: `4032×3024 → 2133×1600`; web 0.1.5 капит только ширину). Точный кап по большей стороне делает потребитель (`burnStamp`, см. ниже). `unprocessed=true` — ресайз не удался, отданы исходные байты (web-fallback).
+- `PhotoPickCancelled` — пользователь закрыл пикер (НЕ ошибка: ни тоста, ни лога уровня error).
+- `PhotoPickFailure` (sealed) с машинным `code`: `PhotoPermissionDenied` / `PhotoReadFailed` / `PhotoFileEmpty` / `PhotoDecodeFailed` / `PhotoPickFailed`. Коды маппятся в `error_localization.dart` → локализованный тост. Как у `GeoResult`, это **обычные Dart sealed** (без freezed), `detail` — сырой `e.toString()` только для логов.
+
+**Пайплайн (3 этапа, точечная классификация, финальный `on Object` — последний рубеж → `PhotoPickFailed`):**
+1. **pick** — `ImagePicker.pickImage(source:)` **без** `imageQuality`/`maxWidth`: любой из них форсирует в `image_picker_for_web` полный canvas-пере-энкод каждого кадра (~48 МБ RGBA на iOS Safari, риск зависания при `toBlob → null`); единственный ресайз — на этапе 3. Ловим `on PlatformException` (маппинг `camera_access_denied`/`photo_access_denied` → `PhotoPermissionDenied`), затем `on Object` (JS-интероп `web.Event` из onerror — не Dart `Exception`).
+2. **read** — `XFile.readAsBytes()`, `on Object` + **один ретрай** через `readRetryDelay`; `bytes.isEmpty` → ретрай → `PhotoFileEmpty` (кейс iOS Safari).
+3. **prepare** — `FlutterImageCompress.compressWithList` (единственный проход ресайза). Проверка `resized.isEmpty` (кейс `toDataURL → "data:,"` на iOS Safari — пустые байты без исключения). **Fallback только web**: сбой/пустой результат → `PhotoPickSuccess(bytes: original, unprocessed: true)` (браузерные/iOS-камеры отдают валидный JPEG — лучше загрузить неужатый кадр, чем блокировать сотрудника). На native → `PhotoDecodeFailed` (сбой = битый кадр / возможен HEIC, который сервер/штамп не переварят).
+
+**Почему `on Object`, а не `on Exception`:** JS-интероп-ошибки на web (`DOMException` от `createImageBitmap`, `web.Event` из onerror пикера) не реализуют Dart `Exception` — `on Exception` пропускает их как uncaught без фидбека.
+
+**Антифрод-штамп — вне сервиса** (`lib/pages/checklist_fill/cubit/photo_processing.dart` → `burnStamp`). Штамп зависит от результата `GeoService`, который кубит запрашивает уже после показа плейсхолдера, — пайплайн всё равно разрывается на границе «подготовленные байты». `photo_processing.dart` после миграции содержит только `burnStamp` (decode/draw/encode через `compute`); ресайз ушёл в сервис (двойной canvas-проход исчез). Именно `burnStamp` даёт **точный кап 1600px по большей стороне** (`copyResize`, только вниз, без апскейла) — сервис его не гарантирует. Декод — `img.decodeImage` (не `decodeJpg`): на web-fallback-пути (`unprocessed:true`) приходят оригинальные байты галереи, которые могут быть PNG/WebP; `null`-декод трактуется как ошибка (`PhotoStampException`), а не «вернуть кадр как есть» — нештампованный кадр не должен уехать на сервер (антифрод). Кубит по `catch`-пути делает `_removeDraft` + `PHOTO_DECODE_FAILED`.
+
+**Логирование (`PhotoLogger`, `lib/core/services/photo_logger.dart`).** По образцу `GeoLogger`: `step(msg)` — debug-консоль под `kDebugMode` + крошка Crashlytics `[photo] ...` в любой сборке; плюс `error(stage, e, st)` — non-fatal `FirebaseCrashlytics.recordError(..., reason: 'photo/$stage', fatal: false)` с настоящим исключением и стеком (главный инструмент диагностики, которого не хватало). В крошки **не** пишутся байты кадра — только этап, `runtimeType`, длины, `name`/`mimeType`. `PhotoLogger.silent()` — для тестов. Crashlytics на web не инициализируется — прод-телеметрия web (второй sink) вне scope; логгер спроектирован под её добавление без правок сервиса.
+
+**Зависимость от CSP.** На web `readAsBytes()` читает выбранный кадр по `blob:`-URL через XMLHttpRequest — регулируется `connect-src`. `web/index.html` содержит `blob:` в `connect-src` (иначе `cross_file` бросает «Could not load Blob from its URL» и фото не прикрепляется ни в одном браузере) — не удалять при аудите CSP.
+
+**Инъекции для тестов:** `picker`, `logger`, `isWeb`, `compressor`, `readRetryDelay`. Юнит-тесты — `test/core/services/photo_picker_service_test.dart` (отмена, permission, не-`Exception` на каждом этапе, ретрай чтения, пустые байты, web-fallback vs native-decode-fail, happy path). Инвариант кубита «любой отказ после показа черновика убирает черновик» — `test/pages/checklist_fill/checklist_fill_cubit_test.dart`.
+
+---
+
 ## Локальное хранение
 
 | Сервис | Хранилище | Данные |

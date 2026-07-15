@@ -83,11 +83,11 @@ class _ItemPhotosSection extends StatelessWidget {
   Future<void> _onAdd(BuildContext context) async {
     final cubit = context.read<ChecklistFillCubit>();
     if (item.photoSource == PhotoSource.camera) {
-      await cubit.addPhoto(item, PhotoCaptureSource.camera);
+      await cubit.addPhoto(item, photo_picker.PhotoSource.camera);
       return;
     }
     final router = context.router;
-    final source = await router.root.push<PhotoCaptureSource?>(
+    final source = await router.root.push<photo_picker.PhotoSource?>(
       const ChecklistPhotoSourceRoute(),
     );
     if (source == null) return;
