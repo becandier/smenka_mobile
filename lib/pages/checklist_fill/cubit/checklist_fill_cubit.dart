@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
+import 'package:smenka_mobile/core/services/photo_logger.dart';
 import 'package:smenka_mobile/core/services/photo_picker_service.dart';
 // Скрываем доменный PhotoSource (camera/cameraOrGallery — конфиг требования
 // пункта): в кубите PhotoSource — это выбранный источник из PhotoPickerService.
@@ -27,6 +28,7 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     String? organizationId,
     bool readOnly = false,
     Future<Uint8List> Function(Uint8List bytes, String stampText)? photoStamper,
+    PhotoLogger? photoLogger,
   }) : _shiftId = shiftId,
        _instanceId = instanceId,
        _organizationId = organizationId,
@@ -35,6 +37,7 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
        _geoService = geoService,
        _photoPickerService = photoPickerService,
        _photoStamper = photoStamper ?? burnStamp,
+       _photoLogger = photoLogger ?? PhotoLogger(),
        super(ChecklistFillState(readOnly: readOnly)) {
     loadInstance();
   }
@@ -51,6 +54,10 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
   /// инварианта «отказ после показа черновика убирает черновик».
   final Future<Uint8List> Function(Uint8List bytes, String stampText)
   _photoStamper;
+
+  /// Логгер этапа штампа (по образцу `PhotoPickerService`). В page-DI — тот же
+  /// инстанс, что и у сервиса, чтобы крошки/репорты фото шли одной цепочкой.
+  final PhotoLogger _photoLogger;
 
   final Map<String, Timer> _commentDebouncers = {};
 
@@ -224,9 +231,12 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
         bytes,
         _stampText(capturedAt, latitude, longitude),
       );
-    } on Object {
-      // Штамп не удался (decode/encode кадра) — ретрай тех же байтов не поможет.
-      // Убираем черновик (инвариант) и показываем тост.
+    } on Object catch (e, st) {
+      // Штамп не удался (decode/encode кадра, в т.ч. PhotoStampException на
+      // недекодируемом кадре) — ретрай тех же байтов не поможет. Логируем
+      // реальную причину и стек (раньше слепой `on Object` их терял), убираем
+      // черновик (инвариант) и показываем тост.
+      _photoLogger.error('stamp', e, st);
       _removeDraft(item.id, draftId);
       emit(state.copyWith(actionErrorCode: photoDecodeFailedCode));
       return;

@@ -26,8 +26,12 @@ sealed class PhotoPickResult {
   const PhotoPickResult();
 }
 
-/// Кадр выбран, прочитан и подготовлен: JPEG, ориентация впечатана, большая
-/// сторона `<= maxSide`. Готов к дальнейшей обработке (штамп) и аплоаду.
+/// Кадр выбран, прочитан и подготовлен: JPEG, ориентация впечатана. **Меньшая**
+/// сторона приведена к ~`maxSide`; большая сторона НЕ гарантируется — детали
+/// `compressWithList` расходятся по платформам (native скейлит по min-сторонам:
+/// `4032×3024 → 2133×1600`; web 0.1.5 капит только ширину). Точный кап по
+/// большей стороне — на потребителе (для чек-листов это `burnStamp`). Готов к
+/// дальнейшей обработке (штамп) и аплоаду.
 class PhotoPickSuccess extends PhotoPickResult {
   const PhotoPickSuccess({
     required this.bytes,
@@ -330,8 +334,11 @@ class PhotoPickerService {
     int maxSide = 1600,
     int quality = 88,
   }) {
-    // minWidth/minHeight — ограничение по МЕНЬШЕЙ стороне: кадр вписывается так,
-    // что большая сторона <= maxSide. autoCorrectionAngle по умолчанию true.
+    // minWidth/minHeight ограничивают МЕНЬШУЮ сторону: кадр скейлится так, что
+    // меньшая сторона ≈ maxSide, а большая остаётся больше (напр. 4032×3024 →
+    // 2133×1600). autoCorrectionAngle по умолчанию true. Точный кап по большей
+    // стороне здесь НЕ делаем (второй decode-проход дорог и не нужен) — его
+    // выполняет burnStamp у потребителя перед аплоадом.
     return FlutterImageCompress.compressWithList(
       bytes,
       minWidth: maxSide,

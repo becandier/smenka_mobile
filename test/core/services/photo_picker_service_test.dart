@@ -83,23 +83,18 @@ void main() {
     when(() => file.readAsBytes()).thenAnswer((_) async => bytes);
   }
 
-  test(
-    'pick без imageQuality/maxWidth (единственный ресайз — этап 3)',
-    () async {
-      stubPick(file);
-      stubRead(_readBytes);
+  test('pick без imageQuality/maxWidth (единственный ресайз — этап 3)', () async {
+    stubPick(file);
+    stubRead(_readBytes);
 
-      await service().pickPhoto(source: PhotoSource.camera);
+    await service().pickPhoto(source: PhotoSource.camera);
 
-      verify(() => picker.pickImage(source: ImageSource.camera)).called(1);
-      verifyNever(
-        () => picker.pickImage(
-          source: any(named: 'source'),
-          imageQuality: any(named: 'imageQuality'),
-        ),
-      );
-    },
-  );
+    // Строгий verify по точному набору именованных аргументов: сервис зовёт
+    // pickImage ТОЛЬКО с source. Появись здесь imageQuality/maxWidth — этот
+    // verify не сматчит вызов и упадёт (отдельный verifyNever был бы пустышкой:
+    // mocktail матчит по точному набору ключей, а вызов уже потреблён выше).
+    verify(() => picker.pickImage(source: ImageSource.camera)).called(1);
+  });
 
   test('отмена → PhotoPickCancelled', () async {
     stubPick(null);
@@ -261,6 +256,20 @@ void main() {
 
     expect(result, isA<PhotoPickSuccess>());
     expect((result as PhotoPickSuccess).unprocessed, isTrue);
+  });
+
+  test('не-Exception ПОСЛЕ успешного pick (вне внутренних catch) → '
+      'PhotoPickFailed через последний рубеж, не uncaught', () async {
+    // pick успешен, но геттер XFile.name бросает сырой Object — обращение к
+    // нему (лог `picked name=...`) идёт вне точечных try/catch этапов
+    // read/prepare; ловит только финальный `on Object`.
+    stubPick(file);
+    when(() => file.name).thenThrow(_JsLikeError());
+
+    final result = await service().pickPhoto(source: PhotoSource.camera);
+
+    expect(result, isA<PhotoPickFailed>());
+    expect((result as PhotoPickFailure).code, photoPickFailedCode);
   });
 
   test('happy path → PhotoPickSuccess с байтами компрессора', () async {

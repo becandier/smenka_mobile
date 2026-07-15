@@ -14,6 +14,20 @@ Future<Uint8List> burnStamp(Uint8List bytes, String stampText) {
   return compute(_burnStamp, _StampRequest(bytes: bytes, text: stampText));
 }
 
+/// Кадр не удалось декодировать для вжигания штампа — на сервер он уехать не
+/// должен: нештампованный кадр это дыра в антифроде. Кубит ловит это по
+/// существующему `catch`-пути (`_removeDraft` + `PHOTO_DECODE_FAILED`).
+///
+/// Пробрасывается из изолята `compute` наверх (сообщение сериализуемо).
+class PhotoStampException implements Exception {
+  const PhotoStampException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => 'PhotoStampException: $message';
+}
+
 class _StampRequest {
   const _StampRequest({required this.bytes, required this.text});
 
@@ -24,8 +38,19 @@ class _StampRequest {
 /// Рисует полупрозрачную плашку снизу и белый текст штампа. Выполняется в
 /// изоляте (top-level), поэтому без доступа к UI/контексту.
 Uint8List _burnStamp(_StampRequest req) {
-  final decoded = img.decodeJpg(req.bytes);
-  if (decoded == null) return req.bytes;
+  // decodeImage, а не decodeJpg: на web-fallback-пути (unprocessed:true) сюда
+  // приходят ОРИГИНАЛЬНЫЕ байты галереи — они могут быть PNG/WebP, а не JPEG.
+  // decodeImage покрывает все форматы package:image; encodeJpg ниже приводит
+  // любой из них к валидному JPEG (рисование идёт по декодированным пикселям).
+  final decoded = img.decodeImage(req.bytes);
+  // null-декод — это ОШИБКА, а не «вернуть кадр как есть»: нештампованный кадр
+  // не должен уехать на сервер (антифрод). Бросаем — кубит уберёт черновик и
+  // покажет PHOTO_DECODE_FAILED.
+  if (decoded == null) {
+    throw const PhotoStampException(
+      'decode failed (unsupported/corrupt image)',
+    );
+  }
 
   // Точный таргет: ~1600px по БОЛЬШЕЙ стороне (flutter_image_compress
   // ограничивает по min-сторонам и точного контроля не даёт; досжимаем тут,
