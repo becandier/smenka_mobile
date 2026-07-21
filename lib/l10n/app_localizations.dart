@@ -1402,6 +1402,24 @@ abstract class AppLocalizations {
   /// **'Нет активных чек-листов'**
   String get memberDetailEffectiveEmpty;
 
+  /// No description provided for @memberDetailEffectiveAllLocations.
+  ///
+  /// In ru, this message translates to:
+  /// **'На всех точках'**
+  String get memberDetailEffectiveAllLocations;
+
+  /// No description provided for @memberDetailEffectiveLocationsUnnamed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Только на выбранных точках'**
+  String get memberDetailEffectiveLocationsUnnamed;
+
+  /// No description provided for @memberDetailEffectiveLocationsExtra.
+  ///
+  /// In ru, this message translates to:
+  /// **'+{count}'**
+  String memberDetailEffectiveLocationsExtra(int count);
+
   /// No description provided for @memberDetailSourceRole.
   ///
   /// In ru, this message translates to:

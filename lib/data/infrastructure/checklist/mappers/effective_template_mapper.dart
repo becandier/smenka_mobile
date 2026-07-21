@@ -15,5 +15,6 @@ extension EffectiveChecklistTemplateDtoMapper on EffectiveChecklistTemplateDto {
     type: checklistTypeFromApi(type),
     isRequired: isRequired,
     source: _parseSource(source),
+    locationIds: locationIds,
   );
 }

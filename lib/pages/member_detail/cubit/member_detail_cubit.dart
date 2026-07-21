@@ -31,7 +31,7 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
   Future<void> _init() async {
     await _loadViewerRole();
     if (!state.canManage) return;
-    await loadEffective();
+    await Future.wait([loadEffective(), _loadWorkLocations()]);
   }
 
   Future<void> _loadViewerRole() async {
@@ -55,6 +55,17 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
       onFailure: (error) {
         emit(state.copyWith(effective: state.effective.toError(error.message)));
       },
+    );
+  }
+
+  /// Названия точек — для охвата чек-листа (`_EffectiveSection`).
+  /// Один запрос на экран, не на каждый чек-лист. Ошибку не показываем
+  /// отдельно: UI просто не резолвит id в имя и покажет нейтральный текст.
+  Future<void> _loadWorkLocations() async {
+    final result = await _organizationRepository.getWorkLocations(_orgId);
+    result.fold(
+      onSuccess: (list) => emit(state.copyWith(workLocations: list)),
+      onFailure: (_) {},
     );
   }
 }

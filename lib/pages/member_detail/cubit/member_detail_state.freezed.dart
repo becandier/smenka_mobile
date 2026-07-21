@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MemberDetailState {
 
- Member get member; OrgMembershipRole? get viewerRole; SectionData<List<EffectiveChecklistTemplate>> get effective;
+ Member get member; OrgMembershipRole? get viewerRole; SectionData<List<EffectiveChecklistTemplate>> get effective;// Точки организации — только для отображения названий охвата чек-листа
+// (`EffectiveChecklistTemplate.locationIds`). Своего loading/error не
+// заводим: не резолвился id → нейтральный фолбэк в UI.
+ List<WorkLocation> get workLocations;
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +28,16 @@ $MemberDetailStateCopyWith<MemberDetailState> get copyWith => _$MemberDetailStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective)&&const DeepCollectionEquality().equals(other.workLocations, workLocations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,member,viewerRole,effective);
+int get hashCode => Object.hash(runtimeType,member,viewerRole,effective,const DeepCollectionEquality().hash(workLocations));
 
 @override
 String toString() {
-  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective)';
+  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective, workLocations: $workLocations)';
 }
 
 
@@ -45,7 +48,7 @@ abstract mixin class $MemberDetailStateCopyWith<$Res>  {
   factory $MemberDetailStateCopyWith(MemberDetailState value, $Res Function(MemberDetailState) _then) = _$MemberDetailStateCopyWithImpl;
 @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations
 });
 
 
@@ -62,12 +65,13 @@ class _$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,}) {
   return _then(_self.copyWith(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
 as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
-as SectionData<List<EffectiveChecklistTemplate>>,
+as SectionData<List<EffectiveChecklistTemplate>>,workLocations: null == workLocations ? _self.workLocations : workLocations // ignore: cast_nullable_to_non_nullable
+as List<WorkLocation>,
   ));
 }
 /// Create a copy of MemberDetailState
@@ -170,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
-return $default(_that.member,_that.viewerRole,_that.effective);case _:
+return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations);case _:
   return orElse();
 
 }
@@ -191,10 +195,10 @@ return $default(_that.member,_that.viewerRole,_that.effective);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations)  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState():
-return $default(_that.member,_that.viewerRole,_that.effective);case _:
+return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +215,10 @@ return $default(_that.member,_that.viewerRole,_that.effective);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
-return $default(_that.member,_that.viewerRole,_that.effective);case _:
+return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations);case _:
   return null;
 
 }
@@ -226,12 +230,25 @@ return $default(_that.member,_that.viewerRole,_that.effective);case _:
 
 
 class _MemberDetailState extends MemberDetailState {
-  const _MemberDetailState({required this.member, this.viewerRole, this.effective = const SectionData<List<EffectiveChecklistTemplate>>()}): super._();
+  const _MemberDetailState({required this.member, this.viewerRole, this.effective = const SectionData<List<EffectiveChecklistTemplate>>(), final  List<WorkLocation> workLocations = const <WorkLocation>[]}): _workLocations = workLocations,super._();
   
 
 @override final  Member member;
 @override final  OrgMembershipRole? viewerRole;
 @override@JsonKey() final  SectionData<List<EffectiveChecklistTemplate>> effective;
+// Точки организации — только для отображения названий охвата чек-листа
+// (`EffectiveChecklistTemplate.locationIds`). Своего loading/error не
+// заводим: не резолвился id → нейтральный фолбэк в UI.
+ final  List<WorkLocation> _workLocations;
+// Точки организации — только для отображения названий охвата чек-листа
+// (`EffectiveChecklistTemplate.locationIds`). Своего loading/error не
+// заводим: не резолвился id → нейтральный фолбэк в UI.
+@override@JsonKey() List<WorkLocation> get workLocations {
+  if (_workLocations is EqualUnmodifiableListView) return _workLocations;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_workLocations);
+}
+
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +260,16 @@ _$MemberDetailStateCopyWith<_MemberDetailState> get copyWith => __$MemberDetailS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective)&&const DeepCollectionEquality().equals(other._workLocations, _workLocations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,member,viewerRole,effective);
+int get hashCode => Object.hash(runtimeType,member,viewerRole,effective,const DeepCollectionEquality().hash(_workLocations));
 
 @override
 String toString() {
-  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective)';
+  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective, workLocations: $workLocations)';
 }
 
 
@@ -263,7 +280,7 @@ abstract mixin class _$MemberDetailStateCopyWith<$Res> implements $MemberDetailS
   factory _$MemberDetailStateCopyWith(_MemberDetailState value, $Res Function(_MemberDetailState) _then) = __$MemberDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations
 });
 
 
@@ -280,12 +297,13 @@ class __$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,}) {
   return _then(_MemberDetailState(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
 as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
-as SectionData<List<EffectiveChecklistTemplate>>,
+as SectionData<List<EffectiveChecklistTemplate>>,workLocations: null == workLocations ? _self._workLocations : workLocations // ignore: cast_nullable_to_non_nullable
+as List<WorkLocation>,
   ));
 }
 

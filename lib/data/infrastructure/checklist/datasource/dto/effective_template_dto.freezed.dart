@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EffectiveChecklistTemplateDto {
 
- String get id; String get name; String get type; bool get isRequired; String get source;
+ String get id; String get name; String get type; bool get isRequired; String get source;// Поэтапный деплой: старый бэк без checklist_work_location это поле
+// не пришлёт — трактуем отсутствие как пустой список (везде).
+ List<String> get locationIds;
 /// Create a copy of EffectiveChecklistTemplateDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +30,16 @@ $EffectiveChecklistTemplateDtoCopyWith<EffectiveChecklistTemplateDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EffectiveChecklistTemplateDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.source, source) || other.source == source));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EffectiveChecklistTemplateDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other.locationIds, locationIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,source);
+int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,source,const DeepCollectionEquality().hash(locationIds));
 
 @override
 String toString() {
-  return 'EffectiveChecklistTemplateDto(id: $id, name: $name, type: $type, isRequired: $isRequired, source: $source)';
+  return 'EffectiveChecklistTemplateDto(id: $id, name: $name, type: $type, isRequired: $isRequired, source: $source, locationIds: $locationIds)';
 }
 
 
@@ -48,7 +50,7 @@ abstract mixin class $EffectiveChecklistTemplateDtoCopyWith<$Res>  {
   factory $EffectiveChecklistTemplateDtoCopyWith(EffectiveChecklistTemplateDto value, $Res Function(EffectiveChecklistTemplateDto) _then) = _$EffectiveChecklistTemplateDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String type, bool isRequired, String source
+ String id, String name, String type, bool isRequired, String source, List<String> locationIds
 });
 
 
@@ -65,14 +67,15 @@ class _$EffectiveChecklistTemplateDtoCopyWithImpl<$Res>
 
 /// Create a copy of EffectiveChecklistTemplateDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? source = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? source = null,Object? locationIds = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,isRequired: null == isRequired ? _self.isRequired : isRequired // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as String,
+as String,locationIds: null == locationIds ? _self.locationIds : locationIds // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -157,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String type,  bool isRequired,  String source)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String type,  bool isRequired,  String source,  List<String> locationIds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EffectiveChecklistTemplateDto() when $default != null:
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source,_that.locationIds);case _:
   return orElse();
 
 }
@@ -178,10 +181,10 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String type,  bool isRequired,  String source)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String type,  bool isRequired,  String source,  List<String> locationIds)  $default,) {final _that = this;
 switch (_that) {
 case _EffectiveChecklistTemplateDto():
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source,_that.locationIds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +201,10 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String type,  bool isRequired,  String source)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String type,  bool isRequired,  String source,  List<String> locationIds)?  $default,) {final _that = this;
 switch (_that) {
 case _EffectiveChecklistTemplateDto() when $default != null:
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source,_that.locationIds);case _:
   return null;
 
 }
@@ -213,7 +216,7 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.source);ca
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _EffectiveChecklistTemplateDto implements EffectiveChecklistTemplateDto {
-  const _EffectiveChecklistTemplateDto({required this.id, required this.name, required this.type, required this.isRequired, required this.source});
+  const _EffectiveChecklistTemplateDto({required this.id, required this.name, required this.type, required this.isRequired, required this.source, final  List<String> locationIds = const <String>[]}): _locationIds = locationIds;
   factory _EffectiveChecklistTemplateDto.fromJson(Map<String, dynamic> json) => _$EffectiveChecklistTemplateDtoFromJson(json);
 
 @override final  String id;
@@ -221,6 +224,17 @@ class _EffectiveChecklistTemplateDto implements EffectiveChecklistTemplateDto {
 @override final  String type;
 @override final  bool isRequired;
 @override final  String source;
+// Поэтапный деплой: старый бэк без checklist_work_location это поле
+// не пришлёт — трактуем отсутствие как пустой список (везде).
+ final  List<String> _locationIds;
+// Поэтапный деплой: старый бэк без checklist_work_location это поле
+// не пришлёт — трактуем отсутствие как пустой список (везде).
+@override@JsonKey() List<String> get locationIds {
+  if (_locationIds is EqualUnmodifiableListView) return _locationIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_locationIds);
+}
+
 
 /// Create a copy of EffectiveChecklistTemplateDto
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +249,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EffectiveChecklistTemplateDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.source, source) || other.source == source));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EffectiveChecklistTemplateDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other._locationIds, _locationIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,source);
+int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,source,const DeepCollectionEquality().hash(_locationIds));
 
 @override
 String toString() {
-  return 'EffectiveChecklistTemplateDto(id: $id, name: $name, type: $type, isRequired: $isRequired, source: $source)';
+  return 'EffectiveChecklistTemplateDto(id: $id, name: $name, type: $type, isRequired: $isRequired, source: $source, locationIds: $locationIds)';
 }
 
 
@@ -255,7 +269,7 @@ abstract mixin class _$EffectiveChecklistTemplateDtoCopyWith<$Res> implements $E
   factory _$EffectiveChecklistTemplateDtoCopyWith(_EffectiveChecklistTemplateDto value, $Res Function(_EffectiveChecklistTemplateDto) _then) = __$EffectiveChecklistTemplateDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String type, bool isRequired, String source
+ String id, String name, String type, bool isRequired, String source, List<String> locationIds
 });
 
 
@@ -272,14 +286,15 @@ class __$EffectiveChecklistTemplateDtoCopyWithImpl<$Res>
 
 /// Create a copy of EffectiveChecklistTemplateDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? source = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? source = null,Object? locationIds = null,}) {
   return _then(_EffectiveChecklistTemplateDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,isRequired: null == isRequired ? _self.isRequired : isRequired // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as String,
+as String,locationIds: null == locationIds ? _self._locationIds : locationIds // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
