@@ -13,6 +13,9 @@ abstract class EffectiveChecklistTemplateDto
     required String type,
     required bool isRequired,
     required String source,
+    // Поэтапный деплой: старый бэк без checklist_work_location это поле
+    // не пришлёт — трактуем отсутствие как пустой список (везде).
+    @Default(<String>[]) List<String> locationIds,
   }) = _EffectiveChecklistTemplateDto;
 
   factory EffectiveChecklistTemplateDto.fromJson(Map<String, dynamic> json) =>

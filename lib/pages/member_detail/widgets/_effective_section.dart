@@ -12,7 +12,8 @@ class _EffectiveSection extends StatelessWidget {
     return BlocBuilder<MemberDetailCubit, MemberDetailState>(
       buildWhen: (p, c) =>
           p.effective.data != c.effective.data ||
-          p.effective.isLoading != c.effective.isLoading,
+          p.effective.isLoading != c.effective.isLoading ||
+          p.workLocations != c.workLocations,
       builder: (context, state) {
         final items =
             state.effective.data ?? const <EffectiveChecklistTemplate>[];
@@ -22,6 +23,10 @@ class _EffectiveSection extends StatelessWidget {
         final end = items
             .where((t) => t.type == ChecklistType.shiftEnd)
             .toList();
+        final locationNames = {
+          for (final location in state.workLocations)
+            location.id: location.name,
+        };
 
         return Material(
           color: appColors.surface,
@@ -58,13 +63,23 @@ class _EffectiveSection extends StatelessWidget {
                 else ...[
                   if (start.isNotEmpty) ...[
                     _GroupHeader(text: l10n.checklistTemplatesShiftStart),
-                    ...start.map((t) => _EffectiveRow(template: t)),
+                    ...start.map(
+                      (t) => _EffectiveRow(
+                        template: t,
+                        locationNames: locationNames,
+                      ),
+                    ),
                   ],
                   if (start.isNotEmpty && end.isNotEmpty)
                     const SizedBox(height: 8),
                   if (end.isNotEmpty) ...[
                     _GroupHeader(text: l10n.checklistTemplatesShiftEnd),
-                    ...end.map((t) => _EffectiveRow(template: t)),
+                    ...end.map(
+                      (t) => _EffectiveRow(
+                        template: t,
+                        locationNames: locationNames,
+                      ),
+                    ),
                   ],
                 ],
               ],
@@ -96,9 +111,14 @@ class _GroupHeader extends StatelessWidget {
 }
 
 class _EffectiveRow extends StatelessWidget {
-  const _EffectiveRow({required this.template});
+  const _EffectiveRow({required this.template, required this.locationNames});
 
   final EffectiveChecklistTemplate template;
+
+  /// id точки → название. Заполнена, только если точки организации успели
+  /// загрузиться; иначе охват для привязанных шаблонов уйдёт в нейтральный
+  /// фолбэк (см. [_locationsCoverageLabel]).
+  final Map<String, String> locationNames;
 
   @override
   Widget build(BuildContext context) {
@@ -112,28 +132,74 @@ class _EffectiveRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            template.isRequired ? Icons.star : Icons.check_circle_outline,
-            size: 18,
-            color: template.isRequired ? appColors.error : appColors.primary,
+          Row(
+            children: [
+              Icon(
+                template.isRequired ? Icons.star : Icons.check_circle_outline,
+                size: 18,
+                color: template.isRequired
+                    ? appColors.error
+                    : appColors.primary,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  template.name,
+                  style: textTheme.bodyMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Text(
+                sourceLabel,
+                style: textTheme.labelSmall?.copyWith(
+                  color: appColors.secondary,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          Expanded(
+          Padding(
+            padding: const EdgeInsets.only(left: 28, top: 2),
             child: Text(
-              template.name,
-              style: textTheme.bodyMedium,
+              _locationsCoverageLabel(
+                context,
+                template.locationIds,
+                locationNames,
+              ),
+              style: textTheme.labelSmall?.copyWith(color: appColors.secondary),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          ),
-          Text(
-            sourceLabel,
-            style: textTheme.labelSmall?.copyWith(color: appColors.secondary),
           ),
         ],
       ),
     );
   }
+}
+
+/// Охват чек-листа точками: пусто → «на всех точках», иначе — названия
+/// (первые 2 + «+N»). Если id не резолвится в имя (точки ещё не
+/// загрузились/удалены) — нейтральный текст без перечисления.
+String _locationsCoverageLabel(
+  BuildContext context,
+  List<String> locationIds,
+  Map<String, String> locationNames,
+) {
+  final l10n = context.l10n;
+  if (locationIds.isEmpty) return l10n.memberDetailEffectiveAllLocations;
+
+  final names = [
+    for (final id in locationIds)
+      if (locationNames[id] case final name?) name,
+  ];
+  if (names.isEmpty) return l10n.memberDetailEffectiveLocationsUnnamed;
+
+  final shown = names.take(2).join(', ');
+  final extra = names.length - 2;
+  return extra > 0
+      ? '$shown ${l10n.memberDetailEffectiveLocationsExtra(extra)}'
+      : shown;
 }

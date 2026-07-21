@@ -283,6 +283,14 @@
     "memberDetailEffectiveSection": "Эффективные чек-листы",
     "memberDetailEffectiveHint": "Что получит сотрудник при старте смены",
     "memberDetailEffectiveEmpty": "Нет активных чек-листов",
+    "memberDetailEffectiveAllLocations": "На всех точках",
+    "memberDetailEffectiveLocationsUnnamed": "Только на выбранных точках",
+    "memberDetailEffectiveLocationsExtra": "+{count}",
+    "@memberDetailEffectiveLocationsExtra": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
     "memberDetailSourceRole": "От роли",
     "memberDetailSourcePersonal": "Персонально",
     "memberDetailOverridesSection": "Персональные исключения",

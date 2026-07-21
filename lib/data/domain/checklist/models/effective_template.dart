@@ -13,5 +13,7 @@ abstract class EffectiveChecklistTemplate with _$EffectiveChecklistTemplate {
     required ChecklistType type,
     required bool isRequired,
     required ChecklistTemplateSource source,
+    // Точки, к которым привязан шаблон. Пусто = действует на всех точках.
+    @Default(<String>[]) List<String> locationIds,
   }) = _EffectiveChecklistTemplate;
 }

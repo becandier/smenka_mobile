@@ -12,6 +12,10 @@ abstract class MemberDetailState with _$MemberDetailState {
     OrgMembershipRole? viewerRole,
     @Default(SectionData<List<EffectiveChecklistTemplate>>())
     SectionData<List<EffectiveChecklistTemplate>> effective,
+    // Точки организации — только для отображения названий охвата чек-листа
+    // (`EffectiveChecklistTemplate.locationIds`). Своего loading/error не
+    // заводим: не резолвился id → нейтральный фолбэк в UI.
+    @Default(<WorkLocation>[]) List<WorkLocation> workLocations,
   }) = _MemberDetailState;
   const MemberDetailState._();
 

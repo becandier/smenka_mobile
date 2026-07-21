@@ -698,6 +698,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get memberDetailEffectiveEmpty => 'Нет активных чек-листов';
 
   @override
+  String get memberDetailEffectiveAllLocations => 'На всех точках';
+
+  @override
+  String get memberDetailEffectiveLocationsUnnamed =>
+      'Только на выбранных точках';
+
+  @override
+  String memberDetailEffectiveLocationsExtra(int count) {
+    return '+$count';
+  }
+
+  @override
   String get memberDetailSourceRole => 'От роли';
 
   @override

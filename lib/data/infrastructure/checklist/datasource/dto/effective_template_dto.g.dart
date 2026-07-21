@@ -14,6 +14,11 @@ _EffectiveChecklistTemplateDto _$EffectiveChecklistTemplateDtoFromJson(
   type: json['type'] as String,
   isRequired: json['is_required'] as bool,
   source: json['source'] as String,
+  locationIds:
+      (json['location_ids'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const <String>[],
 );
 
 Map<String, dynamic> _$EffectiveChecklistTemplateDtoToJson(
@@ -24,4 +29,5 @@ Map<String, dynamic> _$EffectiveChecklistTemplateDtoToJson(
   'type': instance.type,
   'is_required': instance.isRequired,
   'source': instance.source,
+  'location_ids': instance.locationIds,
 };
