@@ -257,3 +257,13 @@
 - [ ] **End-to-end (iOS)**: код и клиентская конфигурация готовы, но полный e2e не доступен до внешних шагов — реальные `REVERSED_CLIENT_ID`/`GIDClientID`/Apple-провижининг из консолей, уточнение в `admin.md` про Web Client ID для `(google, android)` (детали — `../docs/tasks/oauth_login/STATUS.md`, «Открытые вопросы к аналитику»)
 - [x] **Web-расширение (2026-07-06)**: `_isOAuthSupportedPlatform` включает `kIsWeb` (изначально было явно исключено — владелец обнаружил вживую на `app.smenka.space`, scope расширен). Google на web — GIS `renderButton()`/`authenticationEvents` вместо `authenticate()` (недоступен на web, бросает `UnsupportedError`); Apple на web — `WebAuthenticationOptions(redirectUri: Uri.base.origin)` + `state`-CSRF-проверка (как в admin-треке). `google_sign_in_web` добавлен явной зависимостью (используется напрямую). `web/index.html` — Apple JS SDK script tag + расширенная CSP (`accounts.google.com`/`appleid.cdn-apple.com`/`appleid.apple.com`)
 - [ ] **Тесты web-веток**: `kIsWeb`-условия физически недостижимы под VM-раннером `flutter test` (нужен `--platform chrome`, не настроен) — верификация вручную в браузере после деплоя
+
+---
+
+## Фича — Чек-листы на рабочих точках (checklist_work_location) `[x]` (`../docs/tasks/checklist_work_location/mobile.md`, смержено `063efea`)
+- [x] **Data (аддитивно)**: `EffectiveChecklistTemplate`/`EffectiveChecklistTemplateDto` — новое поле `locationIds` (`@Default(<String>[])`); отсутствие `location_ids` в ответе старого бэка → пустой список, парсинг не падает (тесты на оба случая)
+- [x] **UI**: `member_detail` → `_EffectiveSection`/`_EffectiveRow` показывают охват чек-листа точками — пусто → «На всех точках», иначе названия (первые 2 + «+N»); id без резолва в имя (точки ещё не загрузились) → нейтральный текст без перечисления
+- [x] **Названия точек не потребовали нового источника**: `MemberDetailCubit` уже держит `OrganizationRepository` (для viewer role) — переиспользован существующий `getWorkLocations(orgId)`, один запрос на экран, не на чек-лист
+- [x] **Экран смены — без изменений**: явно проверены все 4 точки показа экземпляров чек-листов (`ShiftChecklistsPage`, `_OrgShiftDetailChecklists`, `_ShiftChecklistsTile`, `_DetailChecklistsSection`) — все уже корректно обрабатывают пустой/уменьшённый список (empty-state или `SizedBox.shrink()`), регрессии нет
+- [x] `flutter analyze` чисто, 134/134 теста (+3 новых на обратную совместимость DTO)
+- [ ] **End-to-end**: бэкенд фичи на момент реализации не задеплоен — мобилка построена против согласованного контракта (`backend.md` §5.1); заработает после деплоя бэка
