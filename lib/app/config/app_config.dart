@@ -15,6 +15,13 @@ class AppConfig {
     endPoint = isProd
         ? _getString('ENDPOINT_PROD')
         : _getString('ENDPOINT_DEV');
+    // Хост веб-версии для universal links / канонической ссылки-приглашения
+    // (`https://{webAppHost}/invite/{code}`) — берём из того же RC-конфига,
+    // что и endPoint, чтобы dev/prod не расходились и домен не был хардкодом
+    // в DeepLinkService/экране приглашения.
+    webAppHost = isProd
+        ? _getString('WEB_APP_HOST_PROD')
+        : _getString('WEB_APP_HOST_DEV');
     privacyPolicy = _getString('PRIVACY_POLICY');
     minVersion = _getString('MIN_VERSION');
     techWork = _getBool('TECH_WORK');
@@ -22,6 +29,7 @@ class AppConfig {
   }
 
   late final String endPoint;
+  late final String webAppHost;
   late final String privacyPolicy;
   late final String minVersion;
   late final bool techWork;

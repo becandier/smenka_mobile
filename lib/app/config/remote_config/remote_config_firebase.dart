@@ -22,6 +22,12 @@ const remoteConfigDefaults = <String, Object>{
   // web собирается prod-флейвором, поэтому дефолт держим на прод-хосте, чтобы
   // значение никогда не было пустым.
   'ENDPOINT_DEV': 'https://api.smenka.space',
+  // Домен веб-версии (universal links + каноническая ссылка-приглашение
+  // `https://{host}/invite/{code}`). Дев-веба сегодня нет — дефолт держим на
+  // проде по той же причине, что и ENDPOINT_DEV выше; отдельный дев-домен
+  // подставляется через Firebase RC без изменения кода.
+  'WEB_APP_HOST_PROD': 'app.smenka.space',
+  'WEB_APP_HOST_DEV': 'app.smenka.space',
   'PRIVACY_POLICY': 'https://smenka.space/privacy',
   // 0.0.0 — не форсим обновление, пока реальный минимум не придёт из RC.
   'MIN_VERSION': '0.0.0',
