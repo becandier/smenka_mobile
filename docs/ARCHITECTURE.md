@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-07-02 (фича: oauth_login)
+Последнее обновление: 2026-07-22 (фича: work_schedules)
 
 ---
 
@@ -17,6 +17,7 @@
 - connectivity_plus (индикация офлайна)
 - geolocator (геопроверка зон; на web — no-op)
 - Firebase (Crashlytics, Remote Config, Analytics)
+- `timezone` (dart-lang) — конвертация UTC → настенное время таймзоны организации (`work_schedules`); данные `latest_10y` (см. раздел ниже)
 - Таргеты: Android, iOS, **web** (`flutter build web`; см. раздел «Web-поддержка»). Yandex MapKit и экран карты полностью удалены.
 
 ---
@@ -55,7 +56,8 @@ lib/
 │   │   ├── payroll/               # Rate, CurrentRate, Payroll, MyEarnings (read-only)
 │   │   ├── checklist/             # ChecklistInstance*, EffectiveChecklistTemplate (read/fill)
 │   │   ├── file_storage/          # StoredFile, FileCategory + FilesRepository (платформенный слой)
-│   │   └── shift/                 # Shift, Pause, ShiftStats
+│   │   ├── shift/                 # Shift (+ScheduleFields), Pause, ShiftStats, ShiftOvertimeRequest
+│   │   └── work_schedule/         # WorkSchedule, MySchedules + WorkScheduleRepository (work_schedules)
 │   └── infrastructure/            # Реализации (datasource + dto + mappers + repos)
 │       ├── auth/
 │       ├── user/
@@ -64,7 +66,8 @@ lib/
 │       ├── payroll/
 │       ├── checklist/
 │       ├── file_storage/          # FilesDataSource + FilesRepositoryImpl (без DTO: ответ 1-в-1)
-│       └── shift/
+│       ├── shift/
+│       └── work_schedule/         # WorkScheduleDataSource + WorkScheduleRepositoryImpl (work_schedules)
 ├── shared/                        # Глобальные cubit'ы вне страниц
 │   └── auth/                      # AuthCubit + AuthState (глобальная авторизация)
 ├── l10n/                          # Локализация (ARB)
@@ -81,7 +84,9 @@ lib/
     ├── shift_tracker/             # Трекер смены (Tab 1 «Смена»)
     │   ├── cubit/                 # ShiftTrackerCubit + State
     │   ├── view/                  # ShiftTrackerPage
-    │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent, _OfflineBanner, _OrgSelector, _PauseList, _PauseCard, _ShiftActionErrorBar, _ShiftChecklistsTile
+    │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent (+_SchedulePlanLine), _OfflineBanner, _OrgSelector, _WorkLocationSelector, _WorkScheduleSelector (work_schedules), _PauseList, _PauseCard, _ShiftActionErrorBar, _ShiftChecklistsTile
+    ├── work_schedule_picker/      # Выбор графика при старте смены (CustomRoute, work_schedules)
+    │   └── view/                  # WorkSchedulePickerPage (без cubit — список уже загружен ShiftTrackerCubit)
     ├── shift_checklists/          # Чек-листы текущей смены (push)
     │   ├── cubit/                 # ShiftChecklistsCubit + State
     │   └── view/                  # ShiftChecklistsPage
@@ -94,9 +99,12 @@ lib/
     │   ├── view/                  # ShiftHistoryPage
     │   └── widgets/               # _StatsSection, _ShiftFilters, _ShiftCard, _FilterChip
     ├── shift_detail/              # Детали смены (push)
-    │   ├── cubit/                 # ShiftDetailCubit + State
+    │   ├── cubit/                 # ShiftDetailCubit + State (+организация лениво — таймзона плана; заявка на переработку)
     │   ├── view/                  # ShiftDetailPage
-    │   └── widgets/               # _DetailInfoSection, _DetailChecklistsSection, _StatusBadge
+    │   └── widgets/               # _DetailInfoSection (+план/опоздание/причина завершения), _DetailChecklistsSection, _StatusBadge, _OvertimeSection (work_schedules)
+    ├── overtime_request/          # Модалка «Добавить переработку» (CustomRoute, work_schedules)
+    │   ├── cubit/                 # OvertimeRequestCubit + State (только отправка формы)
+    │   └── view/                  # OvertimeRequestPage
     ├── organizations/             # Список организаций (Tab 3 «Организации»)
     │   ├── cubit/                 # OrganizationsCubit + State
     │   ├── view/                  # OrganizationsPage
@@ -156,21 +164,24 @@ lib/
 | `OAuthConfig` | `domain/auth/models/oauth_config.dart` | `google?`/`apple?` (`OAuthProviderConfig`) — публичная конфигурация OAuth-провайдеров для платформы (`oauth_login`) |
 | `OAuthProviderConfig` | `domain/auth/models/oauth_config.dart` | `clientId`, `enabled` — `null` у провайдера в `OAuthConfig` = не настроен супер-админом |
 | `User` | `domain/user/models/user.dart` | id, email, name, isVerified, role (UserRole: superAdmin/user), createdAt, phone? |
-| `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt, geoCheckEnabled; `myRole` (OrgMembershipRole: owner/admin/employee, nullable), `myCustomRole` (nullable) |
+| `Organization` | `domain/organization/models/organization.dart` | id, name, ownerId, inviteCode, isDeleted, createdAt, geoCheckEnabled, `timezone` (IANA-имя, `@Default('Europe/Moscow')`, `work_schedules`); `myRole` (OrgMembershipRole: owner/admin/employee, nullable), `myCustomRole` (nullable) |
 | `Member` | `domain/organization/models/member.dart` | id, organizationId, userId, userName, userEmail, role (MemberRole: admin/employee), joinedAt, customRole?, currentRate? (payroll) |
 | `OrganizationRole` | `domain/organization_role/models/organization_role.dart` | id, name, createdAt (кастомная роль; только для отображения, без write-слоя) |
 | `OrgStats` / `EmployeeStats` | `domain/organization/models/org_stats.dart` | агрегаты org (totalWorked, shiftCount, average, perEmployee), period? + rangeFrom/rangeTo |
 | `JoinResult` | `domain/organization/models/join_result.dart` | результат присоединения по инвайту |
-| `Shift` | `domain/shift/models/shift.dart` | id, userId, startedAt, status (ShiftStatus), pauses, workedSeconds, organizationId?, finishedAt?, hasIncompleteRequiredChecklists; в орг-ответах — userName/userEmail/role/customRoleName |
+| `Shift` | `domain/shift/models/shift.dart` | id, userId, startedAt, status (ShiftStatus), pauses, workedSeconds, organizationId?, finishedAt?, hasIncompleteRequiredChecklists; в орг-ответах — userName/userEmail/role/customRoleName; `work_schedules` (все nullable, `null` у персональных смен): `workScheduleId`/`scheduleName` (снимок), `scheduledStartAt`/`scheduledEndAt` (плановое окно, снимок), `lateSeconds`, `finishReason` (`ShiftFinishReason`: manual/autoSchedule, незнакомое/нет → `null`), `overtime` (`ShiftOvertimeRequest?`) |
 | `Pause` | `domain/shift/models/shift.dart` | id, shiftId, startedAt, finishedAt? |
+| `ShiftOvertimeRequest` | `domain/shift/models/shift_overtime_request.dart` | id, minutes, status (`OvertimeStatus`: pending/approved/rejected), comment, createdAt, reviewComment?, reviewedAt? (`work_schedules`) |
 | `ShiftStats` | `domain/shift/models/shift_stats.dart` | totalWorked, shiftCount, average, period? + rangeFrom/rangeTo |
+| `WorkSchedule` | `domain/work_schedule/models/work_schedule.dart` | график из эффективного набора сотрудника: id, name, startTime/endTime (`"HH:MM"`, локальное время организации), durationMinutes, crossesMidnight, nextStartAt/nextEndAt (UTC, окно «если начать сейчас»), isCurrent, startsInMinutes (`work_schedules`) |
+| `MySchedules` | `domain/work_schedule/models/my_schedules.dart` | ответ `GET .../my-schedules` целиком: items (`List<WorkSchedule>`), total, requireSchedule (`work_schedules`) |
 | `ChecklistInstance` / `ChecklistInstanceDetail` / `ChecklistInstanceItem` / `ChecklistItemsSummary` | `domain/checklist/models/checklist_instance.dart` | экземпляры чек-листов смены (`ChecklistInstanceStatus`: pending/completed/incomplete) и их пункты; пункт несёт `photoRequirement`/`photoSource`/`photosCount`/`photos`; detail — `maxPhotosPerItem?`; summary — `satisfiedCount`/`photosRequiredMissing` (прогресс/бейдж по фото) |
 | `ChecklistItemPhoto` / `PhotoRequirement` / `PhotoSource` | `domain/checklist/models/checklist_photo.dart` | фото пункта (fileId, presigned url?, capturedAt?/lat/lng, position); enum требования (none/optional/required) и источника (camera/cameraOrGallery, snake-маппинг с безопасным дефолтом) |
 | `EffectiveChecklistTemplate` | `domain/checklist/models/effective_template.dart` | эффективный шаблон участника (read-only; `ChecklistTemplateSource`: role/personalAdd); `locationIds` — точки привязки (пусто = везде), аддитивное поле, старый бэк без него → `[]` |
 | `ChecklistType` | `domain/checklist/models/checklist_template.dart` | enum shiftStart/shiftEnd |
 | `Rate` / `CurrentRate` | `domain/payroll/models/rate.dart` | запись истории ставок / действующая; `RateType` (hourly/perShift); деньги в копейках (int) |
 | `Payroll` / `PayrollItem` / `PayrollTotals` / `PayrollPeriod` | `domain/payroll/models/payroll.dart` | отчёт «кому сколько заплатить» за период |
-| `MyEarnings` | `domain/payroll/models/my_earnings.dart` | личный заработок за период + currentRate?, hasMissingRate |
+| `MyEarnings` | `domain/payroll/models/my_earnings.dart` | личный заработок за период + currentRate?, hasMissingRate; план/факт (`work_schedules`, `@Default(0)`): `plannedAmountMinor`, `deltaAmountMinor` (`gross − planned`), `overtimeSeconds` (сумма `approved`-заявок) |
 | `StoredFile` / `FileCategory` | `domain/file_storage/models/stored_file.dart` | метаданные файла из единого хранилища + presigned `url`/`urlExpiresAt`; enum категорий (checklist_photo/knowledge_base/avatar/other) |
 | `KnowledgeNode` / `KnowledgeNodeKind` | `domain/knowledge/models/knowledge_node.dart` | узел дерева базы знаний (id, kind: section/page/unknown, title, icon?, position, allMembers?, children); `unknown` — безопасный фолбэк форвард-компат |
 | `KnowledgeNodeDetail` / `KnowledgeBreadcrumb` | `domain/knowledge/models/knowledge_node.dart` | деталь узла: обогащённый `content` (для page) + `breadcrumbs`; для section `content=null` |
@@ -188,11 +199,12 @@ lib/
 | `AuthDataSource` | `/auth` | register, verify, resendCode, login, refresh, logout, getOAuthConfig (`GET /auth/oauth/config?client_type=`), loginWithGoogle (`POST /auth/oauth/google`), loginWithApple (`POST /auth/oauth/apple`) |
 | `UserDataSource` | `/users` | getMe, updateMe |
 | `OrganizationDataSource` | `/organizations` | getAll, getById, join, getMembers, removeMember (self-leave), getShifts (user_id/status/date_from/date_to), getShiftDetail, getStats (period XOR date_from/date_to) |
-| `ShiftDataSource` | `/shifts` | getShifts (date_from/date_to), getStats (period XOR date_from/date_to), startShift, pauseShift, resumeShift, finishShift |
+| `ShiftDataSource` | `/shifts` | getShifts (date_from/date_to), getStats (period XOR date_from/date_to), startShift (+`work_schedule_id`), pauseShift, resumeShift, finishShift, requestOvertime (`POST /shifts/{id}/overtime`), cancelOvertimeRequest (`DELETE`) — все три (work_schedules) |
 | `ChecklistDataSource` | `/organizations/{orgId}` и `/shifts` | getEffectiveTemplates (member, read-only), getShiftChecklists, getInstanceDetail, updateInstanceItem |
 | `PayrollDataSource` | `/organizations/{orgId}` | getRates (read), getPayroll, getMyEarnings |
 | `FilesDataSource` | `/files` | uploadFile (multipart `file`/`category`/`organization_id`, onSendProgress), getFile (свежий presigned URL) |
 | `KnowledgeDataSource` | `/organizations/{orgId}/knowledge` | getTree (`?tree=true`), getNode (деталь узла) — только чтение |
+| `WorkScheduleDataSource` | `/organizations/{orgId}` | getMySchedules (`GET .../my-schedules?work_location_id=`) (work_schedules) |
 
 > Write-слой org-менеджмента (create/delete/rotateInvite/updateMemberRole/getSettings/updateSettings/getAllOrganizations), управление рабочими точками, ставками и шаблонами чек-листов вынесены в веб-админку — в мобильном API их нет.
 
@@ -205,11 +217,12 @@ lib/
 | `AuthRepository` | AuthDataSource, AuthTokenStorage, AuthStateNotifier | checkAuthStatus, register, verify, resendCode, login, refresh, logout, getOAuthConfig, loginWithGoogle, loginWithApple (общий паттерн «получить токены → сохранить → `authNotifier.authenticated`» вынесен в приватный `_authenticateAndPersist()`, используется в login/verify/loginWithGoogle/loginWithApple) |
 | `UserRepository` | UserDataSource | getMe, updateMe |
 | `OrganizationRepository` | OrganizationDataSource | getAll, getById, join, getMembers, removeMember (self-leave), getShifts, getShiftDetail, getStats, watchMyOrganizations, fetchMyOrganizations, clearCache |
-| `ShiftRepository` | ShiftDataSource | getShifts, getStats, startShift, pauseShift, resumeShift, finishShift |
+| `ShiftRepository` | ShiftDataSource | getShifts, getStats, startShift (+`workScheduleId`), pauseShift, resumeShift, finishShift, requestOvertime, cancelOvertimeRequest (work_schedules; зарегистрирован в локаторе, как и раньше) |
 | `ChecklistRepository` | ChecklistDataSource | getEffectiveTemplates, getShiftChecklists, getInstanceDetail, updateInstanceItem, addItemPhoto, deleteItemPhoto |
 | `PayrollRepository` | PayrollDataSource | getRates, getPayroll, getMyEarnings (всё read-only) |
 | `FilesRepository` | FilesDataSource | uploadFile, getFile (платформенный слой `file_storage`; зарегистрирован глобально, потребители — фото чек-листов/база знаний/аватары; UI-показ — виджет `StorageImage`) |
 | `KnowledgeRepository` | KnowledgeDataSource | getTree, getNode (всё read-only; файлы блоков рефрешит через `FilesRepository`/`StorageImage`) |
+| `WorkScheduleRepository` | WorkScheduleDataSource | getMySchedules (work_schedules; фиче-репозиторий — создаётся в `success_app` через `RepositoryProvider(create:)` с готовым `dio`, НЕ в локаторе, как `PenaltyRepository`/`KnowledgeRepository`) |
 
 > `OrganizationRole` отдельного репозитория не имеет (только DTO+mapper; модель вкладывается в `Member`/`Organization`). `LocationRepository` удалён.
 
@@ -225,12 +238,13 @@ lib/
 | `AuthCubit` | Готов | Глобальное состояние авторизации (`lib/shared/auth/`) |
 | `LoginCubit` | Готов | Login/Register форма с валидацией + OAuth-вход Google/Apple (`oauth_login`, см. раздел ниже) |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
-| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор и запоминание контекста (`ShiftContextStorage`) |
+| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор и запоминание контекста (`ShiftContextStorage`); выбор графика (work_schedules) — резолв набора по org+точке, автовыбор при 1, обязательный выбор при >1, запоминание (`WorkScheduleContextStorage`), сброс+перезапрос при `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` |
 | `ShiftChecklistsCubit` | Готов | Список чек-листов текущей смены (read) |
 | `ChecklistFillCubit` | Готов | Заполнение пунктов (toggle + debounced комментарий) + фото-подтверждения: антифрод-флоу `addPhoto` (image_picker → гео → штамп в изоляте → flutter_image_compress → `POST /files` → привязка), `retryPhoto` (частичный сбой), `removePhoto`; черновики загрузки в стейте, байты — в приватной мапе; read-only для чужой/завершённой смены |
 | `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, диапазон дат через общий пикер) |
 | `ShiftStatsCubit` | Готов | Статистика смен: пресет день/неделя/месяц XOR произвольный диапазон; request-token от устаревших ответов |
-| `ShiftDetailCubit` | Готов | Детали одной смены (read-only) |
+| `ShiftDetailCubit` | Готов | Детали одной смены; лениво грузит организацию (только когда у смены есть график — таймзона плана), owns отмену заявки на переработку (`cancelOvertimeRequest`) и применение результата модалки подачи (`applyOvertimeRequest`) (work_schedules) |
+| `OvertimeRequestCubit` | Готов | Модалка «Добавить переработку»: только отправка формы (`POST /shifts/{id}/overtime`), поля формы — в виджете, как `PenaltyFormCubit` (work_schedules) |
 | `OrganizationsCubit` | Готов | Список организаций (watch), присоединение по инвайту, текущий юзер |
 | `OrganizationDetailCubit` | Готов | Хаб организации (read-only); единственная мутация — `leaveOrganization` (self-leave) |
 | `ProfileCubit` | Готов | Профиль: загрузка юзера, организаций (watch), обновление, logout |
@@ -265,8 +279,10 @@ lib/
 | `ChecklistFillRoute` | `<tab>/shifts/:shiftId/checklists/:instanceId` | Заполнение чек-листа (push); `organizationId?` для загрузки фото, `readOnly` для чужой/завершённой смены |
 | `ChecklistPhotoViewerRoute` | `/checklist-photo-viewer` | Полноэкранный вьюер фото (root, поверх табов; `photo_view` зум/пан/свайп, удаление) |
 | `ChecklistPhotoSourceRoute` | `/checklist-photo-source` | Bottom-sheet выбора источника фото (камера/галерея) для `camera_or_gallery` |
+| `WorkSchedulePickerRoute` | `shift/work-schedule-picker` | Выбор графика при старте смены (CustomRoute, `WorkSchedulePickerResult?`, work_schedules) |
 | `ShiftHistoryRoute` | `/history` | История смен (Tab 2, initial) |
 | `ShiftDetailRoute` | `/history/detail` | Детали смены (push) |
+| `OvertimeRequestRoute` | `/history/detail/overtime-request` | Модалка «Добавить переработку» (CustomRoute, `ShiftOvertimeRequest?`, work_schedules) |
 | `OrganizationsRoute` | `/organizations` | Список организаций (Tab 3, initial) |
 | `JoinOrgRoute` | `/organizations/join` | Модалка присоединения (CustomRoute) |
 | `ProfileRoute` | `/profile` | Экран профиля (Tab 4, initial) |
@@ -465,6 +481,24 @@ lib/
 - **⚠️ Незакрытые внешние зависимости** (не решаются в этом репозитории, отслеживаются в `../docs/tasks/oauth_login/STATUS.md`, «Открытые вопросы к аналитику»):
   1. реальные `REVERSED_CLIENT_ID`/`GIDClientID`/entitlements-провижининг на стороне Apple Developer консоли и Firebase/GCP (для iOS; web-домены уже закрыты владельцем 2026-07-06);
   2. уточнение в `admin.md`, что для `(google, android)` в `oauth_provider_settings` должен вводиться Web Client ID, а не Android Client ID.
+
+---
+
+## Графики работы и переработки (work_schedules)
+
+Фича `work_schedules` (`../docs/tasks/work_schedules/mobile.md`, ветка `feature/work-schedules`) — выбор графика при старте организационной смены, плановое время + опоздание на активной смене, заявка на переработку на завершённой, план/факт в личном заработке. **Персональные смены не затронуты вообще** (графики/опоздания/переработки на них не распространяются, `scheduled_*`/`late_seconds`/`overtime` у них всегда `null`).
+
+- **Домен/инфра** `work_schedule/`: `WorkSchedule` + `MySchedules` (эффективный набор + `requireSchedule`); `WorkScheduleDataSource` (`GET .../my-schedules?work_location_id=`), `WorkScheduleRepositoryImpl` (`Task<…>`). Fetch без `work_location_id` для org с гео-проверкой (точка ещё не известна — её определит сервер на старте; несовместимость обернётся `SCHEDULE_NOT_AVAILABLE`).
+- **`Shift`/`ShiftDto` расширены additive**: `workScheduleId`/`scheduleName` (снимок), `scheduledStartAt`/`scheduledEndAt` (плановое окно, снимок), `lateSeconds`, `finishReason` (`ShiftFinishReason`, ручной парсинг с фолбэком `null` на незнакомое значение — конвенция проекта, не `@JsonValue`), `overtime` (`ShiftOvertimeRequest?`). `ShiftRepository`/`ShiftDataSource` — новый `workScheduleId` в `startShift`, плюс `requestOvertime`/`cancelOvertimeRequest` (`/shifts/{id}/overtime`).
+- **`Organization` расширена** полем `timezone` (IANA-имя, `@Default('Europe/Moscow')` на случай устаревшего кэша).
+- **`ShiftTrackerCubit`** — резолв графиков при выборе org/точки (`_loadSchedules`, request-token от гонок): 0 + `requireSchedule` → блокирует старт с пояснением; 1 → автоподстановка, старт в один тап (не ломает `shift_quick_start`); >1 → выбор обязателен на клиенте всегда (даже при `requireSchedule=false`), запоминается по паре org+точка через `WorkScheduleContextStorage` (аналог `ShiftContextStorage`, но НЕ регистрируется глобально — создаётся на месте из уже доступного в дереве `SharedPreferences`, экономия на DI-плумбинге). `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` на старте → сброс выбора + перезапрос списка. `canStartShift` учитывает `schedulesLoading` (кнопка неактивна, пока список грузится, — так по ТЗ) только для орг-смен; персональная смена схему вообще не трогает.
+- **UI старта**: `_WorkScheduleSelector` (idle-экран, только орг-смена) — skeleton/ошибка+retry/блокирующее сообщение/компактная строка (1)/строка-плейсхолдер (>1); модалка выбора — `WorkSchedulePickerPage` (`work_schedule_picker/`, **без своего cubit**: список уже загружен `ShiftTrackerCubit`, повторный фетч дал бы рассинхрон с уже показанной карточкой). Карточка графика: время `HH:MM — HH:MM` (+ пометка «через полночь»), статус-бейдж («Идёт сейчас»/«начался N мин назад» | «Начнётся через N мин/ч» | плановая дата в таймзоне организации).
+- **Активная смена**: строка плана под таймером (`_SchedulePlanLine`) — «По графику: {name}, до {HH:MM}» либо при опоздании «Начало по графику {HH:MM}, опоздание {N} мин» (нейтральный тон, обычный `secondary`-цвет, без алерта). Организация резолвится через новый геттер `ShiftTrackerState.activeShiftOrganization` (по `activeShift.organizationId`, а НЕ по `selectedOrganizationId` — при холодном старте с уже активной сменой предвыбор контекста его не трогает).
+- **Завершённая смена** (`shift_detail`): `_DetailInfoSection` — план (org-локальное время), опоздание (если `>0`), причина завершения (только `auto_schedule`); `_OvertimeSection` — статус текущей заявки (`pending`/`approved`/`rejected` + комментарий администратора) и действие («Добавить переработку» / «Отменить заявку»). `ShiftDetailCubit` из чисто синхронного стал грузить организацию лениво (**только** если у смены есть график — таймзона плана) и владеет отменой заявки; подача — отдельная модалка `OvertimeRequestPage`/`OvertimeRequestCubit` (`overtime_request/`, паттерн формы как `PenaltyFormCubit` — своя мутация, кубит родителя применяет результат через `applyOvertimeRequest`). Видимость «Добавить» — клиентское приближение `OVERTIME_NOT_APPLICABLE` (график есть, факт ≤ план, нет активной заявки); срок подачи (`overtime_request_days`) клиенту не известен (настройка организации, не отдаётся в `ShiftResponse`) — эту границу проверяет сервер, `OVERTIME_PERIOD_EXPIRED` придёт тостом в модалке.
+- **«Мой заработок»**: `_PlanVsFactCard` — «По графику» + «Разница» (мягкая формулировка: «Меньше/Больше плана на X ₽», не «недоработал») + согласованная переработка отдельной строкой; карточка скрыта, если `delta == 0 && overtimeSeconds == 0` (график не используется — план всегда равен факту, R8 backend.md, карточка не добавляет информации).
+- **Таймзона организации без хардкода смещений**: `core/utils/org_timezone.dart` (`toOrgLocal`) — пакет `timezone` (dart-lang, `data/latest_10y.dart`), НЕ рукописная таблица UTC-офсетов (была бы неверна для зон с переходом на летнее/зимнее время и разошлась бы при следующем изменении правил). Инициализация базы ленивая при первом вызове — чистая Dart-структура без I/O, безопасно на всех платформах, включая web. Невалидное/незнакомое имя зоны → фолбэк на UTC без падения.
+- **DI**: `WorkScheduleRepository` — фиче-репозиторий, создаётся в `success_app` через `RepositoryProvider(create:)` с готовым `dio` (как `PenaltyRepository`/`KnowledgeRepository`), НЕ в локаторе. `WorkScheduleContextStorage` — НЕ регистрируется нигде глобально (единственный потребитель `ShiftTrackerPage` создаёт её на месте из `context.read<SharedPreferences>()`).
+- **Тесты**: `test/pages/shift_tracker/shift_tracker_cubit_test.dart` (группа «выбор графика при старте» — 0/1/>1, запоминание выбора, `SCHEDULE_NOT_AVAILABLE`, fail-open при сетевой ошибке, персональная смена не трогает графики), `test/pages/shift_detail/shift_detail_cubit_test.dart`, `test/pages/overtime_request/overtime_request_cubit_test.dart`, `test/core/utils/org_timezone_test.dart`.
 
 ---
 

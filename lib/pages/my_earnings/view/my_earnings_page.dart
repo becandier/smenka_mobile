@@ -118,6 +118,8 @@ class _MyEarningsView extends StatelessWidget {
                             ),
                           _SummaryCard(earnings: earnings),
                           const SizedBox(height: 16),
+                          _PlanVsFactCard(earnings: earnings),
+                          const SizedBox(height: 16),
                           _PenaltiesEarningsCard(
                             earnings: earnings,
                             orgId: context.read<MyEarningsCubit>().orgId,
@@ -277,6 +279,86 @@ class _PenaltiesEarningsCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// План против факта (фича `work_schedules`): «По графику» + «Разница» +
+/// согласованная переработка отдельной строкой. Формулировки мягкие
+/// («Меньше плана на 1 200 ₽», не «Вы недоработали») — см. mobile.md п.4.
+///
+/// Скрыт, если организация не использует графики: тогда `delta == 0` и
+/// `overtimeSeconds == 0` (план для смен без графика равен факту, R8
+/// backend.md) — карточка не добавляет информации, показывать её незачем.
+class _PlanVsFactCard extends StatelessWidget {
+  const _PlanVsFactCard({required this.earnings});
+
+  final MyEarnings earnings;
+
+  @override
+  Widget build(BuildContext context) {
+    if (earnings.deltaAmountMinor == 0 && earnings.overtimeSeconds == 0) {
+      return const SizedBox.shrink();
+    }
+
+    final l10n = context.l10n;
+    final colors = context.appColors;
+
+    return Material(
+      color: colors.surface,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: _SummaryItem(
+                    value: formatMoneyMinor(earnings.plannedAmountMinor),
+                    label: l10n.myEarningsPlanned,
+                  ),
+                ),
+                Expanded(
+                  child: _SummaryItem(
+                    value: _deltaLabel(context),
+                    label: l10n.myEarningsDelta,
+                  ),
+                ),
+              ],
+            ),
+            if (earnings.overtimeSeconds > 0) ...[
+              const SizedBox(height: 8),
+              Text(
+                l10n.myEarningsApprovedOvertime(
+                  _formatDuration(context, earnings.overtimeSeconds),
+                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: colors.secondary),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _deltaLabel(BuildContext context) {
+    final l10n = context.l10n;
+    final delta = earnings.deltaAmountMinor;
+    if (delta == 0) return l10n.myEarningsDeltaEven;
+    final amount = formatMoneyMinor(delta.abs());
+    return delta < 0
+        ? l10n.myEarningsDeltaLess(amount)
+        : l10n.myEarningsDeltaMore(amount);
+  }
+
+  String _formatDuration(BuildContext context, int totalSeconds) {
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    return context.l10n.statsHours(hours, minutes);
   }
 }
 

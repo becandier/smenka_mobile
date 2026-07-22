@@ -1,30 +1,39 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/utils/org_timezone.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
+import 'package:smenka_mobile/data/api/local/work_schedule_context_storage.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
+import 'package:smenka_mobile/data/domain/work_schedule/models/_models.dart';
+import 'package:smenka_mobile/data/domain/work_schedule/repositories/work_schedule_repository.dart';
 import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_cubit.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_state.dart';
 import 'package:smenka_mobile/pages/work_location_picker/view/work_location_picker_page.dart';
+import 'package:smenka_mobile/pages/work_schedule_picker/view/work_schedule_picker_page.dart';
 import 'package:smenka_mobile/widgets/app_button.dart';
+import 'package:smenka_mobile/widgets/app_shimmer_loader.dart';
 import 'package:smenka_mobile/widgets/geo/geo_permission_dialogs.dart';
 
 part '../widgets/idle_shift_content.dart';
 part '../widgets/active_shift_content.dart';
 part '../widgets/org_selector.dart';
 part '../widgets/work_location_selector.dart';
+part '../widgets/work_schedule_selector.dart';
 part '../widgets/pause_list.dart';
 part '../widgets/shift_checklists_tile.dart';
 part '../widgets/shift_connectivity_bars.dart';
@@ -39,8 +48,12 @@ class ShiftTrackerPage extends StatelessWidget {
       create: (_) => ShiftTrackerCubit(
         shiftRepository: context.read<ShiftRepository>(),
         organizationRepository: context.read<OrganizationRepository>(),
+        workScheduleRepository: context.read<WorkScheduleRepository>(),
         geoService: GeoService(),
         contextStorage: context.read<ShiftContextStorage>(),
+        scheduleContextStorage: WorkScheduleContextStorage(
+          prefs: context.read<SharedPreferences>(),
+        ),
       ),
       child: const _ShiftTrackerView(),
     );

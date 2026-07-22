@@ -21,6 +21,12 @@ abstract class Organization with _$Organization {
     /// определяется сервером; при выключенной гео — выбирается сотрудником
     /// (обязательно, если флаг включён).
     @Default(false) bool requireWorkLocation,
+
+    /// IANA-таймзона организации (`Europe/Moscow`, …) — плановое время
+    /// графиков (`work_schedules`) показывается в ней, не в локальном
+    /// времени устройства. Дефолт совпадает с server_default бэка на случай
+    /// устаревшего кэша без поля.
+    @Default('Europe/Moscow') String timezone,
     OrgMembershipRole? myRole,
     OrganizationRole? myCustomRole,
   }) = _Organization;

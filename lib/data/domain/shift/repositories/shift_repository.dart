@@ -24,9 +24,20 @@ abstract class ShiftRepository {
     double? latitude,
     double? longitude,
     String? workLocationId,
+    String? workScheduleId,
   });
 
   Future<Task<Shift>> pauseShift(String shiftId);
   Future<Task<Shift>> resumeShift(String shiftId);
   Future<Task<Shift>> finishShift(String shiftId);
+
+  /// Подать заявку на переработку по завершённой смене (владелец смены).
+  Future<Task<ShiftOvertimeRequest>> requestOvertime(
+    String shiftId, {
+    required int minutes,
+    required String comment,
+  });
+
+  /// Отозвать свою заявку, пока она `pending`.
+  Future<Task<void>> cancelOvertimeRequest(String shiftId);
 }

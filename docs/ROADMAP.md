@@ -267,3 +267,15 @@
 - [x] **Экран смены — без изменений**: явно проверены все 4 точки показа экземпляров чек-листов (`ShiftChecklistsPage`, `_OrgShiftDetailChecklists`, `_ShiftChecklistsTile`, `_DetailChecklistsSection`) — все уже корректно обрабатывают пустой/уменьшённый список (empty-state или `SizedBox.shrink()`), регрессии нет
 - [x] `flutter analyze` чисто, 134/134 теста (+3 новых на обратную совместимость DTO)
 - [ ] **End-to-end**: бэкенд фичи на момент реализации не задеплоен — мобилка построена против согласованного контракта (`backend.md` §5.1); заработает после деплоя бэка
+
+---
+
+## Фича — Графики работы и переработки (work_schedules) `[~]` (`../docs/tasks/work_schedules/mobile.md`)
+- [x] **Data (аддитивно)**: `Shift`/`ShiftDto` — `workScheduleId`/`scheduleName`/`scheduledStartAt`/`scheduledEndAt`/`lateSeconds`/`finishReason`/`overtime` (все nullable, `null` у персональных смен); `Organization` — `timezone` (`@Default('Europe/Moscow')`); новый домен `work_schedule/` (`WorkSchedule`, `MySchedules`, `WorkScheduleRepository`)
+- [x] **Старт смены**: `ShiftTrackerCubit` резолвит эффективный набор графиков по org+точке (`_loadSchedules`) — 0+`requireSchedule` блокирует, 1 подставляется автоматически (не ломает `shift_quick_start`), >1 требует выбора всегда; запоминание по паре org+точка (`WorkScheduleContextStorage`, не в глобальном DI); `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` → сброс + перезапрос. Модалка выбора `WorkSchedulePickerPage` — без своего cubit (список уже загружен)
+- [x] **Активная смена**: строка плана/опоздания под таймером (`_SchedulePlanLine`, нейтральный тон); организация резолвится по `activeShift.organizationId`, не по селектору idle-экрана (важно на холодном старте с уже активной сменой)
+- [x] **Завершённая смена**: план/опоздание/причина завершения в `_DetailInfoSection`; заявка на переработку — `_OvertimeSection` + модалка `OvertimeRequestPage`/`OvertimeRequestCubit` (подача/статус/отмена `pending`); `ShiftDetailCubit` расширен ленивой загрузкой организации (только при наличии графика) и владением отменой заявки
+- [x] **Личный заработок**: `_PlanVsFactCard` — «По графику»/«Разница» (мягкие формулировки) + согласованная переработка; скрыта, если график не используется (план==факт)
+- [x] **Таймзона организации**: `core/utils/org_timezone.dart` на пакете `timezone` (dart-lang, `data/latest_10y.dart`) — не рукописная таблица офсетов (была бы неверна при DST); фолбэк на UTC при незнакомой зоне
+- [x] `flutter analyze` чисто, `flutter test` зелёный (159/159, включая новые группы: выбор графика 10 тестов, `ShiftDetailCubit` 5, `OvertimeRequestCubit` 2, `org_timezone` 3), `flutter build web --release` собирается
+- [ ] **End-to-end**: бэкенд/админка фичи на момент реализации ещё не задеплоены — мобилка построена против согласованного контракта (`backend.md`); заработает после деплоя бэка

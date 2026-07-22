@@ -277,6 +277,118 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftWorkLocationPickerEmpty => 'У организации нет рабочих точек';
 
   @override
+  String get workScheduleFieldLabel => 'График';
+
+  @override
+  String get workScheduleSelectPlaceholder => 'Выберите график';
+
+  @override
+  String get workSchedulePickerTitle => 'График работы';
+
+  @override
+  String get workScheduleRequiredEmpty =>
+      'Для вас не настроен график работы. Обратитесь к администратору.';
+
+  @override
+  String get workScheduleCrossesMidnight => 'через полночь';
+
+  @override
+  String get workScheduleBadgeCurrent => 'Идёт сейчас';
+
+  @override
+  String workScheduleStartedMinutesAgo(int minutes) {
+    return 'начался $minutes мин назад';
+  }
+
+  @override
+  String workScheduleStartsInMinutes(int minutes) {
+    return 'Начнётся через $minutes мин';
+  }
+
+  @override
+  String workScheduleStartsInHours(int hours) {
+    return 'Начнётся через $hours ч';
+  }
+
+  @override
+  String workScheduleStartsTodayAt(String time) {
+    return 'Начнётся сегодня в $time';
+  }
+
+  @override
+  String workScheduleStartsTomorrowAt(String time) {
+    return 'Начнётся завтра в $time';
+  }
+
+  @override
+  String workScheduleStartsOnDateAt(String date, String time) {
+    return 'Начнётся $date в $time';
+  }
+
+  @override
+  String shiftPlannedSchedule(String schedule, String time) {
+    return 'По графику: $schedule, до $time';
+  }
+
+  @override
+  String shiftPlannedUntil(String time) {
+    return 'По графику: до $time';
+  }
+
+  @override
+  String shiftLateNotice(String time, int minutes) {
+    return 'Начало по графику $time, опоздание $minutes мин';
+  }
+
+  @override
+  String get overtimeSectionTitle => 'Переработка';
+
+  @override
+  String get overtimeAddButton => 'Добавить переработку';
+
+  @override
+  String get overtimeCancelButton => 'Отменить заявку';
+
+  @override
+  String get overtimeCancelConfirmTitle => 'Отменить заявку на переработку?';
+
+  @override
+  String overtimeStatusPending(int minutes) {
+    return 'Переработка $minutes мин · на согласовании';
+  }
+
+  @override
+  String overtimeStatusApproved(int minutes) {
+    return 'Переработка $minutes мин · согласована';
+  }
+
+  @override
+  String get overtimeStatusRejected => 'Переработка отклонена';
+
+  @override
+  String get overtimeFormTitle => 'Добавить переработку';
+
+  @override
+  String get overtimeMinutesLabel => 'Минуты переработки';
+
+  @override
+  String overtimeMinutesPreset(int minutes) {
+    return '$minutes мин';
+  }
+
+  @override
+  String get overtimeCommentLabel => 'Комментарий';
+
+  @override
+  String get overtimeMinutesInvalid => 'Укажите от 1 до 1440 минут';
+
+  @override
+  String get overtimeCommentRequired => 'Добавьте комментарий';
+
+  @override
+  String get overtimeSubmit => 'Отправить';
+
+  @override
   String get geoPermissionDenied =>
       'Для начала смены необходим доступ к геолокации';
 
@@ -414,6 +526,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get detailInProgress => 'В процессе';
+
+  @override
+  String get detailPlan => 'План';
+
+  @override
+  String get detailLate => 'Опоздание';
+
+  @override
+  String detailLateMinutes(int minutes) {
+    return '$minutes мин';
+  }
+
+  @override
+  String get detailFinishReason => 'Причина завершения';
+
+  @override
+  String get detailFinishReasonAutoSchedule =>
+      'Завершена автоматически по графику';
 
   @override
   String get statusActive => 'Активна';
@@ -978,6 +1108,30 @@ class AppLocalizationsRu extends AppLocalizations {
       'Некоторые смены не оплачены — для них не была задана ставка. Обратитесь к администратору.';
 
   @override
+  String get myEarningsPlanned => 'По графику';
+
+  @override
+  String get myEarningsDelta => 'Разница';
+
+  @override
+  String get myEarningsDeltaEven => 'Точно по плану';
+
+  @override
+  String myEarningsDeltaLess(String amount) {
+    return 'Меньше плана на $amount';
+  }
+
+  @override
+  String myEarningsDeltaMore(String amount) {
+    return 'Больше плана на $amount';
+  }
+
+  @override
+  String myEarningsApprovedOvertime(String duration) {
+    return 'Согласованная переработка: $duration';
+  }
+
+  @override
   String get payrollMissingRateBadge => 'Есть смены без ставки';
 
   @override
@@ -1221,6 +1375,34 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorWorkLocationNotFound => 'Рабочая точка не найдена';
+
+  @override
+  String get errorScheduleRequired => 'Выберите график работы';
+
+  @override
+  String get errorScheduleNotAvailable =>
+      'Этот график недоступен на выбранной точке';
+
+  @override
+  String get errorScheduleNotFound => 'График не найден, обновите список';
+
+  @override
+  String get errorOvertimeAlreadyRequested =>
+      'Заявка по этой смене уже отправлена';
+
+  @override
+  String get errorOvertimePeriodExpired => 'Срок подачи заявки истёк';
+
+  @override
+  String get errorOvertimeNotApplicable =>
+      'По этой смене переработку добавить нельзя';
+
+  @override
+  String get errorOvertimeRequestNotFound => 'Заявка на переработку не найдена';
+
+  @override
+  String get errorOvertimeAlreadyReviewed =>
+      'Заявка уже рассмотрена администратором';
 
   @override
   String get errorGeoUnavailable =>

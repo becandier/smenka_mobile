@@ -7,23 +7,30 @@ import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
+import 'package:smenka_mobile/data/api/local/work_schedule_context_storage.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
+import 'package:smenka_mobile/data/domain/work_schedule/models/_models.dart';
+import 'package:smenka_mobile/data/domain/work_schedule/repositories/work_schedule_repository.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_state.dart';
 
 class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   ShiftTrackerCubit({
     required ShiftRepository shiftRepository,
     required OrganizationRepository organizationRepository,
+    required WorkScheduleRepository workScheduleRepository,
     required GeoService geoService,
     required ShiftContextStorage contextStorage,
+    required WorkScheduleContextStorage scheduleContextStorage,
     Connectivity? connectivity,
   }) : _shiftRepository = shiftRepository,
        _organizationRepository = organizationRepository,
+       _workScheduleRepository = workScheduleRepository,
        _geoService = geoService,
        _contextStorage = contextStorage,
+       _scheduleContextStorage = scheduleContextStorage,
        _connectivity = connectivity ?? Connectivity(),
        super(const ShiftTrackerState()) {
     _orgSubscription = _organizationRepository.watchMyOrganizations().listen((
@@ -38,10 +45,16 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
   final ShiftRepository _shiftRepository;
   final OrganizationRepository _organizationRepository;
+  final WorkScheduleRepository _workScheduleRepository;
   final GeoService _geoService;
   final ShiftContextStorage _contextStorage;
+  final WorkScheduleContextStorage _scheduleContextStorage;
   final Connectivity _connectivity;
   Timer? _timer;
+
+  /// Монотонный токен запроса графиков — ответы устаревших запросов
+  /// (org/точка успели поменяться ещё раз) игнорируются.
+  int _scheduleRequestId = 0;
 
   /// Период фонового опроса активной смены (сек). Бэкенд авто-завершает смены
   /// (1–48ч) — без поллинга мобилка не узнала бы об этом, пока экран открыт.
@@ -139,6 +152,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     if (preselectedId != null) {
       emit(state.copyWith(selectedOrganizationId: preselectedId));
+      unawaited(_loadSchedules());
     }
   }
 
@@ -198,10 +212,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     _contextSelectedManually = true;
     // Смена контекста сбрасывает выбранную точку: точка принадлежит конкретной
     // организации и не должна «перетекать» в другую org или персональную смену.
+    // Набор графиков зависит от org+точки — сбрасываем и его тоже.
     emit(
       state.copyWith(
         selectedOrganizationId: organizationId,
         selectedWorkLocation: null,
+        selectedWorkScheduleId: null,
+        schedules: const SectionData(),
       ),
     );
     unawaited(
@@ -209,12 +226,95 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         organizationId ?? ShiftContextStorage.personalMarker,
       ),
     );
+    if (organizationId != null) unawaited(_loadSchedules());
   }
 
   /// Выбор рабочей точки в модалке. `null` — пункт «Без точки» (необязательная
-  /// привязка).
+  /// привязка). Точка входит в резолв графиков — перезапрашиваем список.
   void selectWorkLocation(WorkLocation? location) {
-    emit(state.copyWith(selectedWorkLocation: location));
+    emit(
+      state.copyWith(
+        selectedWorkLocation: location,
+        selectedWorkScheduleId: null,
+      ),
+    );
+    unawaited(_loadSchedules());
+  }
+
+  /// Выбор графика в модалке или предвыбор одного доступного варианта.
+  void selectWorkSchedule(WorkSchedule? schedule) {
+    emit(state.copyWith(selectedWorkScheduleId: schedule?.id));
+    final orgId = state.selectedOrganizationId;
+    if (orgId == null || schedule == null) return;
+    unawaited(
+      _scheduleContextStorage.save(
+        orgId,
+        state.showWorkLocationSelector ? state.selectedWorkLocation?.id : null,
+        schedule.id,
+      ),
+    );
+  }
+
+  /// Повторная попытка загрузки списка графиков (кнопка «Повторить»).
+  Future<void> reloadSchedules() => _loadSchedules();
+
+  /// Загружает эффективный набор графиков для текущей org+точки.
+  ///
+  /// При гео-проверке точка не известна заранее (определяется сервером на
+  /// старте) — запрашиваем без `work_location_id`; сервер сам отфильтрует
+  /// набор при `POST /shifts/start`, а несовместимость обернётся
+  /// `SCHEDULE_NOT_AVAILABLE` (см. [startShift]).
+  Future<void> _loadSchedules() async {
+    final orgId = state.selectedOrganizationId;
+    if (orgId == null) return;
+
+    final requestId = ++_scheduleRequestId;
+    emit(state.copyWith(schedules: state.schedules.toLoading()));
+
+    final workLocationId = state.showWorkLocationSelector
+        ? state.selectedWorkLocation?.id
+        : null;
+    final result = await _workScheduleRepository.getMySchedules(
+      orgId,
+      workLocationId: workLocationId,
+    );
+    if (requestId != _scheduleRequestId || isClosed) return;
+
+    result.fold(
+      onSuccess: (schedules) {
+        emit(state.copyWith(schedules: state.schedules.toSuccess(schedules)));
+        _preselectSchedule(schedules, orgId, workLocationId);
+      },
+      onFailure: (error) => emit(
+        state.copyWith(
+          schedules: state.schedules.toError(error.message, code: error.code),
+        ),
+      ),
+    );
+  }
+
+  /// Ровно один доступный график — подставляется автоматически (старт
+  /// остаётся в один тап). Несколько — предвыбирается последний сохранённый
+  /// для этой пары org+точка, если он всё ещё доступен.
+  void _preselectSchedule(
+    MySchedules schedules,
+    String orgId,
+    String? workLocationId,
+  ) {
+    final items = schedules.items;
+    if (items.length == 1) {
+      emit(state.copyWith(selectedWorkScheduleId: items.first.id));
+      return;
+    }
+    if (items.length > 1) {
+      final saved = _scheduleContextStorage.read(orgId, workLocationId);
+      final stillAvailable = saved != null && items.any((s) => s.id == saved);
+      emit(
+        state.copyWith(selectedWorkScheduleId: stillAvailable ? saved : null),
+      );
+      return;
+    }
+    emit(state.copyWith(selectedWorkScheduleId: null));
   }
 
   Future<StartShiftResult> startShift() async {
@@ -275,6 +375,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
       // При гео точку определяет сервер (selectedWorkLocation тогда null —
       // селектор скрыт). При гео выкл шлём выбранную точку (или null).
       workLocationId: state.selectedWorkLocation?.id,
+      workScheduleId: state.selectedWorkScheduleId,
     );
 
     return result.fold(
@@ -296,6 +397,14 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
             actionErrorCode: error.code,
           ),
         );
+        // Выбранный график перестал подходить (сервер узнал точку только на
+        // старте) либо был удалён — сбрасываем выбор и перезапрашиваем
+        // список, чтобы сотрудник выбрал заново (см. ТЗ п.1).
+        if (error.code == 'SCHEDULE_NOT_AVAILABLE' ||
+            error.code == 'SCHEDULE_NOT_FOUND') {
+          emit(state.copyWith(selectedWorkScheduleId: null));
+          unawaited(_loadSchedules());
+        }
         return StartShiftResult.error;
       },
     );

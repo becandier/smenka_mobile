@@ -100,6 +100,102 @@
     "shiftWorkLocationPickerTitle": "Рабочая точка",
     "shiftWorkLocationPickerNone": "Без точки",
     "shiftWorkLocationPickerEmpty": "У организации нет рабочих точек",
+
+    "workScheduleFieldLabel": "График",
+    "workScheduleSelectPlaceholder": "Выберите график",
+    "workSchedulePickerTitle": "График работы",
+    "workScheduleRequiredEmpty": "Для вас не настроен график работы. Обратитесь к администратору.",
+    "workScheduleCrossesMidnight": "через полночь",
+    "workScheduleBadgeCurrent": "Идёт сейчас",
+    "workScheduleStartedMinutesAgo": "начался {minutes} мин назад",
+    "@workScheduleStartedMinutesAgo": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+    "workScheduleStartsInMinutes": "Начнётся через {minutes} мин",
+    "@workScheduleStartsInMinutes": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+    "workScheduleStartsInHours": "Начнётся через {hours} ч",
+    "@workScheduleStartsInHours": {
+        "placeholders": {
+            "hours": {"type": "int"}
+        }
+    },
+    "workScheduleStartsTodayAt": "Начнётся сегодня в {time}",
+    "@workScheduleStartsTodayAt": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "workScheduleStartsTomorrowAt": "Начнётся завтра в {time}",
+    "@workScheduleStartsTomorrowAt": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "workScheduleStartsOnDateAt": "Начнётся {date} в {time}",
+    "@workScheduleStartsOnDateAt": {
+        "placeholders": {
+            "date": {"type": "String"},
+            "time": {"type": "String"}
+        }
+    },
+
+    "shiftPlannedSchedule": "По графику: {schedule}, до {time}",
+    "@shiftPlannedSchedule": {
+        "placeholders": {
+            "schedule": {"type": "String"},
+            "time": {"type": "String"}
+        }
+    },
+    "shiftPlannedUntil": "По графику: до {time}",
+    "@shiftPlannedUntil": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "shiftLateNotice": "Начало по графику {time}, опоздание {minutes} мин",
+    "@shiftLateNotice": {
+        "placeholders": {
+            "time": {"type": "String"},
+            "minutes": {"type": "int"}
+        }
+    },
+
+    "overtimeSectionTitle": "Переработка",
+    "overtimeAddButton": "Добавить переработку",
+    "overtimeCancelButton": "Отменить заявку",
+    "overtimeCancelConfirmTitle": "Отменить заявку на переработку?",
+    "overtimeStatusPending": "Переработка {minutes} мин · на согласовании",
+    "@overtimeStatusPending": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+    "overtimeStatusApproved": "Переработка {minutes} мин · согласована",
+    "@overtimeStatusApproved": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+    "overtimeStatusRejected": "Переработка отклонена",
+    "overtimeFormTitle": "Добавить переработку",
+    "overtimeMinutesLabel": "Минуты переработки",
+    "overtimeMinutesPreset": "{minutes} мин",
+    "@overtimeMinutesPreset": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+    "overtimeCommentLabel": "Комментарий",
+    "overtimeMinutesInvalid": "Укажите от 1 до 1440 минут",
+    "overtimeCommentRequired": "Добавьте комментарий",
+    "overtimeSubmit": "Отправить",
+
     "geoPermissionDenied": "Для начала смены необходим доступ к геолокации",
     "geoPermissionDeniedForeverTitle": "Геолокация недоступна",
     "geoPermissionDeniedForeverMessage": "Вы запретили доступ к геолокации. Откройте настройки приложения и разрешите доступ к местоположению.",
@@ -152,6 +248,16 @@
     "detailPauses": "Паузы",
     "detailPersonal": "Персональная",
     "detailInProgress": "В процессе",
+    "detailPlan": "План",
+    "detailLate": "Опоздание",
+    "detailLateMinutes": "{minutes} мин",
+    "@detailLateMinutes": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+    "detailFinishReason": "Причина завершения",
+    "detailFinishReasonAutoSchedule": "Завершена автоматически по графику",
 
     "statusActive": "Активна",
     "statusPaused": "На паузе",
@@ -436,6 +542,27 @@
     "payrollRateNotSet": "Ставка не задана",
     "myEarningsNoRate": "Ставка ещё не задана",
     "myEarningsMissingRateHint": "Некоторые смены не оплачены — для них не была задана ставка. Обратитесь к администратору.",
+    "myEarningsPlanned": "По графику",
+    "myEarningsDelta": "Разница",
+    "myEarningsDeltaEven": "Точно по плану",
+    "myEarningsDeltaLess": "Меньше плана на {amount}",
+    "@myEarningsDeltaLess": {
+        "placeholders": {
+            "amount": {"type": "String"}
+        }
+    },
+    "myEarningsDeltaMore": "Больше плана на {amount}",
+    "@myEarningsDeltaMore": {
+        "placeholders": {
+            "amount": {"type": "String"}
+        }
+    },
+    "myEarningsApprovedOvertime": "Согласованная переработка: {duration}",
+    "@myEarningsApprovedOvertime": {
+        "placeholders": {
+            "duration": {"type": "String"}
+        }
+    },
     "payrollMissingRateBadge": "Есть смены без ставки",
     "payrollUnpaidHint": "{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} / {hours} не оплачены: нет ставки на дату смены",
     "@payrollUnpaidHint": {
@@ -521,6 +648,14 @@
     "errorItemNotFound": "Пункт чек-листа не найден",
     "errorWorkLocationRequired": "Выберите рабочую точку, чтобы начать смену",
     "errorWorkLocationNotFound": "Рабочая точка не найдена",
+    "errorScheduleRequired": "Выберите график работы",
+    "errorScheduleNotAvailable": "Этот график недоступен на выбранной точке",
+    "errorScheduleNotFound": "График не найден, обновите список",
+    "errorOvertimeAlreadyRequested": "Заявка по этой смене уже отправлена",
+    "errorOvertimePeriodExpired": "Срок подачи заявки истёк",
+    "errorOvertimeNotApplicable": "По этой смене переработку добавить нельзя",
+    "errorOvertimeRequestNotFound": "Заявка на переработку не найдена",
+    "errorOvertimeAlreadyReviewed": "Заявка уже рассмотрена администратором",
     "errorGeoUnavailable": "Не удалось определить геопозицию. Проверьте доступ к геолокации и повторите.",
     "errorInvalidOauthToken": "Не удалось подтвердить вход. Попробуйте снова",
     "errorOauthEmailNotVerified": "Email в аккаунте не подтверждён. Используйте другой способ входа",

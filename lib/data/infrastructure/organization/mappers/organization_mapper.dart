@@ -20,6 +20,7 @@ extension OrganizationMapper on OrganizationDto {
       createdAt: createdAt,
       geoCheckEnabled: geoCheckEnabled,
       requireWorkLocation: requireWorkLocation,
+      timezone: timezone,
       myRole: _parseMyRole(myRole),
       myCustomRole: myCustomRole?.toDomain(),
     );

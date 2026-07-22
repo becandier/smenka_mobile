@@ -9,10 +9,13 @@ import 'package:smenka_mobile/core/network/api_exceptions.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
+import 'package:smenka_mobile/data/api/local/work_schedule_context_storage.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
+import 'package:smenka_mobile/data/domain/work_schedule/models/_models.dart';
+import 'package:smenka_mobile/data/domain/work_schedule/repositories/work_schedule_repository.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_cubit.dart';
 
 class _MockShiftRepository extends Mock implements ShiftRepository {}
@@ -20,11 +23,36 @@ class _MockShiftRepository extends Mock implements ShiftRepository {}
 class _MockOrganizationRepository extends Mock
     implements OrganizationRepository {}
 
+class _MockWorkScheduleRepository extends Mock
+    implements WorkScheduleRepository {}
+
 class _MockGeoService extends Mock implements GeoService {}
 
 class _MockShiftContextStorage extends Mock implements ShiftContextStorage {}
 
+class _MockWorkScheduleContextStorage extends Mock
+    implements WorkScheduleContextStorage {}
+
 class _MockConnectivity extends Mock implements Connectivity {}
+
+const _emptySchedules = MySchedules(
+  items: [],
+  total: 0,
+  requireSchedule: false,
+);
+
+WorkSchedule _schedule(String id, {String name = 'Дневная'}) => WorkSchedule(
+  id: id,
+  name: name,
+  startTime: '09:00',
+  endTime: '18:00',
+  durationMinutes: 540,
+  crossesMidnight: false,
+  nextStartAt: DateTime.utc(2026, 6, 11, 6),
+  nextEndAt: DateTime.utc(2026, 6, 11, 15),
+  isCurrent: true,
+  startsInMinutes: -10,
+);
 
 Task<DefaultPaginator<Shift>> _shiftsPage(List<Shift> shifts) =>
     Task<DefaultPaginator<Shift>>.success(
@@ -48,15 +76,19 @@ const _networkError = ApiException.network(
 void main() {
   late _MockShiftRepository shiftRepo;
   late _MockOrganizationRepository orgRepo;
+  late _MockWorkScheduleRepository scheduleRepo;
   late _MockGeoService geo;
   late _MockShiftContextStorage contextStorage;
+  late _MockWorkScheduleContextStorage scheduleContextStorage;
   late _MockConnectivity connectivity;
 
   setUp(() {
     shiftRepo = _MockShiftRepository();
     orgRepo = _MockOrganizationRepository();
+    scheduleRepo = _MockWorkScheduleRepository();
     geo = _MockGeoService();
     contextStorage = _MockShiftContextStorage();
+    scheduleContextStorage = _MockWorkScheduleContextStorage();
     connectivity = _MockConnectivity();
 
     when(
@@ -78,13 +110,28 @@ void main() {
     when(
       () => shiftRepo.getShifts(status: ShiftStatus.paused, limit: 1),
     ).thenAnswer((_) async => _shiftsPage(const []));
+
+    // По умолчанию у org нет графиков (require_schedule=false) — не мешает
+    // тестам, которые не проверяют work_schedules.
+    when(
+      () => scheduleRepo.getMySchedules(
+        any(),
+        workLocationId: any(named: 'workLocationId'),
+      ),
+    ).thenAnswer((_) async => const Task<MySchedules>.success(_emptySchedules));
+    when(() => scheduleContextStorage.read(any(), any())).thenReturn(null);
+    when(
+      () => scheduleContextStorage.save(any(), any(), any()),
+    ).thenAnswer((_) async {});
   });
 
   ShiftTrackerCubit buildCubit() => ShiftTrackerCubit(
     shiftRepository: shiftRepo,
     organizationRepository: orgRepo,
+    workScheduleRepository: scheduleRepo,
     geoService: geo,
     contextStorage: contextStorage,
+    scheduleContextStorage: scheduleContextStorage,
     connectivity: connectivity,
   );
 
@@ -397,6 +444,10 @@ void main() {
         expect(cubit.state.canStartShift, isFalse);
 
         cubit.selectWorkLocation(point);
+        // Смена точки перезапрашивает графики (work_schedules) — ждём, пока
+        // фоновая загрузка расчистится, иначе canStartShift временно false
+        // из-за schedulesLoading (ожидаемое поведение, см. ТЗ «loading»).
+        await pumpEventQueue();
         expect(cubit.state.canStartShift, isTrue);
         await cubit.close();
       },
@@ -549,6 +600,295 @@ void main() {
       await cubit.startShift();
 
       expect(cubit.state.showLowAccuracyWarning, isTrue);
+      await cubit.close();
+    });
+  });
+
+  group('выбор графика при старте (work_schedules)', () {
+    final org = Organization(
+      id: 'org1',
+      name: 'Org 1',
+      ownerId: 'owner1',
+      inviteCode: 'INV12345',
+      isDeleted: false,
+      createdAt: DateTime.utc(2026),
+      geoCheckEnabled: true,
+    );
+
+    setUp(() {
+      // Org с геопроверкой — рабочую точку определяет сервер, поэтому
+      // startShift() в этой группе всегда проходит через геолокацию.
+      when(() => geo.getCurrentPosition()).thenAnswer(
+        (_) async => const GeoSuccess(
+          latitude: 55.75,
+          longitude: 37.61,
+          lowAccuracy: false,
+        ),
+      );
+    });
+
+    ShiftTrackerCubit buildWithOrgSelected() {
+      when(
+        () => orgRepo.watchMyOrganizations(),
+      ).thenAnswer((_) => Stream<List<Organization>>.value([org]));
+      // Единственная организация — предвыбирается автоматически
+      // (shift_quick_start), что и запускает загрузку графиков.
+      return buildCubit();
+    }
+
+    test(
+      '0 графиков, require_schedule=false → старт не заблокирован',
+      () async {
+        when(
+          () => scheduleRepo.getMySchedules(
+            'org1',
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).thenAnswer(
+          (_) async => const Task<MySchedules>.success(_emptySchedules),
+        );
+
+        final cubit = buildWithOrgSelected();
+        await pumpEventQueue();
+
+        expect(cubit.state.availableSchedules, isEmpty);
+        expect(cubit.state.scheduleBlockedNoOptions, isFalse);
+        expect(cubit.state.canStartShift, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test('0 графиков, require_schedule=true → старт заблокирован', () async {
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer(
+        (_) async => const Task<MySchedules>.success(
+          MySchedules(items: [], total: 0, requireSchedule: true),
+        ),
+      );
+
+      final cubit = buildWithOrgSelected();
+      await pumpEventQueue();
+
+      expect(cubit.state.scheduleBlockedNoOptions, isTrue);
+      expect(cubit.state.canStartShift, isFalse);
+      await cubit.close();
+    });
+
+    test(
+      '1 график → подставляется автоматически, старт доступен сразу',
+      () async {
+        final schedule = _schedule('s1');
+        when(
+          () => scheduleRepo.getMySchedules(
+            'org1',
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).thenAnswer(
+          (_) async => Task<MySchedules>.success(
+            MySchedules(items: [schedule], total: 1, requireSchedule: false),
+          ),
+        );
+
+        final cubit = buildWithOrgSelected();
+        await pumpEventQueue();
+
+        expect(cubit.state.selectedWorkScheduleId, 's1');
+        expect(cubit.state.canStartShift, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test(
+      '>1 графика без сохранённого выбора → старт заблокирован до выбора',
+      () async {
+        final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
+        when(
+          () => scheduleRepo.getMySchedules(
+            'org1',
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).thenAnswer(
+          (_) async => Task<MySchedules>.success(
+            MySchedules(items: schedules, total: 2, requireSchedule: false),
+          ),
+        );
+
+        final cubit = buildWithOrgSelected();
+        await pumpEventQueue();
+
+        expect(cubit.state.scheduleSelectionRequired, isTrue);
+        expect(cubit.state.selectedWorkScheduleId, isNull);
+        expect(cubit.state.canStartShift, isFalse);
+
+        cubit.selectWorkSchedule(schedules.first);
+        expect(cubit.state.canStartShift, isTrue);
+        verify(() => scheduleContextStorage.save('org1', null, 's1')).called(1);
+        await cubit.close();
+      },
+    );
+
+    test(
+      '>1 графика с сохранённым выбором → предвыбирается, если ещё доступен',
+      () async {
+        final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
+        when(
+          () => scheduleRepo.getMySchedules(
+            'org1',
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).thenAnswer(
+          (_) async => Task<MySchedules>.success(
+            MySchedules(items: schedules, total: 2, requireSchedule: false),
+          ),
+        );
+        when(() => scheduleContextStorage.read('org1', null)).thenReturn('s2');
+
+        final cubit = buildWithOrgSelected();
+        await pumpEventQueue();
+
+        expect(cubit.state.selectedWorkScheduleId, 's2');
+        expect(cubit.state.canStartShift, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test('startShift отправляет выбранный work_schedule_id', () async {
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(
+            items: [_schedule('s1')],
+            total: 1,
+            requireSchedule: false,
+          ),
+        ),
+      );
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+      final cubit = buildWithOrgSelected();
+      await pumpEventQueue();
+      expect(cubit.state.selectedWorkScheduleId, 's1');
+
+      await cubit.startShift();
+
+      verify(
+        () => shiftRepo.startShift(
+          organizationId: 'org1',
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: 's1',
+        ),
+      ).called(1);
+      await cubit.close();
+    });
+
+    test('SCHEDULE_NOT_AVAILABLE при старте → выбор сброшен, список '
+        'перезапрошен', () async {
+      // Резолв точки на старте (гео) сужает набор: график, который был
+      // единственным до старта, на реальной точке недоступен — после
+      // перезапроса сервер отдаёт уже 2 совместимых графика, поэтому старая
+      // выборка не подставляется автоматически повторно.
+      var call = 0;
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer((_) async {
+        call++;
+        final items = call == 1
+            ? [_schedule('s1')]
+            : [_schedule('s2', name: 'Утро'), _schedule('s3', name: 'Ночь')];
+        return Task<MySchedules>.success(
+          MySchedules(
+            items: items,
+            total: items.length,
+            requireSchedule: false,
+          ),
+        );
+      });
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer(
+        (_) async => const Task<Shift>.failure(
+          ApiException.server(
+            message: 'недоступен',
+            code: 'SCHEDULE_NOT_AVAILABLE',
+          ),
+        ),
+      );
+
+      final cubit = buildWithOrgSelected();
+      await pumpEventQueue();
+      expect(cubit.state.selectedWorkScheduleId, 's1');
+
+      await cubit.startShift();
+      await pumpEventQueue();
+
+      expect(cubit.state.selectedWorkScheduleId, isNull);
+      verify(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).called(2);
+      await cubit.close();
+    });
+
+    test('сетевая ошибка загрузки графиков → require_schedule не блокирует '
+        'старт (fail-open)', () async {
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer((_) async => const Task<MySchedules>.failure(_networkError));
+
+      final cubit = buildWithOrgSelected();
+      await pumpEventQueue();
+
+      expect(cubit.state.schedules.hasData, isFalse);
+      expect(cubit.state.scheduleBlockedNoOptions, isFalse);
+      expect(cubit.state.canStartShift, isTrue);
+      await cubit.close();
+    });
+
+    test('персональная смена — графики не запрашиваются вовсе', () async {
+      when(
+        () => orgRepo.watchMyOrganizations(),
+      ).thenAnswer((_) => const Stream<List<Organization>>.empty());
+
+      final cubit = buildCubit();
+      await pumpEventQueue();
+
+      expect(cubit.state.isOrgShift, isFalse);
+      expect(cubit.state.canStartShift, isTrue);
+      verifyNever(
+        () => scheduleRepo.getMySchedules(
+          any(),
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      );
       await cubit.close();
     });
   });
