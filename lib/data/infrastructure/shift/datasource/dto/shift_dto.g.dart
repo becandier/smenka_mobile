@@ -29,11 +29,11 @@ _ShiftOvertimeRequestDto _$ShiftOvertimeRequestDtoFromJson(
   minutes: (json['minutes'] as num).toInt(),
   status: json['status'] as String,
   comment: json['comment'] as String,
+  createdAt: DateTime.parse(json['created_at'] as String),
   reviewComment: json['review_comment'] as String?,
   reviewedAt: json['reviewed_at'] == null
       ? null
       : DateTime.parse(json['reviewed_at'] as String),
-  createdAt: DateTime.parse(json['created_at'] as String),
 );
 
 Map<String, dynamic> _$ShiftOvertimeRequestDtoToJson(
@@ -43,9 +43,9 @@ Map<String, dynamic> _$ShiftOvertimeRequestDtoToJson(
   'minutes': instance.minutes,
   'status': instance.status,
   'comment': instance.comment,
+  'created_at': instance.createdAt.toIso8601String(),
   'review_comment': instance.reviewComment,
   'reviewed_at': instance.reviewedAt?.toIso8601String(),
-  'created_at': instance.createdAt.toIso8601String(),
 };
 
 _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(

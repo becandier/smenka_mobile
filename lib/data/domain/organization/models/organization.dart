@@ -27,6 +27,12 @@ abstract class Organization with _$Organization {
     /// времени устройства. Дефолт совпадает с server_default бэка на случай
     /// устаревшего кэша без поля.
     @Default('Europe/Moscow') String timezone,
+
+    /// Срок подачи заявки на переработку в днях с момента `finished_at`
+    /// смены (`organization_settings.overtime_request_days`, денормализовано
+    /// в объект организации). Дефолт совпадает с server_default бэка на
+    /// случай устаревшего кэша без поля.
+    @Default(7) int overtimeRequestDays,
     OrgMembershipRole? myRole,
     OrganizationRole? myCustomRole,
   }) = _Organization;

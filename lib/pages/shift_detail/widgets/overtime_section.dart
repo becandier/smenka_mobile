@@ -3,28 +3,14 @@ part of '../view/shift_detail_page.dart';
 /// Блок переработки на завершённой смене (ТЗ п.3): статус текущей заявки
 /// (если есть) + действие «Добавить переработку»/«Отменить заявку».
 ///
-/// Видимость «Добавить переработку» — клиентское приближение серверного
-/// правила `OVERTIME_NOT_APPLICABLE` (backend.md R6): график есть (гейт на
-/// уровне вызывающей стороны — секция рендерится только когда
-/// `scheduledEndAt != null`), факт не превысил план, заявки в
-/// `pending`/`approved` ещё нет. Срок подачи (`overtime_request_days`)
-/// клиенту не известен (это настройка организации, не отдаётся в
-/// `ShiftResponse`) — эту границу проверяет сервер при отправке формы,
-/// ошибка `OVERTIME_PERIOD_EXPIRED` придёт тостом уже в модалке.
+/// Видимость «Добавить переработку» считается в
+/// `ShiftDetailState.canAddOvertime` (клиентское приближение серверного
+/// `OVERTIME_NOT_APPLICABLE`, включая срок подачи `overtime_request_days`) —
+/// виджет только читает готовый флаг.
 class _OvertimeSection extends StatelessWidget {
   const _OvertimeSection({required this.state});
 
   final ShiftDetailState state;
-
-  bool get _canAddOvertime {
-    final shift = state.shift;
-    final finishedAt = shift.finishedAt;
-    final scheduledEnd = shift.scheduledEndAt;
-    if (finishedAt == null || scheduledEnd == null) return false;
-    if (finishedAt.isAfter(scheduledEnd)) return false;
-    final overtime = shift.overtime;
-    return overtime == null || overtime.status == OvertimeStatus.rejected;
-  }
 
   Future<void> _openForm(BuildContext context) async {
     final cubit = context.read<ShiftDetailCubit>();
@@ -81,7 +67,7 @@ class _OvertimeSection extends StatelessWidget {
               _OvertimeStatusCard(overtime: overtime),
             ],
             const SizedBox(height: 12),
-            if (_canAddOvertime)
+            if (state.canAddOvertime)
               AppButton(
                 label: l10n.overtimeAddButton,
                 isOutlined: true,

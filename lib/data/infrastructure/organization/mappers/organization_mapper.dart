@@ -21,6 +21,7 @@ extension OrganizationMapper on OrganizationDto {
       geoCheckEnabled: geoCheckEnabled,
       requireWorkLocation: requireWorkLocation,
       timezone: timezone,
+      overtimeRequestDays: overtimeRequestDays,
       myRole: _parseMyRole(myRole),
       myCustomRole: myCustomRole?.toDomain(),
     );

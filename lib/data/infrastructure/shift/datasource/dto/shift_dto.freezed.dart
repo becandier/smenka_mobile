@@ -287,7 +287,7 @@ as DateTime?,
 /// @nodoc
 mixin _$ShiftOvertimeRequestDto {
 
- String get id; int get minutes; String get status; String get comment; String? get reviewComment; DateTime? get reviewedAt; DateTime get createdAt;
+ String get id; int get minutes; String get status; String get comment; DateTime get createdAt; String? get reviewComment; DateTime? get reviewedAt;
 /// Create a copy of ShiftOvertimeRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -300,16 +300,16 @@ $ShiftOvertimeRequestDtoCopyWith<ShiftOvertimeRequestDto> get copyWith => _$Shif
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftOvertimeRequestDto&&(identical(other.id, id) || other.id == id)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.status, status) || other.status == status)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.reviewComment, reviewComment) || other.reviewComment == reviewComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftOvertimeRequestDto&&(identical(other.id, id) || other.id == id)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.status, status) || other.status == status)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.reviewComment, reviewComment) || other.reviewComment == reviewComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,minutes,status,comment,reviewComment,reviewedAt,createdAt);
+int get hashCode => Object.hash(runtimeType,id,minutes,status,comment,createdAt,reviewComment,reviewedAt);
 
 @override
 String toString() {
-  return 'ShiftOvertimeRequestDto(id: $id, minutes: $minutes, status: $status, comment: $comment, reviewComment: $reviewComment, reviewedAt: $reviewedAt, createdAt: $createdAt)';
+  return 'ShiftOvertimeRequestDto(id: $id, minutes: $minutes, status: $status, comment: $comment, createdAt: $createdAt, reviewComment: $reviewComment, reviewedAt: $reviewedAt)';
 }
 
 
@@ -320,7 +320,7 @@ abstract mixin class $ShiftOvertimeRequestDtoCopyWith<$Res>  {
   factory $ShiftOvertimeRequestDtoCopyWith(ShiftOvertimeRequestDto value, $Res Function(ShiftOvertimeRequestDto) _then) = _$ShiftOvertimeRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, int minutes, String status, String comment, String? reviewComment, DateTime? reviewedAt, DateTime createdAt
+ String id, int minutes, String status, String comment, DateTime createdAt, String? reviewComment, DateTime? reviewedAt
 });
 
 
@@ -337,16 +337,16 @@ class _$ShiftOvertimeRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of ShiftOvertimeRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? minutes = null,Object? status = null,Object? comment = null,Object? reviewComment = freezed,Object? reviewedAt = freezed,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? minutes = null,Object? status = null,Object? comment = null,Object? createdAt = null,Object? reviewComment = freezed,Object? reviewedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,minutes: null == minutes ? _self.minutes : minutes // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
-as String,reviewComment: freezed == reviewComment ? _self.reviewComment : reviewComment // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,reviewComment: freezed == reviewComment ? _self.reviewComment : reviewComment // ignore: cast_nullable_to_non_nullable
 as String?,reviewedAt: freezed == reviewedAt ? _self.reviewedAt : reviewedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime?,
   ));
 }
 
@@ -431,10 +431,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int minutes,  String status,  String comment,  String? reviewComment,  DateTime? reviewedAt,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int minutes,  String status,  String comment,  DateTime createdAt,  String? reviewComment,  DateTime? reviewedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftOvertimeRequestDto() when $default != null:
-return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.reviewComment,_that.reviewedAt,_that.createdAt);case _:
+return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.createdAt,_that.reviewComment,_that.reviewedAt);case _:
   return orElse();
 
 }
@@ -452,10 +452,10 @@ return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.reviewCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int minutes,  String status,  String comment,  String? reviewComment,  DateTime? reviewedAt,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int minutes,  String status,  String comment,  DateTime createdAt,  String? reviewComment,  DateTime? reviewedAt)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftOvertimeRequestDto():
-return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.reviewComment,_that.reviewedAt,_that.createdAt);case _:
+return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.createdAt,_that.reviewComment,_that.reviewedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -472,10 +472,10 @@ return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.reviewCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int minutes,  String status,  String comment,  String? reviewComment,  DateTime? reviewedAt,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int minutes,  String status,  String comment,  DateTime createdAt,  String? reviewComment,  DateTime? reviewedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftOvertimeRequestDto() when $default != null:
-return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.reviewComment,_that.reviewedAt,_that.createdAt);case _:
+return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.createdAt,_that.reviewComment,_that.reviewedAt);case _:
   return null;
 
 }
@@ -487,16 +487,16 @@ return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.reviewCo
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _ShiftOvertimeRequestDto implements ShiftOvertimeRequestDto {
-  const _ShiftOvertimeRequestDto({required this.id, required this.minutes, required this.status, required this.comment, this.reviewComment, this.reviewedAt, required this.createdAt});
+  const _ShiftOvertimeRequestDto({required this.id, required this.minutes, required this.status, required this.comment, required this.createdAt, this.reviewComment, this.reviewedAt});
   factory _ShiftOvertimeRequestDto.fromJson(Map<String, dynamic> json) => _$ShiftOvertimeRequestDtoFromJson(json);
 
 @override final  String id;
 @override final  int minutes;
 @override final  String status;
 @override final  String comment;
+@override final  DateTime createdAt;
 @override final  String? reviewComment;
 @override final  DateTime? reviewedAt;
-@override final  DateTime createdAt;
 
 /// Create a copy of ShiftOvertimeRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -511,16 +511,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftOvertimeRequestDto&&(identical(other.id, id) || other.id == id)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.status, status) || other.status == status)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.reviewComment, reviewComment) || other.reviewComment == reviewComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftOvertimeRequestDto&&(identical(other.id, id) || other.id == id)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.status, status) || other.status == status)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.reviewComment, reviewComment) || other.reviewComment == reviewComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,minutes,status,comment,reviewComment,reviewedAt,createdAt);
+int get hashCode => Object.hash(runtimeType,id,minutes,status,comment,createdAt,reviewComment,reviewedAt);
 
 @override
 String toString() {
-  return 'ShiftOvertimeRequestDto(id: $id, minutes: $minutes, status: $status, comment: $comment, reviewComment: $reviewComment, reviewedAt: $reviewedAt, createdAt: $createdAt)';
+  return 'ShiftOvertimeRequestDto(id: $id, minutes: $minutes, status: $status, comment: $comment, createdAt: $createdAt, reviewComment: $reviewComment, reviewedAt: $reviewedAt)';
 }
 
 
@@ -531,7 +531,7 @@ abstract mixin class _$ShiftOvertimeRequestDtoCopyWith<$Res> implements $ShiftOv
   factory _$ShiftOvertimeRequestDtoCopyWith(_ShiftOvertimeRequestDto value, $Res Function(_ShiftOvertimeRequestDto) _then) = __$ShiftOvertimeRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int minutes, String status, String comment, String? reviewComment, DateTime? reviewedAt, DateTime createdAt
+ String id, int minutes, String status, String comment, DateTime createdAt, String? reviewComment, DateTime? reviewedAt
 });
 
 
@@ -548,16 +548,16 @@ class __$ShiftOvertimeRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of ShiftOvertimeRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? minutes = null,Object? status = null,Object? comment = null,Object? reviewComment = freezed,Object? reviewedAt = freezed,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? minutes = null,Object? status = null,Object? comment = null,Object? createdAt = null,Object? reviewComment = freezed,Object? reviewedAt = freezed,}) {
   return _then(_ShiftOvertimeRequestDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,minutes: null == minutes ? _self.minutes : minutes // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
-as String,reviewComment: freezed == reviewComment ? _self.reviewComment : reviewComment // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,reviewComment: freezed == reviewComment ? _self.reviewComment : reviewComment // ignore: cast_nullable_to_non_nullable
 as String?,reviewedAt: freezed == reviewedAt ? _self.reviewedAt : reviewedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime?,
   ));
 }
 

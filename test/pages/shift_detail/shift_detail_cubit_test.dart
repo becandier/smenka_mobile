@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/api_exceptions.dart';
 import 'package:smenka_mobile/core/network/task.dart';
@@ -8,6 +9,7 @@ import 'package:smenka_mobile/data/domain/organization/repositories/organization
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
 import 'package:smenka_mobile/pages/shift_detail/cubit/shift_detail_cubit.dart';
+import 'package:smenka_mobile/pages/shift_detail/cubit/shift_detail_state.dart';
 
 class _MockShiftRepository extends Mock implements ShiftRepository {}
 
@@ -168,5 +170,125 @@ void main() {
     expect(cubit.state.shift.overtime?.id, 'req1');
     expect(cubit.state.actionErrorCode, 'OVERTIME_ALREADY_REVIEWED');
     await cubit.close();
+  });
+
+  group('canAddOvertime — срок подачи (overtime_request_days)', () {
+    // Смена завершилась ровно по плану (`finishedAt == scheduledEndAt`),
+    // чтобы отдельно проверять только гейт по `overtime_request_days`, не
+    // задевая гейт «факт не превысил план».
+    ShiftDetailState stateWith({
+      required DateTime finishedAt,
+      SectionData<Organization> organization = const SectionData(),
+      ShiftOvertimeRequest? overtime,
+    }) => ShiftDetailState(
+      shift: _orgShiftWithSchedule().copyWith(
+        scheduledEndAt: finishedAt,
+        finishedAt: finishedAt,
+        overtime: overtime,
+      ),
+      organization: organization,
+    );
+
+    test('организация загружена, срок ещё не истёк → кнопка показана', () {
+      final finishedAt = DateTime.now().toUtc().subtract(
+        const Duration(days: 1),
+      );
+      final state = stateWith(
+        finishedAt: finishedAt,
+        organization: SectionData(
+          status: FeatureStatus.success,
+          data: _org().copyWith(overtimeRequestDays: 7),
+        ),
+      );
+
+      expect(state.canAddOvertime, isTrue);
+    });
+
+    test('организация загружена, срок истёк → кнопка скрыта', () {
+      final finishedAt = DateTime.now().toUtc().subtract(
+        const Duration(days: 10),
+      );
+      final state = stateWith(
+        finishedAt: finishedAt,
+        organization: SectionData(
+          status: FeatureStatus.success,
+          data: _org().copyWith(overtimeRequestDays: 7),
+        ),
+      );
+
+      expect(state.canAddOvertime, isFalse);
+    });
+
+    test('организация не загрузилась (idle) → кнопка показана несмотря на '
+        'большой срок', () {
+      final finishedAt = DateTime.now().toUtc().subtract(
+        const Duration(days: 100),
+      );
+      final state = stateWith(finishedAt: finishedAt);
+
+      expect(state.organization.hasData, isFalse);
+      expect(state.canAddOvertime, isTrue);
+    });
+
+    test('организация не загрузилась (ошибка сети) → кнопка не пропадает', () {
+      final finishedAt = DateTime.now().toUtc().subtract(
+        const Duration(days: 100),
+      );
+      final state = stateWith(
+        finishedAt: finishedAt,
+        organization: const SectionData(
+          status: FeatureStatus.error,
+          error: 'Нет сети',
+          errorCode: 'NETWORK_ERROR',
+        ),
+      );
+
+      expect(state.canAddOvertime, isTrue);
+    });
+
+    test('есть pending-заявка → кнопка скрыта независимо от срока', () {
+      final finishedAt = DateTime.now().toUtc().subtract(
+        const Duration(days: 1),
+      );
+      final state = stateWith(
+        finishedAt: finishedAt,
+        organization: SectionData(
+          status: FeatureStatus.success,
+          data: _org().copyWith(overtimeRequestDays: 7),
+        ),
+        overtime: ShiftOvertimeRequest(
+          id: 'req1',
+          minutes: 30,
+          status: OvertimeStatus.pending,
+          comment: 'Задержался',
+          createdAt: finishedAt,
+        ),
+      );
+
+      expect(state.canAddOvertime, isFalse);
+    });
+
+    test('заявка отклонена, срок не истёк → кнопка снова доступна', () {
+      final finishedAt = DateTime.now().toUtc().subtract(
+        const Duration(days: 1),
+      );
+      final state = stateWith(
+        finishedAt: finishedAt,
+        organization: SectionData(
+          status: FeatureStatus.success,
+          data: _org().copyWith(overtimeRequestDays: 7),
+        ),
+        overtime: ShiftOvertimeRequest(
+          id: 'req1',
+          minutes: 30,
+          status: OvertimeStatus.rejected,
+          comment: 'Задержался',
+          reviewComment: 'Не подтверждено',
+          createdAt: finishedAt,
+        ),
+      );
+
+      expect(state.canAddOvertime, isTrue);
+    });
   });
 }

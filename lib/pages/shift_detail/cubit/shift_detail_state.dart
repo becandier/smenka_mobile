@@ -25,4 +25,33 @@ abstract class ShiftDetailState with _$ShiftDetailState {
   const ShiftDetailState._();
 
   bool get isActionLoading => actionStatus == FeatureStatus.loading;
+
+  /// Видимость кнопки «Добавить переработку» (ТЗ п.3, backend.md R6):
+  /// клиентское приближение серверного `OVERTIME_NOT_APPLICABLE`. Гейт
+  /// «график есть» — ответственность вызывающей стороны (секция рендерится
+  /// только когда `scheduledEndAt != null`).
+  bool get canAddOvertime {
+    final finishedAt = shift.finishedAt;
+    final scheduledEnd = shift.scheduledEndAt;
+    if (finishedAt == null || scheduledEnd == null) return false;
+    if (finishedAt.isAfter(scheduledEnd)) return false;
+    final overtime = shift.overtime;
+    if (overtime != null && overtime.status != OvertimeStatus.rejected) {
+      return false;
+    }
+    return _isWithinOvertimeRequestPeriod(finishedAt);
+  }
+
+  /// Срок подачи ещё не истёк? Приближение серверной проверки
+  /// `now - finished_at <= overtime_request_days` (backend.md R6). Поле
+  /// приходит в объекте организации, которую `ShiftDetailCubit` грузит
+  /// лениво — пока она не загрузилась (idle/loading/error), окно не
+  /// ограничиваем: кнопку не должен прятать сетевой сбой, а сервер в любом
+  /// случае остаётся последним рубежом при отправке формы.
+  bool _isWithinOvertimeRequestPeriod(DateTime finishedAt) {
+    final overtimeRequestDays = organization.data?.overtimeRequestDays;
+    if (overtimeRequestDays == null) return true;
+    final elapsed = DateTime.now().toUtc().difference(finishedAt.toUtc());
+    return elapsed <= Duration(days: overtimeRequestDays);
+  }
 }
