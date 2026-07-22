@@ -362,13 +362,19 @@
     "shiftIncompleteRequiredBadge": "Чек-листы не выполнены",
 
 
-    "deepLinkJoinSuccess": "Вы присоединились к {orgName} по ссылке",
-    "@deepLinkJoinSuccess": {
+    "inviteSuccessTitle": "Вы вступили в организацию «{orgName}»",
+    "@inviteSuccessTitle": {
         "placeholders": {
             "orgName": {"type": "String"}
         }
     },
-    "deepLinkJoinError": "Не удалось присоединиться по ссылке",
+    "inviteContinueAction": "Продолжить",
+    "inviteGoHomeAction": "На главный",
+    "inviteErrorInvalidTitle": "Приглашение недействительно",
+    "inviteErrorInvalidDescription": "Код мог быть отозван. Попросите у руководителя новую ссылку.",
+    "inviteErrorOwnerTitle": "Вы владелец этой организации",
+    "inviteErrorOwnerDescription": "Вступить как сотрудник нельзя — вы уже управляете этой организацией.",
+    "inviteErrorAlreadyMemberTitle": "Вы уже состоите в этой организации",
 
 
     "dateRangeFilterTitle": "Диапазон дат",

@@ -847,12 +847,33 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftIncompleteRequiredBadge => 'Чек-листы не выполнены';
 
   @override
-  String deepLinkJoinSuccess(String orgName) {
-    return 'Вы присоединились к $orgName по ссылке';
+  String inviteSuccessTitle(String orgName) {
+    return 'Вы вступили в организацию «$orgName»';
   }
 
   @override
-  String get deepLinkJoinError => 'Не удалось присоединиться по ссылке';
+  String get inviteContinueAction => 'Продолжить';
+
+  @override
+  String get inviteGoHomeAction => 'На главный';
+
+  @override
+  String get inviteErrorInvalidTitle => 'Приглашение недействительно';
+
+  @override
+  String get inviteErrorInvalidDescription =>
+      'Код мог быть отозван. Попросите у руководителя новую ссылку.';
+
+  @override
+  String get inviteErrorOwnerTitle => 'Вы владелец этой организации';
+
+  @override
+  String get inviteErrorOwnerDescription =>
+      'Вступить как сотрудник нельзя — вы уже управляете этой организацией.';
+
+  @override
+  String get inviteErrorAlreadyMemberTitle =>
+      'Вы уже состоите в этой организации';
 
   @override
   String get dateRangeFilterTitle => 'Диапазон дат';

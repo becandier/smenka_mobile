@@ -397,6 +397,54 @@ class HistoryTab extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [InvitePage]
+class InviteRoute extends PageRouteInfo<InviteRouteArgs> {
+  InviteRoute({required String code, Key? key, List<PageRouteInfo>? children})
+    : super(
+        InviteRoute.name,
+        args: InviteRouteArgs(code: code, key: key),
+        rawPathParams: {'code': code},
+        initialChildren: children,
+      );
+
+  static const String name = 'InviteRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<InviteRouteArgs>(
+        orElse: () => InviteRouteArgs(code: pathParams.getString('code')),
+      );
+      return InvitePage(code: args.code, key: args.key);
+    },
+  );
+}
+
+class InviteRouteArgs {
+  const InviteRouteArgs({required this.code, this.key});
+
+  final String code;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'InviteRouteArgs{code: $code, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! InviteRouteArgs) return false;
+    return code == other.code && key == other.key;
+  }
+
+  @override
+  int get hashCode => code.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [JoinOrgModal]
 class JoinOrgRoute extends PageRouteInfo<void> {
   const JoinOrgRoute({List<PageRouteInfo>? children})

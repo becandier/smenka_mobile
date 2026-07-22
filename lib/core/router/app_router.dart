@@ -35,6 +35,17 @@ class AppRouter extends RootStackRouter {
           resolver.routeName == LoginRoute.name ||
           resolver.routeName == VerifyRoute.name;
 
+      // Экран приглашения обрабатывает оба состояния авторизации сам (см.
+      // InviteCubit): авторизованный сразу вступает, неавторизованный
+      // сохраняет код и уходит на логин. Гард не должен ни блокировать этот
+      // роут для авторизованных (как isAuthRoute), ни редиректить
+      // неавторизованных на логин через redirectUntil — иначе экран так и не
+      // соберётся и код будет потерян до того, как успеет сохраниться.
+      if (resolver.routeName == InviteRoute.name) {
+        resolver.next();
+        return;
+      }
+
       if (authNotifier.isAuthenticated) {
         if (isAuthRoute) {
           resolver.next(false);
@@ -58,6 +69,10 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: LoginRoute.page, path: '/login'),
     AutoRoute(page: VerifyRoute.page, path: '/verify'),
     AutoRoute(page: DebugRoute.page, path: '/debug'),
+    // Единая точка обработки ссылки-приглашения (web и native): холодный
+    // старт по `https://{webAppHost}/invite/:code`, живой deep link или
+    // возврат после логина — везде один и тот же роут/экран.
+    AutoRoute(page: InviteRoute.page, path: '/invite/:code'),
     // Полноэкранный просмотр фото чек-листа — поверх табов (root), один на все
     // вкладки; пушится через `context.router.root.push(...)`.
     CustomRoute<void>(

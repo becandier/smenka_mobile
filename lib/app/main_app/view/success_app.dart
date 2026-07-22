@@ -61,6 +61,14 @@ class _SuccessAppState extends State<_SuccessApp> {
     _deepLinkSubscription = widget.deepLinkService.inviteCodeStream.listen(
       _handleInviteCode,
     );
+    // Холодный старт по deep link (native): `DeepLinkService.init()` уже
+    // отработал на фазе 5.5 `MainAppCubit`, то есть раньше, чем мы успели
+    // подписаться на `inviteCodeStream` выше — код холодного старта заберём
+    // отдельно, а не из широковещательного стрима (см. deep_link_service.dart).
+    final initialCode = widget.deepLinkService.consumeInitialCode();
+    if (initialCode != null) {
+      unawaited(_handleInviteCode(initialCode));
+    }
   }
 
   @override
@@ -69,31 +77,20 @@ class _SuccessAppState extends State<_SuccessApp> {
     super.dispose();
   }
 
+  /// Приглашение из deep link (native) — единая точка обработки, экран
+  /// `/invite/:code`, доводит и до вступления, и до результата (см. ТЗ
+  /// docs/tasks/invite_links/mobile.md). Здесь только маршрутизация: сам
+  /// join и разбор ошибок по коду живут в InviteCubit.
   Future<void> _handleInviteCode(String code) async {
     if (!widget.authNotifier.isAuthenticated) {
       await widget.pendingInviteStorage.save(code);
       return;
     }
-    await _joinByInviteCode(code);
+    _navigateToInvite(code);
   }
 
-  Future<void> _joinByInviteCode(String code) async {
-    final result = await widget.organizationRepository.join(code);
-    if (!mounted) return;
-
-    final context = _router.navigatorKey.currentContext;
-    if (context == null) return;
-
-    result.fold(
-      onSuccess: (JoinResult joinResult) {
-        context.modals.showSuccess(
-          context.l10n.deepLinkJoinSuccess(joinResult.organizationName),
-        );
-      },
-      onFailure: (_) {
-        context.modals.showError(context.l10n.deepLinkJoinError);
-      },
-    );
+  void _navigateToInvite(String code) {
+    _router.push(InviteRoute(code: code));
   }
 
   @override
@@ -142,6 +139,12 @@ class _SuccessAppState extends State<_SuccessApp> {
         RepositoryProvider<ShiftContextStorage>.value(
           value: widget.shiftContextStorage,
         ),
+        // Нужны экрану приглашения (InvitePage/InviteCubit) — уже создаются
+        // в MainAppCubit, просто не были раздаваемы вниз по дереву.
+        RepositoryProvider<AuthStateNotifier>.value(value: widget.authNotifier),
+        RepositoryProvider<PendingInviteStorage>.value(
+          value: widget.pendingInviteStorage,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -172,7 +175,7 @@ class _SuccessAppState extends State<_SuccessApp> {
             if (authState is AuthCubitAuthenticated) {
               final code = await widget.pendingInviteStorage.consume();
               if (code != null) {
-                await _joinByInviteCode(code);
+                _navigateToInvite(code);
               }
             }
           },
