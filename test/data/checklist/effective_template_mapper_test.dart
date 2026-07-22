@@ -15,15 +15,12 @@ void main() {
       });
     }
 
-    test(
-      'старый бэк без checklist_work_location (нет location_ids) → '
-      'пустой список, парсинг не падает',
-      () {
-        final template = parse({}).toDomain();
+    test('старый бэк без checklist_work_location (нет location_ids) → '
+        'пустой список, парсинг не падает', () {
+      final template = parse({}).toDomain();
 
-        expect(template.locationIds, isEmpty);
-      },
-    );
+      expect(template.locationIds, isEmpty);
+    });
 
     test('новый бэк присылает location_ids → мапится как есть', () {
       final template = parse({

@@ -1672,17 +1672,53 @@ abstract class AppLocalizations {
   /// **'Чек-листы не выполнены'**
   String get shiftIncompleteRequiredBadge;
 
-  /// No description provided for @deepLinkJoinSuccess.
+  /// No description provided for @inviteSuccessTitle.
   ///
   /// In ru, this message translates to:
-  /// **'Вы присоединились к {orgName} по ссылке'**
-  String deepLinkJoinSuccess(String orgName);
+  /// **'Вы вступили в организацию «{orgName}»'**
+  String inviteSuccessTitle(String orgName);
 
-  /// No description provided for @deepLinkJoinError.
+  /// No description provided for @inviteContinueAction.
   ///
   /// In ru, this message translates to:
-  /// **'Не удалось присоединиться по ссылке'**
-  String get deepLinkJoinError;
+  /// **'Продолжить'**
+  String get inviteContinueAction;
+
+  /// No description provided for @inviteGoHomeAction.
+  ///
+  /// In ru, this message translates to:
+  /// **'На главный'**
+  String get inviteGoHomeAction;
+
+  /// No description provided for @inviteErrorInvalidTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Приглашение недействительно'**
+  String get inviteErrorInvalidTitle;
+
+  /// No description provided for @inviteErrorInvalidDescription.
+  ///
+  /// In ru, this message translates to:
+  /// **'Код мог быть отозван. Попросите у руководителя новую ссылку.'**
+  String get inviteErrorInvalidDescription;
+
+  /// No description provided for @inviteErrorOwnerTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы владелец этой организации'**
+  String get inviteErrorOwnerTitle;
+
+  /// No description provided for @inviteErrorOwnerDescription.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вступить как сотрудник нельзя — вы уже управляете этой организацией.'**
+  String get inviteErrorOwnerDescription;
+
+  /// No description provided for @inviteErrorAlreadyMemberTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы уже состоите в этой организации'**
+  String get inviteErrorAlreadyMemberTitle;
 
   /// No description provided for @dateRangeFilterTitle.
   ///

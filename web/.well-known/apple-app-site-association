@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "G4U3V97A92.com.becandier.smenka",
+        "paths": ["/invite/*"]
+      }
+    ]
+  }
+}

@@ -131,7 +131,9 @@ class MainAppCubit extends Cubit<MainAppState> {
       await _initService(FilesRepositoryInitializer(dio: dio));
 
       // Фаза 5.5: Deep Links
-      final deepLinkService = DeepLinkService();
+      final deepLinkService = DeepLinkService(
+        webAppHost: _serviceLocator.get<AppConfig>().webAppHost,
+      );
       await deepLinkService.init();
       _serviceLocator.register<DeepLinkService>(deepLinkService);
 
