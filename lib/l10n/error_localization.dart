@@ -53,6 +53,15 @@ String localizedErrorMessage(
     // shift_work_location: привязка рабочей точки к смене
     'WORK_LOCATION_REQUIRED' => l10n.errorWorkLocationRequired,
     'WORK_LOCATION_NOT_FOUND' => l10n.errorWorkLocationNotFound,
+    // work_schedules: выбор графика при старте смены + переработки
+    'SCHEDULE_REQUIRED' => l10n.errorScheduleRequired,
+    'SCHEDULE_NOT_AVAILABLE' => l10n.errorScheduleNotAvailable,
+    'SCHEDULE_NOT_FOUND' => l10n.errorScheduleNotFound,
+    'OVERTIME_ALREADY_REQUESTED' => l10n.errorOvertimeAlreadyRequested,
+    'OVERTIME_PERIOD_EXPIRED' => l10n.errorOvertimePeriodExpired,
+    'OVERTIME_NOT_APPLICABLE' => l10n.errorOvertimeNotApplicable,
+    'OVERTIME_REQUEST_NOT_FOUND' => l10n.errorOvertimeRequestNotFound,
+    'OVERTIME_ALREADY_REVIEWED' => l10n.errorOvertimeAlreadyReviewed,
     // fines: штрафы
     'PENALTY_NOT_FOUND' => l10n.errorPenaltyNotFound,
     'PENALTY_TEMPLATE_NOT_FOUND' => l10n.errorPenaltyTemplateNotFound,

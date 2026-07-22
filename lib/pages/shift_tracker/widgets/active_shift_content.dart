@@ -87,6 +87,15 @@ class _ActiveShiftContent extends StatelessWidget {
               ),
             ),
           ],
+          if (shift.scheduledEndAt != null) ...[
+            const SizedBox(height: 12),
+            Center(
+              child: _SchedulePlanLine(
+                shift: shift,
+                organization: state.activeShiftOrganization,
+              ),
+            ),
+          ],
           const SizedBox(height: 32),
 
           // Pause/Resume button
@@ -212,5 +221,51 @@ class _ActiveShiftContent extends StatelessWidget {
     return '${hours.toString().padLeft(2, '0')}:'
         '${minutes.toString().padLeft(2, '0')}:'
         '${seconds.toString().padLeft(2, '0')}';
+  }
+}
+
+/// Строка плана под таймером активной смены (ТЗ п.2): «По графику: Дневная,
+/// до 18:00», либо при опоздании — «Начало по графику 09:00, опоздание
+/// 12 мин». Нейтральный тон, без красного алерта — опоздание тут факт для
+/// отчёта, не наказание (обычный `colors.secondary`, как остальные
+/// подписи экрана).
+class _SchedulePlanLine extends StatelessWidget {
+  const _SchedulePlanLine({required this.shift, required this.organization});
+
+  final Shift shift;
+  final Organization? organization;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheduledEnd = shift.scheduledEndAt;
+    if (scheduledEnd == null) return const SizedBox.shrink();
+
+    final l10n = context.l10n;
+    final textTheme = Theme.of(context).textTheme;
+    final colors = context.appColors;
+    final timezone = organization?.timezone ?? 'Europe/Moscow';
+    final endLabel = DateFormat(
+      'HH:mm',
+    ).format(toOrgLocal(scheduledEnd, timezone));
+    final lateSeconds = shift.lateSeconds ?? 0;
+
+    final String text;
+    if (lateSeconds > 0) {
+      final scheduledStart = shift.scheduledStartAt;
+      final startLabel = scheduledStart == null
+          ? ''
+          : DateFormat('HH:mm').format(toOrgLocal(scheduledStart, timezone));
+      text = l10n.shiftLateNotice(startLabel, lateSeconds ~/ 60);
+    } else if (shift.scheduleName case final name?) {
+      text = l10n.shiftPlannedSchedule(name, endLabel);
+    } else {
+      text = l10n.shiftPlannedUntil(endLabel);
+    }
+
+    return Text(
+      text,
+      style: textTheme.bodyMedium?.copyWith(color: colors.secondary),
+      textAlign: TextAlign.center,
+    );
   }
 }

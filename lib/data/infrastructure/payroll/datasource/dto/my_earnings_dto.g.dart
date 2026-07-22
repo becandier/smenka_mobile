@@ -17,6 +17,9 @@ _MyEarningsDto _$MyEarningsDtoFromJson(Map<String, dynamic> json) =>
       penaltyAmountMinor: (json['penalty_amount_minor'] as num?)?.toInt() ?? 0,
       penaltiesCount: (json['penalties_count'] as num?)?.toInt() ?? 0,
       netAmountMinor: (json['net_amount_minor'] as num?)?.toInt() ?? 0,
+      plannedAmountMinor: (json['planned_amount_minor'] as num?)?.toInt() ?? 0,
+      deltaAmountMinor: (json['delta_amount_minor'] as num?)?.toInt() ?? 0,
+      overtimeSeconds: (json['overtime_seconds'] as num?)?.toInt() ?? 0,
       currentRate: json['current_rate'] == null
           ? null
           : CurrentRateDto.fromJson(
@@ -35,5 +38,8 @@ Map<String, dynamic> _$MyEarningsDtoToJson(_MyEarningsDto instance) =>
       'penalty_amount_minor': instance.penaltyAmountMinor,
       'penalties_count': instance.penaltiesCount,
       'net_amount_minor': instance.netAmountMinor,
+      'planned_amount_minor': instance.plannedAmountMinor,
+      'delta_amount_minor': instance.deltaAmountMinor,
+      'overtime_seconds': instance.overtimeSeconds,
       'current_rate': instance.currentRate?.toJson(),
     };

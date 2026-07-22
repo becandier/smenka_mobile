@@ -57,12 +57,14 @@ class ShiftDataSource {
     double? latitude,
     double? longitude,
     String? workLocationId,
+    String? workScheduleId,
   }) async {
     final data = <String, dynamic>{};
     if (organizationId != null) data['organization_id'] = organizationId;
     if (latitude != null) data['latitude'] = latitude;
     if (longitude != null) data['longitude'] = longitude;
     if (workLocationId != null) data['work_location_id'] = workLocationId;
+    if (workScheduleId != null) data['work_schedule_id'] = workScheduleId;
 
     final response = await _dio.post<Map<String, dynamic>>(
       '/shifts/start',
@@ -90,5 +92,21 @@ class ShiftDataSource {
       '/shifts/$shiftId/finish',
     );
     return ShiftDto.fromJson(response.data!);
+  }
+
+  Future<ShiftOvertimeRequestDto> requestOvertime(
+    String shiftId, {
+    required int minutes,
+    required String comment,
+  }) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/shifts/$shiftId/overtime',
+      data: {'minutes': minutes, 'comment': comment},
+    );
+    return ShiftOvertimeRequestDto.fromJson(response.data!);
+  }
+
+  Future<void> cancelOvertimeRequest(String shiftId) async {
+    await _dio.delete<void>('/shifts/$shiftId/overtime');
   }
 }

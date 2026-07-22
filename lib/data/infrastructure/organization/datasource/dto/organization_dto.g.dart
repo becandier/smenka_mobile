@@ -16,6 +16,9 @@ _OrganizationDto _$OrganizationDtoFromJson(Map<String, dynamic> json) =>
       createdAt: DateTime.parse(json['created_at'] as String),
       geoCheckEnabled: json['geo_check_enabled'] as bool? ?? false,
       requireWorkLocation: json['require_work_location'] as bool? ?? false,
+      timezone: json['timezone'] as String? ?? 'Europe/Moscow',
+      overtimeRequestDays:
+          (json['overtime_request_days'] as num?)?.toInt() ?? 7,
       myRole: json['my_role'] as String?,
       myCustomRole: json['my_custom_role'] == null
           ? null
@@ -34,6 +37,8 @@ Map<String, dynamic> _$OrganizationDtoToJson(_OrganizationDto instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'geo_check_enabled': instance.geoCheckEnabled,
       'require_work_location': instance.requireWorkLocation,
+      'timezone': instance.timezone,
+      'overtime_request_days': instance.overtimeRequestDays,
       'my_role': instance.myRole,
       'my_custom_role': instance.myCustomRole,
     };

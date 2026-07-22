@@ -53,6 +53,7 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
     double? latitude,
     double? longitude,
     String? workLocationId,
+    String? workScheduleId,
   }) {
     return execute(() async {
       final dto = await _dataSource.startShift(
@@ -60,6 +61,7 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
         latitude: latitude,
         longitude: longitude,
         workLocationId: workLocationId,
+        workScheduleId: workScheduleId,
       );
       return dto.toDomain();
     });
@@ -87,5 +89,26 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
       final dto = await _dataSource.finishShift(shiftId);
       return dto.toDomain();
     });
+  }
+
+  @override
+  Future<Task<ShiftOvertimeRequest>> requestOvertime(
+    String shiftId, {
+    required int minutes,
+    required String comment,
+  }) {
+    return execute(() async {
+      final dto = await _dataSource.requestOvertime(
+        shiftId,
+        minutes: minutes,
+        comment: comment,
+      );
+      return dto.toDomain();
+    });
+  }
+
+  @override
+  Future<Task<void>> cancelOvertimeRequest(String shiftId) {
+    return executeVoid(() => _dataSource.cancelOvertimeRequest(shiftId));
   }
 }

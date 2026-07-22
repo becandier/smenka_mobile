@@ -14,6 +14,7 @@ import 'package:smenka_mobile/data/domain/organization/repositories/organization
 import 'package:smenka_mobile/data/domain/penalty/_penalty.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
+import 'package:smenka_mobile/data/domain/work_schedule/models/_models.dart';
 import 'package:smenka_mobile/pages/_features.dart';
 import 'package:smenka_mobile/shared/auth/cubit/auth_cubit.dart';
 
@@ -106,6 +107,13 @@ class AppRouter extends RootStackRouter {
               page: WorkLocationPickerRoute.page,
               customRouteBuilder: _modalBottomSheetBuilder,
             ),
+            // Выбор графика работы при старте смены (work_schedules) —
+            // модальный bottom sheet.
+            CustomRoute<WorkSchedulePickerResult?>(
+              path: 'work-schedule-picker',
+              page: WorkSchedulePickerRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
             AutoRoute(
               path: 'shifts/:shiftId/checklists',
               page: ShiftChecklistsRoute.page,
@@ -127,6 +135,13 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: _modalBottomSheetBuilder,
             ),
             AutoRoute(path: 'detail', page: ShiftDetailRoute.page),
+            // Заявка на переработку по завершённой смене — модальный bottom
+            // sheet (work_schedules).
+            CustomRoute<ShiftOvertimeRequest?>(
+              path: 'detail/overtime-request',
+              page: OvertimeRequestRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
             AutoRoute(
               path: 'shifts/:shiftId/checklists',
               page: ShiftChecklistsRoute.page,

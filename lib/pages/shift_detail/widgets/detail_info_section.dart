@@ -1,13 +1,22 @@
 part of '../view/shift_detail_page.dart';
 
 class _DetailInfoSection extends StatelessWidget {
-  const _DetailInfoSection({required this.shift});
+  const _DetailInfoSection({required this.shift, required this.organization});
 
   final Shift shift;
+
+  /// Организация смены — только для таймзоны планового времени (нужна лишь
+  /// когда у смены есть график, см. `ShiftDetailCubit`).
+  final Organization? organization;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final scheduledStart = shift.scheduledStartAt;
+    final scheduledEnd = shift.scheduledEndAt;
+    final hasPlan = scheduledStart != null && scheduledEnd != null;
+    final timezone = organization?.timezone ?? 'Europe/Moscow';
+    final lateSeconds = shift.lateSeconds ?? 0;
 
     return Card(
       child: Padding(
@@ -31,6 +40,29 @@ class _DetailInfoSection extends StatelessWidget {
               label: l10n.detailDuration,
               value: _formatDuration(context, shift.workedSeconds),
             ),
+            if (hasPlan) ...[
+              const Divider(),
+              _InfoRow(
+                label: l10n.detailPlan,
+                value:
+                    '${_formatTime(toOrgLocal(scheduledStart, timezone))} — '
+                    '${_formatTime(toOrgLocal(scheduledEnd, timezone))}',
+              ),
+            ],
+            if (lateSeconds > 0) ...[
+              const Divider(),
+              _InfoRow(
+                label: l10n.detailLate,
+                value: l10n.detailLateMinutes(lateSeconds ~/ 60),
+              ),
+            ],
+            if (shift.finishReason == ShiftFinishReason.autoSchedule) ...[
+              const Divider(),
+              _InfoRow(
+                label: l10n.detailFinishReason,
+                value: l10n.detailFinishReasonAutoSchedule,
+              ),
+            ],
             const Divider(),
             _InfoRow(
               label: l10n.detailStatus,
@@ -53,6 +85,8 @@ class _DetailInfoSection extends StatelessWidget {
     );
   }
 }
+
+String _formatTime(DateTime dt) => DateFormat('HH:mm').format(dt);
 
 class _InfoRow extends StatelessWidget {
   const _InfoRow({required this.label, this.value, this.trailing});

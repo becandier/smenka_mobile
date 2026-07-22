@@ -604,6 +604,180 @@ abstract class AppLocalizations {
   /// **'У организации нет рабочих точек'**
   String get shiftWorkLocationPickerEmpty;
 
+  /// No description provided for @workScheduleFieldLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'График'**
+  String get workScheduleFieldLabel;
+
+  /// No description provided for @workScheduleSelectPlaceholder.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите график'**
+  String get workScheduleSelectPlaceholder;
+
+  /// No description provided for @workSchedulePickerTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'График работы'**
+  String get workSchedulePickerTitle;
+
+  /// No description provided for @workScheduleRequiredEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Для вас не настроен график работы. Обратитесь к администратору.'**
+  String get workScheduleRequiredEmpty;
+
+  /// No description provided for @workScheduleCrossesMidnight.
+  ///
+  /// In ru, this message translates to:
+  /// **'через полночь'**
+  String get workScheduleCrossesMidnight;
+
+  /// No description provided for @workScheduleBadgeCurrent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Идёт сейчас'**
+  String get workScheduleBadgeCurrent;
+
+  /// No description provided for @workScheduleStartedMinutesAgo.
+  ///
+  /// In ru, this message translates to:
+  /// **'начался {minutes} мин назад'**
+  String workScheduleStartedMinutesAgo(int minutes);
+
+  /// No description provided for @workScheduleStartsInMinutes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начнётся через {minutes} мин'**
+  String workScheduleStartsInMinutes(int minutes);
+
+  /// No description provided for @workScheduleStartsInHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начнётся через {hours} ч'**
+  String workScheduleStartsInHours(int hours);
+
+  /// No description provided for @workScheduleStartsTodayAt.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начнётся сегодня в {time}'**
+  String workScheduleStartsTodayAt(String time);
+
+  /// No description provided for @workScheduleStartsTomorrowAt.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начнётся завтра в {time}'**
+  String workScheduleStartsTomorrowAt(String time);
+
+  /// No description provided for @workScheduleStartsOnDateAt.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начнётся {date} в {time}'**
+  String workScheduleStartsOnDateAt(String date, String time);
+
+  /// No description provided for @shiftPlannedSchedule.
+  ///
+  /// In ru, this message translates to:
+  /// **'По графику: {schedule}, до {time}'**
+  String shiftPlannedSchedule(String schedule, String time);
+
+  /// No description provided for @shiftPlannedUntil.
+  ///
+  /// In ru, this message translates to:
+  /// **'По графику: до {time}'**
+  String shiftPlannedUntil(String time);
+
+  /// No description provided for @shiftLateNotice.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало по графику {time}, опоздание {minutes} мин'**
+  String shiftLateNotice(String time, int minutes);
+
+  /// No description provided for @overtimeSectionTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переработка'**
+  String get overtimeSectionTitle;
+
+  /// No description provided for @overtimeAddButton.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить переработку'**
+  String get overtimeAddButton;
+
+  /// No description provided for @overtimeCancelButton.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отменить заявку'**
+  String get overtimeCancelButton;
+
+  /// No description provided for @overtimeCancelConfirmTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отменить заявку на переработку?'**
+  String get overtimeCancelConfirmTitle;
+
+  /// No description provided for @overtimeStatusPending.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переработка {minutes} мин · на согласовании'**
+  String overtimeStatusPending(int minutes);
+
+  /// No description provided for @overtimeStatusApproved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переработка {minutes} мин · согласована'**
+  String overtimeStatusApproved(int minutes);
+
+  /// No description provided for @overtimeStatusRejected.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переработка отклонена'**
+  String get overtimeStatusRejected;
+
+  /// No description provided for @overtimeFormTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить переработку'**
+  String get overtimeFormTitle;
+
+  /// No description provided for @overtimeMinutesLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Минуты переработки'**
+  String get overtimeMinutesLabel;
+
+  /// No description provided for @overtimeMinutesPreset.
+  ///
+  /// In ru, this message translates to:
+  /// **'{minutes} мин'**
+  String overtimeMinutesPreset(int minutes);
+
+  /// No description provided for @overtimeCommentLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Комментарий'**
+  String get overtimeCommentLabel;
+
+  /// No description provided for @overtimeMinutesInvalid.
+  ///
+  /// In ru, this message translates to:
+  /// **'Укажите от 1 до 1440 минут'**
+  String get overtimeMinutesInvalid;
+
+  /// No description provided for @overtimeCommentRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавьте комментарий'**
+  String get overtimeCommentRequired;
+
+  /// No description provided for @overtimeSubmit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить'**
+  String get overtimeSubmit;
+
   /// No description provided for @geoPermissionDenied.
   ///
   /// In ru, this message translates to:
@@ -861,6 +1035,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'В процессе'**
   String get detailInProgress;
+
+  /// No description provided for @detailPlan.
+  ///
+  /// In ru, this message translates to:
+  /// **'План'**
+  String get detailPlan;
+
+  /// No description provided for @detailLate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Опоздание'**
+  String get detailLate;
+
+  /// No description provided for @detailLateMinutes.
+  ///
+  /// In ru, this message translates to:
+  /// **'{minutes} мин'**
+  String detailLateMinutes(int minutes);
+
+  /// No description provided for @detailFinishReason.
+  ///
+  /// In ru, this message translates to:
+  /// **'Причина завершения'**
+  String get detailFinishReason;
+
+  /// No description provided for @detailFinishReasonAutoSchedule.
+  ///
+  /// In ru, this message translates to:
+  /// **'Завершена автоматически по графику'**
+  String get detailFinishReasonAutoSchedule;
 
   /// No description provided for @statusActive.
   ///
@@ -1900,6 +2104,42 @@ abstract class AppLocalizations {
   /// **'Некоторые смены не оплачены — для них не была задана ставка. Обратитесь к администратору.'**
   String get myEarningsMissingRateHint;
 
+  /// No description provided for @myEarningsPlanned.
+  ///
+  /// In ru, this message translates to:
+  /// **'По графику'**
+  String get myEarningsPlanned;
+
+  /// No description provided for @myEarningsDelta.
+  ///
+  /// In ru, this message translates to:
+  /// **'Разница'**
+  String get myEarningsDelta;
+
+  /// No description provided for @myEarningsDeltaEven.
+  ///
+  /// In ru, this message translates to:
+  /// **'Точно по плану'**
+  String get myEarningsDeltaEven;
+
+  /// No description provided for @myEarningsDeltaLess.
+  ///
+  /// In ru, this message translates to:
+  /// **'Меньше плана на {amount}'**
+  String myEarningsDeltaLess(String amount);
+
+  /// No description provided for @myEarningsDeltaMore.
+  ///
+  /// In ru, this message translates to:
+  /// **'Больше плана на {amount}'**
+  String myEarningsDeltaMore(String amount);
+
+  /// No description provided for @myEarningsApprovedOvertime.
+  ///
+  /// In ru, this message translates to:
+  /// **'Согласованная переработка: {duration}'**
+  String myEarningsApprovedOvertime(String duration);
+
   /// No description provided for @payrollMissingRateBadge.
   ///
   /// In ru, this message translates to:
@@ -2337,6 +2577,54 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Рабочая точка не найдена'**
   String get errorWorkLocationNotFound;
+
+  /// No description provided for @errorScheduleRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите график работы'**
+  String get errorScheduleRequired;
+
+  /// No description provided for @errorScheduleNotAvailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Этот график недоступен на выбранной точке'**
+  String get errorScheduleNotAvailable;
+
+  /// No description provided for @errorScheduleNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'График не найден, обновите список'**
+  String get errorScheduleNotFound;
+
+  /// No description provided for @errorOvertimeAlreadyRequested.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заявка по этой смене уже отправлена'**
+  String get errorOvertimeAlreadyRequested;
+
+  /// No description provided for @errorOvertimePeriodExpired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Срок подачи заявки истёк'**
+  String get errorOvertimePeriodExpired;
+
+  /// No description provided for @errorOvertimeNotApplicable.
+  ///
+  /// In ru, this message translates to:
+  /// **'По этой смене переработку добавить нельзя'**
+  String get errorOvertimeNotApplicable;
+
+  /// No description provided for @errorOvertimeRequestNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заявка на переработку не найдена'**
+  String get errorOvertimeRequestNotFound;
+
+  /// No description provided for @errorOvertimeAlreadyReviewed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заявка уже рассмотрена администратором'**
+  String get errorOvertimeAlreadyReviewed;
 
   /// No description provided for @errorGeoUnavailable.
   ///

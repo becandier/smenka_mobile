@@ -1125,6 +1125,53 @@ class OrganizationsTab extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [OvertimeRequestPage]
+class OvertimeRequestRoute extends PageRouteInfo<OvertimeRequestRouteArgs> {
+  OvertimeRequestRoute({
+    required String shiftId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         OvertimeRequestRoute.name,
+         args: OvertimeRequestRouteArgs(shiftId: shiftId, key: key),
+         initialChildren: children,
+       );
+
+  static const String name = 'OvertimeRequestRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<OvertimeRequestRouteArgs>();
+      return OvertimeRequestPage(shiftId: args.shiftId, key: args.key);
+    },
+  );
+}
+
+class OvertimeRequestRouteArgs {
+  const OvertimeRequestRouteArgs({required this.shiftId, this.key});
+
+  final String shiftId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'OvertimeRequestRouteArgs{shiftId: $shiftId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! OvertimeRequestRouteArgs) return false;
+    return shiftId == other.shiftId && key == other.key;
+  }
+
+  @override
+  int get hashCode => shiftId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [PayrollPage]
 class PayrollRoute extends PageRouteInfo<PayrollRouteArgs> {
   PayrollRoute({required String orgId, Key? key, List<PageRouteInfo>? children})
@@ -1667,5 +1714,84 @@ class WorkLocationPickerRouteArgs {
       orgId.hashCode ^
       selectedLocationId.hashCode ^
       allowNone.hashCode ^
+      key.hashCode;
+}
+
+/// generated route for
+/// [WorkSchedulePickerPage]
+class WorkSchedulePickerRoute
+    extends PageRouteInfo<WorkSchedulePickerRouteArgs> {
+  WorkSchedulePickerRoute({
+    required List<WorkSchedule> schedules,
+    String? selectedScheduleId,
+    String organizationTimezone = 'Europe/Moscow',
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         WorkSchedulePickerRoute.name,
+         args: WorkSchedulePickerRouteArgs(
+           schedules: schedules,
+           selectedScheduleId: selectedScheduleId,
+           organizationTimezone: organizationTimezone,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'WorkSchedulePickerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<WorkSchedulePickerRouteArgs>();
+      return WorkSchedulePickerPage(
+        schedules: args.schedules,
+        selectedScheduleId: args.selectedScheduleId,
+        organizationTimezone: args.organizationTimezone,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class WorkSchedulePickerRouteArgs {
+  const WorkSchedulePickerRouteArgs({
+    required this.schedules,
+    this.selectedScheduleId,
+    this.organizationTimezone = 'Europe/Moscow',
+    this.key,
+  });
+
+  final List<WorkSchedule> schedules;
+
+  final String? selectedScheduleId;
+
+  final String organizationTimezone;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'WorkSchedulePickerRouteArgs{schedules: $schedules, selectedScheduleId: $selectedScheduleId, organizationTimezone: $organizationTimezone, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! WorkSchedulePickerRouteArgs) return false;
+    return const ListEquality<WorkSchedule>().equals(
+          schedules,
+          other.schedules,
+        ) &&
+        selectedScheduleId == other.selectedScheduleId &&
+        organizationTimezone == other.organizationTimezone &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      const ListEquality<WorkSchedule>().hash(schedules) ^
+      selectedScheduleId.hashCode ^
+      organizationTimezone.hashCode ^
       key.hashCode;
 }

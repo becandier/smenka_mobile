@@ -43,6 +43,10 @@ class _IdleShiftContent extends StatelessWidget {
               _WorkLocationSelector(state: state),
               const SizedBox(height: 24),
             ],
+            if (state.isOrgShift) ...[
+              _WorkScheduleSelector(state: state),
+              const SizedBox(height: 24),
+            ],
             AppButton(
               label: l10n.shiftStart,
               isLoading: state.isActionLoading,

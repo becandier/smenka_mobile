@@ -136,6 +136,13 @@ class _SuccessAppState extends State<_SuccessApp> {
         RepositoryProvider<FilesRepository>.value(
           value: widget.filesRepository,
         ),
+        // Фиче-репозиторий work_schedules: принимает готовый Dio → создаётся
+        // лениво здесь (не в локаторе, см. конвенции DI).
+        RepositoryProvider<WorkScheduleRepository>(
+          create: (_) => WorkScheduleRepositoryImpl(
+            dataSource: WorkScheduleDataSource(dio: widget.dio),
+          ),
+        ),
         RepositoryProvider<ShiftContextStorage>.value(
           value: widget.shiftContextStorage,
         ),

@@ -19,8 +19,25 @@ abstract class PauseDto with _$PauseDto {
 }
 
 @freezed
-abstract class ShiftDto with _$ShiftDto {
+abstract class ShiftOvertimeRequestDto with _$ShiftOvertimeRequestDto {
   @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory ShiftOvertimeRequestDto({
+    required String id,
+    required int minutes,
+    required String status,
+    required String comment,
+    required DateTime createdAt,
+    String? reviewComment,
+    DateTime? reviewedAt,
+  }) = _ShiftOvertimeRequestDto;
+
+  factory ShiftOvertimeRequestDto.fromJson(Map<String, dynamic> json) =>
+      _$ShiftOvertimeRequestDtoFromJson(json);
+}
+
+@freezed
+abstract class ShiftDto with _$ShiftDto {
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory ShiftDto({
     required String id,
     required String userId,
@@ -41,6 +58,16 @@ abstract class ShiftDto with _$ShiftDto {
     String? userEmail,
     String? role,
     String? customRoleName,
+
+    /// Additive-поля графика работы (`work_schedules`, nullable). Старый
+    /// бэк/персональная смена не шлёт → `null`.
+    String? workScheduleId,
+    String? scheduleName,
+    DateTime? scheduledStartAt,
+    DateTime? scheduledEndAt,
+    int? lateSeconds,
+    String? finishReason,
+    ShiftOvertimeRequestDto? overtime,
   }) = _ShiftDto;
 
   factory ShiftDto.fromJson(Map<String, dynamic> json) =>

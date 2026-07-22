@@ -21,6 +21,18 @@ abstract class Organization with _$Organization {
     /// определяется сервером; при выключенной гео — выбирается сотрудником
     /// (обязательно, если флаг включён).
     @Default(false) bool requireWorkLocation,
+
+    /// IANA-таймзона организации (`Europe/Moscow`, …) — плановое время
+    /// графиков (`work_schedules`) показывается в ней, не в локальном
+    /// времени устройства. Дефолт совпадает с server_default бэка на случай
+    /// устаревшего кэша без поля.
+    @Default('Europe/Moscow') String timezone,
+
+    /// Срок подачи заявки на переработку в днях с момента `finished_at`
+    /// смены (`organization_settings.overtime_request_days`, денормализовано
+    /// в объект организации). Дефолт совпадает с server_default бэка на
+    /// случай устаревшего кэша без поля.
+    @Default(7) int overtimeRequestDays,
     OrgMembershipRole? myRole,
     OrganizationRole? myCustomRole,
   }) = _Organization;

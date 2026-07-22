@@ -285,11 +285,294 @@ as DateTime?,
 
 
 /// @nodoc
+mixin _$ShiftOvertimeRequestDto {
+
+ String get id; int get minutes; String get status; String get comment; DateTime get createdAt; String? get reviewComment; DateTime? get reviewedAt;
+/// Create a copy of ShiftOvertimeRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ShiftOvertimeRequestDtoCopyWith<ShiftOvertimeRequestDto> get copyWith => _$ShiftOvertimeRequestDtoCopyWithImpl<ShiftOvertimeRequestDto>(this as ShiftOvertimeRequestDto, _$identity);
+
+  /// Serializes this ShiftOvertimeRequestDto to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftOvertimeRequestDto&&(identical(other.id, id) || other.id == id)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.status, status) || other.status == status)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.reviewComment, reviewComment) || other.reviewComment == reviewComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,minutes,status,comment,createdAt,reviewComment,reviewedAt);
+
+@override
+String toString() {
+  return 'ShiftOvertimeRequestDto(id: $id, minutes: $minutes, status: $status, comment: $comment, createdAt: $createdAt, reviewComment: $reviewComment, reviewedAt: $reviewedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ShiftOvertimeRequestDtoCopyWith<$Res>  {
+  factory $ShiftOvertimeRequestDtoCopyWith(ShiftOvertimeRequestDto value, $Res Function(ShiftOvertimeRequestDto) _then) = _$ShiftOvertimeRequestDtoCopyWithImpl;
+@useResult
+$Res call({
+ String id, int minutes, String status, String comment, DateTime createdAt, String? reviewComment, DateTime? reviewedAt
+});
+
+
+
+
+}
+/// @nodoc
+class _$ShiftOvertimeRequestDtoCopyWithImpl<$Res>
+    implements $ShiftOvertimeRequestDtoCopyWith<$Res> {
+  _$ShiftOvertimeRequestDtoCopyWithImpl(this._self, this._then);
+
+  final ShiftOvertimeRequestDto _self;
+  final $Res Function(ShiftOvertimeRequestDto) _then;
+
+/// Create a copy of ShiftOvertimeRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? minutes = null,Object? status = null,Object? comment = null,Object? createdAt = null,Object? reviewComment = freezed,Object? reviewedAt = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,minutes: null == minutes ? _self.minutes : minutes // ignore: cast_nullable_to_non_nullable
+as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,reviewComment: freezed == reviewComment ? _self.reviewComment : reviewComment // ignore: cast_nullable_to_non_nullable
+as String?,reviewedAt: freezed == reviewedAt ? _self.reviewedAt : reviewedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ShiftOvertimeRequestDto].
+extension ShiftOvertimeRequestDtoPatterns on ShiftOvertimeRequestDto {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ShiftOvertimeRequestDto value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ShiftOvertimeRequestDto() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ShiftOvertimeRequestDto value)  $default,){
+final _that = this;
+switch (_that) {
+case _ShiftOvertimeRequestDto():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ShiftOvertimeRequestDto value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ShiftOvertimeRequestDto() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int minutes,  String status,  String comment,  DateTime createdAt,  String? reviewComment,  DateTime? reviewedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ShiftOvertimeRequestDto() when $default != null:
+return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.createdAt,_that.reviewComment,_that.reviewedAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int minutes,  String status,  String comment,  DateTime createdAt,  String? reviewComment,  DateTime? reviewedAt)  $default,) {final _that = this;
+switch (_that) {
+case _ShiftOvertimeRequestDto():
+return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.createdAt,_that.reviewComment,_that.reviewedAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int minutes,  String status,  String comment,  DateTime createdAt,  String? reviewComment,  DateTime? reviewedAt)?  $default,) {final _that = this;
+switch (_that) {
+case _ShiftOvertimeRequestDto() when $default != null:
+return $default(_that.id,_that.minutes,_that.status,_that.comment,_that.createdAt,_that.reviewComment,_that.reviewedAt);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _ShiftOvertimeRequestDto implements ShiftOvertimeRequestDto {
+  const _ShiftOvertimeRequestDto({required this.id, required this.minutes, required this.status, required this.comment, required this.createdAt, this.reviewComment, this.reviewedAt});
+  factory _ShiftOvertimeRequestDto.fromJson(Map<String, dynamic> json) => _$ShiftOvertimeRequestDtoFromJson(json);
+
+@override final  String id;
+@override final  int minutes;
+@override final  String status;
+@override final  String comment;
+@override final  DateTime createdAt;
+@override final  String? reviewComment;
+@override final  DateTime? reviewedAt;
+
+/// Create a copy of ShiftOvertimeRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ShiftOvertimeRequestDtoCopyWith<_ShiftOvertimeRequestDto> get copyWith => __$ShiftOvertimeRequestDtoCopyWithImpl<_ShiftOvertimeRequestDto>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ShiftOvertimeRequestDtoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftOvertimeRequestDto&&(identical(other.id, id) || other.id == id)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.status, status) || other.status == status)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.reviewComment, reviewComment) || other.reviewComment == reviewComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,minutes,status,comment,createdAt,reviewComment,reviewedAt);
+
+@override
+String toString() {
+  return 'ShiftOvertimeRequestDto(id: $id, minutes: $minutes, status: $status, comment: $comment, createdAt: $createdAt, reviewComment: $reviewComment, reviewedAt: $reviewedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ShiftOvertimeRequestDtoCopyWith<$Res> implements $ShiftOvertimeRequestDtoCopyWith<$Res> {
+  factory _$ShiftOvertimeRequestDtoCopyWith(_ShiftOvertimeRequestDto value, $Res Function(_ShiftOvertimeRequestDto) _then) = __$ShiftOvertimeRequestDtoCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, int minutes, String status, String comment, DateTime createdAt, String? reviewComment, DateTime? reviewedAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$ShiftOvertimeRequestDtoCopyWithImpl<$Res>
+    implements _$ShiftOvertimeRequestDtoCopyWith<$Res> {
+  __$ShiftOvertimeRequestDtoCopyWithImpl(this._self, this._then);
+
+  final _ShiftOvertimeRequestDto _self;
+  final $Res Function(_ShiftOvertimeRequestDto) _then;
+
+/// Create a copy of ShiftOvertimeRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? minutes = null,Object? status = null,Object? comment = null,Object? createdAt = null,Object? reviewComment = freezed,Object? reviewedAt = freezed,}) {
+  return _then(_ShiftOvertimeRequestDto(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,minutes: null == minutes ? _self.minutes : minutes // ignore: cast_nullable_to_non_nullable
+as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,reviewComment: freezed == reviewComment ? _self.reviewComment : reviewComment // ignore: cast_nullable_to_non_nullable
+as String?,reviewedAt: freezed == reviewedAt ? _self.reviewedAt : reviewedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$ShiftDto {
 
  String get id; String get userId; DateTime get startedAt; String get status; List<PauseDto> get pauses; int get workedSeconds; String? get organizationId; DateTime? get finishedAt; bool get hasIncompleteRequiredChecklists;/// Рабочая точка смены (additive, nullable). Старый бэк не шлёт → `null`.
  String? get workLocationId; WorkLocationDto? get workLocation;/// Additive-поля автора смены (орг-ответ). В персональном — `null`.
- String? get userName; String? get userEmail; String? get role; String? get customRoleName;
+ String? get userName; String? get userEmail; String? get role; String? get customRoleName;/// Additive-поля графика работы (`work_schedules`, nullable). Старый
+/// бэк/персональная смена не шлёт → `null`.
+ String? get workScheduleId; String? get scheduleName; DateTime? get scheduledStartAt; DateTime? get scheduledEndAt; int? get lateSeconds; String? get finishReason; ShiftOvertimeRequestDto? get overtime;
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -302,16 +585,16 @@ $ShiftDtoCopyWith<ShiftDto> get copyWith => _$ShiftDtoCopyWithImpl<ShiftDto>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.pauses, pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.pauses, pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.scheduleName, scheduleName) || other.scheduleName == scheduleName)&&(identical(other.scheduledStartAt, scheduledStartAt) || other.scheduledStartAt == scheduledStartAt)&&(identical(other.scheduledEndAt, scheduledEndAt) || other.scheduledEndAt == scheduledEndAt)&&(identical(other.lateSeconds, lateSeconds) || other.lateSeconds == lateSeconds)&&(identical(other.finishReason, finishReason) || other.finishReason == finishReason)&&(identical(other.overtime, overtime) || other.overtime == overtime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName);
+int get hashCode => Object.hashAll([runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName,workScheduleId,scheduleName,scheduledStartAt,scheduledEndAt,lateSeconds,finishReason,overtime]);
 
 @override
 String toString() {
-  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
+  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName, workScheduleId: $workScheduleId, scheduleName: $scheduleName, scheduledStartAt: $scheduledStartAt, scheduledEndAt: $scheduledEndAt, lateSeconds: $lateSeconds, finishReason: $finishReason, overtime: $overtime)';
 }
 
 
@@ -322,11 +605,11 @@ abstract mixin class $ShiftDtoCopyWith<$Res>  {
   factory $ShiftDtoCopyWith(ShiftDto value, $Res Function(ShiftDto) _then) = _$ShiftDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName
+ String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName, String? workScheduleId, String? scheduleName, DateTime? scheduledStartAt, DateTime? scheduledEndAt, int? lateSeconds, String? finishReason, ShiftOvertimeRequestDto? overtime
 });
 
 
-$WorkLocationDtoCopyWith<$Res>? get workLocation;
+$WorkLocationDtoCopyWith<$Res>? get workLocation;$ShiftOvertimeRequestDtoCopyWith<$Res>? get overtime;
 
 }
 /// @nodoc
@@ -339,7 +622,7 @@ class _$ShiftDtoCopyWithImpl<$Res>
 
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,Object? workScheduleId = freezed,Object? scheduleName = freezed,Object? scheduledStartAt = freezed,Object? scheduledEndAt = freezed,Object? lateSeconds = freezed,Object? finishReason = freezed,Object? overtime = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -356,7 +639,14 @@ as WorkLocationDto?,userName: freezed == userName ? _self.userName : userName //
 as String?,userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String?,customRoleName: freezed == customRoleName ? _self.customRoleName : customRoleName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,workScheduleId: freezed == workScheduleId ? _self.workScheduleId : workScheduleId // ignore: cast_nullable_to_non_nullable
+as String?,scheduleName: freezed == scheduleName ? _self.scheduleName : scheduleName // ignore: cast_nullable_to_non_nullable
+as String?,scheduledStartAt: freezed == scheduledStartAt ? _self.scheduledStartAt : scheduledStartAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,scheduledEndAt: freezed == scheduledEndAt ? _self.scheduledEndAt : scheduledEndAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,lateSeconds: freezed == lateSeconds ? _self.lateSeconds : lateSeconds // ignore: cast_nullable_to_non_nullable
+as int?,finishReason: freezed == finishReason ? _self.finishReason : finishReason // ignore: cast_nullable_to_non_nullable
+as String?,overtime: freezed == overtime ? _self.overtime : overtime // ignore: cast_nullable_to_non_nullable
+as ShiftOvertimeRequestDto?,
   ));
 }
 /// Create a copy of ShiftDto
@@ -370,6 +660,18 @@ $WorkLocationDtoCopyWith<$Res>? get workLocation {
 
   return $WorkLocationDtoCopyWith<$Res>(_self.workLocation!, (value) {
     return _then(_self.copyWith(workLocation: value));
+  });
+}/// Create a copy of ShiftDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ShiftOvertimeRequestDtoCopyWith<$Res>? get overtime {
+    if (_self.overtime == null) {
+    return null;
+  }
+
+  return $ShiftOvertimeRequestDtoCopyWith<$Res>(_self.overtime!, (value) {
+    return _then(_self.copyWith(overtime: value));
   });
 }
 }
@@ -453,10 +755,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftDto() when $default != null:
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime);case _:
   return orElse();
 
 }
@@ -474,10 +776,10 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftDto():
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -494,10 +796,10 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftDto() when $default != null:
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime);case _:
   return null;
 
 }
@@ -507,9 +809,9 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _ShiftDto implements ShiftDto {
-  const _ShiftDto({required this.id, required this.userId, required this.startedAt, required this.status, required final  List<PauseDto> pauses, required this.workedSeconds, this.organizationId, this.finishedAt, this.hasIncompleteRequiredChecklists = false, this.workLocationId, this.workLocation, this.userName, this.userEmail, this.role, this.customRoleName}): _pauses = pauses;
+  const _ShiftDto({required this.id, required this.userId, required this.startedAt, required this.status, required final  List<PauseDto> pauses, required this.workedSeconds, this.organizationId, this.finishedAt, this.hasIncompleteRequiredChecklists = false, this.workLocationId, this.workLocation, this.userName, this.userEmail, this.role, this.customRoleName, this.workScheduleId, this.scheduleName, this.scheduledStartAt, this.scheduledEndAt, this.lateSeconds, this.finishReason, this.overtime}): _pauses = pauses;
   factory _ShiftDto.fromJson(Map<String, dynamic> json) => _$ShiftDtoFromJson(json);
 
 @override final  String id;
@@ -535,6 +837,15 @@ class _ShiftDto implements ShiftDto {
 @override final  String? userEmail;
 @override final  String? role;
 @override final  String? customRoleName;
+/// Additive-поля графика работы (`work_schedules`, nullable). Старый
+/// бэк/персональная смена не шлёт → `null`.
+@override final  String? workScheduleId;
+@override final  String? scheduleName;
+@override final  DateTime? scheduledStartAt;
+@override final  DateTime? scheduledEndAt;
+@override final  int? lateSeconds;
+@override final  String? finishReason;
+@override final  ShiftOvertimeRequestDto? overtime;
 
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
@@ -549,16 +860,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._pauses, _pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._pauses, _pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.scheduleName, scheduleName) || other.scheduleName == scheduleName)&&(identical(other.scheduledStartAt, scheduledStartAt) || other.scheduledStartAt == scheduledStartAt)&&(identical(other.scheduledEndAt, scheduledEndAt) || other.scheduledEndAt == scheduledEndAt)&&(identical(other.lateSeconds, lateSeconds) || other.lateSeconds == lateSeconds)&&(identical(other.finishReason, finishReason) || other.finishReason == finishReason)&&(identical(other.overtime, overtime) || other.overtime == overtime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(_pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName);
+int get hashCode => Object.hashAll([runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(_pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName,workScheduleId,scheduleName,scheduledStartAt,scheduledEndAt,lateSeconds,finishReason,overtime]);
 
 @override
 String toString() {
-  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName)';
+  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName, workScheduleId: $workScheduleId, scheduleName: $scheduleName, scheduledStartAt: $scheduledStartAt, scheduledEndAt: $scheduledEndAt, lateSeconds: $lateSeconds, finishReason: $finishReason, overtime: $overtime)';
 }
 
 
@@ -569,11 +880,11 @@ abstract mixin class _$ShiftDtoCopyWith<$Res> implements $ShiftDtoCopyWith<$Res>
   factory _$ShiftDtoCopyWith(_ShiftDto value, $Res Function(_ShiftDto) _then) = __$ShiftDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName
+ String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName, String? workScheduleId, String? scheduleName, DateTime? scheduledStartAt, DateTime? scheduledEndAt, int? lateSeconds, String? finishReason, ShiftOvertimeRequestDto? overtime
 });
 
 
-@override $WorkLocationDtoCopyWith<$Res>? get workLocation;
+@override $WorkLocationDtoCopyWith<$Res>? get workLocation;@override $ShiftOvertimeRequestDtoCopyWith<$Res>? get overtime;
 
 }
 /// @nodoc
@@ -586,7 +897,7 @@ class __$ShiftDtoCopyWithImpl<$Res>
 
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,Object? workScheduleId = freezed,Object? scheduleName = freezed,Object? scheduledStartAt = freezed,Object? scheduledEndAt = freezed,Object? lateSeconds = freezed,Object? finishReason = freezed,Object? overtime = freezed,}) {
   return _then(_ShiftDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -603,7 +914,14 @@ as WorkLocationDto?,userName: freezed == userName ? _self.userName : userName //
 as String?,userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String?,customRoleName: freezed == customRoleName ? _self.customRoleName : customRoleName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,workScheduleId: freezed == workScheduleId ? _self.workScheduleId : workScheduleId // ignore: cast_nullable_to_non_nullable
+as String?,scheduleName: freezed == scheduleName ? _self.scheduleName : scheduleName // ignore: cast_nullable_to_non_nullable
+as String?,scheduledStartAt: freezed == scheduledStartAt ? _self.scheduledStartAt : scheduledStartAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,scheduledEndAt: freezed == scheduledEndAt ? _self.scheduledEndAt : scheduledEndAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,lateSeconds: freezed == lateSeconds ? _self.lateSeconds : lateSeconds // ignore: cast_nullable_to_non_nullable
+as int?,finishReason: freezed == finishReason ? _self.finishReason : finishReason // ignore: cast_nullable_to_non_nullable
+as String?,overtime: freezed == overtime ? _self.overtime : overtime // ignore: cast_nullable_to_non_nullable
+as ShiftOvertimeRequestDto?,
   ));
 }
 
@@ -618,6 +936,18 @@ $WorkLocationDtoCopyWith<$Res>? get workLocation {
 
   return $WorkLocationDtoCopyWith<$Res>(_self.workLocation!, (value) {
     return _then(_self.copyWith(workLocation: value));
+  });
+}/// Create a copy of ShiftDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ShiftOvertimeRequestDtoCopyWith<$Res>? get overtime {
+    if (_self.overtime == null) {
+    return null;
+  }
+
+  return $ShiftOvertimeRequestDtoCopyWith<$Res>(_self.overtime!, (value) {
+    return _then(_self.copyWith(overtime: value));
   });
 }
 }

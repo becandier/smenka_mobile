@@ -16,6 +16,8 @@ abstract class OrganizationDto with _$OrganizationDto {
     required DateTime createdAt,
     @Default(false) bool geoCheckEnabled,
     @Default(false) bool requireWorkLocation,
+    @Default('Europe/Moscow') String timezone,
+    @Default(7) int overtimeRequestDays,
     String? myRole,
     OrganizationRoleDto? myCustomRole,
   }) = _OrganizationDto;

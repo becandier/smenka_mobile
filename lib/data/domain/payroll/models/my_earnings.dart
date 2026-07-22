@@ -23,6 +23,18 @@ abstract class MyEarnings with _$MyEarnings {
     /// К выплате = gross − penalty. Может быть отрицательным.
     @Default(0) int netAmountMinor,
 
+    /// План против факта (фича `work_schedules`): плановая сумма за смены
+    /// периода, у которых есть график (для смен без графика план = факт).
+    /// `0` для персональных отчётов и организаций без графиков.
+    @Default(0) int plannedAmountMinor,
+
+    /// `gross − planned`. Отрицательное значение — заработал меньше плана.
+    @Default(0) int deltaAmountMinor,
+
+    /// Сумма согласованных (`approved`) заявок на переработку за период,
+    /// секунды. Уже учтена в [grossAmountMinor] (влияет на оплату).
+    @Default(0) int overtimeSeconds,
+
     /// Действующая ставка; null — ставка ещё не задана.
     CurrentRate? currentRate,
   }) = _MyEarnings;
