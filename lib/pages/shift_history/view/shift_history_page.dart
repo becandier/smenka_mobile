@@ -48,7 +48,11 @@ class _ShiftHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.historyTitle), centerTitle: true),
+      appBar: AppBar(
+        title: Text(context.l10n.historyTitle),
+        centerTitle: true,
+        actions: const [NotificationBellButton()],
+      ),
       body: Column(
         children: [
           const _StatsSection(),

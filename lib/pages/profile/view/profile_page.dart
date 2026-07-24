@@ -35,7 +35,11 @@ class _ProfileView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.profileTitle), centerTitle: true),
+      appBar: AppBar(
+        title: Text(l10n.profileTitle),
+        centerTitle: true,
+        actions: const [NotificationBellButton()],
+      ),
       body: SectionDataWrapper<ProfileCubit, ProfileState, User>(
         selector: (state) => state.user,
         onRetry: () => context.read<ProfileCubit>().refresh(),

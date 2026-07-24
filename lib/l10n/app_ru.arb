@@ -663,5 +663,84 @@
     "errorOauthClientError": "Не удалось выполнить вход. Попробуйте снова",
     "commonNoConnection": "Нет соединения",
     "commonRetry": "Повторить",
-    "shiftOfflineBanner": "Нет соединения. Проверьте интернет"
+    "shiftOfflineBanner": "Нет соединения. Проверьте интернет",
+    "commonDone": "Готово",
+
+    "notificationsTitle": "Уведомления",
+    "notificationsEmpty": "Уведомлений пока нет",
+    "notificationsMarkAllRead": "Прочитать все",
+    "errorNotificationNotFound": "Уведомление не найдено",
+
+    "myTestsTitle": "Мои тесты",
+    "myTestsEmpty": "Назначенных тестов нет",
+    "myTestsStatusAssigned": "Не начат",
+    "myTestsStatusInProgress": "В процессе",
+    "myTestsStatusPassed": "Сдан",
+    "myTestsStatusFailed": "Не сдан",
+    "myTestsAttemptsProgress": "Попытки: {used}/{max}",
+    "@myTestsAttemptsProgress": {
+        "placeholders": {
+            "used": {"type": "int"},
+            "max": {"type": "int"}
+        }
+    },
+    "myTestsBestPercent": "Лучший результат: {percent}%",
+    "@myTestsBestPercent": {
+        "placeholders": {
+            "percent": {"type": "int"}
+        }
+    },
+    "myTestsDueDate": "Срок: {date}",
+    "@myTestsDueDate": {
+        "placeholders": {
+            "date": {"type": "String"}
+        }
+    },
+    "myTestsAllOrganizations": "Все организации",
+
+    "testAttemptTitle": "Тест",
+    "testAttemptProgress": "Отвечено {answered} из {total}",
+    "@testAttemptProgress": {
+        "placeholders": {
+            "answered": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "testAttemptQuestionNumber": "Вопрос {number}",
+    "@testAttemptQuestionNumber": {
+        "placeholders": {
+            "number": {"type": "int"}
+        }
+    },
+    "testAttemptUnsupportedQuestion": "Этот тип вопроса пока не поддерживается в приложении",
+    "testAttemptSubmit": "Завершить",
+    "testAttemptResultPassed": "Зачёт",
+    "testAttemptResultFailed": "Не зачёт",
+    "testAttemptResultScore": "Баллы: {score} из {maxScore}",
+    "@testAttemptResultScore": {
+        "placeholders": {
+            "score": {"type": "int"},
+            "maxScore": {"type": "int"}
+        }
+    },
+    "testAttemptResultPercent": "{percent}%",
+    "@testAttemptResultPercent": {
+        "placeholders": {
+            "percent": {"type": "int"}
+        }
+    },
+    "testAttemptResultAttemptsLeft": "Осталось попыток: {count}",
+    "@testAttemptResultAttemptsLeft": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "testAttemptRetry": "Пройти ещё раз",
+
+    "errorTestAttemptsExhausted": "Попытки для этого теста исчерпаны",
+    "errorTestAlreadyPassed": "Тест уже сдан",
+    "errorTestAttemptAlreadySubmitted": "Эта попытка уже сдана",
+    "errorTestAttemptInProgress": "У вас уже есть незавершённая попытка",
+    "errorTestTemplateArchived": "Тест больше не доступен",
+    "errorTestAssignmentNotFound": "Назначение теста не найдено"
 }

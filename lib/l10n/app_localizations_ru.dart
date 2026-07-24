@@ -1432,4 +1432,118 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get shiftOfflineBanner => 'Нет соединения. Проверьте интернет';
+
+  @override
+  String get commonDone => 'Готово';
+
+  @override
+  String get notificationsTitle => 'Уведомления';
+
+  @override
+  String get notificationsEmpty => 'Уведомлений пока нет';
+
+  @override
+  String get notificationsMarkAllRead => 'Прочитать все';
+
+  @override
+  String get errorNotificationNotFound => 'Уведомление не найдено';
+
+  @override
+  String get myTestsTitle => 'Мои тесты';
+
+  @override
+  String get myTestsEmpty => 'Назначенных тестов нет';
+
+  @override
+  String get myTestsStatusAssigned => 'Не начат';
+
+  @override
+  String get myTestsStatusInProgress => 'В процессе';
+
+  @override
+  String get myTestsStatusPassed => 'Сдан';
+
+  @override
+  String get myTestsStatusFailed => 'Не сдан';
+
+  @override
+  String myTestsAttemptsProgress(int used, int max) {
+    return 'Попытки: $used/$max';
+  }
+
+  @override
+  String myTestsBestPercent(int percent) {
+    return 'Лучший результат: $percent%';
+  }
+
+  @override
+  String myTestsDueDate(String date) {
+    return 'Срок: $date';
+  }
+
+  @override
+  String get myTestsAllOrganizations => 'Все организации';
+
+  @override
+  String get testAttemptTitle => 'Тест';
+
+  @override
+  String testAttemptProgress(int answered, int total) {
+    return 'Отвечено $answered из $total';
+  }
+
+  @override
+  String testAttemptQuestionNumber(int number) {
+    return 'Вопрос $number';
+  }
+
+  @override
+  String get testAttemptUnsupportedQuestion =>
+      'Этот тип вопроса пока не поддерживается в приложении';
+
+  @override
+  String get testAttemptSubmit => 'Завершить';
+
+  @override
+  String get testAttemptResultPassed => 'Зачёт';
+
+  @override
+  String get testAttemptResultFailed => 'Не зачёт';
+
+  @override
+  String testAttemptResultScore(int score, int maxScore) {
+    return 'Баллы: $score из $maxScore';
+  }
+
+  @override
+  String testAttemptResultPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String testAttemptResultAttemptsLeft(int count) {
+    return 'Осталось попыток: $count';
+  }
+
+  @override
+  String get testAttemptRetry => 'Пройти ещё раз';
+
+  @override
+  String get errorTestAttemptsExhausted => 'Попытки для этого теста исчерпаны';
+
+  @override
+  String get errorTestAlreadyPassed => 'Тест уже сдан';
+
+  @override
+  String get errorTestAttemptAlreadySubmitted => 'Эта попытка уже сдана';
+
+  @override
+  String get errorTestAttemptInProgress =>
+      'У вас уже есть незавершённая попытка';
+
+  @override
+  String get errorTestTemplateArchived => 'Тест больше не доступен';
+
+  @override
+  String get errorTestAssignmentNotFound => 'Назначение теста не найдено';
 }

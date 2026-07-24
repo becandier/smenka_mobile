@@ -8,6 +8,7 @@ export 'checklist_instance_tile.dart';
 export 'date_range_filter_chip.dart';
 export 'geo/geo_permission_dialogs.dart';
 export 'member_role_badges.dart';
+export 'notification_bell_button.dart';
 export 'paginated_section_data/_paginated_section_data.dart';
 export 'period_preset_selector.dart';
 export 'pin_code_field.dart';
