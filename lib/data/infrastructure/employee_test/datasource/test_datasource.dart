@@ -37,18 +37,18 @@ class TestDataSource {
     return TestAssignmentDto.fromJson(response.data!);
   }
 
-  Future<TestAttemptDto> startAttempt(String assignmentId) async {
+  Future<TestAttemptForFillDto> startAttempt(String assignmentId) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/my/test-assignments/$assignmentId/attempts',
     );
-    return TestAttemptDto.fromJson(response.data!);
+    return TestAttemptForFillDto.fromJson(response.data!);
   }
 
-  Future<TestAttemptDto> getAttempt(String attemptId) async {
+  Future<TestAttemptDetailDto> getAttempt(String attemptId) async {
     final response = await _dio.get<Map<String, dynamic>>(
       '/my/test-attempts/$attemptId',
     );
-    return TestAttemptDto.fromJson(response.data!);
+    return TestAttemptDetailDto.fromJson(response.data!);
   }
 
   Future<TestResultDto> submitAttempt(

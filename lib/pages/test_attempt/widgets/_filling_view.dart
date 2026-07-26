@@ -4,7 +4,7 @@ class _FillingView extends StatelessWidget {
   const _FillingView({required this.state, required this.attempt});
 
   final TestAttemptState state;
-  final TestAttempt attempt;
+  final TestAttemptFill attempt;
 
   @override
   Widget build(BuildContext context) {

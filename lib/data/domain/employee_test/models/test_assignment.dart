@@ -7,7 +7,8 @@ part 'test_assignment.freezed.dart';
 enum TestAssignmentStatus { assigned, inProgress, passed, failed, unknown }
 
 /// Мета шаблона теста, вложенная в назначение (без вопросов — см.
-/// `TestAttempt` для снимка вопросов конкретной попытки).
+/// `TestAttemptFill`/`TestAttemptDetail` для снимка вопросов конкретной
+/// попытки).
 ///
 /// [shuffleQuestions] — подсказка клиенту перемешать порядок вопросов;
 /// `backend.md` явно не перечисляет это поле в кратком списке полей

@@ -54,18 +54,29 @@ TestAttemptQuestion _question(
   options: [_option('${id}o1', correct: true), _option('${id}o2')],
 );
 
-TestAttempt _attempt({
+/// Fill-форма (старт/продолжение попытки) — то, что реально отдаёт
+/// `TestRepository.startAttempt`.
+TestAttemptFill _attemptFill({
+  String id = 'attempt1',
+  List<TestAttemptQuestion>? questions,
+}) => TestAttemptFill(
+  id: id,
+  startedAt: DateTime.utc(2026, 7, 20),
+  questions: questions ?? [_question('q1'), _question('q2')],
+);
+
+/// Detail-форма (`GET /my/test-attempts/{id}`) — то, что отдаёт
+/// `TestRepository.getAttempt` при резюме открытой попытки.
+TestAttemptDetail _attemptDetail({
   String id = 'attempt1',
   List<TestAttemptQuestion>? questions,
   TestAttemptStatus status = TestAttemptStatus.inProgress,
-}) => TestAttempt(
+}) => TestAttemptDetail(
   id: id,
   attemptNumber: 1,
   status: status,
-  score: 0,
   maxScore: 2,
-  percent: 0,
-  passed: false,
+  passThresholdPercent: 70,
   startedAt: DateTime.utc(2026, 7, 20),
   questions: questions ?? [_question('q1'), _question('q2')],
 );
@@ -89,7 +100,7 @@ void main() {
         );
         when(
           () => repo.startAttempt('a1'),
-        ).thenAnswer((_) async => Task.success(_attempt()));
+        ).thenAnswer((_) async => Task.success(_attemptFill()));
 
         final cubit = build();
         await pumpEventQueue();
@@ -121,7 +132,7 @@ void main() {
         );
         when(
           () => repo.getAttempt('open1'),
-        ).thenAnswer((_) async => Task.success(_attempt(id: 'open1')));
+        ).thenAnswer((_) async => Task.success(_attemptDetail(id: 'open1')));
 
         final cubit = build();
         await pumpEventQueue();
@@ -200,7 +211,7 @@ void main() {
           );
         });
         when(() => repo.startAttempt('a1')).thenAnswer(
-          (_) async => const Task<TestAttempt>.failure(
+          (_) async => const Task<TestAttemptFill>.failure(
             ApiException.server(
               message: 'Уже есть попытка',
               code: 'TEST_ATTEMPT_IN_PROGRESS',
@@ -209,7 +220,7 @@ void main() {
         );
         when(
           () => repo.getAttempt('race1'),
-        ).thenAnswer((_) async => Task.success(_attempt(id: 'race1')));
+        ).thenAnswer((_) async => Task.success(_attemptDetail(id: 'race1')));
 
         final cubit = build();
         await pumpEventQueue();
@@ -241,7 +252,7 @@ void main() {
         );
         when(() => repo.getAttempt('open1')).thenAnswer(
           (_) async => Task.success(
-            _attempt(id: 'open1', status: TestAttemptStatus.submitted),
+            _attemptDetail(id: 'open1', status: TestAttemptStatus.submitted),
           ),
         );
 
@@ -262,7 +273,7 @@ void main() {
         );
         when(() => repo.startAttempt('a1')).thenAnswer(
           (_) async => Task.success(
-            _attempt(
+            _attemptFill(
               questions: [_question('q1'), _question('q2'), _question('q3')],
             ),
           ),
@@ -295,7 +306,7 @@ void main() {
       );
       when(() => repo.startAttempt('a1')).thenAnswer(
         (_) async => Task.success(
-          _attempt(
+          _attemptFill(
             questions: [_question('q1'), _question('q2'), _question('q3')],
           ),
         ),
@@ -319,7 +330,7 @@ void main() {
       ).thenAnswer((_) async => Task.success(_assignment(attempts: const [])));
       when(
         () => repo.startAttempt('a1'),
-      ).thenAnswer((_) async => Task.success(_attempt()));
+      ).thenAnswer((_) async => Task.success(_attemptFill()));
       return build();
     }
 
@@ -355,7 +366,7 @@ void main() {
       ).thenAnswer((_) async => Task.success(_assignment(attempts: const [])));
       when(
         () => repo.startAttempt('a1'),
-      ).thenAnswer((_) async => Task.success(_attempt()));
+      ).thenAnswer((_) async => Task.success(_attemptFill()));
       when(
         () => repo.submitAttempt('attempt1', answers: any(named: 'answers')),
       ).thenAnswer(
@@ -410,7 +421,7 @@ void main() {
       ).thenAnswer((_) async => Task.success(_assignment(attempts: const [])));
       when(
         () => repo.startAttempt('a1'),
-      ).thenAnswer((_) async => Task.success(_attempt()));
+      ).thenAnswer((_) async => Task.success(_attemptFill()));
       when(
         () => repo.submitAttempt('attempt1', answers: any(named: 'answers')),
       ).thenAnswer(
@@ -443,7 +454,7 @@ void main() {
         );
         when(() => repo.startAttempt('a1')).thenAnswer((_) async {
           startCalls++;
-          return Task.success(_attempt(id: 'attempt$startCalls'));
+          return Task.success(_attemptFill(id: 'attempt$startCalls'));
         });
         when(
           () => repo.submitAttempt(any(), answers: any(named: 'answers')),

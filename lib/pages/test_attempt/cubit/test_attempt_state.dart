@@ -17,7 +17,7 @@ abstract class TestAttemptState with _$TestAttemptState {
 
     /// Текущая попытка в процессе прохождения (снимок вопросов). `null`,
     /// когда экран показывает результат или блокирующее сообщение.
-    TestAttempt? attempt,
+    TestAttemptFill? attempt,
 
     /// Локальный выбор варианта(ов) по `attempt_question_id`. Живёт отдельно
     /// от [attempt] — снимок вопросов с сервера не мутируется.

@@ -18,7 +18,7 @@ mixin _$TestAttemptState {
 /// грузится первой, используется и в fill-режиме, и в блокирующем.
  TestAssignment? get assignment;/// Текущая попытка в процессе прохождения (снимок вопросов). `null`,
 /// когда экран показывает результат или блокирующее сообщение.
- TestAttempt? get attempt;/// Локальный выбор варианта(ов) по `attempt_question_id`. Живёт отдельно
+ TestAttemptFill? get attempt;/// Локальный выбор варианта(ов) по `attempt_question_id`. Живёт отдельно
 /// от [attempt] — снимок вопросов с сервера не мутируется.
  Map<String, Set<String>> get selectedOptionIds; bool get submitting; String? get submitErrorCode; String? get submitError;/// Результат после `submit` (или просмотр уже сданной попытки).
  TestResult? get result;/// `true` — старт попытки невозможен (уже сдан / попытки исчерпаны /
@@ -56,11 +56,11 @@ abstract mixin class $TestAttemptStateCopyWith<$Res>  {
   factory $TestAttemptStateCopyWith(TestAttemptState value, $Res Function(TestAttemptState) _then) = _$TestAttemptStateCopyWithImpl;
 @useResult
 $Res call({
- FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttempt? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked
+ FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttemptFill? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked
 });
 
 
-$TestAssignmentCopyWith<$Res>? get assignment;$TestAttemptCopyWith<$Res>? get attempt;$TestResultCopyWith<$Res>? get result;
+$TestAssignmentCopyWith<$Res>? get assignment;$TestAttemptFillCopyWith<$Res>? get attempt;$TestResultCopyWith<$Res>? get result;
 
 }
 /// @nodoc
@@ -80,7 +80,7 @@ as FeatureStatus,error: freezed == error ? _self.error : error // ignore: cast_n
 as String?,errorCode: freezed == errorCode ? _self.errorCode : errorCode // ignore: cast_nullable_to_non_nullable
 as String?,assignment: freezed == assignment ? _self.assignment : assignment // ignore: cast_nullable_to_non_nullable
 as TestAssignment?,attempt: freezed == attempt ? _self.attempt : attempt // ignore: cast_nullable_to_non_nullable
-as TestAttempt?,selectedOptionIds: null == selectedOptionIds ? _self.selectedOptionIds : selectedOptionIds // ignore: cast_nullable_to_non_nullable
+as TestAttemptFill?,selectedOptionIds: null == selectedOptionIds ? _self.selectedOptionIds : selectedOptionIds // ignore: cast_nullable_to_non_nullable
 as Map<String, Set<String>>,submitting: null == submitting ? _self.submitting : submitting // ignore: cast_nullable_to_non_nullable
 as bool,submitErrorCode: freezed == submitErrorCode ? _self.submitErrorCode : submitErrorCode // ignore: cast_nullable_to_non_nullable
 as String?,submitError: freezed == submitError ? _self.submitError : submitError // ignore: cast_nullable_to_non_nullable
@@ -105,12 +105,12 @@ $TestAssignmentCopyWith<$Res>? get assignment {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TestAttemptCopyWith<$Res>? get attempt {
+$TestAttemptFillCopyWith<$Res>? get attempt {
     if (_self.attempt == null) {
     return null;
   }
 
-  return $TestAttemptCopyWith<$Res>(_self.attempt!, (value) {
+  return $TestAttemptFillCopyWith<$Res>(_self.attempt!, (value) {
     return _then(_self.copyWith(attempt: value));
   });
 }/// Create a copy of TestAttemptState
@@ -207,7 +207,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttempt? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TestAttemptState() when $default != null:
 return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked);case _:
@@ -228,7 +228,7 @@ return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttempt? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptState():
 return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked);case _:
@@ -248,7 +248,7 @@ return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttempt? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)?  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptState() when $default != null:
 return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked);case _:
@@ -274,7 +274,7 @@ class _TestAttemptState extends TestAttemptState {
 @override final  TestAssignment? assignment;
 /// Текущая попытка в процессе прохождения (снимок вопросов). `null`,
 /// когда экран показывает результат или блокирующее сообщение.
-@override final  TestAttempt? attempt;
+@override final  TestAttemptFill? attempt;
 /// Локальный выбор варианта(ов) по `attempt_question_id`. Живёт отдельно
 /// от [attempt] — снимок вопросов с сервера не мутируется.
  final  Map<String, Set<String>> _selectedOptionIds;
@@ -327,11 +327,11 @@ abstract mixin class _$TestAttemptStateCopyWith<$Res> implements $TestAttemptSta
   factory _$TestAttemptStateCopyWith(_TestAttemptState value, $Res Function(_TestAttemptState) _then) = __$TestAttemptStateCopyWithImpl;
 @override @useResult
 $Res call({
- FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttempt? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked
+ FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttemptFill? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked
 });
 
 
-@override $TestAssignmentCopyWith<$Res>? get assignment;@override $TestAttemptCopyWith<$Res>? get attempt;@override $TestResultCopyWith<$Res>? get result;
+@override $TestAssignmentCopyWith<$Res>? get assignment;@override $TestAttemptFillCopyWith<$Res>? get attempt;@override $TestResultCopyWith<$Res>? get result;
 
 }
 /// @nodoc
@@ -351,7 +351,7 @@ as FeatureStatus,error: freezed == error ? _self.error : error // ignore: cast_n
 as String?,errorCode: freezed == errorCode ? _self.errorCode : errorCode // ignore: cast_nullable_to_non_nullable
 as String?,assignment: freezed == assignment ? _self.assignment : assignment // ignore: cast_nullable_to_non_nullable
 as TestAssignment?,attempt: freezed == attempt ? _self.attempt : attempt // ignore: cast_nullable_to_non_nullable
-as TestAttempt?,selectedOptionIds: null == selectedOptionIds ? _self._selectedOptionIds : selectedOptionIds // ignore: cast_nullable_to_non_nullable
+as TestAttemptFill?,selectedOptionIds: null == selectedOptionIds ? _self._selectedOptionIds : selectedOptionIds // ignore: cast_nullable_to_non_nullable
 as Map<String, Set<String>>,submitting: null == submitting ? _self.submitting : submitting // ignore: cast_nullable_to_non_nullable
 as bool,submitErrorCode: freezed == submitErrorCode ? _self.submitErrorCode : submitErrorCode // ignore: cast_nullable_to_non_nullable
 as String?,submitError: freezed == submitError ? _self.submitError : submitError // ignore: cast_nullable_to_non_nullable
@@ -377,12 +377,12 @@ $TestAssignmentCopyWith<$Res>? get assignment {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TestAttemptCopyWith<$Res>? get attempt {
+$TestAttemptFillCopyWith<$Res>? get attempt {
     if (_self.attempt == null) {
     return null;
   }
 
-  return $TestAttemptCopyWith<$Res>(_self.attempt!, (value) {
+  return $TestAttemptFillCopyWith<$Res>(_self.attempt!, (value) {
     return _then(_self.copyWith(attempt: value));
   });
 }/// Create a copy of TestAttemptState

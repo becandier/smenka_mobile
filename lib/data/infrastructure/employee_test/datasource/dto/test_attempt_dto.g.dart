@@ -34,6 +34,7 @@ _TestAttemptQuestionDto _$TestAttemptQuestionDtoFromJson(
   type: json['type'] as String,
   points: (json['points'] as num?)?.toInt() ?? 1,
   position: (json['position'] as num?)?.toInt() ?? 0,
+  awarded: (json['awarded'] as num?)?.toInt(),
   options:
       (json['options'] as List<dynamic>?)
           ?.map((e) => TestAttemptOptionDto.fromJson(e as Map<String, dynamic>))
@@ -49,42 +50,68 @@ Map<String, dynamic> _$TestAttemptQuestionDtoToJson(
   'type': instance.type,
   'points': instance.points,
   'position': instance.position,
+  'awarded': instance.awarded,
   'options': instance.options.map((e) => e.toJson()).toList(),
 };
 
-_TestAttemptDto _$TestAttemptDtoFromJson(Map<String, dynamic> json) =>
-    _TestAttemptDto(
-      id: json['id'] as String,
-      attemptNumber: (json['attempt_number'] as num).toInt(),
-      status: json['status'] as String,
-      maxScore: (json['max_score'] as num).toInt(),
-      startedAt: DateTime.parse(json['started_at'] as String),
-      score: (json['score'] as num?)?.toInt() ?? 0,
-      percent: (json['percent'] as num?)?.toInt() ?? 0,
-      passed: json['passed'] as bool? ?? false,
-      submittedAt: json['submitted_at'] == null
-          ? null
-          : DateTime.parse(json['submitted_at'] as String),
-      questions:
-          (json['questions'] as List<dynamic>?)
-              ?.map(
-                (e) =>
-                    TestAttemptQuestionDto.fromJson(e as Map<String, dynamic>),
-              )
-              .toList() ??
-          const <TestAttemptQuestionDto>[],
-    );
+_TestAttemptForFillDto _$TestAttemptForFillDtoFromJson(
+  Map<String, dynamic> json,
+) => _TestAttemptForFillDto(
+  id: json['id'] as String,
+  startedAt: DateTime.parse(json['started_at'] as String),
+  questions:
+      (json['questions'] as List<dynamic>?)
+          ?.map(
+            (e) => TestAttemptQuestionDto.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const <TestAttemptQuestionDto>[],
+);
 
-Map<String, dynamic> _$TestAttemptDtoToJson(_TestAttemptDto instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'attempt_number': instance.attemptNumber,
-      'status': instance.status,
-      'max_score': instance.maxScore,
-      'started_at': instance.startedAt.toIso8601String(),
-      'score': instance.score,
-      'percent': instance.percent,
-      'passed': instance.passed,
-      'submitted_at': instance.submittedAt?.toIso8601String(),
-      'questions': instance.questions.map((e) => e.toJson()).toList(),
-    };
+Map<String, dynamic> _$TestAttemptForFillDtoToJson(
+  _TestAttemptForFillDto instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'started_at': instance.startedAt.toIso8601String(),
+  'questions': instance.questions.map((e) => e.toJson()).toList(),
+};
+
+_TestAttemptDetailDto _$TestAttemptDetailDtoFromJson(
+  Map<String, dynamic> json,
+) => _TestAttemptDetailDto(
+  id: json['id'] as String,
+  attemptNumber: (json['attempt_number'] as num).toInt(),
+  status: json['status'] as String,
+  maxScore: (json['max_score'] as num).toInt(),
+  passThresholdPercent: (json['pass_threshold_percent'] as num).toInt(),
+  startedAt: DateTime.parse(json['started_at'] as String),
+  score: (json['score'] as num?)?.toInt(),
+  percent: (json['percent'] as num?)?.toInt(),
+  passed: json['passed'] as bool?,
+  submittedAt: json['submitted_at'] == null
+      ? null
+      : DateTime.parse(json['submitted_at'] as String),
+  questions:
+      (json['questions'] as List<dynamic>?)
+          ?.map(
+            (e) => TestAttemptQuestionDto.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const <TestAttemptQuestionDto>[],
+);
+
+Map<String, dynamic> _$TestAttemptDetailDtoToJson(
+  _TestAttemptDetailDto instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'attempt_number': instance.attemptNumber,
+  'status': instance.status,
+  'max_score': instance.maxScore,
+  'pass_threshold_percent': instance.passThresholdPercent,
+  'started_at': instance.startedAt.toIso8601String(),
+  'score': instance.score,
+  'percent': instance.percent,
+  'passed': instance.passed,
+  'submitted_at': instance.submittedAt?.toIso8601String(),
+  'questions': instance.questions.map((e) => e.toJson()).toList(),
+};
