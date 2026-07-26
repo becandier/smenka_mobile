@@ -74,6 +74,15 @@ class AppRouter extends RootStackRouter {
     // старт по `https://{webAppHost}/invite/:code`, живой deep link или
     // возврат после логина — везде один и тот же роут/экран.
     AutoRoute(page: InviteRoute.page, path: '/invite/:code'),
+    // Центр уведомлений (notifications) — root-уровня: колокольчик в
+    // аппбаре любого таба пушит его через `context.router.root.push(...)`.
+    AutoRoute(page: NotificationsRoute.page, path: '/notifications'),
+    // «Мои тесты» + прохождение (employee_tests) — root-уровня: список
+    // фильтруется по всем организациям пользователя (не завязан на один
+    // `<org-base>`), а прохождение открывается и из списка, и из
+    // уведомления `test_assigned` без орг-контекста в пути.
+    AutoRoute(page: MyTestsRoute.page, path: '/my-tests'),
+    AutoRoute(page: TestAttemptRoute.page, path: '/test-attempt/:assignmentId'),
     // Полноэкранный просмотр фото чек-листа — поверх табов (root), один на все
     // вкладки; пушится через `context.router.root.push(...)`.
     CustomRoute<void>(

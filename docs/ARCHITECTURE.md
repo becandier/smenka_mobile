@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-07-22 (фича: work_schedules)
+Последнее обновление: 2026-07-24 (фичи: notifications, employee_tests)
 
 ---
 
@@ -57,7 +57,9 @@ lib/
 │   │   ├── checklist/             # ChecklistInstance*, EffectiveChecklistTemplate (read/fill)
 │   │   ├── file_storage/          # StoredFile, FileCategory + FilesRepository (платформенный слой)
 │   │   ├── shift/                 # Shift (+ScheduleFields), Pause, ShiftStats, ShiftOvertimeRequest
-│   │   └── work_schedule/         # WorkSchedule, MySchedules + WorkScheduleRepository (work_schedules)
+│   │   ├── work_schedule/         # WorkSchedule, MySchedules + WorkScheduleRepository (work_schedules)
+│   │   ├── notification/          # AppNotification + NotificationRepository (notifications)
+│   │   └── employee_test/         # TestAssignment, TestAttempt, TestResult + TestRepository (employee_tests)
 │   └── infrastructure/            # Реализации (datasource + dto + mappers + repos)
 │       ├── auth/
 │       ├── user/
@@ -67,20 +69,28 @@ lib/
 │       ├── checklist/
 │       ├── file_storage/          # FilesDataSource + FilesRepositoryImpl (без DTO: ответ 1-в-1)
 │       ├── shift/
-│       └── work_schedule/         # WorkScheduleDataSource + WorkScheduleRepositoryImpl (work_schedules)
+│       ├── work_schedule/         # WorkScheduleDataSource + WorkScheduleRepositoryImpl (work_schedules)
+│       ├── notification/          # NotificationDataSource + NotificationRepositoryImpl (notifications)
+│       └── employee_test/         # TestDataSource (/my/test-assignments* + /my/test-attempts*) + TestRepositoryImpl (employee_tests)
 ├── shared/                        # Глобальные cubit'ы вне страниц
-│   └── auth/                      # AuthCubit + AuthState (глобальная авторизация)
+│   ├── auth/                      # AuthCubit + AuthState (глобальная авторизация)
+│   └── notifications/             # NotificationsCubit + State (глобальный счётчик/лента, notifications)
 ├── l10n/                          # Локализация (ARB)
 ├── widgets/                       # Переиспользуемые виджеты
 │   ├── app_toast/                 # Toast-уведомления (AppToast, AppToastManager)
 │   ├── section_data/              # SectionDataWrapper, SectionLoader, SectionError
 │   ├── paginated_section_data/    # PaginatedSectionDataList/Grid/SliverList/SliverGrid
-│   └── storage_image.dart         # Показ файла из file_storage (cache + авто-рефреш presigned)
+│   ├── storage_image.dart         # Показ файла из file_storage (cache + авто-рефреш presigned)
+│   └── notification_bell_button.dart  # Колокольчик+бейдж в аппбаре всех 4 табов (читает глобальный NotificationsCubit, notifications)
 └── pages/                         # UI-слой (экраны)
     ├── auth/                      # Login/Register + LoginCubit + _PasswordRequirements
     ├── verify/                    # Верификация email + VerifyCubit
     ├── home/                      # ExampleHome (заглушка, не в основной навигации)
     ├── main_router/               # Bottom tabs router (4 таба)
+    ├── notifications/             # Центр уведомлений (root-роут, notifications)
+    │   ├── notification_navigation.dart  # Маппинг type → переход (test_assigned → TestAttemptRoute; незнакомый тип — no-op)
+    │   ├── view/                  # NotificationsPage (лента + «Прочитать все»; кубит — глобальный, из lib/shared/notifications)
+    │   └── widgets/               # _NotificationTile
     ├── shift_tracker/             # Трекер смены (Tab 1 «Смена»)
     │   ├── cubit/                 # ShiftTrackerCubit + State
     │   ├── view/                  # ShiftTrackerPage
@@ -142,6 +152,14 @@ lib/
     ├── payroll/                   # «Зарплата» — отчёт по сотрудникам (push)
     │   ├── cubit/                 # PayrollCubit + State
     │   └── view/                  # PayrollPage
+    ├── my_tests/                  # «Мои тесты» — список назначений (root-роут, employee_tests)
+    │   ├── cubit/                 # MyTestsCubit + State
+    │   ├── view/                  # MyTestsPage (фильтр по организации, если их >1)
+    │   └── widgets/               # _MyTestCard, _OrgFilterRow
+    ├── test_attempt/              # Прохождение одного назначения (root-роут, `:assignmentId`, employee_tests)
+    │   ├── cubit/                 # TestAttemptCubit + State (резолв старт/резюме/блок, локальный выбор, submit)
+    │   ├── view/                  # TestAttemptPage
+    │   └── widgets/               # _BlockedView, _FillingView (+_QuestionCard), _ResultView (+_ResultQuestionCard)
     ├── date_range_picker/         # Общий date-range picker (CustomRoute-модалка)
     │   └── view/                  # DateRangePickerPage
     ├── profile/                   # Профиль (Tab 4 «Профиль»)
@@ -186,6 +204,14 @@ lib/
 | `KnowledgeNode` / `KnowledgeNodeKind` | `domain/knowledge/models/knowledge_node.dart` | узел дерева базы знаний (id, kind: section/page/unknown, title, icon?, position, allMembers?, children); `unknown` — безопасный фолбэк форвард-компат |
 | `KnowledgeNodeDetail` / `KnowledgeBreadcrumb` | `domain/knowledge/models/knowledge_node.dart` | деталь узла: обогащённый `content` (для page) + `breadcrumbs`; для section `content=null` |
 | `KnowledgeBlock` (sealed) / `KnowledgeSpan` | `domain/knowledge/models/knowledge_block.dart` | блок контента (heading/paragraph/bulleted_list/numbered_list/quote/callout/divider/image/file/video/table + **`unknown`**-фолбэк); `KnowledgeSpan` — inline rich (bold/italic/underline/strike/code/link) |
+| `AppNotification` | `domain/notification/models/app_notification.dart` | id, type, title, isRead, createdAt, body?, payload? (`Map<String, dynamic>?`, форма зависит от `type`, разбирается точечно при переходе); названа не `Notification` — коллизия с `package:flutter/widgets.dart` (`notifications`) |
+| `TestTemplateBrief` | `domain/employee_test/models/test_assignment.dart` | мета шаблона теста внутри назначения: id, title, questionCount, maxAttempts, passThresholdPercent, description?, shuffleQuestions (`@Default(false)`, аддитивное — `employee_tests`) |
+| `TestAssignmentAttemptBrief` | `domain/employee_test/models/test_assignment.dart` | краткая запись о попытке в истории назначения: attemptNumber, percent, passed, id?/status?(`TestAttemptStatus?`)/submittedAt? (nullable — `backend.md` не гарантирует состав), геттер `isInProgress` (`employee_tests`) |
+| `TestAssignment` | `domain/employee_test/models/test_assignment.dart` | назначение теста сотруднику: id, organizationId/organizationName, template (`TestTemplateBrief`), status (`TestAssignmentStatus`: assigned/inProgress/passed/failed/unknown), attemptsUsed, passed, bestPercent?, dueAt?, attempts? (`null` в списке, заполнено в деталях, `employee_tests`) |
+| `TestAttemptOption` / `TestAttemptQuestion` | `domain/employee_test/models/test_attempt.dart` | вариант/вопрос — снимок попытки; `isCorrect` — `null` до сдачи либо при `reveal_answers=false`; `TestQuestionType` (single/multiple/unknown, ручной парсинг) (`employee_tests`) |
+| `TestAttempt` | `domain/employee_test/models/test_attempt.dart` | попытка прохождения: id, attemptNumber, status (`TestAttemptStatus`: inProgress/submitted/unknown), score/maxScore/percent/passed, startedAt, questions, submittedAt? — используется и для «прохождения», и для «просмотра сданной попытки» (`employee_tests`) |
+| `TestSubmitAnswer` | `domain/employee_test/models/test_attempt.dart` | один ответ при `submit`: attemptQuestionId, selectedOptionIds (`employee_tests`) |
+| `TestResult` | `domain/employee_test/models/test_result.dart` | ответ `submit`: score/maxScore/percent/passed/passThresholdPercent/attemptsUsed/attemptsLeft/revealAnswers, questions? (разметка верных — только при `revealAnswers=true`) (`employee_tests`) |
 | `DefaultPaginator<T>` | `core/models/default_paginator.dart` | hasMore, data, total (универсальная пагинация) |
 
 ---
@@ -205,6 +231,8 @@ lib/
 | `FilesDataSource` | `/files` | uploadFile (multipart `file`/`category`/`organization_id`, onSendProgress), getFile (свежий presigned URL) |
 | `KnowledgeDataSource` | `/organizations/{orgId}/knowledge` | getTree (`?tree=true`), getNode (деталь узла) — только чтение |
 | `WorkScheduleDataSource` | `/organizations/{orgId}` | getMySchedules (`GET .../my-schedules?work_location_id=`) (work_schedules) |
+| `NotificationDataSource` | `/notifications` | getNotifications (`limit`/`offset`/`unread`), getUnreadCount, markRead (`POST /{id}/read`), markAllRead (`POST /read-all`) (notifications) |
+| `TestDataSource` | `/my/test-assignments`, `/my/test-attempts` | getMyAssignments (`organizationId?`/`status?`), getAssignmentDetail, startAttempt (`POST .../attempts`), getAttempt, submitAttempt (`POST .../submit`) — единый DataSource на обе базы (по образцу `ChecklistDataSource`) (employee_tests) |
 
 > Write-слой org-менеджмента (create/delete/rotateInvite/updateMemberRole/getSettings/updateSettings/getAllOrganizations), управление рабочими точками, ставками и шаблонами чек-листов вынесены в веб-админку — в мобильном API их нет.
 
@@ -223,6 +251,8 @@ lib/
 | `FilesRepository` | FilesDataSource | uploadFile, getFile (платформенный слой `file_storage`; зарегистрирован глобально, потребители — фото чек-листов/база знаний/аватары; UI-показ — виджет `StorageImage`) |
 | `KnowledgeRepository` | KnowledgeDataSource | getTree, getNode (всё read-only; файлы блоков рефрешит через `FilesRepository`/`StorageImage`) |
 | `WorkScheduleRepository` | WorkScheduleDataSource | getMySchedules (work_schedules; фиче-репозиторий — создаётся в `success_app` через `RepositoryProvider(create:)` с готовым `dio`, НЕ в локаторе, как `PenaltyRepository`/`KnowledgeRepository`) |
+| `NotificationRepository` | NotificationDataSource | getNotifications, getUnreadCount, markRead, markAllRead (notifications; фиче-репозиторий — `RepositoryProvider(create:)` в `success_app` с готовым `dio`) |
+| `TestRepository` | TestDataSource | getMyAssignments, getAssignmentDetail, startAttempt, getAttempt, submitAttempt (employee_tests; фиче-репозиторий — `RepositoryProvider(create:)` в `success_app` с готовым `dio`) |
 
 > `OrganizationRole` отдельного репозитория не имеет (только DTO+mapper; модель вкладывается в `Member`/`Organization`). `LocationRepository` удалён.
 
@@ -259,6 +289,9 @@ lib/
 | `PayrollCubit` | Готов | Отчёт «Зарплата»: окно периода, totals + items, карта участников для перехода на деталь |
 | `KnowledgeTreeCubit` | Готов | Дерево базы знаний (read-only); хранит локальную развёрнутость разделов (`expandedIds`) |
 | `KnowledgePageCubit` | Готов | Деталь страницы базы знаний (read-only); `KNOWLEDGE_NODE_NOT_FOUND` → error по коду |
+| `NotificationsCubit` | Готов | Глобальный кубит (`lib/shared/notifications/`, по образцу `AuthCubit`) — счётчик непрочитанных (грузится в конструкторе, нужен в аппбаре всех 4 табов) + лента (`PaginatedSectionData`, лениво при открытии `NotificationsPage`); `markRead`/`markAllRead` синхронно обновляют и ленту, и бейдж (notifications) |
+| `MyTestsCubit` | Готов | «Мои тесты»: пагинированный список назначений + фильтр по организации (`OrganizationRepository.watchMyOrganizations`, скрыт при ≤1 организации) (employee_tests) |
+| `TestAttemptCubit` | Готов | Прохождение одного назначения: резолв при входе (продолжить открытую попытку / показать блок «уже сдан»-«лимит исчерпан» / стартовать новую), локальный выбор ответов (`selectSingle`/`toggleMultiple`), `submit`, «Пройти ещё раз»; независим от `MyTestsCubit`/`NotificationsCubit` — только `TestRepository` (employee_tests) |
 
 ---
 
@@ -274,6 +307,9 @@ lib/
 | `VerifyRoute` | `/verify` | Подтверждение email |
 | `DebugRoute` | `/debug` | Debug-страница |
 | `MainRouterRoute` | `/` | Bottom tabs (Смена · История · Организации · Профиль) |
+| `NotificationsRoute` | `/notifications` | Центр уведомлений (root, push из колокольчика аппбара любого таба) (notifications) |
+| `MyTestsRoute` | `/my-tests` | «Мои тесты» — список назначений по всем организациям (root; `initialOrganizationId?` — предвыбор фильтра из хаба организации) (employee_tests) |
+| `TestAttemptRoute` | `/test-attempt/:assignmentId` | Прохождение назначения (root; открывается и из «Мои тесты», и из уведомления `test_assigned`) (employee_tests) |
 | `ShiftTrackerRoute` | `/shift` | Трекер смены (Tab 1, initial) |
 | `ShiftChecklistsRoute` | `<tab>/shifts/:shiftId/checklists` | Чек-листы смены (push; в табах Смена/История) |
 | `ChecklistFillRoute` | `<tab>/shifts/:shiftId/checklists/:instanceId` | Заполнение чек-листа (push); `organizationId?` для загрузки фото, `readOnly` для чужой/завершённой смены |
@@ -499,6 +535,32 @@ lib/
 - **Таймзона организации без хардкода смещений**: `core/utils/org_timezone.dart` (`toOrgLocal`) — пакет `timezone` (dart-lang, `data/latest_10y.dart`), НЕ рукописная таблица UTC-офсетов (была бы неверна для зон с переходом на летнее/зимнее время и разошлась бы при следующем изменении правил). Инициализация базы ленивая при первом вызове — чистая Dart-структура без I/O, безопасно на всех платформах, включая web. Невалидное/незнакомое имя зоны → фолбэк на UTC без падения.
 - **DI**: `WorkScheduleRepository` — фиче-репозиторий, создаётся в `success_app` через `RepositoryProvider(create:)` с готовым `dio` (как `PenaltyRepository`/`KnowledgeRepository`), НЕ в локаторе. `WorkScheduleContextStorage` — НЕ регистрируется нигде глобально (единственный потребитель `ShiftTrackerPage` создаёт её на месте из `context.read<SharedPreferences>()`).
 - **Тесты**: `test/pages/shift_tracker/shift_tracker_cubit_test.dart` (группа «выбор графика при старте» — 0/1/>1, запоминание выбора, `SCHEDULE_NOT_AVAILABLE`, fail-open при сетевой ошибке, персональная смена не трогает графики), `test/pages/shift_detail/shift_detail_cubit_test.dart`, `test/pages/overtime_request/overtime_request_cubit_test.dart`, `test/core/utils/org_timezone_test.dart`.
+
+---
+
+## Центр уведомлений (notifications) и прохождение тестов (employee_tests)
+
+Две связанные фичи одной поставки: `notifications` (`../docs/tasks/notifications/mobile.md`) — переиспользуемый внутри-апповый центр уведомлений (pull-модель, без OS/web-push — см. `backend.md`); `employee_tests` (`../docs/tasks/employee_tests/mobile.md`) — прохождение назначенных тестов сотрудником. Первый и пока единственный тип уведомления — `test_assigned`, что и связывает фичи: назначение теста в админке рождает уведомление → тап по нему открывает прохождение.
+
+**notifications:**
+- **Домен/инфра** `notification/`: `AppNotification` (id/type/title/isRead/createdAt/body?/payload?); `NotificationDataSource` (`GET /notifications`, `GET /notifications/unread-count`, `POST /notifications/{id}/read`, `POST /notifications/read-all`), `NotificationRepositoryImpl` (`Task<…>`).
+- **`NotificationsCubit`** — **глобальный** кубит уровня приложения (`lib/shared/notifications/`, по образцу `AuthCubit`), не кубит одной страницы: счётчик непрочитанных нужен в бейдже колокольчика на всех 4 табах шелла одновременно, а `NotificationsPage` переиспользует тот же инстанс, чтобы `markRead`/`markAllRead` сразу отражались в бейдже без повторного похода за счётчиком. Счётчик грузится в конструкторе (дёшево, нужен сразу); лента (`PaginatedSectionData`) — лениво, при открытии `NotificationsPage.initState`.
+- **UI**: `NotificationBellButton` (`lib/widgets/`) — колокольчик+бейдж (`Badge`, `99+` при переполнении), добавлен в аппбар всех 4 табов (`shift_tracker`, `shift_history`, `organizations`, `profile`); тап → `context.router.root.push(NotificationsRoute())`. `NotificationsPage` — лента pull-to-refresh + пагинация (`PaginatedSectionDataList`), кнопка «Прочитать все» в аппбаре (видна только при `unreadCount > 0`), empty-стейт.
+- **Переход по тапу**: `navigateForNotification` (`lib/pages/notifications/notification_navigation.dart`) — маппинг `type → переход`, расширяемый новым `case` без правки остальной ленты; `test_assigned` достаёт `payload['assignment_id']` и пушит `TestAttemptRoute`. Незнакомый (будущий) тип — форвард-совместимость: no-op (уведомление уже помечено прочитанным вызывающей стороной до навигации).
+- **DI**: `NotificationRepository` — фиче-репозиторий, `RepositoryProvider(create:)` в `success_app` с готовым `dio` (не в локаторе); `NotificationsCubit` — `BlocProvider` там же, рядом с `ThemeCubit`.
+- **Тесты**: `test/data/notification/notification_mapper_test.dart`, `test/shared/notifications/notifications_cubit_test.dart`.
+
+**employee_tests:**
+- **Домен/инфра** `employee_test/`: `TestAssignment` (+вложенные `TestTemplateBrief`, `TestAssignmentAttemptBrief`), `TestAttempt` (+`TestAttemptQuestion`/`TestAttemptOption`, снимок вопросов попытки), `TestResult`, `TestSubmitAnswer`; `TestDataSource` — единый DataSource на обе базы `/my/test-assignments*` и `/my/test-attempts*` (по образцу `ChecklistDataSource`), `TestRepositoryImpl` (`Task<…>`).
+- **«Мои тесты»** (`my_tests/`, root-роут `/my-tests`): `MyTestsCubit` — пагинированный список назначений + фильтр по организации (скрыт, пока организаций ≤1; список организаций — `OrganizationRepository.watchMyOrganizations`, не завязан на `NotificationsCubit`/другие кубиты). Карточка (`_MyTestCard`): название, статус-чип (assigned/in_progress/passed/failed), «Попытки: N/M», лучший % (если есть), дедлайн (если есть). Точка входа — пункт «Мои тесты» в `_OrgNavigationSection` (хаб организации, предвыбирает `initialOrganizationId`).
+- **Прохождение** (`test_attempt/`, root-роут `/test-attempt/:assignmentId`): `TestAttemptCubit` резолвит при входе на экран (без отдельного «продолжить» экрана — всё в одном месте): есть открытая `in_progress`-попытка → резюмирует (`GET .../test-attempts/{id}`); уже `passed`/лимит попыток исчерпан → блокирующий экран (`_BlockedView`) с итогом из уже загруженного `assignment` (без похода за попыткой); иначе — стартует новую (`POST .../attempts`). Гонки (`TEST_ATTEMPT_IN_PROGRESS` при старте — другое устройство/повторный тап) — один переспрос деталей назначения, без риска рекурсии (`allowRaceRetry` пробрасывается `false` дальше). Локальный выбор ответа (`selectSingle`/`toggleMultiple`) живёт в `TestAttemptState.selectedOptionIds` отдельно от снимка вопросов (снимок не мутируется). `shuffleQuestions` — перемешивание на клиенте (`Fisher-Yates` через `List.shuffle()`) при загрузке попытки.
+- **Экраны**: `_FillingView` (прогресс «вопрос k из N», `RadioGroup`/`CheckboxListTile` по типу вопроса, кнопка «Завершить»), `_ResultView` (баллы/%,«Зачёт»/«Не зачёт», осталось попыток; при `revealAnswers=true` — разбор по вопросам зелёным/красным; кнопки «Пройти ещё раз» (если есть попытки и не сдан) / «Готово»), `_BlockedView` (единое сообщение по `error.code`: `TEST_ALREADY_PASSED`/`TEST_ATTEMPTS_EXHAUSTED`/`TEST_ATTEMPT_ALREADY_SUBMITTED`/`TEST_TEMPLATE_ARCHIVED`).
+- **DI**: `TestRepository` — фиче-репозиторий, `RepositoryProvider(create:)` в `success_app` с готовым `dio` (не в локаторе). `TestAttemptCubit`/`MyTestsCubit` независимы друг от друга и от `NotificationsCubit` — единственная связь фич идёт через навигацию (`navigateForNotification`), не через кубиты.
+- **Тесты**: `test/data/employee_test/test_mapper_test.dart`, `test/pages/my_tests/my_tests_cubit_test.dart`, `test/pages/test_attempt/test_attempt_cubit_test.dart` (резолв всех веток входа, локальный выбор, submit успех/ошибка, retry, shuffle).
+- **⚠️ Открытые вопросы к аналитику** (не блокируют mobile-трек — обработаны консервативно, отслеживаются в `../docs/tasks/employee_tests/STATUS.md`):
+  1. `backend.md` не перечисляет `shuffle_questions` в кратком составе `TestAssignmentOut.template` (список полей в прозе), хотя `mobile.md` явно требует перемешивание на клиенте — поле сделано аддитивным (`TestTemplateBrief.shuffleQuestions`, `@Default(false)`), чтобы не упасть, если бэк его не пришлёт.
+  2. `backend.md` описывает состав `GET /my/test-assignments/{id}.attempts[]` прозой («кратко: number, percent, passed, submitted_at») без явного упоминания `id`/`status` по каждой попытке — `TestAssignmentAttemptBrief.id`/`status` сделаны nullable; `TestAttemptCubit` резолвит открытую попытку по `id`, если он есть, иначе полагается на защитные коды ответа `POST .../attempts` (не ходит за несуществующим `id`).
+- **Не мобильное**: `last_attempt_id` в `TestAssignmentOut` — расширение для **админского** реестра (`GET .../assignments`), сотрудник видит свои попытки через `MyTestAssignmentDetail.attempts[]`/`GET /my/test-attempts/{id}`; мобильные DTO не менялись.
 
 ---
 

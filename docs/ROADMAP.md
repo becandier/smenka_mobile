@@ -279,3 +279,18 @@
 - [x] **Таймзона организации**: `core/utils/org_timezone.dart` на пакете `timezone` (dart-lang, `data/latest_10y.dart`) — не рукописная таблица офсетов (была бы неверна при DST); фолбэк на UTC при незнакомой зоне
 - [x] `flutter analyze` чисто, `flutter test` зелёный (159/159, включая новые группы: выбор графика 10 тестов, `ShiftDetailCubit` 5, `OvertimeRequestCubit` 2, `org_timezone` 3), `flutter build web --release` собирается
 - [ ] **End-to-end**: бэкенд/админка фичи на момент реализации ещё не задеплоены — мобилка построена против согласованного контракта (`backend.md`); заработает после деплоя бэка
+
+---
+
+## Фича — Центр уведомлений и прохождение тестов (notifications + employee_tests) `[~]` (`../docs/tasks/notifications/mobile.md`, `../docs/tasks/employee_tests/mobile.md`)
+- [x] **notifications — Data**: домен `notification/` (`AppNotification`), `NotificationDataSource`/`NotificationRepositoryImpl` (`/notifications`, `/notifications/unread-count`, `POST .../read`, `POST .../read-all`)
+- [x] **notifications — глобальный кубит**: `NotificationsCubit` (`lib/shared/notifications/`, по образцу `AuthCubit`) — счётчик непрочитанных в конструкторе (бейдж на всех 4 табах), лента лениво на `NotificationsPage`; `markRead`/`markAllRead` синхронно обновляют и ленту, и бейдж
+- [x] **notifications — UI**: `NotificationBellButton` в аппбаре 4 табов (Смена/История/Организации/Профиль); `NotificationsPage` — лента pull-to-refresh + пагинация, «Прочитать все»; переход по тапу — расширяемый маппинг `type → route` (`navigateForNotification`), `test_assigned` → `TestAttemptRoute`, незнакомый тип — no-op (форвард-совместимость)
+- [x] **employee_tests — Data**: домен `employee_test/` (`TestAssignment`, `TestAttempt`+снимок вопросов, `TestResult`, `TestSubmitAnswer`); единый `TestDataSource` на `/my/test-assignments*` + `/my/test-attempts*` (по образцу `ChecklistDataSource`), `TestRepositoryImpl`
+- [x] **employee_tests — «Мои тесты»**: `MyTestsCubit` (пагинация + фильтр по организации, скрыт при ≤1 организации), точка входа — пункт в хабе организации (`_OrgNavigationSection`, предвыбор `initialOrganizationId`)
+- [x] **employee_tests — прохождение**: `TestAttemptCubit` — резолв при входе (резюме открытой попытки / блок «уже сдан»-«лимит исчерпан» / старт новой), защита от гонки `TEST_ATTEMPT_IN_PROGRESS` (один переспрос без риска рекурсии), локальный выбор ответов отдельно от снимка вопросов, `shuffleQuestions` — перемешивание на клиенте; экраны `_FillingView`/`_ResultView`/`_BlockedView`, ошибки строго по `error.code`
+- [x] **DI**: `NotificationRepository`/`TestRepository` — фиче-репозитории (`RepositoryProvider(create:)` в `success_app` с готовым `dio`, не в локаторе); кубиты независимы друг от друга — связь только через навигацию
+- [x] Локализация новых строк + кодов ошибок (`NOTIFICATION_NOT_FOUND`, `TEST_ATTEMPTS_EXHAUSTED`, `TEST_ALREADY_PASSED`, `TEST_ATTEMPT_ALREADY_SUBMITTED`, `TEST_ATTEMPT_IN_PROGRESS`, `TEST_TEMPLATE_ARCHIVED`, `TEST_ASSIGNMENT_NOT_FOUND`)
+- [x] `flutter analyze` чисто, `flutter test` зелёный (202/202, включая новые группы: `notifications_cubit` 3, `notification_mapper`, `my_tests_cubit` 3, `test_attempt_cubit` 14, `test_mapper`), `make gen`/`make loc` прогнаны
+- [ ] **Открытые вопросы к аналитику** (не блокируют, обработаны консервативно — см. `docs/ARCHITECTURE.md`): `TestTemplateBrief.shuffleQuestions` и `TestAssignmentAttemptBrief.id`/`status` сделаны аддитивными/nullable — `backend.md` не гарантирует их явно в кратких списках полей
+- [ ] **End-to-end**: бэкенд фичи на момент реализации ещё не задеплоен (STATUS: `notifications`/`employee_tests` backend — `todo`) — мобилка построена против согласованного контракта (`backend.md`); заработает после деплоя бэка

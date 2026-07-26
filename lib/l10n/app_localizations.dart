@@ -2673,6 +2673,198 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Нет соединения. Проверьте интернет'**
   String get shiftOfflineBanner;
+
+  /// No description provided for @commonDone.
+  ///
+  /// In ru, this message translates to:
+  /// **'Готово'**
+  String get commonDone;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомлений пока нет'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationsMarkAllRead.
+  ///
+  /// In ru, this message translates to:
+  /// **'Прочитать все'**
+  String get notificationsMarkAllRead;
+
+  /// No description provided for @errorNotificationNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомление не найдено'**
+  String get errorNotificationNotFound;
+
+  /// No description provided for @myTestsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Мои тесты'**
+  String get myTestsTitle;
+
+  /// No description provided for @myTestsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначенных тестов нет'**
+  String get myTestsEmpty;
+
+  /// No description provided for @myTestsStatusAssigned.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не начат'**
+  String get myTestsStatusAssigned;
+
+  /// No description provided for @myTestsStatusInProgress.
+  ///
+  /// In ru, this message translates to:
+  /// **'В процессе'**
+  String get myTestsStatusInProgress;
+
+  /// No description provided for @myTestsStatusPassed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сдан'**
+  String get myTestsStatusPassed;
+
+  /// No description provided for @myTestsStatusFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не сдан'**
+  String get myTestsStatusFailed;
+
+  /// No description provided for @myTestsAttemptsProgress.
+  ///
+  /// In ru, this message translates to:
+  /// **'Попытки: {used}/{max}'**
+  String myTestsAttemptsProgress(int used, int max);
+
+  /// No description provided for @myTestsBestPercent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лучший результат: {percent}%'**
+  String myTestsBestPercent(int percent);
+
+  /// No description provided for @myTestsDueDate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Срок: {date}'**
+  String myTestsDueDate(String date);
+
+  /// No description provided for @myTestsAllOrganizations.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все организации'**
+  String get myTestsAllOrganizations;
+
+  /// No description provided for @testAttemptTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тест'**
+  String get testAttemptTitle;
+
+  /// No description provided for @testAttemptProgress.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отвечено {answered} из {total}'**
+  String testAttemptProgress(int answered, int total);
+
+  /// No description provided for @testAttemptQuestionNumber.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вопрос {number}'**
+  String testAttemptQuestionNumber(int number);
+
+  /// No description provided for @testAttemptUnsupportedQuestion.
+  ///
+  /// In ru, this message translates to:
+  /// **'Этот тип вопроса пока не поддерживается в приложении'**
+  String get testAttemptUnsupportedQuestion;
+
+  /// No description provided for @testAttemptSubmit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Завершить'**
+  String get testAttemptSubmit;
+
+  /// No description provided for @testAttemptResultPassed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Зачёт'**
+  String get testAttemptResultPassed;
+
+  /// No description provided for @testAttemptResultFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не зачёт'**
+  String get testAttemptResultFailed;
+
+  /// No description provided for @testAttemptResultScore.
+  ///
+  /// In ru, this message translates to:
+  /// **'Баллы: {score} из {maxScore}'**
+  String testAttemptResultScore(int score, int maxScore);
+
+  /// No description provided for @testAttemptResultPercent.
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}%'**
+  String testAttemptResultPercent(int percent);
+
+  /// No description provided for @testAttemptResultAttemptsLeft.
+  ///
+  /// In ru, this message translates to:
+  /// **'Осталось попыток: {count}'**
+  String testAttemptResultAttemptsLeft(int count);
+
+  /// No description provided for @testAttemptRetry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пройти ещё раз'**
+  String get testAttemptRetry;
+
+  /// No description provided for @errorTestAttemptsExhausted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Попытки для этого теста исчерпаны'**
+  String get errorTestAttemptsExhausted;
+
+  /// No description provided for @errorTestAlreadyPassed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тест уже сдан'**
+  String get errorTestAlreadyPassed;
+
+  /// No description provided for @errorTestAttemptAlreadySubmitted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Эта попытка уже сдана'**
+  String get errorTestAttemptAlreadySubmitted;
+
+  /// No description provided for @errorTestAttemptInProgress.
+  ///
+  /// In ru, this message translates to:
+  /// **'У вас уже есть незавершённая попытка'**
+  String get errorTestAttemptInProgress;
+
+  /// No description provided for @errorTestTemplateArchived.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тест больше не доступен'**
+  String get errorTestTemplateArchived;
+
+  /// No description provided for @errorTestAssignmentNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Назначение теста не найдено'**
+  String get errorTestAssignmentNotFound;
 }
 
 class _AppLocalizationsDelegate

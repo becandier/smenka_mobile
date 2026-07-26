@@ -869,6 +869,78 @@ class MyPenaltiesRouteArgs {
 }
 
 /// generated route for
+/// [MyTestsPage]
+class MyTestsRoute extends PageRouteInfo<MyTestsRouteArgs> {
+  MyTestsRoute({
+    String? initialOrganizationId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         MyTestsRoute.name,
+         args: MyTestsRouteArgs(
+           initialOrganizationId: initialOrganizationId,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'MyTestsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<MyTestsRouteArgs>(
+        orElse: () => const MyTestsRouteArgs(),
+      );
+      return MyTestsPage(
+        initialOrganizationId: args.initialOrganizationId,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class MyTestsRouteArgs {
+  const MyTestsRouteArgs({this.initialOrganizationId, this.key});
+
+  final String? initialOrganizationId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'MyTestsRouteArgs{initialOrganizationId: $initialOrganizationId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MyTestsRouteArgs) return false;
+    return initialOrganizationId == other.initialOrganizationId &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode => initialOrganizationId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
+/// [NotificationsPage]
+class NotificationsRoute extends PageRouteInfo<void> {
+  const NotificationsRoute({List<PageRouteInfo>? children})
+    : super(NotificationsRoute.name, initialChildren: children);
+
+  static const String name = 'NotificationsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const NotificationsPage();
+    },
+  );
+}
+
+/// generated route for
 /// [OrgShiftDetailPage]
 class OrgShiftDetailRoute extends PageRouteInfo<OrgShiftDetailRouteArgs> {
   OrgShiftDetailRoute({
@@ -1595,6 +1667,59 @@ class ShiftTrackerRoute extends PageRouteInfo<void> {
       return const ShiftTrackerPage();
     },
   );
+}
+
+/// generated route for
+/// [TestAttemptPage]
+class TestAttemptRoute extends PageRouteInfo<TestAttemptRouteArgs> {
+  TestAttemptRoute({
+    required String assignmentId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         TestAttemptRoute.name,
+         args: TestAttemptRouteArgs(assignmentId: assignmentId, key: key),
+         rawPathParams: {'assignmentId': assignmentId},
+         initialChildren: children,
+       );
+
+  static const String name = 'TestAttemptRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<TestAttemptRouteArgs>(
+        orElse: () => TestAttemptRouteArgs(
+          assignmentId: pathParams.getString('assignmentId'),
+        ),
+      );
+      return TestAttemptPage(assignmentId: args.assignmentId, key: args.key);
+    },
+  );
+}
+
+class TestAttemptRouteArgs {
+  const TestAttemptRouteArgs({required this.assignmentId, this.key});
+
+  final String assignmentId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'TestAttemptRouteArgs{assignmentId: $assignmentId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! TestAttemptRouteArgs) return false;
+    return assignmentId == other.assignmentId && key == other.key;
+  }
+
+  @override
+  int get hashCode => assignmentId.hashCode ^ key.hashCode;
 }
 
 /// generated route for

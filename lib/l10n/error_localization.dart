@@ -67,6 +67,15 @@ String localizedErrorMessage(
     'PENALTY_TEMPLATE_NOT_FOUND' => l10n.errorPenaltyTemplateNotFound,
     // knowledge_base: база знаний (узел не найден / доступ отозван / чужая org)
     'KNOWLEDGE_NODE_NOT_FOUND' => l10n.errorKnowledgeNodeNotFound,
+    // notifications: центр уведомлений
+    'NOTIFICATION_NOT_FOUND' => l10n.errorNotificationNotFound,
+    // employee_tests: прохождение тестов сотрудником
+    'TEST_ATTEMPTS_EXHAUSTED' => l10n.errorTestAttemptsExhausted,
+    'TEST_ALREADY_PASSED' => l10n.errorTestAlreadyPassed,
+    'TEST_ATTEMPT_ALREADY_SUBMITTED' => l10n.errorTestAttemptAlreadySubmitted,
+    'TEST_ATTEMPT_IN_PROGRESS' => l10n.errorTestAttemptInProgress,
+    'TEST_TEMPLATE_ARCHIVED' => l10n.errorTestTemplateArchived,
+    'TEST_ASSIGNMENT_NOT_FOUND' => l10n.errorTestAssignmentNotFound,
     // Гео-отказы здесь НЕ маппятся: они клиентские (geo_service.dart) и никогда
     // не приходят как error.code с бэка. Отказы геолокации доводятся до UI
     // типизированно — StartShiftResult (shift_tracker → idle_shift_content) и

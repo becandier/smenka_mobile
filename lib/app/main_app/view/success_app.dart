@@ -143,6 +143,19 @@ class _SuccessAppState extends State<_SuccessApp> {
             dataSource: WorkScheduleDataSource(dio: widget.dio),
           ),
         ),
+        // Фиче-репозиторий notifications: принимает готовый Dio → создаётся
+        // лениво здесь (не в локаторе, см. конвенции DI).
+        RepositoryProvider<NotificationRepository>(
+          create: (_) => NotificationRepositoryImpl(
+            dataSource: NotificationDataSource(dio: widget.dio),
+          ),
+        ),
+        // Фиче-репозиторий employee_tests: принимает готовый Dio → создаётся
+        // лениво здесь (не в локаторе, см. конвенции DI).
+        RepositoryProvider<TestRepository>(
+          create: (_) =>
+              TestRepositoryImpl(dataSource: TestDataSource(dio: widget.dio)),
+        ),
         RepositoryProvider<ShiftContextStorage>.value(
           value: widget.shiftContextStorage,
         ),
@@ -174,6 +187,13 @@ class _SuccessAppState extends State<_SuccessApp> {
                 localApi: widget.sharedPreferences,
               ),
               initialValue: widget.themeMode,
+            ),
+          ),
+          // Глобальный кубит (по образцу AuthCubit, см. lib/shared/) — счётчик
+          // непрочитанных нужен в аппбаре всех табов шелла одновременно.
+          BlocProvider(
+            create: (context) => NotificationsCubit(
+              repository: context.read<NotificationRepository>(),
             ),
           ),
         ],

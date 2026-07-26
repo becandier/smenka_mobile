@@ -24,6 +24,7 @@ class OrganizationsPage extends StatelessWidget {
         title: Text(l10n.organizationsTitle),
         centerTitle: true,
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: const Icon(Icons.login),
             tooltip: l10n.organizationsJoin,

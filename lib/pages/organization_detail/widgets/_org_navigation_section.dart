@@ -65,6 +65,16 @@ class _OrgNavigationSection extends StatelessWidget {
                   onTap: () =>
                       context.router.push(MyEarningsRoute(orgId: data.orgId)),
                 ),
+                // «Мои тесты» (employee_tests) — root-роут (список не
+                // завязан на одну организацию), предвыбираем фильтр текущей.
+                const SizedBox(height: 8),
+                _NavItem(
+                  icon: Icons.quiz_outlined,
+                  title: l10n.myTestsTitle,
+                  onTap: () => context.router.root.push(
+                    MyTestsRoute(initialOrganizationId: data.orgId),
+                  ),
+                ),
               ],
               if (data.isAdminOrOwner) ...[
                 const SizedBox(height: 8),
