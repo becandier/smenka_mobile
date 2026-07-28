@@ -80,11 +80,16 @@ abstract class TestAssignmentDto with _$TestAssignmentDto {
 abstract class PaginatedTestAssignmentsDto with _$PaginatedTestAssignmentsDto {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory PaginatedTestAssignmentsDto({
-    // Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) отдаёт
-    // голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
-    // возвращает все назначения разом. Раньше required-числа роняли парсинг
-    // (`type Null is not a subtype of num`).
+    // Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) снова
+    // пагинирован — отдаёт `{items, total, limit, offset}`, сортировка
+    // стабильная `created_at DESC`. total/limit/offset помечены `@Default(0)`
+    // (не required): если старый билд бэка вернёт голый `{items}`, парсинг не
+    // упадёт (`type Null is not a subtype of num`), а маппер отдаст безопасный
+    // фолбэк одной страницы (hasMore=false при total=0).
     required List<TestAssignmentDto> items,
+    @Default(0) int total,
+    @Default(0) int limit,
+    @Default(0) int offset,
   }) = _PaginatedTestAssignmentsDto;
 
   factory PaginatedTestAssignmentsDto.fromJson(Map<String, dynamic> json) =>

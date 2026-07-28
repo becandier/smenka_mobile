@@ -1181,11 +1181,13 @@ $TestTemplateBriefDtoCopyWith<$Res> get template {
 /// @nodoc
 mixin _$PaginatedTestAssignmentsDto {
 
-// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) возвращает
-// голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
-// отдаёт все назначения сотрудника разом. Раньше required-числа роняли парсинг
-// (`type Null is not a subtype of num`).
- List<TestAssignmentDto> get items;
+// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) снова
+// пагинирован — отдаёт `{items, total, limit, offset}`, сортировка
+// стабильная `created_at DESC`. total/limit/offset помечены `@Default(0)`
+// (не required): если старый билд бэка вернёт голый `{items}`, парсинг не
+// упадёт (`type Null is not a subtype of num`), а маппер отдаст безопасный
+// фолбэк одной страницы (hasMore=false при total=0).
+ List<TestAssignmentDto> get items; int get total; int get limit; int get offset;
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1198,16 +1200,16 @@ $PaginatedTestAssignmentsDtoCopyWith<PaginatedTestAssignmentsDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other.items, items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.total, total) || other.total == total)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),total,limit,offset);
 
 @override
 String toString() {
-  return 'PaginatedTestAssignmentsDto(items: $items)';
+  return 'PaginatedTestAssignmentsDto(items: $items, total: $total, limit: $limit, offset: $offset)';
 }
 
 
@@ -1218,7 +1220,7 @@ abstract mixin class $PaginatedTestAssignmentsDtoCopyWith<$Res>  {
   factory $PaginatedTestAssignmentsDtoCopyWith(PaginatedTestAssignmentsDto value, $Res Function(PaginatedTestAssignmentsDto) _then) = _$PaginatedTestAssignmentsDtoCopyWithImpl;
 @useResult
 $Res call({
- List<TestAssignmentDto> items
+ List<TestAssignmentDto> items, int total, int limit, int offset
 });
 
 
@@ -1235,10 +1237,13 @@ class _$PaginatedTestAssignmentsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? items = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? total = null,Object? limit = null,Object? offset = null,}) {
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as List<TestAssignmentDto>,
+as List<TestAssignmentDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as int,offset: null == offset ? _self.offset : offset // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -1323,10 +1328,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items,  int total,  int limit,  int offset)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaginatedTestAssignmentsDto() when $default != null:
-return $default(_that.items);case _:
+return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
   return orElse();
 
 }
@@ -1344,10 +1349,10 @@ return $default(_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items,  int total,  int limit,  int offset)  $default,) {final _that = this;
 switch (_that) {
 case _PaginatedTestAssignmentsDto():
-return $default(_that.items);case _:
+return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1364,10 +1369,10 @@ return $default(_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TestAssignmentDto> items)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TestAssignmentDto> items,  int total,  int limit,  int offset)?  $default,) {final _that = this;
 switch (_that) {
 case _PaginatedTestAssignmentsDto() when $default != null:
-return $default(_that.items);case _:
+return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
   return null;
 
 }
@@ -1379,24 +1384,31 @@ return $default(_that.items);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _PaginatedTestAssignmentsDto implements PaginatedTestAssignmentsDto {
-  const _PaginatedTestAssignmentsDto({required final  List<TestAssignmentDto> items}): _items = items;
+  const _PaginatedTestAssignmentsDto({required final  List<TestAssignmentDto> items, this.total = 0, this.limit = 0, this.offset = 0}): _items = items;
   factory _PaginatedTestAssignmentsDto.fromJson(Map<String, dynamic> json) => _$PaginatedTestAssignmentsDtoFromJson(json);
 
-// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) возвращает
-// голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
-// отдаёт все назначения сотрудника разом. Раньше required-числа роняли парсинг
-// (`type Null is not a subtype of num`).
+// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) снова
+// пагинирован — отдаёт `{items, total, limit, offset}`, сортировка
+// стабильная `created_at DESC`. total/limit/offset помечены `@Default(0)`
+// (не required): если старый билд бэка вернёт голый `{items}`, парсинг не
+// упадёт (`type Null is not a subtype of num`), а маппер отдаст безопасный
+// фолбэк одной страницы (hasMore=false при total=0).
  final  List<TestAssignmentDto> _items;
-// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) возвращает
-// голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
-// отдаёт все назначения сотрудника разом. Раньше required-числа роняли парсинг
-// (`type Null is not a subtype of num`).
+// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) снова
+// пагинирован — отдаёт `{items, total, limit, offset}`, сортировка
+// стабильная `created_at DESC`. total/limit/offset помечены `@Default(0)`
+// (не required): если старый билд бэка вернёт голый `{items}`, парсинг не
+// упадёт (`type Null is not a subtype of num`), а маппер отдаст безопасный
+// фолбэк одной страницы (hasMore=false при total=0).
 @override List<TestAssignmentDto> get items {
   if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_items);
 }
 
+@override@JsonKey() final  int total;
+@override@JsonKey() final  int limit;
+@override@JsonKey() final  int offset;
 
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
@@ -1411,16 +1423,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other._items, _items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.total, total) || other.total == total)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total,limit,offset);
 
 @override
 String toString() {
-  return 'PaginatedTestAssignmentsDto(items: $items)';
+  return 'PaginatedTestAssignmentsDto(items: $items, total: $total, limit: $limit, offset: $offset)';
 }
 
 
@@ -1431,7 +1443,7 @@ abstract mixin class _$PaginatedTestAssignmentsDtoCopyWith<$Res> implements $Pag
   factory _$PaginatedTestAssignmentsDtoCopyWith(_PaginatedTestAssignmentsDto value, $Res Function(_PaginatedTestAssignmentsDto) _then) = __$PaginatedTestAssignmentsDtoCopyWithImpl;
 @override @useResult
 $Res call({
- List<TestAssignmentDto> items
+ List<TestAssignmentDto> items, int total, int limit, int offset
 });
 
 
@@ -1448,10 +1460,13 @@ class __$PaginatedTestAssignmentsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? items = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? total = null,Object? limit = null,Object? offset = null,}) {
   return _then(_PaginatedTestAssignmentsDto(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<TestAssignmentDto>,
+as List<TestAssignmentDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as int,offset: null == offset ? _self.offset : offset // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
