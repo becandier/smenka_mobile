@@ -49,22 +49,34 @@ extension TestAttemptQuestionMapper on TestAttemptQuestionDto {
       type: _parseQuestionType(type),
       points: points,
       position: position,
+      awarded: awarded,
       options: options.map((e) => e.toDomain()).toList(),
     );
   }
 }
 
-extension TestAttemptMapper on TestAttemptDto {
-  TestAttempt toDomain() {
-    return TestAttempt(
+extension TestAttemptForFillMapper on TestAttemptForFillDto {
+  TestAttemptFill toDomain() {
+    return TestAttemptFill(
+      id: id,
+      startedAt: startedAt,
+      questions: questions.map((e) => e.toDomain()).toList(),
+    );
+  }
+}
+
+extension TestAttemptDetailMapper on TestAttemptDetailDto {
+  TestAttemptDetail toDomain() {
+    return TestAttemptDetail(
       id: id,
       attemptNumber: attemptNumber,
       status: _parseAttemptStatus(status),
-      score: score,
       maxScore: maxScore,
+      passThresholdPercent: passThresholdPercent,
+      startedAt: startedAt,
+      score: score,
       percent: percent,
       passed: passed,
-      startedAt: startedAt,
       submittedAt: submittedAt,
       questions: questions.map((e) => e.toDomain()).toList(),
     );

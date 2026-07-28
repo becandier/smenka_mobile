@@ -78,12 +78,12 @@ class TestAttemptCubit extends Cubit<TestAttemptState> {
     emit(state.copyWith(status: FeatureStatus.loading));
     final result = await _repository.getAttempt(attemptId);
     result.fold(
-      onSuccess: (attempt) {
+      onSuccess: (attemptDetail) {
         // Защитная ветка: попытка успела стать submitted между снимком
         // назначения и этим запросом (гонка/другое устройство). Не рендерим
         // fill-экран поверх уже сданного — показываем блок с известным
         // итогом из assignment (перезагрузится при следующем входе).
-        if (attempt.status == TestAttemptStatus.submitted) {
+        if (attemptDetail.status == TestAttemptStatus.submitted) {
           emit(
             state.copyWith(
               status: FeatureStatus.success,
@@ -96,7 +96,7 @@ class TestAttemptCubit extends Cubit<TestAttemptState> {
         emit(
           state.copyWith(
             status: FeatureStatus.success,
-            attempt: _applyShuffle(attempt),
+            attempt: _applyShuffle(attemptDetail.toFill()),
             selectedOptionIds: const {},
           ),
         );
@@ -180,7 +180,7 @@ class TestAttemptCubit extends Cubit<TestAttemptState> {
     }
   }
 
-  TestAttempt _applyShuffle(TestAttempt attempt) {
+  TestAttemptFill _applyShuffle(TestAttemptFill attempt) {
     final shuffle = state.assignment?.template.shuffleQuestions ?? false;
     if (!shuffle) return attempt;
     final questions = [...attempt.questions]..shuffle();

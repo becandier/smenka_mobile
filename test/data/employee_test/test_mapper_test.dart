@@ -18,13 +18,36 @@ Map<String, dynamic> _questionJson({
   ],
 };
 
-Map<String, dynamic> _attemptJson({String status = 'in_progress'}) => {
+Map<String, dynamic> _attemptDetailJson({String status = 'in_progress'}) => {
   'id': 'attempt1',
   'attempt_number': 1,
   'status': status,
   'max_score': 2,
+  'pass_threshold_percent': 70,
   'started_at': '2026-07-20T10:00:00Z',
   'questions': [_questionJson()],
+};
+
+/// Тощая fill-форма (`TestAttemptForFill`, старт попытки) — намеренно БЕЗ
+/// `attempt_number`/`status`/`score`/`max_score`/`pass_threshold_percent`,
+/// которые раньше ошибочно требовались как `required` и роняли старт теста
+/// (`type 'Null' is not a subtype of type 'num'`).
+Map<String, dynamic> _attemptFillJson({String id = 'attempt1'}) => {
+  'id': id,
+  'started_at': '2026-07-20T10:00:00Z',
+  'questions': [_questionJson()],
+};
+
+Map<String, dynamic> _resultJson({bool revealAnswers = false}) => {
+  'score': 1,
+  'max_score': 2,
+  'percent': 50,
+  'passed': false,
+  'pass_threshold_percent': 70,
+  'attempts_used': 1,
+  'attempts_left': 1,
+  'reveal_answers': revealAnswers,
+  if (revealAnswers) 'questions': [_questionJson()],
 };
 
 void main() {
@@ -50,11 +73,13 @@ void main() {
     });
   });
 
-  group('Статус попытки — ручной парсинг с фолбэком unknown', () {
+  group('TestAttemptDetailDto → toDomain — статус (фолбэк unknown)', () {
     test('in_progress / submitted распознаются', () {
-      final inProgress = TestAttemptDto.fromJson(_attemptJson()).toDomain();
-      final submitted = TestAttemptDto.fromJson(
-        _attemptJson(status: 'submitted'),
+      final inProgress = TestAttemptDetailDto.fromJson(
+        _attemptDetailJson(),
+      ).toDomain();
+      final submitted = TestAttemptDetailDto.fromJson(
+        _attemptDetailJson(status: 'submitted'),
       ).toDomain();
 
       expect(inProgress.status, TestAttemptStatus.inProgress);
@@ -62,11 +87,94 @@ void main() {
     });
 
     test('незнакомое значение → unknown', () {
-      final attempt = TestAttemptDto.fromJson(
-        _attemptJson(status: 'weird'),
+      final attempt = TestAttemptDetailDto.fromJson(
+        _attemptDetailJson(status: 'weird'),
       ).toDomain();
 
       expect(attempt.status, TestAttemptStatus.unknown);
+    });
+
+    test('маппит количественные поля и снимок вопросов', () {
+      final attempt = TestAttemptDetailDto.fromJson(
+        _attemptDetailJson(),
+      ).toDomain();
+
+      expect(attempt.id, 'attempt1');
+      expect(attempt.attemptNumber, 1);
+      expect(attempt.maxScore, 2);
+      expect(attempt.passThresholdPercent, 70);
+      expect(attempt.questions, hasLength(1));
+      expect(attempt.score, isNull);
+      expect(attempt.passed, isNull);
+    });
+
+    test('toFill() сужает деталь до формы заполнения (резюме попытки)', () {
+      final detail = TestAttemptDetailDto.fromJson(
+        _attemptDetailJson(),
+      ).toDomain();
+
+      final fill = detail.toFill();
+
+      expect(fill.id, detail.id);
+      expect(fill.startedAt, detail.startedAt);
+      expect(fill.questions, detail.questions);
+    });
+  });
+
+  group(
+    'TestAttemptForFillDto → toDomain (регресс на краш при старте попытки)',
+    () {
+      test(
+        'тощая fill-форма без attempt_number/status/score парсится без краша',
+        () {
+          final fill = TestAttemptForFillDto.fromJson(
+            _attemptFillJson(),
+          ).toDomain();
+
+          expect(fill.id, 'attempt1');
+          expect(fill.startedAt, DateTime.utc(2026, 7, 20, 10));
+          expect(fill.questions, hasLength(1));
+          expect(fill.questions.single.options, hasLength(2));
+        },
+      );
+
+      test(
+        'вариант ответа без is_selected/is_correct (fill) → дефолты false/null',
+        () {
+          final option = TestAttemptOptionDto.fromJson({
+            'id': 'o1',
+            'text': 'Верно',
+            'position': 0,
+          }).toDomain();
+
+          expect(option.isSelected, isFalse);
+          expect(option.isCorrect, isNull);
+        },
+      );
+    },
+  );
+
+  group('TestResultDto → toDomain', () {
+    test('revealAnswers=false → questions null, счёт/процент маппятся', () {
+      final result = TestResultDto.fromJson(_resultJson()).toDomain();
+
+      expect(result.score, 1);
+      expect(result.maxScore, 2);
+      expect(result.percent, 50);
+      expect(result.passed, isFalse);
+      expect(result.attemptsUsed, 1);
+      expect(result.attemptsLeft, 1);
+      expect(result.revealAnswers, isFalse);
+      expect(result.questions, isNull);
+    });
+
+    test('revealAnswers=true → вопросы с разметкой приходят в domain', () {
+      final result = TestResultDto.fromJson(
+        _resultJson(revealAnswers: true),
+      ).toDomain();
+
+      expect(result.revealAnswers, isTrue);
+      expect(result.questions, hasLength(1));
     });
   });
 

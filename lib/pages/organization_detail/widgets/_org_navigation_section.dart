@@ -69,7 +69,7 @@ class _OrgNavigationSection extends StatelessWidget {
                 // завязан на одну организацию), предвыбираем фильтр текущей.
                 const SizedBox(height: 8),
                 _NavItem(
-                  icon: Icons.quiz_outlined,
+                  icon: Icons.fact_check_outlined,
                   title: l10n.myTestsTitle,
                   onTap: () => context.router.root.push(
                     MyTestsRoute(initialOrganizationId: data.orgId),

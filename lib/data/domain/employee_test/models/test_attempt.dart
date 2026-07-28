@@ -8,7 +8,8 @@ part 'test_attempt.freezed.dart';
 /// `single`/`multiple`.
 enum TestQuestionType { single, multiple, unknown }
 
-/// Статус попытки прохождения.
+/// Статус попытки прохождения (форма detail — `GET
+/// /my/test-attempts/{id}`; в fill-форме старта попытки статуса нет вовсе).
 enum TestAttemptStatus { inProgress, submitted, unknown }
 
 /// Вариант ответа — снимок попытки.
@@ -38,30 +39,55 @@ abstract class TestAttemptQuestion with _$TestAttemptQuestion {
     required int points,
     required int position,
     required List<TestAttemptOption> options,
+
+    /// Начисленные баллы за вопрос — только в результате `submit`
+    /// (`reveal_answers=true`), иначе `null`.
+    int? awarded,
   }) = _TestAttemptQuestion;
 }
 
-/// Попытка прохождения теста — снимок вопросов на момент старта.
-///
-/// Используется и для «прохождения» (status=[TestAttemptStatus.inProgress],
-/// варианты без `isCorrect`, `isSelected` всегда `false` — локальный выбор
-/// живёт отдельно в `TestAttemptState.selectedOptionIds`, не мутирует эту
-/// модель), и для «просмотра сданной попытки» (status=submitted, варианты
-/// несут `isSelected`/`isCorrect`, если `reveal_answers=true`).
+/// Попытка в процессе заполнения — снимок вопросов, минимально нужный
+/// fill-экрану (`_FillingView`): только то, что реально гарантирует
+/// «тощая» форма бэка `TestAttemptForFill` при старте попытки (без
+/// `attempt_number`/`status`/`score`/`max_score` — счёт скрыт до сдачи).
+/// Получается либо напрямую из старта (`TestRepository.startAttempt`),
+/// либо сужением уже загруженной детальной попытки при резюме
+/// ([TestAttemptDetail.toFill]).
 @freezed
-abstract class TestAttempt with _$TestAttempt {
-  const factory TestAttempt({
+abstract class TestAttemptFill with _$TestAttemptFill {
+  const factory TestAttemptFill({
+    required String id,
+    required DateTime startedAt,
+    required List<TestAttemptQuestion> questions,
+  }) = _TestAttemptFill;
+}
+
+/// Попытка — полная деталь (`GET /my/test-attempts/{id}`, форма бэка
+/// `MyAttemptDetail`): для резюме открытой попытки (проверка [status] перед
+/// рендером fill-экрана — попытка могла стать submitted на другом
+/// устройстве) либо просмотра сданной. [score]/[percent]/[passed] — `null`,
+/// пока попытка не сдана.
+@freezed
+abstract class TestAttemptDetail with _$TestAttemptDetail {
+  const factory TestAttemptDetail({
     required String id,
     required int attemptNumber,
     required TestAttemptStatus status,
-    required int score,
     required int maxScore,
-    required int percent,
-    required bool passed,
+    required int passThresholdPercent,
     required DateTime startedAt,
     required List<TestAttemptQuestion> questions,
+    int? score,
+    int? percent,
+    bool? passed,
     DateTime? submittedAt,
-  }) = _TestAttempt;
+  }) = _TestAttemptDetail;
+  const TestAttemptDetail._();
+
+  /// Узкая проекция на форму заполнения — то, что нужно fill-экрану при
+  /// резюме открытой попытки, без количественных полей результата.
+  TestAttemptFill toFill() =>
+      TestAttemptFill(id: id, startedAt: startedAt, questions: questions);
 }
 
 /// Ответ на один вопрос при отправке (`POST /my/test-attempts/{id}/submit`).

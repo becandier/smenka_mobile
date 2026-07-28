@@ -15,12 +15,13 @@ abstract class TestRepository {
   Future<Task<TestAssignment>> getAssignmentDetail(String assignmentId);
 
   /// Старт новой попытки (или бэк вернёт уже открытую `in_progress` — см.
-  /// `backend.md`).
-  Future<Task<TestAttempt>> startAttempt(String assignmentId);
+  /// `backend.md`). Отдаёт «тощую» fill-форму без количественных полей
+  /// (счёт скрыт до сдачи).
+  Future<Task<TestAttemptFill>> startAttempt(String assignmentId);
 
-  /// Попытка — для продолжения (`in_progress`) или просмотра результата
-  /// (`submitted`).
-  Future<Task<TestAttempt>> getAttempt(String attemptId);
+  /// Попытка — детальная форма, для продолжения (`in_progress`) или
+  /// просмотра результата (`submitted`).
+  Future<Task<TestAttemptDetail>> getAttempt(String attemptId);
 
   Future<Task<TestResult>> submitAttempt(
     String attemptId, {

@@ -36,7 +36,7 @@ class TestRepositoryImpl with TaskHandler implements TestRepository {
   }
 
   @override
-  Future<Task<TestAttempt>> startAttempt(String assignmentId) {
+  Future<Task<TestAttemptFill>> startAttempt(String assignmentId) {
     return execute(() async {
       final dto = await _dataSource.startAttempt(assignmentId);
       return dto.toDomain();
@@ -44,7 +44,7 @@ class TestRepositoryImpl with TaskHandler implements TestRepository {
   }
 
   @override
-  Future<Task<TestAttempt>> getAttempt(String attemptId) {
+  Future<Task<TestAttemptDetail>> getAttempt(String attemptId) {
     return execute(() async {
       final dto = await _dataSource.getAttempt(attemptId);
       return dto.toDomain();

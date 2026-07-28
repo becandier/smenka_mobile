@@ -66,7 +66,7 @@ class _MyTestsView extends StatelessWidget {
                   onRefresh: () =>
                       context.read<MyTestsCubit>().loadAssignments(),
                   emptyBuilder: () => AppEmptyState(
-                    icon: Icons.quiz_outlined,
+                    icon: Icons.fact_check_outlined,
                     title: l10n.myTestsEmpty,
                   ),
                 ),
