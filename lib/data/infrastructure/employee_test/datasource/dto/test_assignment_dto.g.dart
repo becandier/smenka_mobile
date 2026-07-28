@@ -109,8 +109,16 @@ _PaginatedTestAssignmentsDto _$PaginatedTestAssignmentsDtoFromJson(
   items: (json['items'] as List<dynamic>)
       .map((e) => TestAssignmentDto.fromJson(e as Map<String, dynamic>))
       .toList(),
+  total: (json['total'] as num?)?.toInt() ?? 0,
+  limit: (json['limit'] as num?)?.toInt() ?? 0,
+  offset: (json['offset'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$PaginatedTestAssignmentsDtoToJson(
   _PaginatedTestAssignmentsDto instance,
-) => <String, dynamic>{'items': instance.items.map((e) => e.toJson()).toList()};
+) => <String, dynamic>{
+  'items': instance.items.map((e) => e.toJson()).toList(),
+  'total': instance.total,
+  'limit': instance.limit,
+  'offset': instance.offset,
+};

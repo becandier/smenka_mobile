@@ -38,6 +38,21 @@ Map<String, dynamic> _attemptFillJson({String id = 'attempt1'}) => {
   'questions': [_questionJson()],
 };
 
+Map<String, dynamic> _assignmentItemJson({String id = 'a1'}) => {
+  'id': id,
+  'organization': {'id': 'org1', 'name': 'Org'},
+  'template': {
+    'id': 't1',
+    'title': 'T',
+    'question_count': 1,
+    'max_attempts': 1,
+    'pass_threshold_percent': 70,
+  },
+  'status': 'assigned',
+  'attempts_used': 0,
+  'passed': false,
+};
+
 Map<String, dynamic> _resultJson({bool revealAnswers = false}) => {
   'score': 1,
   'max_score': 2,
@@ -181,23 +196,26 @@ void main() {
   group(
     'TestAssignmentAttemptBrief — nullable id/status (открытый вопрос)',
     () {
-      test('status передан явно → используется как есть; number→attemptNumber', () {
-        // Бэк (MyAttemptSummary) отдаёт `number`, а не `attempt_number` —
-        // регресс на краш открытия теста с попытками.
-        final brief = TestAssignmentAttemptBriefDto.fromJson({
-          'id': 'att1',
-          'number': 3,
-          'status': 'submitted',
-          'percent': 80,
-          'passed': true,
-          'submitted_at': '2026-07-20T10:00:00Z',
-        }).toDomain();
+      test(
+        'status передан явно → используется как есть; number→attemptNumber',
+        () {
+          // Бэк (MyAttemptSummary) отдаёт `number`, а не `attempt_number` —
+          // регресс на краш открытия теста с попытками.
+          final brief = TestAssignmentAttemptBriefDto.fromJson({
+            'id': 'att1',
+            'number': 3,
+            'status': 'submitted',
+            'percent': 80,
+            'passed': true,
+            'submitted_at': '2026-07-20T10:00:00Z',
+          }).toDomain();
 
-        expect(brief.id, 'att1');
-        expect(brief.attemptNumber, 3);
-        expect(brief.status, TestAttemptStatus.submitted);
-        expect(brief.isInProgress, isFalse);
-      });
+          expect(brief.id, 'att1');
+          expect(brief.attemptNumber, 3);
+          expect(brief.status, TestAttemptStatus.submitted);
+          expect(brief.isInProgress, isFalse);
+        },
+      );
 
       test('status отсутствует, submitted_at тоже → выводим "в процессе"', () {
         final brief = TestAssignmentAttemptBriefDto.fromJson({
@@ -292,36 +310,50 @@ void main() {
     });
   });
 
-  group('PaginatedTestAssignmentsDto → toDomain', () {
-    test('голый {items} без total/limit/offset — одна полная страница '
-        '(регресс на краш "Null is not a subtype of num")', () {
+  group('PaginatedTestAssignmentsDto → toDomain (offset-пагинация)', () {
+    test('total > offset+len → есть ещё страницы (hasMore true)', () {
       final page = PaginatedTestAssignmentsDto.fromJson({
-        'items': <dynamic>[
-          {
-            'id': 'a1',
-            'organization': {'id': 'org1', 'name': 'Org'},
-            'template': {
-              'id': 't1',
-              'title': 'T',
-              'question_count': 1,
-              'max_attempts': 1,
-              'pass_threshold_percent': 70,
-            },
-            'status': 'assigned',
-            'attempts_used': 0,
-            'passed': false,
-          },
-        ],
+        'items': <dynamic>[_assignmentItemJson()],
+        'total': 5,
+        'limit': 1,
+        'offset': 0,
       }).toDomain();
 
       expect(page.data?.length, 1);
-      expect(page.total, 1);
+      expect(page.total, 5);
+      expect(page.hasMore, isTrue);
+    });
+
+    test('последняя страница: offset+len == total → hasMore false', () {
+      final page = PaginatedTestAssignmentsDto.fromJson({
+        'items': <dynamic>[_assignmentItemJson()],
+        'total': 3,
+        'limit': 20,
+        'offset': 2,
+      }).toDomain();
+
+      expect(page.total, 3);
+      expect(page.hasMore, isFalse);
+    });
+
+    test('голый {items} без total/limit/offset — безопасный фолбэк одной '
+        'страницы, total 0, hasMore false '
+        '(регресс на краш "Null is not a subtype of num")', () {
+      final page = PaginatedTestAssignmentsDto.fromJson({
+        'items': <dynamic>[_assignmentItemJson()],
+      }).toDomain();
+
+      expect(page.data?.length, 1);
+      expect(page.total, 0);
       expect(page.hasMore, isFalse);
     });
 
     test('пустой список — hasMore false, total 0', () {
       final page = PaginatedTestAssignmentsDto.fromJson({
         'items': <dynamic>[],
+        'total': 0,
+        'limit': 20,
+        'offset': 0,
       }).toDomain();
 
       expect(page.data, isEmpty);

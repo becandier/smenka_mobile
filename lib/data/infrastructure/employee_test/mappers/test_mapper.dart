@@ -129,12 +129,14 @@ extension TestAssignmentMapper on TestAssignmentDto {
 
 extension PaginatedTestAssignmentsMapper on PaginatedTestAssignmentsDto {
   DefaultPaginator<TestAssignment> toDomain() {
-    // Эндпоинт не пагинирован (отдаёт все назначения сразу) — одна полная
-    // страница, дозагрузки нет.
+    // Реальная offset-пагинация: есть ещё страницы, пока конец текущей
+    // (offset + число элементов) не дошёл до общего total. Если бэк не отдал
+    // total (старый билд → @Default(0)), hasMore=false — безопасный фолбэк
+    // одной полной страницы.
     return DefaultPaginator<TestAssignment>(
-      hasMore: false,
+      hasMore: offset + items.length < total,
       data: items.map((e) => e.toDomain()).toList(),
-      total: items.length,
+      total: total,
     );
   }
 }
