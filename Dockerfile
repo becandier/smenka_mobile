@@ -12,8 +12,13 @@ RUN flutter pub get
 # build_runner не нужен — *.freezed.dart/*.g.dart закоммичены в репозиторий.
 # --csp: dart2js не использует new Function()/eval → CSP без 'unsafe-eval'
 # (в index.html достаточно 'wasm-unsafe-eval' для CanvasKit).
+# --no-tree-shake-icons: кладём ПОЛНЫЙ шрифт MaterialIcons, а не подмножество
+# использованных глифов. Иначе добавление новой иконки меняет содержимое файла
+# /assets/fonts/MaterialIcons-Regular.otf при СТАБИЛЬНОМ имени — и закэшированный
+# у клиента старый субсет не содержит новых глифов (иконка не рендерится). Полный
+# шрифт стабилен между билдами → проблема исключена в корне.
 COPY . .
-RUN flutter build web --release --csp --base-href=/
+RUN flutter build web --release --csp --no-tree-shake-icons --base-href=/
 
 # serve: статика через nginx с SPA-fallback (по аналогии с smenka_admin).
 FROM nginx:1.27-alpine
