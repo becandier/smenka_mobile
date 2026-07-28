@@ -181,10 +181,12 @@ void main() {
   group(
     'TestAssignmentAttemptBrief — nullable id/status (открытый вопрос)',
     () {
-      test('status передан явно → используется как есть', () {
+      test('status передан явно → используется как есть; number→attemptNumber', () {
+        // Бэк (MyAttemptSummary) отдаёт `number`, а не `attempt_number` —
+        // регресс на краш открытия теста с попытками.
         final brief = TestAssignmentAttemptBriefDto.fromJson({
           'id': 'att1',
-          'attempt_number': 1,
+          'number': 3,
           'status': 'submitted',
           'percent': 80,
           'passed': true,
@@ -192,6 +194,7 @@ void main() {
         }).toDomain();
 
         expect(brief.id, 'att1');
+        expect(brief.attemptNumber, 3);
         expect(brief.status, TestAttemptStatus.submitted);
         expect(brief.isInProgress, isFalse);
       });
@@ -290,15 +293,40 @@ void main() {
   });
 
   group('PaginatedTestAssignmentsDto → toDomain', () {
-    test('hasMore считается по offset+items.length < total', () {
+    test('голый {items} без total/limit/offset — одна полная страница '
+        '(регресс на краш "Null is not a subtype of num")', () {
       final page = PaginatedTestAssignmentsDto.fromJson({
-        'items': <dynamic>[],
-        'total': 3,
-        'limit': 20,
-        'offset': 0,
+        'items': <dynamic>[
+          {
+            'id': 'a1',
+            'organization': {'id': 'org1', 'name': 'Org'},
+            'template': {
+              'id': 't1',
+              'title': 'T',
+              'question_count': 1,
+              'max_attempts': 1,
+              'pass_threshold_percent': 70,
+            },
+            'status': 'assigned',
+            'attempts_used': 0,
+            'passed': false,
+          },
+        ],
       }).toDomain();
 
-      expect(page.hasMore, isTrue);
+      expect(page.data?.length, 1);
+      expect(page.total, 1);
+      expect(page.hasMore, isFalse);
+    });
+
+    test('пустой список — hasMore false, total 0', () {
+      final page = PaginatedTestAssignmentsDto.fromJson({
+        'items': <dynamic>[],
+      }).toDomain();
+
+      expect(page.data, isEmpty);
+      expect(page.total, 0);
+      expect(page.hasMore, isFalse);
     });
   });
 }

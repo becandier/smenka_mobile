@@ -564,7 +564,8 @@ as bool,
 /// @nodoc
 mixin _$TestAssignmentAttemptBriefDto {
 
- int get attemptNumber; int get percent; bool get passed;/// Nullable — см. doc-комментарий `TestAssignmentAttemptBrief` (домен).
+// Бэк (MyAttemptSummary) отдаёт поле `number`, а не `attempt_number`.
+@JsonKey(name: 'number') int get attemptNumber; int get percent; bool get passed;/// Nullable — см. doc-комментарий `TestAssignmentAttemptBrief` (домен).
  String? get id; String? get status; DateTime? get submittedAt;
 /// Create a copy of TestAssignmentAttemptBriefDto
 /// with the given fields replaced by the non-null parameter values.
@@ -598,7 +599,7 @@ abstract mixin class $TestAssignmentAttemptBriefDtoCopyWith<$Res>  {
   factory $TestAssignmentAttemptBriefDtoCopyWith(TestAssignmentAttemptBriefDto value, $Res Function(TestAssignmentAttemptBriefDto) _then) = _$TestAssignmentAttemptBriefDtoCopyWithImpl;
 @useResult
 $Res call({
- int attemptNumber, int percent, bool passed, String? id, String? status, DateTime? submittedAt
+@JsonKey(name: 'number') int attemptNumber, int percent, bool passed, String? id, String? status, DateTime? submittedAt
 });
 
 
@@ -708,7 +709,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int attemptNumber,  int percent,  bool passed,  String? id,  String? status,  DateTime? submittedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'number')  int attemptNumber,  int percent,  bool passed,  String? id,  String? status,  DateTime? submittedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TestAssignmentAttemptBriefDto() when $default != null:
 return $default(_that.attemptNumber,_that.percent,_that.passed,_that.id,_that.status,_that.submittedAt);case _:
@@ -729,7 +730,7 @@ return $default(_that.attemptNumber,_that.percent,_that.passed,_that.id,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int attemptNumber,  int percent,  bool passed,  String? id,  String? status,  DateTime? submittedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'number')  int attemptNumber,  int percent,  bool passed,  String? id,  String? status,  DateTime? submittedAt)  $default,) {final _that = this;
 switch (_that) {
 case _TestAssignmentAttemptBriefDto():
 return $default(_that.attemptNumber,_that.percent,_that.passed,_that.id,_that.status,_that.submittedAt);case _:
@@ -749,7 +750,7 @@ return $default(_that.attemptNumber,_that.percent,_that.passed,_that.id,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int attemptNumber,  int percent,  bool passed,  String? id,  String? status,  DateTime? submittedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'number')  int attemptNumber,  int percent,  bool passed,  String? id,  String? status,  DateTime? submittedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _TestAssignmentAttemptBriefDto() when $default != null:
 return $default(_that.attemptNumber,_that.percent,_that.passed,_that.id,_that.status,_that.submittedAt);case _:
@@ -764,10 +765,11 @@ return $default(_that.attemptNumber,_that.percent,_that.passed,_that.id,_that.st
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _TestAssignmentAttemptBriefDto implements TestAssignmentAttemptBriefDto {
-  const _TestAssignmentAttemptBriefDto({required this.attemptNumber, this.percent = 0, this.passed = false, this.id, this.status, this.submittedAt});
+  const _TestAssignmentAttemptBriefDto({@JsonKey(name: 'number') this.attemptNumber = 0, this.percent = 0, this.passed = false, this.id, this.status, this.submittedAt});
   factory _TestAssignmentAttemptBriefDto.fromJson(Map<String, dynamic> json) => _$TestAssignmentAttemptBriefDtoFromJson(json);
 
-@override final  int attemptNumber;
+// Бэк (MyAttemptSummary) отдаёт поле `number`, а не `attempt_number`.
+@override@JsonKey(name: 'number') final  int attemptNumber;
 @override@JsonKey() final  int percent;
 @override@JsonKey() final  bool passed;
 /// Nullable — см. doc-комментарий `TestAssignmentAttemptBrief` (домен).
@@ -808,7 +810,7 @@ abstract mixin class _$TestAssignmentAttemptBriefDtoCopyWith<$Res> implements $T
   factory _$TestAssignmentAttemptBriefDtoCopyWith(_TestAssignmentAttemptBriefDto value, $Res Function(_TestAssignmentAttemptBriefDto) _then) = __$TestAssignmentAttemptBriefDtoCopyWithImpl;
 @override @useResult
 $Res call({
- int attemptNumber, int percent, bool passed, String? id, String? status, DateTime? submittedAt
+@JsonKey(name: 'number') int attemptNumber, int percent, bool passed, String? id, String? status, DateTime? submittedAt
 });
 
 
@@ -1179,7 +1181,11 @@ $TestTemplateBriefDtoCopyWith<$Res> get template {
 /// @nodoc
 mixin _$PaginatedTestAssignmentsDto {
 
- List<TestAssignmentDto> get items; int get total; int get limit; int get offset;
+// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) возвращает
+// голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
+// отдаёт все назначения сотрудника разом. Раньше required-числа роняли парсинг
+// (`type Null is not a subtype of num`).
+ List<TestAssignmentDto> get items;
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1192,16 +1198,16 @@ $PaginatedTestAssignmentsDtoCopyWith<PaginatedTestAssignmentsDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.total, total) || other.total == total)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other.items, items));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),total,limit,offset);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items));
 
 @override
 String toString() {
-  return 'PaginatedTestAssignmentsDto(items: $items, total: $total, limit: $limit, offset: $offset)';
+  return 'PaginatedTestAssignmentsDto(items: $items)';
 }
 
 
@@ -1212,7 +1218,7 @@ abstract mixin class $PaginatedTestAssignmentsDtoCopyWith<$Res>  {
   factory $PaginatedTestAssignmentsDtoCopyWith(PaginatedTestAssignmentsDto value, $Res Function(PaginatedTestAssignmentsDto) _then) = _$PaginatedTestAssignmentsDtoCopyWithImpl;
 @useResult
 $Res call({
- List<TestAssignmentDto> items, int total, int limit, int offset
+ List<TestAssignmentDto> items
 });
 
 
@@ -1229,13 +1235,10 @@ class _$PaginatedTestAssignmentsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? total = null,Object? limit = null,Object? offset = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,}) {
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as List<TestAssignmentDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
-as int,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
-as int,offset: null == offset ? _self.offset : offset // ignore: cast_nullable_to_non_nullable
-as int,
+as List<TestAssignmentDto>,
   ));
 }
 
@@ -1320,10 +1323,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items,  int total,  int limit,  int offset)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaginatedTestAssignmentsDto() when $default != null:
-return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
+return $default(_that.items);case _:
   return orElse();
 
 }
@@ -1341,10 +1344,10 @@ return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items,  int total,  int limit,  int offset)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TestAssignmentDto> items)  $default,) {final _that = this;
 switch (_that) {
 case _PaginatedTestAssignmentsDto():
-return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
+return $default(_that.items);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1361,10 +1364,10 @@ return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TestAssignmentDto> items,  int total,  int limit,  int offset)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TestAssignmentDto> items)?  $default,) {final _that = this;
 switch (_that) {
 case _PaginatedTestAssignmentsDto() when $default != null:
-return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
+return $default(_that.items);case _:
   return null;
 
 }
@@ -1376,19 +1379,24 @@ return $default(_that.items,_that.total,_that.limit,_that.offset);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _PaginatedTestAssignmentsDto implements PaginatedTestAssignmentsDto {
-  const _PaginatedTestAssignmentsDto({required final  List<TestAssignmentDto> items, required this.total, required this.limit, required this.offset}): _items = items;
+  const _PaginatedTestAssignmentsDto({required final  List<TestAssignmentDto> items}): _items = items;
   factory _PaginatedTestAssignmentsDto.fromJson(Map<String, dynamic> json) => _$PaginatedTestAssignmentsDtoFromJson(json);
 
+// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) возвращает
+// голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
+// отдаёт все назначения сотрудника разом. Раньше required-числа роняли парсинг
+// (`type Null is not a subtype of num`).
  final  List<TestAssignmentDto> _items;
+// Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) возвращает
+// голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
+// отдаёт все назначения сотрудника разом. Раньше required-числа роняли парсинг
+// (`type Null is not a subtype of num`).
 @override List<TestAssignmentDto> get items {
   if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_items);
 }
 
-@override final  int total;
-@override final  int limit;
-@override final  int offset;
 
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
@@ -1403,16 +1411,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.total, total) || other.total == total)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginatedTestAssignmentsDto&&const DeepCollectionEquality().equals(other._items, _items));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total,limit,offset);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items));
 
 @override
 String toString() {
-  return 'PaginatedTestAssignmentsDto(items: $items, total: $total, limit: $limit, offset: $offset)';
+  return 'PaginatedTestAssignmentsDto(items: $items)';
 }
 
 
@@ -1423,7 +1431,7 @@ abstract mixin class _$PaginatedTestAssignmentsDtoCopyWith<$Res> implements $Pag
   factory _$PaginatedTestAssignmentsDtoCopyWith(_PaginatedTestAssignmentsDto value, $Res Function(_PaginatedTestAssignmentsDto) _then) = __$PaginatedTestAssignmentsDtoCopyWithImpl;
 @override @useResult
 $Res call({
- List<TestAssignmentDto> items, int total, int limit, int offset
+ List<TestAssignmentDto> items
 });
 
 
@@ -1440,13 +1448,10 @@ class __$PaginatedTestAssignmentsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PaginatedTestAssignmentsDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? total = null,Object? limit = null,Object? offset = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,}) {
   return _then(_PaginatedTestAssignmentsDto(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<TestAssignmentDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
-as int,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
-as int,offset: null == offset ? _self.offset : offset // ignore: cast_nullable_to_non_nullable
-as int,
+as List<TestAssignmentDto>,
   ));
 }
 

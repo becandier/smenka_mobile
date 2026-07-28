@@ -39,7 +39,8 @@ abstract class TestAssignmentAttemptBriefDto
     with _$TestAssignmentAttemptBriefDto {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory TestAssignmentAttemptBriefDto({
-    required int attemptNumber,
+    // Бэк (MyAttemptSummary) отдаёт поле `number`, а не `attempt_number`.
+    @JsonKey(name: 'number') @Default(0) int attemptNumber,
     @Default(0) int percent,
     @Default(false) bool passed,
 
@@ -79,10 +80,11 @@ abstract class TestAssignmentDto with _$TestAssignmentDto {
 abstract class PaginatedTestAssignmentsDto with _$PaginatedTestAssignmentsDto {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory PaginatedTestAssignmentsDto({
+    // Бэк `GET /my/test-assignments` (MyTestAssignmentListResponse) отдаёт
+    // голый `{items: [...]}` без total/limit/offset — эндпоинт не пагинирован,
+    // возвращает все назначения разом. Раньше required-числа роняли парсинг
+    // (`type Null is not a subtype of num`).
     required List<TestAssignmentDto> items,
-    required int total,
-    required int limit,
-    required int offset,
   }) = _PaginatedTestAssignmentsDto;
 
   factory PaginatedTestAssignmentsDto.fromJson(Map<String, dynamic> json) =>
