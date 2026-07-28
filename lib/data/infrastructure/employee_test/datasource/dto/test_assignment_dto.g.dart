@@ -44,7 +44,7 @@ Map<String, dynamic> _$TestTemplateBriefDtoToJson(
 _TestAssignmentAttemptBriefDto _$TestAssignmentAttemptBriefDtoFromJson(
   Map<String, dynamic> json,
 ) => _TestAssignmentAttemptBriefDto(
-  attemptNumber: (json['attempt_number'] as num).toInt(),
+  attemptNumber: (json['number'] as num?)?.toInt() ?? 0,
   percent: (json['percent'] as num?)?.toInt() ?? 0,
   passed: json['passed'] as bool? ?? false,
   id: json['id'] as String?,
@@ -57,7 +57,7 @@ _TestAssignmentAttemptBriefDto _$TestAssignmentAttemptBriefDtoFromJson(
 Map<String, dynamic> _$TestAssignmentAttemptBriefDtoToJson(
   _TestAssignmentAttemptBriefDto instance,
 ) => <String, dynamic>{
-  'attempt_number': instance.attemptNumber,
+  'number': instance.attemptNumber,
   'percent': instance.percent,
   'passed': instance.passed,
   'id': instance.id,
@@ -109,16 +109,8 @@ _PaginatedTestAssignmentsDto _$PaginatedTestAssignmentsDtoFromJson(
   items: (json['items'] as List<dynamic>)
       .map((e) => TestAssignmentDto.fromJson(e as Map<String, dynamic>))
       .toList(),
-  total: (json['total'] as num).toInt(),
-  limit: (json['limit'] as num).toInt(),
-  offset: (json['offset'] as num).toInt(),
 );
 
 Map<String, dynamic> _$PaginatedTestAssignmentsDtoToJson(
   _PaginatedTestAssignmentsDto instance,
-) => <String, dynamic>{
-  'items': instance.items.map((e) => e.toJson()).toList(),
-  'total': instance.total,
-  'limit': instance.limit,
-  'offset': instance.offset,
-};
+) => <String, dynamic>{'items': instance.items.map((e) => e.toJson()).toList()};
