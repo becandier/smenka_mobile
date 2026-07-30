@@ -16,11 +16,15 @@ class WorkScheduleRepositoryImpl
   Future<Task<MySchedules>> getMySchedules(
     String orgId, {
     String? workLocationId,
+    double? lat,
+    double? lng,
   }) {
     return execute(() async {
       final dto = await _dataSource.getMySchedules(
         orgId,
         workLocationId: workLocationId,
+        lat: lat,
+        lng: lng,
       );
       return dto.toDomain();
     });

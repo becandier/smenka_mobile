@@ -41,6 +41,20 @@ const _emptySchedules = MySchedules(
   requireSchedule: false,
 );
 
+/// Единственная организация сотрудника (`id: 'org1'`) — с гео-проверкой или
+/// без, в зависимости от сценария. Общая фикстура для групп «выбор графика»
+/// (без/с гео-проверкой) — единственное различие между ними именно в этом
+/// флаге.
+Organization _org({required bool geoCheckEnabled}) => Organization(
+  id: 'org1',
+  name: 'Org 1',
+  ownerId: 'owner1',
+  inviteCode: 'INV12345',
+  isDeleted: false,
+  createdAt: DateTime.utc(2026),
+  geoCheckEnabled: geoCheckEnabled,
+);
+
 WorkSchedule _schedule(String id, {String name = 'Дневная'}) => WorkSchedule(
   id: id,
   name: name,
@@ -112,11 +126,23 @@ void main() {
     ).thenAnswer((_) async => _shiftsPage(const []));
 
     // По умолчанию у org нет графиков (require_schedule=false) — не мешает
-    // тестам, которые не проверяют work_schedules.
+    // тестам, которые не проверяют work_schedules. Два формы вызова —
+    // отдельные стабы, т.к. это разные сигнатуры (см. WorkScheduleRepository.
+    // getMySchedules): `workLocationId` — ранняя загрузка на idle-экране
+    // (организации без гео-проверки, точка выбрана вручную); `lat`/`lng` —
+    // резолв внутри startShift() (организации с гео-проверкой, точка
+    // известна только на старте, см. work_schedules_geo_resolve/mobile.md).
     when(
       () => scheduleRepo.getMySchedules(
         any(),
         workLocationId: any(named: 'workLocationId'),
+      ),
+    ).thenAnswer((_) async => const Task<MySchedules>.success(_emptySchedules));
+    when(
+      () => scheduleRepo.getMySchedules(
+        any(),
+        lat: any(named: 'lat'),
+        lng: any(named: 'lng'),
       ),
     ).thenAnswer((_) async => const Task<MySchedules>.success(_emptySchedules));
     when(() => scheduleContextStorage.read(any(), any())).thenReturn(null);
@@ -143,6 +169,17 @@ void main() {
         longitude: any(named: 'longitude'),
       ),
     ).thenAnswer((_) async => result);
+  }
+
+  // Единственная организация — предвыбирается автоматически при cold-старте
+  // (shift_quick_start, см. ShiftTrackerCubit._maybePreselectContext).
+  // Общий хелпер для групп «выбор графика» (без/с гео-проверкой) — они
+  // отличаются только флагом geoCheckEnabled в передаваемой организации.
+  ShiftTrackerCubit buildWithOrgSelected(Organization org) {
+    when(
+      () => orgRepo.watchMyOrganizations(),
+    ).thenAnswer((_) => Stream<List<Organization>>.value([org]));
+    return buildCubit();
   }
 
   // Кубит с уже загруженной активной сменой `s1`.
@@ -604,37 +641,12 @@ void main() {
     });
   });
 
-  group('выбор графика при старте (work_schedules)', () {
-    final org = Organization(
-      id: 'org1',
-      name: 'Org 1',
-      ownerId: 'owner1',
-      inviteCode: 'INV12345',
-      isDeleted: false,
-      createdAt: DateTime.utc(2026),
-      geoCheckEnabled: true,
-    );
-
-    setUp(() {
-      // Org с геопроверкой — рабочую точку определяет сервер, поэтому
-      // startShift() в этой группе всегда проходит через геолокацию.
-      when(() => geo.getCurrentPosition()).thenAnswer(
-        (_) async => const GeoSuccess(
-          latitude: 55.75,
-          longitude: 37.61,
-          lowAccuracy: false,
-        ),
-      );
-    });
-
-    ShiftTrackerCubit buildWithOrgSelected() {
-      when(
-        () => orgRepo.watchMyOrganizations(),
-      ).thenAnswer((_) => Stream<List<Organization>>.value([org]));
-      // Единственная организация — предвыбирается автоматически
-      // (shift_quick_start), что и запускает загрузку графиков.
-      return buildCubit();
-    }
+  group('выбор графика — организация БЕЗ гео-проверки (ранняя загрузка на '
+      'idle-экране, поведение НЕ меняется фиксом geo_resolve)', () {
+    // Единственная организация без гео-проверки — точка выбирается вручную
+    // и известна заранее, поэтому cold-старт (buildWithOrgSelected) запускает
+    // раннюю загрузку графиков.
+    final org = _org(geoCheckEnabled: false);
 
     test(
       '0 графиков, require_schedule=false → старт не заблокирован',
@@ -648,7 +660,7 @@ void main() {
           (_) async => const Task<MySchedules>.success(_emptySchedules),
         );
 
-        final cubit = buildWithOrgSelected();
+        final cubit = buildWithOrgSelected(org);
         await pumpEventQueue();
 
         expect(cubit.state.availableSchedules, isEmpty);
@@ -670,7 +682,7 @@ void main() {
         ),
       );
 
-      final cubit = buildWithOrgSelected();
+      final cubit = buildWithOrgSelected(org);
       await pumpEventQueue();
 
       expect(cubit.state.scheduleBlockedNoOptions, isTrue);
@@ -693,7 +705,7 @@ void main() {
           ),
         );
 
-        final cubit = buildWithOrgSelected();
+        final cubit = buildWithOrgSelected(org);
         await pumpEventQueue();
 
         expect(cubit.state.selectedWorkScheduleId, 's1');
@@ -717,7 +729,7 @@ void main() {
           ),
         );
 
-        final cubit = buildWithOrgSelected();
+        final cubit = buildWithOrgSelected(org);
         await pumpEventQueue();
 
         expect(cubit.state.scheduleSelectionRequired, isTrue);
@@ -731,30 +743,28 @@ void main() {
       },
     );
 
-    test(
-      '>1 графика с сохранённым выбором → предвыбирается, если ещё доступен',
-      () async {
-        final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
-        when(
-          () => scheduleRepo.getMySchedules(
-            'org1',
-            workLocationId: any(named: 'workLocationId'),
-          ),
-        ).thenAnswer(
-          (_) async => Task<MySchedules>.success(
-            MySchedules(items: schedules, total: 2, requireSchedule: false),
-          ),
-        );
-        when(() => scheduleContextStorage.read('org1', null)).thenReturn('s2');
+    test('>1 графика с сохранённым выбором → предвыбирается, если ещё '
+        'доступен', () async {
+      final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(items: schedules, total: 2, requireSchedule: false),
+        ),
+      );
+      when(() => scheduleContextStorage.read('org1', null)).thenReturn('s2');
 
-        final cubit = buildWithOrgSelected();
-        await pumpEventQueue();
+      final cubit = buildWithOrgSelected(org);
+      await pumpEventQueue();
 
-        expect(cubit.state.selectedWorkScheduleId, 's2');
-        expect(cubit.state.canStartShift, isTrue);
-        await cubit.close();
-      },
-    );
+      expect(cubit.state.selectedWorkScheduleId, 's2');
+      expect(cubit.state.canStartShift, isTrue);
+      await cubit.close();
+    });
 
     test('startShift отправляет выбранный work_schedule_id', () async {
       when(
@@ -780,7 +790,7 @@ void main() {
         ),
       ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
 
-      final cubit = buildWithOrgSelected();
+      final cubit = buildWithOrgSelected(org);
       await pumpEventQueue();
       expect(cubit.state.selectedWorkScheduleId, 's1');
 
@@ -794,64 +804,7 @@ void main() {
           workScheduleId: 's1',
         ),
       ).called(1);
-      await cubit.close();
-    });
-
-    test('SCHEDULE_NOT_AVAILABLE при старте → выбор сброшен, список '
-        'перезапрошен', () async {
-      // Резолв точки на старте (гео) сужает набор: график, который был
-      // единственным до старта, на реальной точке недоступен — после
-      // перезапроса сервер отдаёт уже 2 совместимых графика, поэтому старая
-      // выборка не подставляется автоматически повторно.
-      var call = 0;
-      when(
-        () => scheduleRepo.getMySchedules(
-          'org1',
-          workLocationId: any(named: 'workLocationId'),
-        ),
-      ).thenAnswer((_) async {
-        call++;
-        final items = call == 1
-            ? [_schedule('s1')]
-            : [_schedule('s2', name: 'Утро'), _schedule('s3', name: 'Ночь')];
-        return Task<MySchedules>.success(
-          MySchedules(
-            items: items,
-            total: items.length,
-            requireSchedule: false,
-          ),
-        );
-      });
-      when(
-        () => shiftRepo.startShift(
-          organizationId: any(named: 'organizationId'),
-          latitude: any(named: 'latitude'),
-          longitude: any(named: 'longitude'),
-          workScheduleId: any(named: 'workScheduleId'),
-        ),
-      ).thenAnswer(
-        (_) async => const Task<Shift>.failure(
-          ApiException.server(
-            message: 'недоступен',
-            code: 'SCHEDULE_NOT_AVAILABLE',
-          ),
-        ),
-      );
-
-      final cubit = buildWithOrgSelected();
-      await pumpEventQueue();
-      expect(cubit.state.selectedWorkScheduleId, 's1');
-
-      await cubit.startShift();
-      await pumpEventQueue();
-
-      expect(cubit.state.selectedWorkScheduleId, isNull);
-      verify(
-        () => scheduleRepo.getMySchedules(
-          'org1',
-          workLocationId: any(named: 'workLocationId'),
-        ),
-      ).called(2);
+      verifyNever(() => geo.getCurrentPosition());
       await cubit.close();
     });
 
@@ -864,7 +817,7 @@ void main() {
         ),
       ).thenAnswer((_) async => const Task<MySchedules>.failure(_networkError));
 
-      final cubit = buildWithOrgSelected();
+      final cubit = buildWithOrgSelected(org);
       await pumpEventQueue();
 
       expect(cubit.state.schedules.hasData, isFalse);
@@ -891,5 +844,299 @@ void main() {
       );
       await cubit.close();
     });
+  });
+
+  group('выбор графика — организация С гео-проверкой (резолв на startShift, '
+      'work_schedules_geo_resolve)', () {
+    // В отличие от организаций без гео-проверки, cold-старт с этой
+    // организацией НЕ должен запускать раннюю загрузку графиков — точка
+    // известна только серверу, только на startShift() (см. buildWithOrgSelected
+    // выше в main()).
+    final orgGeoOn = _org(geoCheckEnabled: true);
+
+    setUp(() {
+      // Org с геопроверкой — рабочую точку определяет сервер по свежим
+      // координатам, поэтому startShift() в этой группе всегда проходит
+      // через геолокацию.
+      when(() => geo.getCurrentPosition()).thenAnswer(
+        (_) async => const GeoSuccess(
+          latitude: 55.75,
+          longitude: 37.61,
+          lowAccuracy: false,
+        ),
+      );
+    });
+
+    test('idle-экран: org выбрана, но my-schedules НЕ запрашивается заранее '
+        '(баг, который чинит эта задача)', () async {
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      expect(cubit.state.schedules.hasData, isFalse);
+      verifyNever(
+        () => scheduleRepo.getMySchedules(
+          any(),
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      );
+      verifyNever(
+        () => scheduleRepo.getMySchedules(
+          any(),
+          lat: any(named: 'lat'),
+          lng: any(named: 'lng'),
+        ),
+      );
+      await cubit.close();
+    });
+
+    test('0 графиков → резолв по свежим координатам, GPS запрошен один раз, '
+        'старт продолжается без графика', () async {
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer(
+        (_) async => const Task<MySchedules>.success(_emptySchedules),
+      );
+      stubStartShift(Task<Shift>.success(_activeShift()));
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      final result = await cubit.startShift();
+
+      expect(result, StartShiftResult.success);
+      expect(cubit.state.selectedWorkScheduleId, isNull);
+      verify(() => geo.getCurrentPosition()).called(1);
+      verify(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).called(1);
+      await cubit.close();
+    });
+
+    test('1 график → авто-подстановка, старт продолжается сразу без '
+        'модалки, GPS запрошен один раз', () async {
+      final schedule = _schedule('s1');
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(items: [schedule], total: 1, requireSchedule: false),
+        ),
+      );
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      final result = await cubit.startShift();
+
+      expect(result, StartShiftResult.success);
+      expect(cubit.state.selectedWorkScheduleId, 's1');
+      verify(() => geo.getCurrentPosition()).called(1);
+      verify(
+        () => shiftRepo.startShift(
+          organizationId: 'org1',
+          latitude: 55.75,
+          longitude: 37.61,
+          workScheduleId: 's1',
+        ),
+      ).called(1);
+      await cubit.close();
+    });
+
+    test('>1 графика → startShift просит выбор (scheduleSelectionRequired), '
+        'GPS запрошен один раз, старт ещё не отправлен', () async {
+      final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(items: schedules, total: 2, requireSchedule: false),
+        ),
+      );
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      final result = await cubit.startShift();
+
+      expect(result, StartShiftResult.scheduleSelectionRequired);
+      expect(cubit.state.availableSchedules.map((s) => s.id), ['s1', 's2']);
+      expect(cubit.state.actionStatus, FeatureStatus.initial);
+      verify(() => geo.getCurrentPosition()).called(1);
+      verifyNever(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+        ),
+      );
+      await cubit.close();
+    });
+
+    test(
+      '>1 графика с сохранённым выбором → предвыбирается в состоянии, но '
+      'модалка ВСЁ РАВНО показывается (решение по количеству, а не по '
+      'факту предвыбора — иначе сотрудник не увидит, какой график '
+      'стартует, т.к. предпросмотра на idle-экране для гео-org нет)',
+      () async {
+        final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
+        when(
+          () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        ).thenAnswer(
+          (_) async => Task<MySchedules>.success(
+            MySchedules(items: schedules, total: 2, requireSchedule: false),
+          ),
+        );
+        when(() => scheduleContextStorage.read('org1', null)).thenReturn('s2');
+
+        final cubit = buildWithOrgSelected(orgGeoOn);
+        await pumpEventQueue();
+
+        final result = await cubit.startShift();
+
+        expect(result, StartShiftResult.scheduleSelectionRequired);
+        expect(cubit.state.selectedWorkScheduleId, 's2');
+        verifyNever(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+          ),
+        );
+        await cubit.close();
+      },
+    );
+
+    test('>1 графика: continueStartAfterScheduleSelection стартует с '
+        'выбранным графиком, GPS НЕ запрашивается повторно', () async {
+      final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(items: schedules, total: 2, requireSchedule: false),
+        ),
+      );
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      final firstResult = await cubit.startShift();
+      expect(firstResult, StartShiftResult.scheduleSelectionRequired);
+
+      final continueResult = await cubit.continueStartAfterScheduleSelection(
+        schedules[1],
+      );
+
+      expect(continueResult, StartShiftResult.success);
+      expect(cubit.state.selectedWorkScheduleId, 's2');
+      verify(() => geo.getCurrentPosition()).called(1);
+      verify(
+        () => shiftRepo.startShift(
+          organizationId: 'org1',
+          latitude: 55.75,
+          longitude: 37.61,
+          workScheduleId: 's2',
+        ),
+      ).called(1);
+      verify(() => scheduleContextStorage.save('org1', null, 's2')).called(1);
+      await cubit.close();
+    });
+
+    test('резолв графика падает по сети → ошибка действия, старт не '
+        'отправлен', () async {
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer((_) async => const Task<MySchedules>.failure(_networkError));
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      final result = await cubit.startShift();
+
+      expect(result, StartShiftResult.error);
+      expect(cubit.state.actionErrorCode, 'NETWORK_ERROR');
+      expect(cubit.state.isActionNetworkError, isTrue);
+      verifyNever(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+        ),
+      );
+      await cubit.close();
+    });
+
+    test(
+      'SCHEDULE_NOT_AVAILABLE при старте → выбор сброшен; ретрай-перезапрос '
+      'переиспользует те же координаты (не деградирует обратно к "точка '
+      'неизвестна" — исходный баг), GPS всё ещё запрошен только один раз',
+      () async {
+        // Первый резолв (внутри startShift) находит один график и
+        // авто-подставляет его; после SCHEDULE_NOT_AVAILABLE перезапрос теми
+        // же координатами уже находит 2 (сервер знает точку точнее) — старая
+        // выборка не подставляется автоматически повторно.
+        var call = 0;
+        when(
+          () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        ).thenAnswer((_) async {
+          call++;
+          final items = call == 1
+              ? [_schedule('s1')]
+              : [_schedule('s2', name: 'Утро'), _schedule('s3', name: 'Ночь')];
+          return Task<MySchedules>.success(
+            MySchedules(
+              items: items,
+              total: items.length,
+              requireSchedule: false,
+            ),
+          );
+        });
+        when(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+            workScheduleId: any(named: 'workScheduleId'),
+          ),
+        ).thenAnswer(
+          (_) async => const Task<Shift>.failure(
+            ApiException.server(
+              message: 'недоступен',
+              code: 'SCHEDULE_NOT_AVAILABLE',
+            ),
+          ),
+        );
+
+        final cubit = buildWithOrgSelected(orgGeoOn);
+        await pumpEventQueue();
+
+        final result = await cubit.startShift();
+        await pumpEventQueue();
+
+        expect(result, StartShiftResult.error);
+        expect(cubit.state.selectedWorkScheduleId, isNull);
+        verify(
+          () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        ).called(2);
+        verify(() => geo.getCurrentPosition()).called(1);
+        await cubit.close();
+      },
+    );
   });
 }
