@@ -43,7 +43,7 @@ class _IdleShiftContent extends StatelessWidget {
               _WorkLocationSelector(state: state),
               const SizedBox(height: 24),
             ],
-            if (state.isOrgShift) ...[
+            if (state.showSchedulePreview) ...[
               _WorkScheduleSelector(state: state),
               const SizedBox(height: 24),
             ],
@@ -61,10 +61,17 @@ class _IdleShiftContent extends StatelessWidget {
 
   Future<void> _onStartShift(BuildContext context) async {
     final cubit = context.read<ShiftTrackerCubit>();
-    final l10n = context.l10n;
     final result = await cubit.startShift();
-
     if (!context.mounted) return;
+    await _handleStartShiftResult(context, result);
+  }
+
+  Future<void> _handleStartShiftResult(
+    BuildContext context,
+    StartShiftResult result,
+  ) async {
+    final cubit = context.read<ShiftTrackerCubit>();
+    final l10n = context.l10n;
 
     switch (result) {
       case StartShiftResult.success:
@@ -91,6 +98,43 @@ class _IdleShiftContent extends StatelessWidget {
         context.modals.showError(l10n.geoUnsupportedMessage);
       case StartShiftResult.error:
         break; // Обрабатывается BlocListener
+      case StartShiftResult.scheduleSelectionRequired:
+        // Гео-check организация, точка резолвлена, графиков >1 — та же
+        // модалка, что и на idle-экране для организаций без гео-проверки
+        // (см. _WorkScheduleSelector), только поверх экрана трекера.
+        final pickerResult = await _pushWorkSchedulePicker(
+          context,
+          cubit.state,
+        );
+        if (!context.mounted) return;
+        // Закрыто свайпом/тапом по фону без выбора — старт не продолжаем,
+        // кнопка «Начать» уже разблокирована (см. ShiftTrackerCubit).
+        if (pickerResult == null) return;
+        final continueResult = await cubit.continueStartAfterScheduleSelection(
+          pickerResult.schedule,
+        );
+        if (!context.mounted) return;
+        await _handleStartShiftResult(context, continueResult);
     }
   }
+}
+
+/// Открывает модалку выбора графика (`WorkSchedulePickerRoute`) поверх
+/// текущего экрана и возвращает выбор сотрудника (`null` — закрыто без
+/// выбора). Общая точка входа для idle-экрана (`_WorkScheduleSelector`,
+/// организации без гео-проверки) и продолжения старта у гео-check
+/// организаций (`_IdleShiftContent._handleStartShiftResult`), см.
+/// docs/tasks/work_schedules_geo_resolve/mobile.md.
+Future<WorkSchedulePickerResult?> _pushWorkSchedulePicker(
+  BuildContext context,
+  ShiftTrackerState state,
+) {
+  return context.router.push<WorkSchedulePickerResult?>(
+    WorkSchedulePickerRoute(
+      schedules: state.availableSchedules,
+      selectedScheduleId: state.selectedWorkScheduleId,
+      organizationTimezone:
+          state.selectedOrganization?.timezone ?? 'Europe/Moscow',
+    ),
+  );
 }

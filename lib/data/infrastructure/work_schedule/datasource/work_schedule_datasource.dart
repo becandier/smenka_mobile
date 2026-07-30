@@ -9,11 +9,15 @@ class WorkScheduleDataSource {
   Future<MySchedulesDto> getMySchedules(
     String orgId, {
     String? workLocationId,
+    double? lat,
+    double? lng,
   }) async {
     final queryParameters = <String, dynamic>{};
     if (workLocationId != null) {
       queryParameters['work_location_id'] = workLocationId;
     }
+    if (lat != null) queryParameters['lat'] = lat;
+    if (lng != null) queryParameters['lng'] = lng;
 
     final response = await _dio.get<Map<String, dynamic>>(
       '/organizations/$orgId/my-schedules',

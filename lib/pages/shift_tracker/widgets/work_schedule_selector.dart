@@ -12,14 +12,7 @@ class _WorkScheduleSelector extends StatelessWidget {
 
   Future<void> _openPicker(BuildContext context) async {
     final cubit = context.read<ShiftTrackerCubit>();
-    final result = await context.router.push<WorkSchedulePickerResult?>(
-      WorkSchedulePickerRoute(
-        schedules: state.availableSchedules,
-        selectedScheduleId: state.selectedWorkScheduleId,
-        organizationTimezone:
-            state.selectedOrganization?.timezone ?? 'Europe/Moscow',
-      ),
-    );
+    final result = await _pushWorkSchedulePicker(context, state);
     if (result != null) cubit.selectWorkSchedule(result.schedule);
   }
 

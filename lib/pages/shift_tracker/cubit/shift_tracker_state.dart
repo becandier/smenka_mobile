@@ -108,6 +108,15 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   /// Смена организационная — только для неё применяются графики.
   bool get isOrgShift => selectedOrganizationId != null;
 
+  /// Показывать ли предпросмотр графика на idle-экране (до нажатия
+  /// «Начать»). Только для организаций без гео-проверки — точка выбрана
+  /// вручную и известна заранее, поэтому набор графиков можно показать
+  /// заблаговременно. Для гео-check организаций точка известна только
+  /// серверу в момент старта — резолв идёт внутри `ShiftTrackerCubit.
+  /// startShift`, без предпросмотра (см.
+  /// docs/tasks/work_schedules_geo_resolve/mobile.md).
+  bool get showSchedulePreview => showWorkLocationSelector;
+
   List<WorkSchedule> get availableSchedules =>
       schedules.data?.items ?? const <WorkSchedule>[];
 
