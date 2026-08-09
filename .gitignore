@@ -60,3 +60,7 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+# Пароли и токены — никогда не в репозиторий
+creditinals.md
+CREDENTIALS.md
+credentials.md
