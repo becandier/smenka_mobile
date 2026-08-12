@@ -14,7 +14,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Member {
 
- String get id; String get organizationId; String get userId; String get userName; String get userEmail; MemberRole get role; DateTime get joinedAt; OrganizationRole? get customRole;/// Действующая ставка (фича payroll); null — не задана
+ String get id; String get organizationId; String get userId; String get userName;/// Пустая строка — у учётки, заведённой админом организации, нет email
+/// (бэк отдаёт `""`, не `null` — см. `docs/tasks/admin_created_accounts`).
+/// Для отображения используй [contactLabel].
+ String get userEmail; MemberRole get role; DateTime get joinedAt; OrganizationRole? get customRole;/// Логин пользователя. Заполнен только у учёток, заведённых админом
+/// организации; у остальных `null`. Additive — старый бэк не шлёт → `null`.
+ String? get userLogin;/// Действующая ставка (фича payroll); null — не задана
 /// либо ответ старого бэка без поля.
  CurrentRate? get currentRate;
 /// Create a copy of Member
@@ -27,16 +32,16 @@ $MemberCopyWith<Member> get copyWith => _$MemberCopyWithImpl<Member>(this as Mem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Member&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Member&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.userLogin, userLogin) || other.userLogin == userLogin)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,currentRate);
+int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,userLogin,currentRate);
 
 @override
 String toString() {
-  return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, currentRate: $currentRate)';
+  return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, userLogin: $userLogin, currentRate: $currentRate)';
 }
 
 
@@ -47,7 +52,7 @@ abstract mixin class $MemberCopyWith<$Res>  {
   factory $MemberCopyWith(Member value, $Res Function(Member) _then) = _$MemberCopyWithImpl;
 @useResult
 $Res call({
- String id, String organizationId, String userId, String userName, String userEmail, MemberRole role, DateTime joinedAt, OrganizationRole? customRole, CurrentRate? currentRate
+ String id, String organizationId, String userId, String userName, String userEmail, MemberRole role, DateTime joinedAt, OrganizationRole? customRole, String? userLogin, CurrentRate? currentRate
 });
 
 
@@ -64,7 +69,7 @@ class _$MemberCopyWithImpl<$Res>
 
 /// Create a copy of Member
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? currentRate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? userLogin = freezed,Object? currentRate = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +79,8 @@ as String,userEmail: null == userEmail ? _self.userEmail : userEmail // ignore: 
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as MemberRole,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,customRole: freezed == customRole ? _self.customRole : customRole // ignore: cast_nullable_to_non_nullable
-as OrganizationRole?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
+as OrganizationRole?,userLogin: freezed == userLogin ? _self.userLogin : userLogin // ignore: cast_nullable_to_non_nullable
+as String?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
 as CurrentRate?,
   ));
 }
@@ -184,10 +190,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  MemberRole role,  DateTime joinedAt,  OrganizationRole? customRole,  CurrentRate? currentRate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  MemberRole role,  DateTime joinedAt,  OrganizationRole? customRole,  String? userLogin,  CurrentRate? currentRate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Member() when $default != null:
-return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.currentRate);case _:
+return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.userLogin,_that.currentRate);case _:
   return orElse();
 
 }
@@ -205,10 +211,10 @@ return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  MemberRole role,  DateTime joinedAt,  OrganizationRole? customRole,  CurrentRate? currentRate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  MemberRole role,  DateTime joinedAt,  OrganizationRole? customRole,  String? userLogin,  CurrentRate? currentRate)  $default,) {final _that = this;
 switch (_that) {
 case _Member():
-return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.currentRate);case _:
+return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.userLogin,_that.currentRate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -225,10 +231,10 @@ return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  MemberRole role,  DateTime joinedAt,  OrganizationRole? customRole,  CurrentRate? currentRate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  MemberRole role,  DateTime joinedAt,  OrganizationRole? customRole,  String? userLogin,  CurrentRate? currentRate)?  $default,) {final _that = this;
 switch (_that) {
 case _Member() when $default != null:
-return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.currentRate);case _:
+return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.userLogin,_that.currentRate);case _:
   return null;
 
 }
@@ -239,18 +245,24 @@ return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.
 /// @nodoc
 
 
-class _Member implements Member {
-  const _Member({required this.id, required this.organizationId, required this.userId, required this.userName, required this.userEmail, required this.role, required this.joinedAt, this.customRole, this.currentRate});
+class _Member extends Member {
+  const _Member({required this.id, required this.organizationId, required this.userId, required this.userName, required this.userEmail, required this.role, required this.joinedAt, this.customRole, this.userLogin, this.currentRate}): super._();
   
 
 @override final  String id;
 @override final  String organizationId;
 @override final  String userId;
 @override final  String userName;
+/// Пустая строка — у учётки, заведённой админом организации, нет email
+/// (бэк отдаёт `""`, не `null` — см. `docs/tasks/admin_created_accounts`).
+/// Для отображения используй [contactLabel].
 @override final  String userEmail;
 @override final  MemberRole role;
 @override final  DateTime joinedAt;
 @override final  OrganizationRole? customRole;
+/// Логин пользователя. Заполнен только у учёток, заведённых админом
+/// организации; у остальных `null`. Additive — старый бэк не шлёт → `null`.
+@override final  String? userLogin;
 /// Действующая ставка (фича payroll); null — не задана
 /// либо ответ старого бэка без поля.
 @override final  CurrentRate? currentRate;
@@ -265,16 +277,16 @@ _$MemberCopyWith<_Member> get copyWith => __$MemberCopyWithImpl<_Member>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Member&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Member&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.userLogin, userLogin) || other.userLogin == userLogin)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,currentRate);
+int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,userLogin,currentRate);
 
 @override
 String toString() {
-  return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, currentRate: $currentRate)';
+  return 'Member(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, userLogin: $userLogin, currentRate: $currentRate)';
 }
 
 
@@ -285,7 +297,7 @@ abstract mixin class _$MemberCopyWith<$Res> implements $MemberCopyWith<$Res> {
   factory _$MemberCopyWith(_Member value, $Res Function(_Member) _then) = __$MemberCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String organizationId, String userId, String userName, String userEmail, MemberRole role, DateTime joinedAt, OrganizationRole? customRole, CurrentRate? currentRate
+ String id, String organizationId, String userId, String userName, String userEmail, MemberRole role, DateTime joinedAt, OrganizationRole? customRole, String? userLogin, CurrentRate? currentRate
 });
 
 
@@ -302,7 +314,7 @@ class __$MemberCopyWithImpl<$Res>
 
 /// Create a copy of Member
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? currentRate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? userLogin = freezed,Object? currentRate = freezed,}) {
   return _then(_Member(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
@@ -312,7 +324,8 @@ as String,userEmail: null == userEmail ? _self.userEmail : userEmail // ignore: 
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as MemberRole,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,customRole: freezed == customRole ? _self.customRole : customRole // ignore: cast_nullable_to_non_nullable
-as OrganizationRole?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
+as OrganizationRole?,userLogin: freezed == userLogin ? _self.userLogin : userLogin // ignore: cast_nullable_to_non_nullable
+as String?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
 as CurrentRate?,
   ));
 }

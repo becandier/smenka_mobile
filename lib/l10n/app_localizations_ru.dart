@@ -122,6 +122,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authEmailHint => 'example@mail.com';
 
   @override
+  String get authLoginOrEmail => 'Email или логин';
+
+  @override
+  String get authLoginOrEmailHint => 'example@mail.com или логин';
+
+  @override
   String get authPassword => 'Пароль';
 
   @override
@@ -180,7 +186,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authEmailTaken => 'Пользователь с таким email уже существует';
 
   @override
-  String get authInvalidCredentials => 'Неверный email или пароль';
+  String get authInvalidCredentials => 'Неверный логин или пароль';
 
   @override
   String get authInvalidCode => 'Неверный или просроченный код';
@@ -562,6 +568,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editProfile => 'Редактировать';
+
+  @override
+  String get profileLogin => 'Логин';
 
   @override
   String get myOrganizations => 'Мои организации';

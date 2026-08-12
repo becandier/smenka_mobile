@@ -310,6 +310,18 @@ abstract class AppLocalizations {
   /// **'example@mail.com'**
   String get authEmailHint;
 
+  /// No description provided for @authLoginOrEmail.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email или логин'**
+  String get authLoginOrEmail;
+
+  /// No description provided for @authLoginOrEmailHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'example@mail.com или логин'**
+  String get authLoginOrEmailHint;
+
   /// No description provided for @authPassword.
   ///
   /// In ru, this message translates to:
@@ -421,7 +433,7 @@ abstract class AppLocalizations {
   /// No description provided for @authInvalidCredentials.
   ///
   /// In ru, this message translates to:
-  /// **'Неверный email или пароль'**
+  /// **'Неверный логин или пароль'**
   String get authInvalidCredentials;
 
   /// No description provided for @authInvalidCode.
@@ -1101,6 +1113,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Редактировать'**
   String get editProfile;
+
+  /// No description provided for @profileLogin.
+  ///
+  /// In ru, this message translates to:
+  /// **'Логин'**
+  String get profileLogin;
 
   /// No description provided for @myOrganizations.
   ///

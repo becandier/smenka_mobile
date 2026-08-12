@@ -30,9 +30,12 @@ class _ProfileHeader extends StatelessWidget {
             user.name,
             style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 4),
-          Text(
-            user.email,
+          // Email, а если его нет (учётка заведена админом организации без
+          // email) — login. Если пусто оба — строку не показываем вовсе
+          // (см. mobile.md admin_created_accounts).
+          ContactLabelText(
+            contact: user.contactLabel,
+            spacingBefore: 4,
             style: textTheme.bodyMedium?.copyWith(color: appColors.secondary),
           ),
         ],

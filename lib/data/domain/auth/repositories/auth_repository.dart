@@ -23,9 +23,10 @@ abstract class AuthRepository {
   /// Повторная отправка кода (cooldown 30 сек)
   Future<Task<void>> resendCode({required String email});
 
-  /// Вход по email/password
+  /// Вход по логину/email (единое поле [login] — пользователь может ввести
+  /// и то, и другое) + пароль
   Future<Task<AuthToken>> login({
-    required String email,
+    required String login,
     required String password,
   });
 

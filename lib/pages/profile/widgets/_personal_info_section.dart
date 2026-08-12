@@ -51,8 +51,15 @@ class _PersonalInfoSection extends StatelessWidget {
               const SizedBox(height: 8),
               _InfoRow(
                 icon: Icons.email_outlined,
-                label: l10n.authEmail,
-                value: user.email,
+                // Учётка без email (заведена админом организации) показывает
+                // логин под меткой «Логин» вместо пустого «Email» — см.
+                // mobile.md admin_created_accounts. `User.email` — `null`
+                // ровно тогда, когда его нет (в отличие от `Member.userEmail`,
+                // у него нет "" -сентинела), поэтому достаточно проверки на
+                // `null`, без повторного trim поверх того, что уже сделал
+                // `contactLabel`.
+                label: user.email == null ? l10n.profileLogin : l10n.authEmail,
+                value: user.contactLabel ?? '',
               ),
               const SizedBox(height: 8),
               _InfoRow(

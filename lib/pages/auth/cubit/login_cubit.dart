@@ -56,8 +56,8 @@ class LoginCubit extends Cubit<LoginState> {
     );
   }
 
-  void updateEmail(String value) =>
-      emit(state.copyWith(email: value, error: null, errorCode: null));
+  void updateIdentifier(String value) =>
+      emit(state.copyWith(identifier: value, error: null, errorCode: null));
 
   void updatePassword(String value) =>
       emit(state.copyWith(password: value, error: null, errorCode: null));
@@ -78,7 +78,7 @@ class LoginCubit extends Cubit<LoginState> {
     );
 
     final result = await _authRepository.login(
-      email: state.email.trim(),
+      login: state.identifier.trim(),
       password: state.password,
     );
 
@@ -114,7 +114,7 @@ class LoginCubit extends Cubit<LoginState> {
     );
 
     final result = await _authRepository.register(
-      email: state.email.trim(),
+      email: state.identifier.trim(),
       password: state.password,
       name: state.name.trim(),
     );

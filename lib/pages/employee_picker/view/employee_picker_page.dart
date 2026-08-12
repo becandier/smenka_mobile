@@ -97,16 +97,22 @@ class _EmployeePickerView extends StatelessWidget {
                   ),
                 )
               else
-                ...members.map(
-                  (m) => _EmployeeRow(
-                    label: m.userName.trim().isNotEmpty
-                        ? m.userName
-                        : m.userEmail,
-                    subtitle: m.userName.trim().isNotEmpty ? m.userEmail : null,
+                ...members.map((m) {
+                  final hasName = m.userName.trim().isNotEmpty;
+                  return _EmployeeRow(
+                    // Имя обязательно у всех сотрудников (в т.ч. заведённых
+                    // админом), поэтому это на практике всегда основная
+                    // ветка; email/login/userId — защитный фолбэк, чтобы
+                    // строка никогда не была пустой.
+                    label: hasName ? m.userName : (m.contactLabel ?? m.userId),
+                    // email, а если его нет — login; если пусто оба —
+                    // подзаголовок не показываем (см. mobile.md
+                    // admin_created_accounts).
+                    subtitle: hasName ? m.contactLabel : null,
                     isSelected: m.userId == selectedUserId,
                     onTap: () => _pick(context, m),
-                  ),
-                ),
+                  );
+                }),
             ],
           );
         },

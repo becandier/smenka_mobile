@@ -27,7 +27,7 @@ void main() {
   void stubLogin(ApiException error) {
     when(
       () => repo.login(
-        email: any(named: 'email'),
+        login: any(named: 'login'),
         password: any(named: 'password'),
       ),
     ).thenAnswer((_) async => Task<AuthToken>.failure(error));
@@ -65,19 +65,45 @@ void main() {
       await cubit.close();
     });
 
-    test('редактирование email снимает блокировку и код ошибки', () async {
-      stubLogin(
-        const ApiException.server(message: 'locked', code: 'ACCOUNT_LOCKED'),
+    test(
+      'редактирование идентификатора снимает блокировку и код ошибки',
+      () async {
+        stubLogin(
+          const ApiException.server(message: 'locked', code: 'ACCOUNT_LOCKED'),
+        );
+        final cubit = buildCubit();
+        await cubit.login();
+        expect(cubit.state.isLocked, isTrue);
+
+        cubit.updateIdentifier('new@mail.com');
+
+        expect(cubit.state.isLocked, isFalse);
+        expect(cubit.state.errorCode, isNull);
+        expect(cubit.state.error, isNull);
+        await cubit.close();
+      },
+    );
+  });
+
+  group('LoginCubit.login — вход по логину или email', () {
+    test('шлёт trim(identifier) в поле login запроса', () async {
+      when(
+        () => repo.login(
+          login: any(named: 'login'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer(
+        (_) async => const Task<AuthToken>.success(
+          AuthToken(accessToken: 'a', refreshToken: 'r'),
+        ),
       );
-      final cubit = buildCubit();
+      final cubit = buildCubit()
+        ..updateIdentifier('  ivanov  ')
+        ..updatePassword('p4ssword');
+
       await cubit.login();
-      expect(cubit.state.isLocked, isTrue);
 
-      cubit.updateEmail('new@mail.com');
-
-      expect(cubit.state.isLocked, isFalse);
-      expect(cubit.state.errorCode, isNull);
-      expect(cubit.state.error, isNull);
+      verify(() => repo.login(login: 'ivanov', password: 'p4ssword')).called(1);
       await cubit.close();
     });
   });
