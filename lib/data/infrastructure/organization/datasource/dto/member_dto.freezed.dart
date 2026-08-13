@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MemberDto {
 
- String get id; String get organizationId; String get userId; String get userName; String get userEmail; String get role; DateTime get joinedAt; OrganizationRoleDto? get customRole;/// Действующая ставка (additive, фича payroll); отсутствует
+ String get id; String get organizationId; String get userId; String get userName; String get userEmail; String get role; DateTime get joinedAt; OrganizationRoleDto? get customRole;/// Additive (`admin_created_accounts`). Старый бэк не шлёт → `null`.
+ String? get userLogin;/// Действующая ставка (additive, фича payroll); отсутствует
 /// в ответах старого бэка.
  CurrentRateDto? get currentRate;
 /// Create a copy of MemberDto
@@ -30,16 +31,16 @@ $MemberDtoCopyWith<MemberDto> get copyWith => _$MemberDtoCopyWithImpl<MemberDto>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.userLogin, userLogin) || other.userLogin == userLogin)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,currentRate);
+int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,userLogin,currentRate);
 
 @override
 String toString() {
-  return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, currentRate: $currentRate)';
+  return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, userLogin: $userLogin, currentRate: $currentRate)';
 }
 
 
@@ -50,7 +51,7 @@ abstract mixin class $MemberDtoCopyWith<$Res>  {
   factory $MemberDtoCopyWith(MemberDto value, $Res Function(MemberDto) _then) = _$MemberDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String organizationId, String userId, String userName, String userEmail, String role, DateTime joinedAt, OrganizationRoleDto? customRole, CurrentRateDto? currentRate
+ String id, String organizationId, String userId, String userName, String userEmail, String role, DateTime joinedAt, OrganizationRoleDto? customRole, String? userLogin, CurrentRateDto? currentRate
 });
 
 
@@ -67,7 +68,7 @@ class _$MemberDtoCopyWithImpl<$Res>
 
 /// Create a copy of MemberDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? currentRate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? userLogin = freezed,Object? currentRate = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
@@ -77,7 +78,8 @@ as String,userEmail: null == userEmail ? _self.userEmail : userEmail // ignore: 
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,customRole: freezed == customRole ? _self.customRole : customRole // ignore: cast_nullable_to_non_nullable
-as OrganizationRoleDto?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
+as OrganizationRoleDto?,userLogin: freezed == userLogin ? _self.userLogin : userLogin // ignore: cast_nullable_to_non_nullable
+as String?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
 as CurrentRateDto?,
   ));
 }
@@ -187,10 +189,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  String role,  DateTime joinedAt,  OrganizationRoleDto? customRole,  CurrentRateDto? currentRate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  String role,  DateTime joinedAt,  OrganizationRoleDto? customRole,  String? userLogin,  CurrentRateDto? currentRate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberDto() when $default != null:
-return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.currentRate);case _:
+return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.userLogin,_that.currentRate);case _:
   return orElse();
 
 }
@@ -208,10 +210,10 @@ return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  String role,  DateTime joinedAt,  OrganizationRoleDto? customRole,  CurrentRateDto? currentRate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  String role,  DateTime joinedAt,  OrganizationRoleDto? customRole,  String? userLogin,  CurrentRateDto? currentRate)  $default,) {final _that = this;
 switch (_that) {
 case _MemberDto():
-return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.currentRate);case _:
+return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.userLogin,_that.currentRate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -228,10 +230,10 @@ return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  String role,  DateTime joinedAt,  OrganizationRoleDto? customRole,  CurrentRateDto? currentRate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String organizationId,  String userId,  String userName,  String userEmail,  String role,  DateTime joinedAt,  OrganizationRoleDto? customRole,  String? userLogin,  CurrentRateDto? currentRate)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberDto() when $default != null:
-return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.currentRate);case _:
+return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.userEmail,_that.role,_that.joinedAt,_that.customRole,_that.userLogin,_that.currentRate);case _:
   return null;
 
 }
@@ -243,7 +245,7 @@ return $default(_that.id,_that.organizationId,_that.userId,_that.userName,_that.
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _MemberDto implements MemberDto {
-  const _MemberDto({required this.id, required this.organizationId, required this.userId, required this.userName, required this.userEmail, required this.role, required this.joinedAt, this.customRole, this.currentRate});
+  const _MemberDto({required this.id, required this.organizationId, required this.userId, required this.userName, required this.userEmail, required this.role, required this.joinedAt, this.customRole, this.userLogin, this.currentRate});
   factory _MemberDto.fromJson(Map<String, dynamic> json) => _$MemberDtoFromJson(json);
 
 @override final  String id;
@@ -254,6 +256,8 @@ class _MemberDto implements MemberDto {
 @override final  String role;
 @override final  DateTime joinedAt;
 @override final  OrganizationRoleDto? customRole;
+/// Additive (`admin_created_accounts`). Старый бэк не шлёт → `null`.
+@override final  String? userLogin;
 /// Действующая ставка (additive, фича payroll); отсутствует
 /// в ответах старого бэка.
 @override final  CurrentRateDto? currentRate;
@@ -271,16 +275,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.customRole, customRole) || other.customRole == customRole)&&(identical(other.userLogin, userLogin) || other.userLogin == userLogin)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,currentRate);
+int get hashCode => Object.hash(runtimeType,id,organizationId,userId,userName,userEmail,role,joinedAt,customRole,userLogin,currentRate);
 
 @override
 String toString() {
-  return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, currentRate: $currentRate)';
+  return 'MemberDto(id: $id, organizationId: $organizationId, userId: $userId, userName: $userName, userEmail: $userEmail, role: $role, joinedAt: $joinedAt, customRole: $customRole, userLogin: $userLogin, currentRate: $currentRate)';
 }
 
 
@@ -291,7 +295,7 @@ abstract mixin class _$MemberDtoCopyWith<$Res> implements $MemberDtoCopyWith<$Re
   factory _$MemberDtoCopyWith(_MemberDto value, $Res Function(_MemberDto) _then) = __$MemberDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String organizationId, String userId, String userName, String userEmail, String role, DateTime joinedAt, OrganizationRoleDto? customRole, CurrentRateDto? currentRate
+ String id, String organizationId, String userId, String userName, String userEmail, String role, DateTime joinedAt, OrganizationRoleDto? customRole, String? userLogin, CurrentRateDto? currentRate
 });
 
 
@@ -308,7 +312,7 @@ class __$MemberDtoCopyWithImpl<$Res>
 
 /// Create a copy of MemberDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? currentRate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? organizationId = null,Object? userId = null,Object? userName = null,Object? userEmail = null,Object? role = null,Object? joinedAt = null,Object? customRole = freezed,Object? userLogin = freezed,Object? currentRate = freezed,}) {
   return _then(_MemberDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
@@ -318,7 +322,8 @@ as String,userEmail: null == userEmail ? _self.userEmail : userEmail // ignore: 
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,customRole: freezed == customRole ? _self.customRole : customRole // ignore: cast_nullable_to_non_nullable
-as OrganizationRoleDto?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
+as OrganizationRoleDto?,userLogin: freezed == userLogin ? _self.userLogin : userLogin // ignore: cast_nullable_to_non_nullable
+as String?,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
 as CurrentRateDto?,
   ));
 }

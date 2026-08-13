@@ -18,6 +18,9 @@ abstract class MemberDto with _$MemberDto {
     required DateTime joinedAt,
     OrganizationRoleDto? customRole,
 
+    /// Additive (`admin_created_accounts`). Старый бэк не шлёт → `null`.
+    String? userLogin,
+
     /// Действующая ставка (additive, фича payroll); отсутствует
     /// в ответах старого бэка.
     CurrentRateDto? currentRate,

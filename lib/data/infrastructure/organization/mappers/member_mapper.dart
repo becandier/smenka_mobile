@@ -11,6 +11,7 @@ extension MemberMapper on MemberDto {
       userId: userId,
       userName: userName,
       userEmail: userEmail,
+      userLogin: userLogin,
       role: MemberRole.values.byName(role),
       customRole: customRole?.toDomain(),
       joinedAt: joinedAt,

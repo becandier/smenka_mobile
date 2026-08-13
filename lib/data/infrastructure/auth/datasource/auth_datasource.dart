@@ -38,12 +38,12 @@ class AuthDataSource {
   }
 
   Future<AuthTokenDto> login({
-    required String email,
+    required String login,
     required String password,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/auth/login',
-      data: {'email': email, 'password': password},
+      data: {'login': login, 'password': password},
     );
     return AuthTokenDto.fromJson(response.data!);
   }

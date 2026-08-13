@@ -67,11 +67,11 @@ class AuthRepositoryImpl with TaskHandler implements AuthRepository {
 
   @override
   Future<Task<AuthToken>> login({
-    required String email,
+    required String login,
     required String password,
   }) {
     return _authenticateAndPersist(
-      () => _dataSource.login(email: email, password: password),
+      () => _dataSource.login(login: login, password: password),
     );
   }
 

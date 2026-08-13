@@ -5,6 +5,7 @@ export 'app_shimmer_loader.dart';
 export 'app_text_field.dart';
 export 'app_toast/_app_toast.dart';
 export 'checklist_instance_tile.dart';
+export 'contact_label_text.dart';
 export 'date_range_filter_chip.dart';
 export 'geo/geo_permission_dialogs.dart';
 export 'member_role_badges.dart';

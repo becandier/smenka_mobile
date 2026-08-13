@@ -13,7 +13,10 @@ enum OAuthSignInProvider { google, apple }
 abstract class LoginState with _$LoginState {
   const factory LoginState({
     @Default(AuthMode.login) AuthMode mode,
-    @Default('') String email,
+
+    /// Введённый идентификатор. В режиме [AuthMode.login] — логин ИЛИ email
+    /// (сервер сам разбирает, что это); в [AuthMode.register] — строго email.
+    @Default('') String identifier,
     @Default('') String password,
     @Default('') String name,
     @Default(false) bool obscurePassword,
@@ -38,7 +41,13 @@ abstract class LoginState with _$LoginState {
   /// Аккаунт временно заблокирован (423 ACCOUNT_LOCKED) — блокируем submit
   bool get isLocked => errorCode == 'ACCOUNT_LOCKED';
 
-  bool get isEmailValid => RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email);
+  /// Формат email — актуально только для регистрации (там identifier строго
+  /// email). Для входа формат не проверяем: сервер принимает и логин, и email.
+  bool get isEmailValid => RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(identifier);
+
+  /// Для входа достаточно непустого (после trim) идентификатора — это может
+  /// быть и логин, и email.
+  bool get isIdentifierProvided => identifier.trim().isNotEmpty;
 
   bool get isPasswordLongEnough => password.length >= 8;
   bool get passwordHasLetter => RegExp('[a-zA-Zа-яА-ЯёЁ]').hasMatch(password);
@@ -49,7 +58,7 @@ abstract class LoginState with _$LoginState {
   bool get isNameValid => name.trim().isNotEmpty;
 
   bool get isFormValid {
-    if (isLogin) return isEmailValid && password.isNotEmpty;
+    if (isLogin) return isIdentifierProvided && password.isNotEmpty;
     return isEmailValid && isPasswordValid && isNameValid;
   }
 

@@ -57,9 +57,11 @@ class _MemberTile extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      member.userEmail,
+                    // email, а если его нет — login (учётка заведена
+                    // админом организации); если пусто оба — строку не
+                    // показываем (см. mobile.md admin_created_accounts).
+                    ContactLabelText(
+                      contact: member.contactLabel,
                       style: textTheme.bodySmall?.copyWith(
                         color: appColors.secondary,
                       ),

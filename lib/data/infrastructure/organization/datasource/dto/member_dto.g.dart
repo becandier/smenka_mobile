@@ -19,6 +19,7 @@ _MemberDto _$MemberDtoFromJson(Map<String, dynamic> json) => _MemberDto(
       : OrganizationRoleDto.fromJson(
           json['custom_role'] as Map<String, dynamic>,
         ),
+  userLogin: json['user_login'] as String?,
   currentRate: json['current_rate'] == null
       ? null
       : CurrentRateDto.fromJson(json['current_rate'] as Map<String, dynamic>),
@@ -34,5 +35,6 @@ Map<String, dynamic> _$MemberDtoToJson(_MemberDto instance) =>
       'role': instance.role,
       'joined_at': instance.joinedAt.toIso8601String(),
       'custom_role': instance.customRole,
+      'user_login': instance.userLogin,
       'current_rate': instance.currentRate,
     };

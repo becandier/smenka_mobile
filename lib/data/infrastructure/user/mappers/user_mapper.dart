@@ -8,6 +8,7 @@ extension UserMapper on UserDto {
       email: email,
       name: name,
       phone: phone,
+      login: login,
       isVerified: isVerified,
       role: _parseUserRole(role),
       createdAt: createdAt,

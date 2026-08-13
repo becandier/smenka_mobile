@@ -45,24 +45,24 @@ class _LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<_LoginView> {
-  late final TextEditingController _emailController;
+  late final TextEditingController _identifierController;
   late final TextEditingController _passwordController;
   late final TextEditingController _nameController;
 
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController();
+    _identifierController = TextEditingController();
     _passwordController = TextEditingController();
     _nameController = TextEditingController();
 
-    _emailController.addListener(_onEmailChanged);
+    _identifierController.addListener(_onIdentifierChanged);
     _passwordController.addListener(_onPasswordChanged);
     _nameController.addListener(_onNameChanged);
   }
 
-  void _onEmailChanged() {
-    context.read<LoginCubit>().updateEmail(_emailController.text);
+  void _onIdentifierChanged() {
+    context.read<LoginCubit>().updateIdentifier(_identifierController.text);
   }
 
   void _onPasswordChanged() {
@@ -75,7 +75,7 @@ class _LoginViewState extends State<_LoginView> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _identifierController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -107,7 +107,11 @@ class _LoginViewState extends State<_LoginView> {
         TextInput.finishAutofillContext();
         widget.onResult?.call(didLogin: true);
       case LoginResult.needsVerification:
-        final email = cubit.state.email.trim();
+        // needsVerification после логина возможен только для само-
+        // зарегистрированных аккаунтов (у админ-заведённых is_verified=true
+        // всегда) — там identifier это и есть email, отправленный на
+        // верификацию.
+        final email = cubit.state.identifier.trim();
         final message = state.isLogin
             ? context.l10n.authEmailNotVerified
             : context.l10n.authCodeSent;
@@ -211,7 +215,7 @@ class _LoginViewState extends State<_LoginView> {
                               _buildNameField(context, state),
                               const SizedBox(height: 16),
                             ],
-                            _buildEmailField(context, state),
+                            _buildIdentifierField(context, state),
                             const SizedBox(height: 16),
                             _buildPasswordField(context, state),
                           ],
@@ -322,15 +326,27 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  Widget _buildEmailField(BuildContext context, LoginState state) {
+  /// Регистрация — строго email (клавиатура/подсказка/валидация формата не
+  /// меняются). Вход — «Email или логин»: обычная текстовая клавиатура, без
+  /// требования к формату (это разбирает сервер), значение уходит с trim
+  /// (см. `LoginCubit.login`).
+  ///
+  /// Autofill-хинты и порядок (`username` первым, `email` запасным) НЕ
+  /// меняются между режимами — иначе web-движок пересоздаёт скрытую
+  /// `<form>` и ломает связку с менеджером паролей (см. комментарий у
+  /// `AutofillGroup` выше и `finishAutofillContext` в `_onSubmit`).
+  Widget _buildIdentifierField(BuildContext context, LoginState state) {
     return AppTextField(
-      controller: _emailController,
-      label: context.l10n.authEmail,
-      hint: context.l10n.authEmailHint,
-      keyboardType: TextInputType.emailAddress,
-      // username первым: на web это даёт <input autocomplete="username">, и
-      // менеджер паролей пейрит идентификатор с current-password. email — как
-      // запасной хинт (та же подсказка сохранённых аккаунтов, что и раньше).
+      controller: _identifierController,
+      label: state.isLogin
+          ? context.l10n.authLoginOrEmail
+          : context.l10n.authEmail,
+      hint: state.isLogin
+          ? context.l10n.authLoginOrEmailHint
+          : context.l10n.authEmailHint,
+      keyboardType: state.isLogin
+          ? TextInputType.text
+          : TextInputType.emailAddress,
       autofillHints: const [AutofillHints.username, AutofillHints.email],
       textInputAction: TextInputAction.next,
     );
