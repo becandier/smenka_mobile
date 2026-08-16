@@ -1258,9 +1258,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get myEarningsAdjustments => 'Начисления и удержания';
 
   @override
-  String get notificationShiftUnavailable => 'Не удалось открыть смену';
-
-  @override
   String get notificationOpenMyEarningsHint =>
       'Откройте «Мой заработок» в организации, чтобы посмотреть начисления';
 

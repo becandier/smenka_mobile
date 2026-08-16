@@ -6,10 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
-import 'package:smenka_mobile/core/utils/shift_lookup.dart';
 import 'package:smenka_mobile/data/domain/notification/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
+import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 /// Действие в payload уведомления `shift_manual_changed`
@@ -61,6 +61,11 @@ Future<void> navigateForNotification(
 /// Деталь смены по `payload = { shift_id, action, started_at, ... }`.
 /// `action == "deleted"` — уведомление остаётся информационным, перехода нет
 /// (смена больше не читается ни одним эндпоинтом).
+///
+/// Смена открывается напрямую по id (`GET /shifts/{shift_id}`,
+/// `shift_self_detail`) — `started_at` из payload больше не участвует:
+/// если админ сдвинул начало смены после отправки уведомления, старое время
+/// в payload больше не ломает переход.
 Future<void> _navigateToShift(
   BuildContext context,
   Map<String, dynamic>? payload,
@@ -72,22 +77,17 @@ Future<void> _navigateToShift(
   if (action == _ShiftManualChangeAction.deleted) return;
 
   final shiftId = payload['shift_id'] as String?;
-  final startedAtRaw = payload['started_at'] as String?;
-  if (shiftId == null || startedAtRaw == null) return;
-  final startedAt = DateTime.tryParse(startedAtRaw);
-  if (startedAt == null) return;
+  if (shiftId == null) return;
 
-  final shift = await findShiftByExactStart(
-    context.read<ShiftRepository>(),
-    shiftId: shiftId,
-    startedAt: startedAt,
-  );
+  final result = await context.read<ShiftRepository>().getShiftById(shiftId);
   if (!context.mounted) return;
-  if (shift == null) {
-    context.modals.showError(context.l10n.notificationShiftUnavailable);
-    return;
-  }
-  unawaited(context.router.root.push(ShiftDetailRoute(shift: shift)));
+  result.fold(
+    onSuccess: (shift) =>
+        unawaited(context.router.root.push(ShiftDetailRoute(shift: shift))),
+    onFailure: (error) => context.modals.showError(
+      localizedErrorMessage(context, code: error.code, fallback: error.message),
+    ),
+  );
 }
 
 /// «Мои начисления» — `payload = { adjustment_id, action, amount_minor,

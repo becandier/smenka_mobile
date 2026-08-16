@@ -2362,12 +2362,6 @@ abstract class AppLocalizations {
   /// **'Начисления и удержания'**
   String get myEarningsAdjustments;
 
-  /// No description provided for @notificationShiftUnavailable.
-  ///
-  /// In ru, this message translates to:
-  /// **'Не удалось открыть смену'**
-  String get notificationShiftUnavailable;
-
   /// No description provided for @notificationOpenMyEarningsHint.
   ///
   /// In ru, this message translates to:

@@ -29,6 +29,13 @@ class ShiftDataSource {
     return PaginatedShiftsDto.fromJson(response.data!);
   }
 
+  /// Своя смена по id (`GET /shifts/{shift_id}`, `shift_self_detail`).
+  /// Чужая/несуществующая/soft-deleted смена → `404 SHIFT_NOT_FOUND`.
+  Future<ShiftDto> getShiftById(String shiftId) async {
+    final response = await _dio.get<Map<String, dynamic>>('/shifts/$shiftId');
+    return ShiftDto.fromJson(response.data!);
+  }
+
   /// Статистика смен. Окно — либо [period], либо [dateFrom]/[dateTo]
   /// (взаимоисключение обеспечивает вызывающая сторона, см. кубиты).
   Future<ShiftStatsDto> getStats({

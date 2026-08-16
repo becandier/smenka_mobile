@@ -4,13 +4,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
-import 'package:smenka_mobile/core/utils/shift_lookup.dart';
 import 'package:smenka_mobile/data/domain/adjustment/_adjustment.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
+import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/my_adjustments/cubit/my_adjustments_cubit.dart';
@@ -114,22 +115,24 @@ class _MyAdjustmentTile extends StatelessWidget {
 
   final MyAdjustment adjustment;
 
-  /// Смена не хранит собственный `started_at` в модели начисления — ищем по
-  /// `occurred_at` (по умолчанию бэк выставляет его равным `started_at`
-  /// привязанной смены, backend.md B1). Если админ переопределил дату или
-  /// смену затем удалили — смена не найдётся, показываем ошибку.
+  /// Открывает смену напрямую по id (`GET /shifts/{shift_id}`,
+  /// `shift_self_detail`) — без привязки к `occurred_at` начисления, которое
+  /// админ мог переопределить независимо от `started_at` смены. Смену,
+  /// впоследствии удалённую, эндпоинт отдаёт как `404 SHIFT_NOT_FOUND`.
   Future<void> _openShift(BuildContext context, String shiftId) async {
-    final shift = await findShiftByExactStart(
-      context.read<ShiftRepository>(),
-      shiftId: shiftId,
-      startedAt: adjustment.occurredAt,
-    );
+    final result = await context.read<ShiftRepository>().getShiftById(shiftId);
     if (!context.mounted) return;
-    if (shift == null) {
-      context.modals.showError(context.l10n.notificationShiftUnavailable);
-      return;
-    }
-    unawaited(context.router.root.push(ShiftDetailRoute(shift: shift)));
+    result.fold(
+      onSuccess: (shift) =>
+          unawaited(context.router.root.push(ShiftDetailRoute(shift: shift))),
+      onFailure: (error) => context.modals.showError(
+        localizedErrorMessage(
+          context,
+          code: error.code,
+          fallback: error.message,
+        ),
+      ),
+    );
   }
 
   @override
