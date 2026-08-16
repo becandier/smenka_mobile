@@ -54,6 +54,11 @@ class _ShiftCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       WorkLocationLine(name: loc.name),
                     ],
+                    if (_manualBadgeLabel(context, shift)
+                        case final label?) ...[
+                      const SizedBox(height: 4),
+                      _ManualBadge(label: label),
+                    ],
                   ],
                 ),
               ),
@@ -119,5 +124,45 @@ class _ShiftCard extends StatelessWidget {
     final hours = totalSeconds ~/ 3600;
     final minutes = (totalSeconds % 3600) ~/ 60;
     return context.l10n.statsHours(hours, minutes);
+  }
+}
+
+/// Пометка «Добавлена/Изменена администратором» (`manual_time_entry`,
+/// прозрачность ручных правок для сотрудника). `isManual` (заведена целиком)
+/// приоритетнее `isEdited` (только правилась) — это первичный факт
+/// происхождения смены. `null` — обычная смена, без пометки.
+String? _manualBadgeLabel(BuildContext context, Shift shift) {
+  final l10n = context.l10n;
+  if (shift.isManual) return l10n.shiftManualAddedBadge;
+  if (shift.isEdited) return l10n.shiftManualEditedBadge;
+  return null;
+}
+
+class _ManualBadge extends StatelessWidget {
+  const _ManualBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.info.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        child: Text(
+          label,
+          style: textTheme.labelSmall?.copyWith(
+            color: colors.info,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
   }
 }

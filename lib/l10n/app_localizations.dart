@@ -1078,6 +1078,30 @@ abstract class AppLocalizations {
   /// **'Завершена автоматически по графику'**
   String get detailFinishReasonAutoSchedule;
 
+  /// No description provided for @shiftManualAddedBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавлена администратором'**
+  String get shiftManualAddedBadge;
+
+  /// No description provided for @shiftManualEditedBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменена администратором'**
+  String get shiftManualEditedBadge;
+
+  /// No description provided for @shiftManualAddedNotice.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смену добавил администратор'**
+  String get shiftManualAddedNotice;
+
+  /// No description provided for @shiftManualEditedNotice.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смену изменил администратор, {date}'**
+  String shiftManualEditedNotice(String date);
+
   /// No description provided for @statusActive.
   ///
   /// In ru, this message translates to:
@@ -2319,6 +2343,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Штрафов нет за выбранный период'**
   String get finesMyEmpty;
+
+  /// No description provided for @myAdjustmentsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Мои начисления'**
+  String get myAdjustmentsTitle;
+
+  /// No description provided for @myAdjustmentsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начислений пока нет'**
+  String get myAdjustmentsEmpty;
+
+  /// No description provided for @myEarningsAdjustments.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начисления и удержания'**
+  String get myEarningsAdjustments;
+
+  /// No description provided for @notificationShiftUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось открыть смену'**
+  String get notificationShiftUnavailable;
+
+  /// No description provided for @notificationOpenMyEarningsHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Откройте «Мой заработок» в организации, чтобы посмотреть начисления'**
+  String get notificationOpenMyEarningsHint;
 
   /// No description provided for @finesMemberEmpty.
   ///

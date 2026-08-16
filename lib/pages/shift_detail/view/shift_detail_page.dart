@@ -22,6 +22,7 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 part '../widgets/detail_info_section.dart';
 part '../widgets/detail_checklists_section.dart';
 part '../widgets/overtime_section.dart';
+part '../widgets/manual_notice_section.dart';
 
 @RoutePage()
 class ShiftDetailPage extends StatelessWidget {
@@ -70,6 +71,10 @@ class _ShiftDetailView extends StatelessWidget {
             body: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                if (state.shift.isManual || state.shift.isEdited) ...[
+                  _ManualNoticeSection(shift: state.shift),
+                  const SizedBox(height: 16),
+                ],
                 _DetailInfoSection(
                   shift: state.shift,
                   organization: state.organization.data,

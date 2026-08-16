@@ -20,7 +20,12 @@ abstract class MyEarnings with _$MyEarnings {
     @Default(0) int penaltyAmountMinor,
     @Default(0) int penaltiesCount,
 
-    /// К выплате = gross − penalty. Может быть отрицательным.
+    /// Ручные начисления/удержания сотрудника за период (`manual_time_entry`),
+    /// знаковая сумма в копейках (`> 0` — доплата, `< 0` — удержание).
+    @Default(0) int adjustmentAmountMinor,
+    @Default(0) int adjustmentsCount,
+
+    /// К выплате = gross − penalty + adjustment. Может быть отрицательным.
     @Default(0) int netAmountMinor,
 
     /// План против факта (фича `work_schedules`): плановая сумма за смены

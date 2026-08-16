@@ -69,6 +69,13 @@ extension ShiftMapper on ShiftDto {
       lateSeconds: lateSeconds,
       finishReason: _parseFinishReason(finishReason),
       overtime: overtime?.toDomain(),
+      isManual: isManual,
+      isEdited: isEdited,
+      manualNote: manualNote,
+      editedAt: editedAt,
+      createdByName: createdByName,
+      editedByName: editedByName,
+      isDeleted: isDeleted,
     );
   }
 }

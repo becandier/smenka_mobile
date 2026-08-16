@@ -126,6 +126,14 @@ class _SuccessAppState extends State<_SuccessApp> {
             dataSource: PenaltyDataSource(dio: widget.dio),
           ),
         ),
+        // Фиче-репозиторий manual_time_entry (ручные начисления, read-only
+        // для сотрудника): принимает готовый Dio → создаётся лениво здесь
+        // (не в локаторе, см. конвенции DI).
+        RepositoryProvider<AdjustmentRepository>(
+          create: (_) => AdjustmentRepositoryImpl(
+            dataSource: AdjustmentDataSource(dio: widget.dio),
+          ),
+        ),
         // Фиче-репозиторий knowledge_base (read-only): принимает готовый Dio →
         // создаётся лениво здесь (не в локаторе, см. конвенции DI).
         RepositoryProvider<KnowledgeRepository>(

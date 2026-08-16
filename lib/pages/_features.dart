@@ -9,6 +9,7 @@ export 'knowledge_base/_knowledge_base.dart';
 export 'main_router/_main_router.dart';
 export 'member_detail/_member_detail.dart';
 export 'members/_members.dart';
+export 'my_adjustments/_my_adjustments.dart';
 export 'my_earnings/_my_earnings.dart';
 export 'my_penalties/_my_penalties.dart';
 export 'my_tests/_my_tests.dart';

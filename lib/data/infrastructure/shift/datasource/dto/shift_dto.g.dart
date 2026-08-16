@@ -86,6 +86,15 @@ _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
       : ShiftOvertimeRequestDto.fromJson(
           json['overtime'] as Map<String, dynamic>,
         ),
+  isManual: json['is_manual'] as bool? ?? false,
+  isEdited: json['is_edited'] as bool? ?? false,
+  manualNote: json['manual_note'] as String?,
+  editedAt: json['edited_at'] == null
+      ? null
+      : DateTime.parse(json['edited_at'] as String),
+  createdByName: json['created_by_name'] as String?,
+  editedByName: json['edited_by_name'] as String?,
+  isDeleted: json['is_deleted'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
@@ -112,4 +121,11 @@ Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
   'late_seconds': instance.lateSeconds,
   'finish_reason': instance.finishReason,
   'overtime': instance.overtime?.toJson(),
+  'is_manual': instance.isManual,
+  'is_edited': instance.isEdited,
+  'manual_note': instance.manualNote,
+  'edited_at': instance.editedAt?.toIso8601String(),
+  'created_by_name': instance.createdByName,
+  'edited_by_name': instance.editedByName,
+  'is_deleted': instance.isDeleted,
 };

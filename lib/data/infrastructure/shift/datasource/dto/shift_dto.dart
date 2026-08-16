@@ -68,6 +68,16 @@ abstract class ShiftDto with _$ShiftDto {
     int? lateSeconds,
     String? finishReason,
     ShiftOvertimeRequestDto? overtime,
+
+    /// Additive-поля ручного ввода/правки (`manual_time_entry`, nullable).
+    /// Старый бэк не шлёт → безопасные дефолты.
+    @Default(false) bool isManual,
+    @Default(false) bool isEdited,
+    String? manualNote,
+    DateTime? editedAt,
+    String? createdByName,
+    String? editedByName,
+    @Default(false) bool isDeleted,
   }) = _ShiftDto;
 
   factory ShiftDto.fromJson(Map<String, dynamic> json) =>

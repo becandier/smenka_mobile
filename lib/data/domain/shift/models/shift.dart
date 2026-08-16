@@ -78,5 +78,32 @@ abstract class Shift with _$Shift {
 
     /// Заявка на переработку по этой смене (`null` — заявки нет).
     ShiftOvertimeRequest? overtime,
+
+    /// Смена заведена админом вручную (`created_by_user_id IS NOT NULL`), а
+    /// не начата сотрудником (`manual_time_entry`). `false` — старый бэк или
+    /// обычная смена.
+    @Default(false) bool isManual,
+
+    /// Смену когда-либо правил админ (`edited_at IS NOT NULL`).
+    @Default(false) bool isEdited,
+
+    /// Комментарий/причина последней ручной операции (создания или правки).
+    /// `null` — не задан.
+    String? manualNote,
+
+    /// Момент последней ручной правки. `null` — не правилась.
+    DateTime? editedAt,
+
+    /// Имя админа, создавшего смену вручную. Заполнено только в
+    /// орг-ответах; в персональном контексте (`GET /shifts`) — всегда `null`
+    /// (сотруднику достаточно факта правки и [manualNote]).
+    String? createdByName,
+
+    /// Имя админа, последним правившего смену. Заполнено только в
+    /// орг-ответах; в персональном — всегда `null`.
+    String? editedByName,
+
+    /// Смена удалена (soft-delete). В обычных выборках всегда `false`.
+    @Default(false) bool isDeleted,
   }) = _Shift;
 }

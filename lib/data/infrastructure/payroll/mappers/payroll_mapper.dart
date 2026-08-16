@@ -55,6 +55,8 @@ extension MyEarningsMapper on MyEarningsDto {
       hasMissingRate: hasMissingRate,
       penaltyAmountMinor: penaltyAmountMinor,
       penaltiesCount: penaltiesCount,
+      adjustmentAmountMinor: adjustmentAmountMinor,
+      adjustmentsCount: adjustmentsCount,
       netAmountMinor: netAmountMinor,
       plannedAmountMinor: plannedAmountMinor,
       deltaAmountMinor: deltaAmountMinor,

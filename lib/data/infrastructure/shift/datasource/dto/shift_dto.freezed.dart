@@ -572,7 +572,9 @@ mixin _$ShiftDto {
  String? get workLocationId; WorkLocationDto? get workLocation;/// Additive-поля автора смены (орг-ответ). В персональном — `null`.
  String? get userName; String? get userEmail; String? get role; String? get customRoleName;/// Additive-поля графика работы (`work_schedules`, nullable). Старый
 /// бэк/персональная смена не шлёт → `null`.
- String? get workScheduleId; String? get scheduleName; DateTime? get scheduledStartAt; DateTime? get scheduledEndAt; int? get lateSeconds; String? get finishReason; ShiftOvertimeRequestDto? get overtime;
+ String? get workScheduleId; String? get scheduleName; DateTime? get scheduledStartAt; DateTime? get scheduledEndAt; int? get lateSeconds; String? get finishReason; ShiftOvertimeRequestDto? get overtime;/// Additive-поля ручного ввода/правки (`manual_time_entry`, nullable).
+/// Старый бэк не шлёт → безопасные дефолты.
+ bool get isManual; bool get isEdited; String? get manualNote; DateTime? get editedAt; String? get createdByName; String? get editedByName; bool get isDeleted;
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -585,16 +587,16 @@ $ShiftDtoCopyWith<ShiftDto> get copyWith => _$ShiftDtoCopyWithImpl<ShiftDto>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.pauses, pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.scheduleName, scheduleName) || other.scheduleName == scheduleName)&&(identical(other.scheduledStartAt, scheduledStartAt) || other.scheduledStartAt == scheduledStartAt)&&(identical(other.scheduledEndAt, scheduledEndAt) || other.scheduledEndAt == scheduledEndAt)&&(identical(other.lateSeconds, lateSeconds) || other.lateSeconds == lateSeconds)&&(identical(other.finishReason, finishReason) || other.finishReason == finishReason)&&(identical(other.overtime, overtime) || other.overtime == overtime));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.pauses, pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.scheduleName, scheduleName) || other.scheduleName == scheduleName)&&(identical(other.scheduledStartAt, scheduledStartAt) || other.scheduledStartAt == scheduledStartAt)&&(identical(other.scheduledEndAt, scheduledEndAt) || other.scheduledEndAt == scheduledEndAt)&&(identical(other.lateSeconds, lateSeconds) || other.lateSeconds == lateSeconds)&&(identical(other.finishReason, finishReason) || other.finishReason == finishReason)&&(identical(other.overtime, overtime) || other.overtime == overtime)&&(identical(other.isManual, isManual) || other.isManual == isManual)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.manualNote, manualNote) || other.manualNote == manualNote)&&(identical(other.editedAt, editedAt) || other.editedAt == editedAt)&&(identical(other.createdByName, createdByName) || other.createdByName == createdByName)&&(identical(other.editedByName, editedByName) || other.editedByName == editedByName)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName,workScheduleId,scheduleName,scheduledStartAt,scheduledEndAt,lateSeconds,finishReason,overtime]);
+int get hashCode => Object.hashAll([runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName,workScheduleId,scheduleName,scheduledStartAt,scheduledEndAt,lateSeconds,finishReason,overtime,isManual,isEdited,manualNote,editedAt,createdByName,editedByName,isDeleted]);
 
 @override
 String toString() {
-  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName, workScheduleId: $workScheduleId, scheduleName: $scheduleName, scheduledStartAt: $scheduledStartAt, scheduledEndAt: $scheduledEndAt, lateSeconds: $lateSeconds, finishReason: $finishReason, overtime: $overtime)';
+  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName, workScheduleId: $workScheduleId, scheduleName: $scheduleName, scheduledStartAt: $scheduledStartAt, scheduledEndAt: $scheduledEndAt, lateSeconds: $lateSeconds, finishReason: $finishReason, overtime: $overtime, isManual: $isManual, isEdited: $isEdited, manualNote: $manualNote, editedAt: $editedAt, createdByName: $createdByName, editedByName: $editedByName, isDeleted: $isDeleted)';
 }
 
 
@@ -605,7 +607,7 @@ abstract mixin class $ShiftDtoCopyWith<$Res>  {
   factory $ShiftDtoCopyWith(ShiftDto value, $Res Function(ShiftDto) _then) = _$ShiftDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName, String? workScheduleId, String? scheduleName, DateTime? scheduledStartAt, DateTime? scheduledEndAt, int? lateSeconds, String? finishReason, ShiftOvertimeRequestDto? overtime
+ String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName, String? workScheduleId, String? scheduleName, DateTime? scheduledStartAt, DateTime? scheduledEndAt, int? lateSeconds, String? finishReason, ShiftOvertimeRequestDto? overtime, bool isManual, bool isEdited, String? manualNote, DateTime? editedAt, String? createdByName, String? editedByName, bool isDeleted
 });
 
 
@@ -622,7 +624,7 @@ class _$ShiftDtoCopyWithImpl<$Res>
 
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,Object? workScheduleId = freezed,Object? scheduleName = freezed,Object? scheduledStartAt = freezed,Object? scheduledEndAt = freezed,Object? lateSeconds = freezed,Object? finishReason = freezed,Object? overtime = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,Object? workScheduleId = freezed,Object? scheduleName = freezed,Object? scheduledStartAt = freezed,Object? scheduledEndAt = freezed,Object? lateSeconds = freezed,Object? finishReason = freezed,Object? overtime = freezed,Object? isManual = null,Object? isEdited = null,Object? manualNote = freezed,Object? editedAt = freezed,Object? createdByName = freezed,Object? editedByName = freezed,Object? isDeleted = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -646,7 +648,14 @@ as DateTime?,scheduledEndAt: freezed == scheduledEndAt ? _self.scheduledEndAt : 
 as DateTime?,lateSeconds: freezed == lateSeconds ? _self.lateSeconds : lateSeconds // ignore: cast_nullable_to_non_nullable
 as int?,finishReason: freezed == finishReason ? _self.finishReason : finishReason // ignore: cast_nullable_to_non_nullable
 as String?,overtime: freezed == overtime ? _self.overtime : overtime // ignore: cast_nullable_to_non_nullable
-as ShiftOvertimeRequestDto?,
+as ShiftOvertimeRequestDto?,isManual: null == isManual ? _self.isManual : isManual // ignore: cast_nullable_to_non_nullable
+as bool,isEdited: null == isEdited ? _self.isEdited : isEdited // ignore: cast_nullable_to_non_nullable
+as bool,manualNote: freezed == manualNote ? _self.manualNote : manualNote // ignore: cast_nullable_to_non_nullable
+as String?,editedAt: freezed == editedAt ? _self.editedAt : editedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,createdByName: freezed == createdByName ? _self.createdByName : createdByName // ignore: cast_nullable_to_non_nullable
+as String?,editedByName: freezed == editedByName ? _self.editedByName : editedByName // ignore: cast_nullable_to_non_nullable
+as String?,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of ShiftDto
@@ -755,10 +764,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime,  bool isManual,  bool isEdited,  String? manualNote,  DateTime? editedAt,  String? createdByName,  String? editedByName,  bool isDeleted)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftDto() when $default != null:
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime,_that.isManual,_that.isEdited,_that.manualNote,_that.editedAt,_that.createdByName,_that.editedByName,_that.isDeleted);case _:
   return orElse();
 
 }
@@ -776,10 +785,10 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime,  bool isManual,  bool isEdited,  String? manualNote,  DateTime? editedAt,  String? createdByName,  String? editedByName,  bool isDeleted)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftDto():
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime,_that.isManual,_that.isEdited,_that.manualNote,_that.editedAt,_that.createdByName,_that.editedByName,_that.isDeleted);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -796,10 +805,10 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  DateTime startedAt,  String status,  List<PauseDto> pauses,  int workedSeconds,  String? organizationId,  DateTime? finishedAt,  bool hasIncompleteRequiredChecklists,  String? workLocationId,  WorkLocationDto? workLocation,  String? userName,  String? userEmail,  String? role,  String? customRoleName,  String? workScheduleId,  String? scheduleName,  DateTime? scheduledStartAt,  DateTime? scheduledEndAt,  int? lateSeconds,  String? finishReason,  ShiftOvertimeRequestDto? overtime,  bool isManual,  bool isEdited,  String? manualNote,  DateTime? editedAt,  String? createdByName,  String? editedByName,  bool isDeleted)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftDto() when $default != null:
-return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime);case _:
+return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,_that.workedSeconds,_that.organizationId,_that.finishedAt,_that.hasIncompleteRequiredChecklists,_that.workLocationId,_that.workLocation,_that.userName,_that.userEmail,_that.role,_that.customRoleName,_that.workScheduleId,_that.scheduleName,_that.scheduledStartAt,_that.scheduledEndAt,_that.lateSeconds,_that.finishReason,_that.overtime,_that.isManual,_that.isEdited,_that.manualNote,_that.editedAt,_that.createdByName,_that.editedByName,_that.isDeleted);case _:
   return null;
 
 }
@@ -811,7 +820,7 @@ return $default(_that.id,_that.userId,_that.startedAt,_that.status,_that.pauses,
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _ShiftDto implements ShiftDto {
-  const _ShiftDto({required this.id, required this.userId, required this.startedAt, required this.status, required final  List<PauseDto> pauses, required this.workedSeconds, this.organizationId, this.finishedAt, this.hasIncompleteRequiredChecklists = false, this.workLocationId, this.workLocation, this.userName, this.userEmail, this.role, this.customRoleName, this.workScheduleId, this.scheduleName, this.scheduledStartAt, this.scheduledEndAt, this.lateSeconds, this.finishReason, this.overtime}): _pauses = pauses;
+  const _ShiftDto({required this.id, required this.userId, required this.startedAt, required this.status, required final  List<PauseDto> pauses, required this.workedSeconds, this.organizationId, this.finishedAt, this.hasIncompleteRequiredChecklists = false, this.workLocationId, this.workLocation, this.userName, this.userEmail, this.role, this.customRoleName, this.workScheduleId, this.scheduleName, this.scheduledStartAt, this.scheduledEndAt, this.lateSeconds, this.finishReason, this.overtime, this.isManual = false, this.isEdited = false, this.manualNote, this.editedAt, this.createdByName, this.editedByName, this.isDeleted = false}): _pauses = pauses;
   factory _ShiftDto.fromJson(Map<String, dynamic> json) => _$ShiftDtoFromJson(json);
 
 @override final  String id;
@@ -846,6 +855,15 @@ class _ShiftDto implements ShiftDto {
 @override final  int? lateSeconds;
 @override final  String? finishReason;
 @override final  ShiftOvertimeRequestDto? overtime;
+/// Additive-поля ручного ввода/правки (`manual_time_entry`, nullable).
+/// Старый бэк не шлёт → безопасные дефолты.
+@override@JsonKey() final  bool isManual;
+@override@JsonKey() final  bool isEdited;
+@override final  String? manualNote;
+@override final  DateTime? editedAt;
+@override final  String? createdByName;
+@override final  String? editedByName;
+@override@JsonKey() final  bool isDeleted;
 
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
@@ -860,16 +878,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._pauses, _pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.scheduleName, scheduleName) || other.scheduleName == scheduleName)&&(identical(other.scheduledStartAt, scheduledStartAt) || other.scheduledStartAt == scheduledStartAt)&&(identical(other.scheduledEndAt, scheduledEndAt) || other.scheduledEndAt == scheduledEndAt)&&(identical(other.lateSeconds, lateSeconds) || other.lateSeconds == lateSeconds)&&(identical(other.finishReason, finishReason) || other.finishReason == finishReason)&&(identical(other.overtime, overtime) || other.overtime == overtime));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftDto&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._pauses, _pauses)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.hasIncompleteRequiredChecklists, hasIncompleteRequiredChecklists) || other.hasIncompleteRequiredChecklists == hasIncompleteRequiredChecklists)&&(identical(other.workLocationId, workLocationId) || other.workLocationId == workLocationId)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.role, role) || other.role == role)&&(identical(other.customRoleName, customRoleName) || other.customRoleName == customRoleName)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.scheduleName, scheduleName) || other.scheduleName == scheduleName)&&(identical(other.scheduledStartAt, scheduledStartAt) || other.scheduledStartAt == scheduledStartAt)&&(identical(other.scheduledEndAt, scheduledEndAt) || other.scheduledEndAt == scheduledEndAt)&&(identical(other.lateSeconds, lateSeconds) || other.lateSeconds == lateSeconds)&&(identical(other.finishReason, finishReason) || other.finishReason == finishReason)&&(identical(other.overtime, overtime) || other.overtime == overtime)&&(identical(other.isManual, isManual) || other.isManual == isManual)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.manualNote, manualNote) || other.manualNote == manualNote)&&(identical(other.editedAt, editedAt) || other.editedAt == editedAt)&&(identical(other.createdByName, createdByName) || other.createdByName == createdByName)&&(identical(other.editedByName, editedByName) || other.editedByName == editedByName)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(_pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName,workScheduleId,scheduleName,scheduledStartAt,scheduledEndAt,lateSeconds,finishReason,overtime]);
+int get hashCode => Object.hashAll([runtimeType,id,userId,startedAt,status,const DeepCollectionEquality().hash(_pauses),workedSeconds,organizationId,finishedAt,hasIncompleteRequiredChecklists,workLocationId,workLocation,userName,userEmail,role,customRoleName,workScheduleId,scheduleName,scheduledStartAt,scheduledEndAt,lateSeconds,finishReason,overtime,isManual,isEdited,manualNote,editedAt,createdByName,editedByName,isDeleted]);
 
 @override
 String toString() {
-  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName, workScheduleId: $workScheduleId, scheduleName: $scheduleName, scheduledStartAt: $scheduledStartAt, scheduledEndAt: $scheduledEndAt, lateSeconds: $lateSeconds, finishReason: $finishReason, overtime: $overtime)';
+  return 'ShiftDto(id: $id, userId: $userId, startedAt: $startedAt, status: $status, pauses: $pauses, workedSeconds: $workedSeconds, organizationId: $organizationId, finishedAt: $finishedAt, hasIncompleteRequiredChecklists: $hasIncompleteRequiredChecklists, workLocationId: $workLocationId, workLocation: $workLocation, userName: $userName, userEmail: $userEmail, role: $role, customRoleName: $customRoleName, workScheduleId: $workScheduleId, scheduleName: $scheduleName, scheduledStartAt: $scheduledStartAt, scheduledEndAt: $scheduledEndAt, lateSeconds: $lateSeconds, finishReason: $finishReason, overtime: $overtime, isManual: $isManual, isEdited: $isEdited, manualNote: $manualNote, editedAt: $editedAt, createdByName: $createdByName, editedByName: $editedByName, isDeleted: $isDeleted)';
 }
 
 
@@ -880,7 +898,7 @@ abstract mixin class _$ShiftDtoCopyWith<$Res> implements $ShiftDtoCopyWith<$Res>
   factory _$ShiftDtoCopyWith(_ShiftDto value, $Res Function(_ShiftDto) _then) = __$ShiftDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName, String? workScheduleId, String? scheduleName, DateTime? scheduledStartAt, DateTime? scheduledEndAt, int? lateSeconds, String? finishReason, ShiftOvertimeRequestDto? overtime
+ String id, String userId, DateTime startedAt, String status, List<PauseDto> pauses, int workedSeconds, String? organizationId, DateTime? finishedAt, bool hasIncompleteRequiredChecklists, String? workLocationId, WorkLocationDto? workLocation, String? userName, String? userEmail, String? role, String? customRoleName, String? workScheduleId, String? scheduleName, DateTime? scheduledStartAt, DateTime? scheduledEndAt, int? lateSeconds, String? finishReason, ShiftOvertimeRequestDto? overtime, bool isManual, bool isEdited, String? manualNote, DateTime? editedAt, String? createdByName, String? editedByName, bool isDeleted
 });
 
 
@@ -897,7 +915,7 @@ class __$ShiftDtoCopyWithImpl<$Res>
 
 /// Create a copy of ShiftDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,Object? workScheduleId = freezed,Object? scheduleName = freezed,Object? scheduledStartAt = freezed,Object? scheduledEndAt = freezed,Object? lateSeconds = freezed,Object? finishReason = freezed,Object? overtime = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? startedAt = null,Object? status = null,Object? pauses = null,Object? workedSeconds = null,Object? organizationId = freezed,Object? finishedAt = freezed,Object? hasIncompleteRequiredChecklists = null,Object? workLocationId = freezed,Object? workLocation = freezed,Object? userName = freezed,Object? userEmail = freezed,Object? role = freezed,Object? customRoleName = freezed,Object? workScheduleId = freezed,Object? scheduleName = freezed,Object? scheduledStartAt = freezed,Object? scheduledEndAt = freezed,Object? lateSeconds = freezed,Object? finishReason = freezed,Object? overtime = freezed,Object? isManual = null,Object? isEdited = null,Object? manualNote = freezed,Object? editedAt = freezed,Object? createdByName = freezed,Object? editedByName = freezed,Object? isDeleted = null,}) {
   return _then(_ShiftDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -921,7 +939,14 @@ as DateTime?,scheduledEndAt: freezed == scheduledEndAt ? _self.scheduledEndAt : 
 as DateTime?,lateSeconds: freezed == lateSeconds ? _self.lateSeconds : lateSeconds // ignore: cast_nullable_to_non_nullable
 as int?,finishReason: freezed == finishReason ? _self.finishReason : finishReason // ignore: cast_nullable_to_non_nullable
 as String?,overtime: freezed == overtime ? _self.overtime : overtime // ignore: cast_nullable_to_non_nullable
-as ShiftOvertimeRequestDto?,
+as ShiftOvertimeRequestDto?,isManual: null == isManual ? _self.isManual : isManual // ignore: cast_nullable_to_non_nullable
+as bool,isEdited: null == isEdited ? _self.isEdited : isEdited // ignore: cast_nullable_to_non_nullable
+as bool,manualNote: freezed == manualNote ? _self.manualNote : manualNote // ignore: cast_nullable_to_non_nullable
+as String?,editedAt: freezed == editedAt ? _self.editedAt : editedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,createdByName: freezed == createdByName ? _self.createdByName : createdByName // ignore: cast_nullable_to_non_nullable
+as String?,editedByName: freezed == editedByName ? _self.editedByName : editedByName // ignore: cast_nullable_to_non_nullable
+as String?,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
