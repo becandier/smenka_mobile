@@ -83,6 +83,12 @@ class AppRouter extends RootStackRouter {
     // уведомления `test_assigned` без орг-контекста в пути.
     AutoRoute(page: MyTestsRoute.page, path: '/my-tests'),
     AutoRoute(page: TestAttemptRoute.page, path: '/test-attempt/:assignmentId'),
+    // Дубли-регистрации у root (как ShiftChecklistsRoute/ChecklistFillRoute
+    // выше у нескольких родителей): нужны для перехода из уведомлений
+    // `shift_manual_changed`/`payroll_adjustment_changed` (manual_time_entry)
+    // — там нет орг-таба в контексте, из которого обычно пушатся эти экраны.
+    AutoRoute(page: ShiftDetailRoute.page, path: '/shift-detail'),
+    AutoRoute(page: MyAdjustmentsRoute.page, path: '/my-adjustments/:orgId'),
     // Полноэкранный просмотр фото чек-листа — поверх табов (root), один на все
     // вкладки; пушится через `context.router.root.push(...)`.
     CustomRoute<void>(
@@ -221,6 +227,9 @@ List<AutoRoute> _orgDetailRoutes(String basePath) => [
   // Штрафы (фича fines): свой список (employee) + модалки назначения штрафа
   // и выбора смены (admin/owner) — модалки через bottom sheet.
   AutoRoute(path: '$basePath/my-penalties', page: MyPenaltiesRoute.page),
+  // Ручные начисления (manual_time_entry): свой список (employee, read-only),
+  // вход — из «Мой заработок».
+  AutoRoute(path: '$basePath/my-adjustments', page: MyAdjustmentsRoute.page),
   CustomRoute<bool>(
     path: '$basePath/penalty-form',
     page: PenaltyFormRoute.page,

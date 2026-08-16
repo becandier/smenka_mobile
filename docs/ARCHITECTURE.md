@@ -581,6 +581,25 @@ lib/
 
 ---
 
+## Прозрачность ручных правок и начисления (manual_time_entry)
+
+Фича `manual_time_entry` (`../docs/tasks/manual_time_entry/mobile.md`) — сотрудник не инициирует ничего сам (создаёт/правит/удаляет смены и заводит начисления только owner/admin из веб-админки); мобилка только **читает и показывает**: пометки на смене, два новых типа уведомлений, экран «Мои начисления», строка в «Мой заработок».
+
+- **`Shift` (additive)**: `isManual`/`isEdited` (`@Default(false)`), `manualNote`, `editedAt`, `createdByName`/`editedByName` (только орг-эндпоинты, в персональном `GET /shifts` — всегда `null`), `isDeleted` (`@Default(false)`) — старый бэк не ломает парсинг.
+- **`shift_history`**: карточка (`_ShiftCard`) показывает компактный чип «Добавлена администратором»/«Изменена администратором» (`isManual` приоритетнее `isEdited`), нейтральный цвет `colors.info`, без алармизма.
+- **`shift_detail`**: новая секция `_ManualNoticeSection` (`widgets/manual_notice_section.dart`, `part of` — по образцу `_OvertimeSection`) — банер с фактом правки + `manualNote`, если задан. Показывается только при `isManual || isEdited`.
+- **Уведомления**: в `notification_navigation.dart` добавлены `case 'shift_manual_changed'` и `case 'payroll_adjustment_changed'`.
+  - `shift_manual_changed` → деталь смены. У `ShiftDetailPage` нет получения по id (только по уже загруженному объекту `Shift`), а персональный `GET /shifts` не имеет постранично-независимого «смена по id» — поэтому смена ищется через `findShiftByExactStart` (`core/utils/shift_lookup.dart`): `GET /shifts?date_from=started_at&date_to=started_at` сужает список до одной смены (интервалы смен сотрудника не пересекаются, backend R2). `action == "deleted"` — без перехода (уведомление остаётся информационным). Смена не нашлась (гонка/удалена) → `context.modals.showError`.
+  - `payroll_adjustment_changed` → «Мои начисления». **Расхождение с контрактом**: `NotificationOut`/payload (`{ adjustment_id, action, amount_minor, occurred_at }`) не несёт `organization_id`, а `MyAdjustmentsRoute` требует `orgId` — резолвится клиентом через `OrganizationRepository.getAll()`: ровно одна организация → переход напрямую; несколько — `context.modals.showInfo` с просьбой открыть «Мой заработок» вручную (однозначно определить нельзя).
+  - `ShiftDetailRoute`/`MyAdjustmentsRoute` дополнительно зарегистрированы root-уровня (`/shift-detail`, `/my-adjustments/:orgId`) — тот же приём, что уже используют `ShiftChecklistsRoute`/`ChecklistFillRoute` у нескольких родителей: нужны для пуша из `NotificationsPage` (root, без орг/таб-контекста).
+- **«Мои начисления»** (`my_adjustments/`, нестед-роут `$orgBase/my-adjustments`) — по образцу `my_penalties`: домен/инфра `adjustment/` (`MyAdjustment`; `AdjustmentDataSource` — только `GET .../my-adjustments`, `AdjustmentRepositoryImpl`); `MyAdjustmentsCubit` (`PaginationMixin`, offset-пагинация, фильтр периода — идентично `MyPenaltiesCubit`). Строка: сумма со знаком (`+` зелёным/`−` красным), основание, дата, комментарий; при наличии `shiftId` — тап ведёт на деталь смены через `findShiftByExactStart` с якорем `occurredAt` (по умолчанию бэк выставляет `occurred_at = started_at` привязанной смены — точный поиск работает в типичном случае; если админ переопределил дату или смену удалили, показывается ошибка). CRUD начислений — только веб-админка, вне scope мобилки.
+- **`MyEarnings` (additive)**: `adjustmentAmountMinor` (знаковый), `adjustmentsCount` (`@Default(0)`). На экране «Мой заработок» блок `_PenaltiesEarningsCard` расширен строкой начислений (скрыта при `adjustmentsCount == 0`) и кнопкой-ссылкой «Мои начисления» рядом с «Мои штрафы»; «К выплате» (`netAmountMinor`) показывается один раз — в блоке штрафов, если начислений нет, иначе в блоке начислений (бэк уже прислал готовую сумму `gross − penalty + adjustment`, клиент не пересчитывает).
+- **DI**: `AdjustmentRepository` — фиче-репозиторий, `RepositoryProvider(create:)` в `success_app` с готовым `dio` (не в локаторе), как `PenaltyRepository`/`NotificationRepository`.
+- **Тесты**: `test/data/adjustment/adjustment_mapper_test.dart`, `test/data/shift/shift_manual_fields_mapper_test.dart`, `test/data/payroll/my_earnings_adjustment_fields_mapper_test.dart` (additive-поля + безопасные дефолты), `test/core/utils/shift_lookup_test.dart` (`findShiftByExactStart` — точное совпадение/несколько кандидатов/не найдено/ошибка сети). Кубит `MyAdjustmentsCubit` без отдельного теста — как и `MyPenaltiesCubit`, тонкая обёртка над `PaginationMixin`.
+- **Не мобильное**: правка/удаление/восстановление смен (A1–A4), CRUD начислений (B1–B4), колонка начислений в орг-отчёте `payroll`/XLSX-экспорте — веб-админка (`admin.md`), вне scope этого трека.
+
+---
+
 ## Ключевые решения
 
 См. `docs/decisions/` для полных ADR.

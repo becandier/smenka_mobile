@@ -261,6 +261,16 @@
     "detailFinishReason": "Причина завершения",
     "detailFinishReasonAutoSchedule": "Завершена автоматически по графику",
 
+    "shiftManualAddedBadge": "Добавлена администратором",
+    "shiftManualEditedBadge": "Изменена администратором",
+    "shiftManualAddedNotice": "Смену добавил администратор",
+    "shiftManualEditedNotice": "Смену изменил администратор, {date}",
+    "@shiftManualEditedNotice": {
+        "placeholders": {
+            "date": {"type": "String"}
+        }
+    },
+
     "statusActive": "Активна",
     "statusPaused": "На паузе",
     "statusFinished": "Завершена",
@@ -605,6 +615,11 @@
     },
     "finesAttachedToShift": "По смене",
     "finesMyEmpty": "Штрафов нет за выбранный период",
+    "myAdjustmentsTitle": "Мои начисления",
+    "myAdjustmentsEmpty": "Начислений пока нет",
+    "myEarningsAdjustments": "Начисления и удержания",
+    "notificationShiftUnavailable": "Не удалось открыть смену",
+    "notificationOpenMyEarningsHint": "Откройте «Мой заработок» в организации, чтобы посмотреть начисления",
     "finesMemberEmpty": "Штрафов нет",
     "finesEditHint": "Это исправление ошибочной записи. Снять штраф — отдельным действием.",
     "finesReasonInvalid": "Укажите причину (до 200 символов)",

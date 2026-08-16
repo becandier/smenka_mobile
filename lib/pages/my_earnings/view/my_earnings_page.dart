@@ -191,10 +191,15 @@ class _SummaryCard extends StatelessWidget {
 }
 
 class _SummaryItem extends StatelessWidget {
-  const _SummaryItem({required this.value, required this.label});
+  const _SummaryItem({
+    required this.value,
+    required this.label,
+    this.valueColor,
+  });
 
   final String value;
   final String label;
+  final Color? valueColor;
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +210,10 @@ class _SummaryItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: valueColor,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 4),
@@ -221,9 +229,12 @@ class _SummaryItem extends StatelessWidget {
   }
 }
 
-/// Блок штрафов на «Мой заработок» (фича fines): штрафы за период, «К выплате»
-/// (net = начислено − штрафы; может быть отрицательным) и переход на список
-/// «Мои штрафы». Для self штрафы учитываются всегда (флага нет).
+/// Блок штрафов и ручных начислений на «Мой заработок» (фичи fines +
+/// `manual_time_entry`): суммы за период, «К выплате» (net = начислено −
+/// штрафы + начисления; может быть отрицательным) и переходы на списки
+/// «Мои штрафы» / «Мои начисления». Для self штрафы учитываются всегда
+/// (флага нет); строка начислений скрыта при `adjustmentsCount == 0`
+/// (mobile.md §4 — не засорять экран).
 class _PenaltiesEarningsCard extends StatelessWidget {
   const _PenaltiesEarningsCard({required this.earnings, required this.orgId});
 
@@ -235,6 +246,9 @@ class _PenaltiesEarningsCard extends StatelessWidget {
     final l10n = context.l10n;
     final colors = context.appColors;
     final hasPenalties = earnings.penaltyAmountMinor > 0;
+    final hasAdjustments = earnings.adjustmentsCount > 0;
+    final adjustmentAmountMinor = earnings.adjustmentAmountMinor;
+    final isAdjustmentCredit = adjustmentAmountMinor >= 0;
 
     return Material(
       color: colors.surface,
@@ -256,6 +270,31 @@ class _PenaltiesEarningsCard extends StatelessWidget {
                           '${l10n.finesCount(earnings.penaltiesCount)}',
                     ),
                   ),
+                  if (!hasAdjustments)
+                    Expanded(
+                      child: _SummaryItem(
+                        value: formatMoneyMinor(earnings.netAmountMinor),
+                        label: l10n.finesToPay,
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 8),
+            ],
+            if (hasAdjustments) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: _SummaryItem(
+                      value: isAdjustmentCredit
+                          ? '+${formatMoneyMinor(adjustmentAmountMinor)}'
+                          : formatMoneyMinor(adjustmentAmountMinor),
+                      label: l10n.myEarningsAdjustments,
+                      valueColor: isAdjustmentCredit
+                          ? colors.success
+                          : colors.error,
+                    ),
+                  ),
                   Expanded(
                     child: _SummaryItem(
                       value: formatMoneyMinor(earnings.netAmountMinor),
@@ -266,14 +305,23 @@ class _PenaltiesEarningsCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
             ],
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: () =>
-                    context.router.push(MyPenaltiesRoute(orgId: orgId)),
-                icon: const Icon(Icons.gavel_outlined, size: 18),
-                label: Text(l10n.finesMyTitle),
-              ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                TextButton.icon(
+                  onPressed: () =>
+                      context.router.push(MyPenaltiesRoute(orgId: orgId)),
+                  icon: const Icon(Icons.gavel_outlined, size: 18),
+                  label: Text(l10n.finesMyTitle),
+                ),
+                TextButton.icon(
+                  onPressed: () =>
+                      context.router.push(MyAdjustmentsRoute(orgId: orgId)),
+                  icon: const Icon(Icons.request_quote_outlined, size: 18),
+                  label: Text(l10n.myAdjustmentsTitle),
+                ),
+              ],
             ),
           ],
         ),

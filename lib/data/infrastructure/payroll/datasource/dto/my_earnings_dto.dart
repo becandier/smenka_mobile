@@ -17,6 +17,8 @@ abstract class MyEarningsDto with _$MyEarningsDto {
     required bool hasMissingRate,
     @Default(0) int penaltyAmountMinor,
     @Default(0) int penaltiesCount,
+    @Default(0) int adjustmentAmountMinor,
+    @Default(0) int adjustmentsCount,
     @Default(0) int netAmountMinor,
     @Default(0) int plannedAmountMinor,
     @Default(0) int deltaAmountMinor,

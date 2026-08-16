@@ -552,6 +552,20 @@ class AppLocalizationsRu extends AppLocalizations {
       'Завершена автоматически по графику';
 
   @override
+  String get shiftManualAddedBadge => 'Добавлена администратором';
+
+  @override
+  String get shiftManualEditedBadge => 'Изменена администратором';
+
+  @override
+  String get shiftManualAddedNotice => 'Смену добавил администратор';
+
+  @override
+  String shiftManualEditedNotice(String date) {
+    return 'Смену изменил администратор, $date';
+  }
+
+  @override
   String get statusActive => 'Активна';
 
   @override
@@ -1233,6 +1247,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get finesMyEmpty => 'Штрафов нет за выбранный период';
+
+  @override
+  String get myAdjustmentsTitle => 'Мои начисления';
+
+  @override
+  String get myAdjustmentsEmpty => 'Начислений пока нет';
+
+  @override
+  String get myEarningsAdjustments => 'Начисления и удержания';
+
+  @override
+  String get notificationShiftUnavailable => 'Не удалось открыть смену';
+
+  @override
+  String get notificationOpenMyEarningsHint =>
+      'Откройте «Мой заработок» в организации, чтобы посмотреть начисления';
 
   @override
   String get finesMemberEmpty => 'Штрафов нет';

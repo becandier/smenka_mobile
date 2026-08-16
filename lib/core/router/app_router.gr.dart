@@ -766,6 +766,58 @@ class OrgMembersRouteArgs {
 }
 
 /// generated route for
+/// [MyAdjustmentsPage]
+class MyAdjustmentsRoute extends PageRouteInfo<MyAdjustmentsRouteArgs> {
+  MyAdjustmentsRoute({
+    required String orgId,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         MyAdjustmentsRoute.name,
+         args: MyAdjustmentsRouteArgs(orgId: orgId, key: key),
+         rawPathParams: {'orgId': orgId},
+         initialChildren: children,
+       );
+
+  static const String name = 'MyAdjustmentsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<MyAdjustmentsRouteArgs>(
+        orElse: () =>
+            MyAdjustmentsRouteArgs(orgId: pathParams.getString('orgId')),
+      );
+      return MyAdjustmentsPage(orgId: args.orgId, key: args.key);
+    },
+  );
+}
+
+class MyAdjustmentsRouteArgs {
+  const MyAdjustmentsRouteArgs({required this.orgId, this.key});
+
+  final String orgId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'MyAdjustmentsRouteArgs{orgId: $orgId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MyAdjustmentsRouteArgs) return false;
+    return orgId == other.orgId && key == other.key;
+  }
+
+  @override
+  int get hashCode => orgId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [MyEarningsPage]
 class MyEarningsRoute extends PageRouteInfo<MyEarningsRouteArgs> {
   MyEarningsRoute({
