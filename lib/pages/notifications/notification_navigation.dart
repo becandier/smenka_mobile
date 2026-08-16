@@ -12,6 +12,24 @@ import 'package:smenka_mobile/data/domain/organization/repositories/organization
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 
+/// Действие в payload уведомления `shift_manual_changed`
+/// (`backend.md`: `created | updated | deleted | restored`).
+enum _ShiftManualChangeAction {
+  created('created'),
+  updated('updated'),
+  deleted('deleted'),
+  restored('restored');
+
+  const _ShiftManualChangeAction(this.value);
+
+  final String value;
+
+  /// Незнакомое (будущее) значение → `null` — форвард-совместимость, как и
+  /// у `notification.type` целиком.
+  static _ShiftManualChangeAction? fromValue(String? value) =>
+      values.where((e) => e.value == value).firstOrNull;
+}
+
 /// Маппинг `notification.type → переход`, расширяемый: новый тип уведомления
 /// добавляется новым `case` без правки остальной ленты/бэка.
 ///
@@ -48,7 +66,10 @@ Future<void> _navigateToShift(
   Map<String, dynamic>? payload,
 ) async {
   if (payload == null) return;
-  if (payload['action'] == 'deleted') return;
+  final action = _ShiftManualChangeAction.fromValue(
+    payload['action'] as String?,
+  );
+  if (action == _ShiftManualChangeAction.deleted) return;
 
   final shiftId = payload['shift_id'] as String?;
   final startedAtRaw = payload['started_at'] as String?;
