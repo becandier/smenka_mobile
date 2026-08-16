@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
@@ -41,6 +42,14 @@ const _emptySchedules = MySchedules(
   requireSchedule: false,
 );
 
+/// Точка отсчёта «сейчас» для всех тестов кубита (см. `buildCubit`,
+/// параметр `now`) — фиксированная, а не реальные часы: с введением
+/// `schedule_window_enforcement` `canStartShift`/`scheduleSelectionRequired`
+/// стали зависеть от `WorkSchedule.nextStartAt`/`nextEndAt` относительно
+/// «сейчас», поэтому фикстуры графиков ниже намеренно строятся вокруг этой
+/// даты, а не реальных часов запуска тестов.
+final _fixedNow = DateTime.utc(2026, 6, 11, 10);
+
 /// Единственная организация сотрудника (`id: 'org1'`) — с гео-проверкой или
 /// без, в зависимости от сценария. Общая фикстура для групп «выбор графика»
 /// (без/с гео-проверкой) — единственное различие между ними именно в этом
@@ -55,15 +64,24 @@ Organization _org({required bool geoCheckEnabled}) => Organization(
   geoCheckEnabled: geoCheckEnabled,
 );
 
-WorkSchedule _schedule(String id, {String name = 'Дневная'}) => WorkSchedule(
+/// По умолчанию окно графика бракетует [_fixedNow] (уже идёт, стартуем) —
+/// подходит для тестов, которым важен только факт наличия графика, а не
+/// его окно. Тесты границ окна (`schedule_window_enforcement`) передают
+/// [nextStartAt]/[nextEndAt] явно.
+WorkSchedule _schedule(
+  String id, {
+  String name = 'Дневная',
+  DateTime? nextStartAt,
+  DateTime? nextEndAt,
+}) => WorkSchedule(
   id: id,
   name: name,
   startTime: '09:00',
   endTime: '18:00',
   durationMinutes: 540,
   crossesMidnight: false,
-  nextStartAt: DateTime.utc(2026, 6, 11, 6),
-  nextEndAt: DateTime.utc(2026, 6, 11, 15),
+  nextStartAt: nextStartAt ?? _fixedNow.subtract(const Duration(hours: 4)),
+  nextEndAt: nextEndAt ?? _fixedNow.add(const Duration(hours: 5)),
   isCurrent: true,
   startsInMinutes: -10,
 );
@@ -151,7 +169,7 @@ void main() {
     ).thenAnswer((_) async {});
   });
 
-  ShiftTrackerCubit buildCubit() => ShiftTrackerCubit(
+  ShiftTrackerCubit buildCubit({DateTime Function()? now}) => ShiftTrackerCubit(
     shiftRepository: shiftRepo,
     organizationRepository: orgRepo,
     workScheduleRepository: scheduleRepo,
@@ -159,6 +177,7 @@ void main() {
     contextStorage: contextStorage,
     scheduleContextStorage: scheduleContextStorage,
     connectivity: connectivity,
+    now: now ?? () => _fixedNow,
   );
 
   void stubStartShift(Task<Shift> result) {
@@ -175,11 +194,14 @@ void main() {
   // (shift_quick_start, см. ShiftTrackerCubit._maybePreselectContext).
   // Общий хелпер для групп «выбор графика» (без/с гео-проверкой) — они
   // отличаются только флагом geoCheckEnabled в передаваемой организации.
-  ShiftTrackerCubit buildWithOrgSelected(Organization org) {
+  ShiftTrackerCubit buildWithOrgSelected(
+    Organization org, {
+    DateTime Function()? now,
+  }) {
     when(
       () => orgRepo.watchMyOrganizations(),
     ).thenAnswer((_) => Stream<List<Organization>>.value([org]));
-    return buildCubit();
+    return buildCubit(now: now);
   }
 
   // Кубит с уже загруженной активной сменой `s1`.
@@ -1138,5 +1160,295 @@ void main() {
         await cubit.close();
       },
     );
+  });
+
+  group('окно графика (schedule_window_enforcement)', () {
+    // Организация без гео-проверки — графики грузятся заранее на idle-экране
+    // (см. группу «выбор графика — БЕЗ гео-проверки» выше), поэтому именно
+    // на ней воспроизводим сценарий с прода из mobile.md.
+    final org = _org(geoCheckEnabled: false);
+
+    void stubSchedules(MySchedules Function() build) {
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer((_) async => Task<MySchedules>.success(build()));
+    }
+
+    test(
+      'кнопка гаснет при переходе через next_end_at без перезапроса экрана',
+      () {
+        fakeAsync((async) {
+          // Прод-сценарий из mobile.md: график 21:48–21:52, early=0.
+          final windowStart = DateTime.utc(2026, 8, 16, 21, 48);
+          final windowEnd = DateTime.utc(2026, 8, 16, 21, 52);
+          stubSchedules(
+            () => MySchedules(
+              items: [
+                _schedule('s1', nextStartAt: windowStart, nextEndAt: windowEnd),
+              ],
+              total: 1,
+              requireSchedule: true,
+            ),
+          );
+
+          final cubit = buildWithOrgSelected(
+            org,
+            now: () => windowStart.add(async.elapsed),
+          );
+          async.flushMicrotasks();
+
+          expect(cubit.state.selectedWorkScheduleId, 's1');
+          expect(cubit.state.canStartShift, isTrue);
+
+          // Ни одного явного действия пользователя/перезапроса экрана —
+          // только течение времени внутри уже запущенного тикера кубита.
+          async.elapse(const Duration(minutes: 4, seconds: 1));
+
+          expect(cubit.state.canStartShift, isFalse);
+          expect(cubit.state.scheduleBlockedWindowClosed, isTrue);
+          expect(cubit.state.scheduleWindowReasonSource?.id, 's1');
+
+          cubit.close();
+          async.flushMicrotasks();
+        });
+      },
+    );
+
+    test(
+      'кнопка загорается при наступлении next_start_at − early_start_minutes',
+      () {
+        fakeAsync((async) {
+          final nextStart = DateTime.utc(2026, 8, 16, 21, 48);
+          final nextEnd = DateTime.utc(2026, 8, 16, 21, 52);
+          stubSchedules(
+            () => MySchedules(
+              items: [
+                _schedule('s1', nextStartAt: nextStart, nextEndAt: nextEnd),
+              ],
+              total: 1,
+              requireSchedule: true,
+              earlyStartMinutes: 15,
+            ),
+          );
+
+          // 21:20 — раньше допустимого 21:33 (21:48 − 15 мин).
+          final start = DateTime.utc(2026, 8, 16, 21, 20);
+          final cubit = buildWithOrgSelected(
+            org,
+            now: () => start.add(async.elapsed),
+          );
+          async.flushMicrotasks();
+
+          expect(cubit.state.canStartShift, isFalse);
+          expect(cubit.state.scheduleBlockedWindowClosed, isTrue);
+
+          async.elapse(const Duration(minutes: 13, seconds: 1));
+
+          expect(cubit.state.canStartShift, isTrue);
+          expect(cubit.state.scheduleBlockedWindowClosed, isFalse);
+
+          cubit.close();
+          async.flushMicrotasks();
+        });
+      },
+    );
+
+    test('выбранный график сбрасывается, когда его окно закрылось', () {
+      fakeAsync((async) {
+        final windowStart = DateTime.utc(2026, 8, 16, 21, 48);
+        final windowEnd = DateTime.utc(2026, 8, 16, 21, 52);
+        stubSchedules(
+          () => MySchedules(
+            items: [
+              _schedule('s1', nextStartAt: windowStart, nextEndAt: windowEnd),
+            ],
+            total: 1,
+            // require_schedule=false — сброс выбора не зависит от настройки
+            // (mobile.md, п.1), а старт остаётся доступен и без графика
+            // (backend.md, S2, правило 5).
+            requireSchedule: false,
+          ),
+        );
+
+        final cubit = buildWithOrgSelected(
+          org,
+          now: () => windowStart.add(async.elapsed),
+        );
+        async.flushMicrotasks();
+
+        expect(cubit.state.selectedWorkScheduleId, 's1');
+
+        async.elapse(const Duration(minutes: 4, seconds: 1));
+
+        expect(cubit.state.selectedWorkScheduleId, isNull);
+        expect(cubit.state.canStartShift, isTrue);
+
+        cubit.close();
+        async.flushMicrotasks();
+      });
+    });
+
+    test(
+      'окно закрылось → my-schedules перезапрашивается один раз (дебаунс)',
+      () {
+        fakeAsync((async) {
+          final windowStart = DateTime.utc(2026, 8, 16, 21, 48);
+          final windowEnd = DateTime.utc(2026, 8, 16, 21, 52);
+          var call = 0;
+          stubSchedules(() {
+            call++;
+            // Бэк всегда отдаёт окно, конец которого ещё впереди (R2,
+            // backend.md) — второй и последующие ответы уже про завтра.
+            final offset = call == 1 ? Duration.zero : const Duration(days: 1);
+            return MySchedules(
+              items: [
+                _schedule(
+                  's1',
+                  nextStartAt: windowStart.add(offset),
+                  nextEndAt: windowEnd.add(offset),
+                ),
+              ],
+              total: 1,
+              requireSchedule: true,
+            );
+          });
+
+          buildWithOrgSelected(org, now: () => windowStart.add(async.elapsed));
+          async.flushMicrotasks();
+          expect(call, 1);
+
+          async.elapse(const Duration(minutes: 4, seconds: 6));
+          expect(call, 2);
+
+          // Дальнейшее течение времени сегодняшнего дня не долбит бэк снова —
+          // ближайшее окно из свежего ответа теперь завтрашнее.
+          async.elapse(const Duration(seconds: 10));
+          expect(call, 2);
+        });
+      },
+    );
+
+    test('SCHEDULE_WINDOW_CLOSED при старте → выбор сброшен, графики '
+        'перезапрошены', () async {
+      var call = 0;
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer((_) async {
+        call++;
+        final items = call == 1
+            ? [_schedule('s1')]
+            : [_schedule('s1'), _schedule('s2', name: 'Ночная')];
+        return Task<MySchedules>.success(
+          MySchedules(
+            items: items,
+            total: items.length,
+            requireSchedule: false,
+          ),
+        );
+      });
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer(
+        (_) async => const Task<Shift>.failure(
+          ApiException.server(
+            message: 'график сейчас не действует',
+            code: 'SCHEDULE_WINDOW_CLOSED',
+          ),
+        ),
+      );
+
+      final cubit = buildWithOrgSelected(org);
+      await pumpEventQueue();
+      expect(cubit.state.selectedWorkScheduleId, 's1');
+
+      final result = await cubit.startShift();
+      await pumpEventQueue();
+
+      expect(result, StartShiftResult.error);
+      expect(cubit.state.actionErrorCode, 'SCHEDULE_WINDOW_CLOSED');
+      expect(cubit.state.selectedWorkScheduleId, isNull);
+      verify(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).called(2);
+      await cubit.close();
+    });
+
+    test('смена авто-завершилась во время фонового поллинга → графики '
+        'перезапрашиваются вместе с возвратом в idle', () {
+      fakeAsync((async) {
+        stubSchedules(
+          () => MySchedules(
+            items: [_schedule('s1')],
+            total: 1,
+            requireSchedule: false,
+          ),
+        );
+        final shift = Shift(
+          id: 'shift1',
+          userId: 'u1',
+          startedAt: _fixedNow,
+          status: ShiftStatus.active,
+          pauses: const [],
+          workedSeconds: 0,
+        );
+        when(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+            workScheduleId: any(named: 'workScheduleId'),
+          ),
+        ).thenAnswer((_) async => Task<Shift>.success(shift));
+
+        final cubit = buildWithOrgSelected(org);
+        async.flushMicrotasks();
+        expect(cubit.state.selectedOrganizationId, 'org1');
+        expect(cubit.state.selectedWorkScheduleId, 's1');
+
+        unawaited(cubit.startShift());
+        async.flushMicrotasks();
+        expect(cubit.state.hasActiveShift, isTrue);
+
+        // Бэк уже авто-завершил смену к моменту фонового опроса.
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.active, limit: 1),
+        ).thenAnswer((_) async => _shiftsPage(const []));
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.paused, limit: 1),
+        ).thenAnswer((_) async => _shiftsPage(const []));
+
+        // 60-секундный фоновый поллинг активной смены
+        // (см. ShiftTrackerCubit._pollSeconds) — без единого действия
+        // пользователя, тот самый сценарий с прода из mobile.md.
+        async.elapse(const Duration(seconds: 61));
+
+        expect(cubit.state.hasActiveShift, isFalse);
+        expect(cubit.state.shiftAutoFinished, isTrue);
+        expect(cubit.state.selectedWorkScheduleId, 's1');
+        verify(
+          () => scheduleRepo.getMySchedules(
+            'org1',
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).called(2);
+
+        cubit.close();
+        async.flushMicrotasks();
+      });
+    });
   });
 }
