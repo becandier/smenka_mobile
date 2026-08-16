@@ -317,3 +317,14 @@
 - [x] **Расхождение с ТЗ**: `NotificationOut`/payload `payroll_adjustment_changed` не несёт `organization_id` — клиент резолвит орг сам через `OrganizationRepository.getAll()` (одна организация → прямой переход, несколько → информационная подсказка открыть «Мой заработок» вручную)
 - [x] `flutter analyze` чисто, `flutter test` зелёный (262/262, включая новые: `adjustment_mapper_test` 6, `shift_manual_fields_mapper_test` 5, `my_earnings_adjustment_fields_mapper_test` 3, `shift_lookup_test` 4), `flutter build web --release --no-tree-shake-icons` собирается, `/code-review` + `/simplify` прогнаны
 - [ ] **End-to-end**: бэкенд смержен в `main` (STATUS: `backend` — `done`, не задеплоен) — мобилка построена против согласованного контракта; заработает после деплоя бэка
+
+---
+
+## Фича — Деталь собственной смены (shift_self_detail) `[x]` (`../docs/tasks/shift_self_detail/mobile.md`)
+- [x] **Новый эндпоинт**: `ShiftRepository.getShiftById`/`ShiftDataSource.getShiftById` — `GET /shifts/{shift_id}` (своя смена — персональная и орг, где пользователь сотрудник); чужая/несуществующая/soft-deleted → `404 SHIFT_NOT_FOUND`
+- [x] **Костыль убран**: `core/utils/shift_lookup.dart` (`findShiftByExactStart` — поиск смены точным окном `started_at` через `GET /shifts`) удалён вместе с тестом; оба перехода, ранее зависевшие от него, переведены на прямой запрос по id
+- [x] **Переход из уведомления** `shift_manual_changed` (`notification_navigation.dart`, `_navigateToShift`) — открывает смену по `payload['shift_id']` напрямую; `started_at` из payload больше не читается, поэтому сдвиг начала смены админом после отправки уведомления переход не ломает
+- [x] **Переход из «Мои начисления»** (`my_adjustments/view/my_adjustments_page.dart`, `_MyAdjustmentTile._openShift`) — открывает смену по `adjustment.shiftId` напрямую, без привязки к `occurred_at` начисления (которое админ мог переопределить независимо от `started_at` смены)
+- [x] **Недоступная смена**: оба перехода теперь показывают `localizedErrorMessage(code: error.code, fallback: error.message)` вместо общего текста — `SHIFT_NOT_FOUND` маппится в «Смена не найдена» (тот же маппинг, что уже используют `shift_detail`/`org_shift_detail`)
+- [x] `flutter analyze` чисто, `flutter test` зелёный (260/260, включая новый `test/data/infrastructure/shift/shift_repository_impl_test.dart`; `shift_lookup_test` удалён), `flutter build web --release --no-tree-shake-icons` собирается, `/code-review` прогнан (1 находка — отсутствие теста нового метода репозитория — устранена)
+- [ ] **End-to-end**: бэкенд на ветке `feature/shift-self-detail` на момент реализации мобилки (STATUS: `backend` — `in_progress`) — мобилка построена против согласованного контракта (`backend.md`); заработает после деплоя обоих треков
