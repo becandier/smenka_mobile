@@ -11,6 +11,11 @@ abstract class ShiftRepository {
     int offset = 0,
   });
 
+  /// Своя смена по id (`GET /shifts/{shift_id}`, `shift_self_detail`).
+  /// Персональная и орг-смена, где пользователь сотрудник; чужая,
+  /// несуществующая или soft-deleted смена → `404 SHIFT_NOT_FOUND`.
+  Future<Task<Shift>> getShiftById(String shiftId);
+
   /// Окно статистики: ровно один источник — либо [period],
   /// либо [dateFrom]/[dateTo] (UTC).
   Future<Task<ShiftStats>> getStats({

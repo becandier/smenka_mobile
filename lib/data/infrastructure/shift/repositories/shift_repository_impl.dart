@@ -32,6 +32,14 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
   }
 
   @override
+  Future<Task<Shift>> getShiftById(String shiftId) {
+    return execute(() async {
+      final dto = await _dataSource.getShiftById(shiftId);
+      return dto.toDomain();
+    });
+  }
+
+  @override
   Future<Task<ShiftStats>> getStats({
     String? period,
     DateTime? dateFrom,
