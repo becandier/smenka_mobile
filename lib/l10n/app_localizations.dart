@@ -688,6 +688,18 @@ abstract class AppLocalizations {
   /// **'Начнётся {date} в {time}'**
   String workScheduleStartsOnDateAt(String date, String time);
 
+  /// No description provided for @workScheduleAvailableFrom.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смену можно начать с {time}'**
+  String workScheduleAvailableFrom(String time);
+
+  /// No description provided for @workScheduleClosedNextTomorrowAt.
+  ///
+  /// In ru, this message translates to:
+  /// **'График «{name}» закончился. Ближайший старт — завтра в {time}'**
+  String workScheduleClosedNextTomorrowAt(String name, String time);
+
   /// No description provided for @shiftPlannedSchedule.
   ///
   /// In ru, this message translates to:
@@ -2661,6 +2673,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'График не найден, обновите список'**
   String get errorScheduleNotFound;
+
+  /// No description provided for @errorScheduleWindowClosed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сейчас не рабочее время по графику. Попробуйте позже'**
+  String get errorScheduleWindowClosed;
 
   /// No description provided for @errorOvertimeAlreadyRequested.
   ///

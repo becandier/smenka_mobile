@@ -13,5 +13,13 @@ abstract class MySchedules with _$MySchedules {
     required List<WorkSchedule> items,
     required int total,
     required bool requireSchedule,
+
+    /// За сколько минут до планового начала графика разрешено начать смену
+    /// раньше (настройка организации, `schedule_window_enforcement`).
+    /// Дублируется в каждом ответе, чтобы клиент пересчитывал стартуемость
+    /// локально, не запрашивая `/settings` отдельно. `0` — старый бэкенд, ещё
+    /// не отдающий это поле (обратная совместимость), эквивалентно «строго
+    /// не раньше начала».
+    @Default(0) int earlyStartMinutes,
   }) = _MySchedules;
 }

@@ -59,6 +59,8 @@ String localizedErrorMessage(
     'SCHEDULE_REQUIRED' => l10n.errorScheduleRequired,
     'SCHEDULE_NOT_AVAILABLE' => l10n.errorScheduleNotAvailable,
     'SCHEDULE_NOT_FOUND' => l10n.errorScheduleNotFound,
+    // schedule_window_enforcement: старт вне окна графика
+    'SCHEDULE_WINDOW_CLOSED' => l10n.errorScheduleWindowClosed,
     'OVERTIME_ALREADY_REQUESTED' => l10n.errorOvertimeAlreadyRequested,
     'OVERTIME_PERIOD_EXPIRED' => l10n.errorOvertimePeriodExpired,
     'OVERTIME_NOT_APPLICABLE' => l10n.errorOvertimeNotApplicable,

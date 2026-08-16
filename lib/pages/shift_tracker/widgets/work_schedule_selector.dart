@@ -45,19 +45,60 @@ class _WorkScheduleSelector extends StatelessWidget {
       );
     }
 
-    if (schedules.length == 1) {
-      return _ScheduleRow(
-        schedule: schedules.first,
-        placeholder: false,
-        onTap: () => _openPicker(context),
-      );
-    }
-
-    final selected = state.selectedWorkSchedule;
-    return _ScheduleRow(
-      schedule: selected,
-      placeholder: selected == null,
+    // 1 доступный график показывается всегда (компактная строка); >1 —
+    // только выбранный, до выбора — плейсхолдер.
+    final schedule = schedules.length == 1
+        ? schedules.first
+        : state.selectedWorkSchedule;
+    final row = _ScheduleRow(
+      schedule: schedule,
+      placeholder: schedule == null,
+      dimmed: schedule != null && !state.isScheduleStartable(schedule),
       onTap: () => _openPicker(context),
+    );
+
+    final reason = _scheduleWindowReason(context, state);
+    if (reason == null) return row;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [row, const SizedBox(height: 6), _ScheduleWindowReason(reason)],
+    );
+  }
+}
+
+/// Подпись под селектором, когда старт заблокирован закрытым окном графика
+/// (mobile.md, «Что видит пользователь, когда старт закрыт»). `null` — старт
+/// доступен, либо блокировка по другой причине (пустой список графиков — для
+/// него уже есть [_ScheduleBlockedMessage]/`workScheduleRequiredEmpty`).
+String? _scheduleWindowReason(BuildContext context, ShiftTrackerState state) {
+  final source = state.scheduleWindowReasonSource;
+  if (source == null) return null;
+
+  final l10n = context.l10n;
+  final timezone = state.selectedOrganization?.timezone ?? 'Europe/Moscow';
+  final earliestStart = source.earliestStartAt(state.earlyStartMinutes);
+  final timeLabel = DateFormat(
+    'HH:mm',
+  ).format(toOrgLocal(earliestStart, timezone));
+
+  if (orgLocalDayDiff(earliestStart, timezone) == 0) {
+    return l10n.workScheduleAvailableFrom(timeLabel);
+  }
+  return l10n.workScheduleClosedNextTomorrowAt(source.name, timeLabel);
+}
+
+class _ScheduleWindowReason extends StatelessWidget {
+  const _ScheduleWindowReason(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+    return Text(
+      text,
+      style: textTheme.bodySmall?.copyWith(color: colors.secondary),
     );
   }
 }
@@ -66,11 +107,17 @@ class _ScheduleRow extends StatelessWidget {
   const _ScheduleRow({
     required this.schedule,
     required this.placeholder,
+    required this.dimmed,
     required this.onTap,
   });
 
   final WorkSchedule? schedule;
   final bool placeholder;
+
+  /// Показанный график сейчас не стартуем (окно закрыто) — приглушаем
+  /// строку, не запрещая при этом открыть пикер (см. mobile.md, «Что видит
+  /// пользователь, когда старт закрыт»).
+  final bool dimmed;
   final VoidCallback onTap;
 
   @override
@@ -83,50 +130,53 @@ class _ScheduleRow extends StatelessWidget {
         ? l10n.workScheduleSelectPlaceholder
         : '${schedule.name} · ${schedule.startTime} — ${schedule.endTime}';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(l10n.workScheduleFieldLabel, style: textTheme.titleSmall),
-        const SizedBox(height: 8),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: onTap,
-            child: InputDecorator(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.schedule_outlined,
-                    size: 20,
-                    color: colors.secondary,
+    return Opacity(
+      opacity: dimmed ? 0.5 : 1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l10n.workScheduleFieldLabel, style: textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: onTap,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      label,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodyLarge?.copyWith(
-                        color: placeholder ? colors.secondary : null,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.schedule_outlined,
+                      size: 20,
+                      color: colors.secondary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        label,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: placeholder ? colors.secondary : null,
+                        ),
                       ),
                     ),
-                  ),
-                  Icon(Icons.keyboard_arrow_down, color: colors.secondary),
-                ],
+                    Icon(Icons.keyboard_arrow_down, color: colors.secondary),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

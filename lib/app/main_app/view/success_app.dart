@@ -226,6 +226,11 @@ class _SuccessAppState extends State<_SuccessApp> {
                   reevaluateListenable: widget.authNotifier,
                   navigatorObservers: () => [
                     TalkerRouteObserver(widget.talker),
+                    // Даёт экранам подписываться на `didChangeTabRoute`/
+                    // `didPopNext` (AutoRouteAwareStateMixin) — используется
+                    // ShiftTrackerPage, чтобы перезапросить графики при
+                    // возврате на таб «Смена» (schedule_window_enforcement).
+                    AutoRouterObserver(),
                   ],
                 ),
                 localizationsDelegates: AppLocalizations.localizationsDelegates,

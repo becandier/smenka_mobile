@@ -41,6 +41,7 @@ _MySchedulesDto _$MySchedulesDtoFromJson(Map<String, dynamic> json) =>
           .toList(),
       total: (json['total'] as num).toInt(),
       requireSchedule: json['require_schedule'] as bool,
+      earlyStartMinutes: (json['early_start_minutes'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$MySchedulesDtoToJson(_MySchedulesDto instance) =>
@@ -48,4 +49,5 @@ Map<String, dynamic> _$MySchedulesDtoToJson(_MySchedulesDto instance) =>
       'items': instance.items.map((e) => e.toJson()).toList(),
       'total': instance.total,
       'require_schedule': instance.requireSchedule,
+      'early_start_minutes': instance.earlyStartMinutes,
     };

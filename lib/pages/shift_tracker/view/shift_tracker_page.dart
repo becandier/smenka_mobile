@@ -69,7 +69,7 @@ class _ShiftTrackerView extends StatefulWidget {
 }
 
 class _ShiftTrackerViewState extends State<_ShiftTrackerView>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, AutoRouteAwareStateMixin<_ShiftTrackerView> {
   @override
   void initState() {
     super.initState();
@@ -89,6 +89,14 @@ class _ShiftTrackerViewState extends State<_ShiftTrackerView>
     if (lifecycle == AppLifecycleState.resumed) {
       context.read<ShiftTrackerCubit>().onAppResumed();
     }
+  }
+
+  // Возврат на таб «Смена» после переключения на другой таб — список
+  // графиков мог устареть, пока тикер idle-экрана не работал в фоне
+  // (schedule_window_enforcement/mobile.md, п.2).
+  @override
+  void didChangeTabRoute(TabPageRoute previousRoute) {
+    context.read<ShiftTrackerCubit>().onScreenVisible();
   }
 
   Widget _buildContent(ShiftTrackerState state) {

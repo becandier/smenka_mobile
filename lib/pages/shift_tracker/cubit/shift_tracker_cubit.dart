@@ -25,6 +25,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     required ShiftContextStorage contextStorage,
     required WorkScheduleContextStorage scheduleContextStorage,
     Connectivity? connectivity,
+    DateTime Function()? now,
   }) : _shiftRepository = shiftRepository,
        _organizationRepository = organizationRepository,
        _workScheduleRepository = workScheduleRepository,
@@ -32,6 +33,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
        _contextStorage = contextStorage,
        _scheduleContextStorage = scheduleContextStorage,
        _connectivity = connectivity ?? Connectivity(),
+       _now = now ?? DateTime.now,
        super(const ShiftTrackerState()) {
     _orgSubscription = _organizationRepository.watchMyOrganizations().listen((
       orgs,
@@ -50,7 +52,28 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   final ShiftContextStorage _contextStorage;
   final WorkScheduleContextStorage _scheduleContextStorage;
   final Connectivity _connectivity;
+
+  /// Источник «текущего времени» для пересчёта окна графика — по умолчанию
+  /// `DateTime.now`, переопределяется в тестах (см. mobile.md, тесты границ
+  /// окна).
+  final DateTime Function() _now;
   Timer? _timer;
+
+  /// Тикер idle-экрана — пересчитывает стартуемость графика раз в секунду,
+  /// пока смена не активна, выбрана организация и список графиков загружен
+  /// (см. [_syncIdleTicker]).
+  Timer? _idleTimer;
+
+  /// Момент последнего перезапроса `my-schedules` из-за закрытия окна —
+  /// дебаунс на [_windowCloseRefetchCooldown] от `now`, а не от «была ли уже
+  /// свежая загрузка»: бэк гарантирует окно, конец которого впереди
+  /// (backend.md), но если только что перезагруженные графики ВСЁ РАВНО
+  /// пришли с уже закрытым окном (рассинхрон часов, задержка сети), это НЕ
+  /// должно зациклить перезапросы — `emit` внутри `_loadSchedules` синхронно
+  /// перезапускает тикер и его первый тик.
+  DateTime? _lastWindowCloseRefetchAt;
+
+  static const _windowCloseRefetchCooldown = Duration(seconds: 5);
 
   /// Монотонный токен запроса графиков — ответы устаревших запросов
   /// (org/точка успели поменяться ещё раз) игнорируются.
@@ -82,7 +105,83 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
   @override
   void emit(ShiftTrackerState state) {
-    if (!isClosed) super.emit(state);
+    if (isClosed) return;
+    super.emit(state);
+    _syncIdleTicker();
+  }
+
+  /// Запускает/останавливает тикер idle-экрана вслед за состоянием: идёт,
+  /// пока нет активной/приостановленной смены, выбрана организация и список
+  /// графиков успешно загружен (см. [ShiftTrackerState.schedules]) — тот же
+  /// принцип, что и у [_startTimer] для активной смены, но для локального
+  /// пересчёта стартуемости графика (mobile.md, «Реактивность»).
+  ///
+  /// Вызывается из [emit] после каждого апдейта состояния; побочные `emit` от
+  /// [_startIdleTicker]/[_stopIdleTicker] безопасны — при повторном заходе
+  /// `shouldTick == isTicking` уже совпадают, рекурсия обрывается сразу.
+  void _syncIdleTicker() {
+    final shouldTick =
+        !state.hasActiveShift && state.isOrgShift && state.schedules.isSuccess;
+    final isTicking = _idleTimer != null;
+    if (shouldTick == isTicking) return;
+
+    if (shouldTick) {
+      _startIdleTicker();
+    } else {
+      _stopIdleTicker();
+      if (state.idleNow != null) emit(state.copyWith(idleNow: null));
+    }
+  }
+
+  void _startIdleTicker() {
+    _idleTimer = Timer.periodic(const Duration(seconds: 1), (_) => _tickIdle());
+    _tickIdle();
+  }
+
+  void _stopIdleTicker() {
+    _idleTimer?.cancel();
+    _idleTimer = null;
+  }
+
+  void _tickIdle() {
+    final now = _now().toUtc();
+    emit(state.copyWith(idleNow: now));
+    _resetClosedSelection(now);
+    _maybeRefetchOnWindowClosed(now);
+  }
+
+  /// Сбрасывает выбор графика, если его окно закрылось (mobile.md, п.1:
+  /// «Ранее выбранный график, у которого окно закрылось, сбрасывается из
+  /// выбора автоматически»).
+  void _resetClosedSelection(DateTime now) {
+    final selected = state.selectedWorkSchedule;
+    if (selected == null) return;
+    if (!selected.isStartableAt(
+      now,
+      earlyStartMinutes: state.earlyStartMinutes,
+    )) {
+      emit(state.copyWith(selectedWorkScheduleId: null));
+    }
+  }
+
+  /// Перезапрос `my-schedules`, когда локально обнаружено, что окно
+  /// ближайшего графика закрылось (mobile.md, п.2) — сервер отдаст следующее
+  /// окно. Дебаунс по [_windowCloseRefetchCooldown] от [now], а не по факту
+  /// «была ли уже свежая загрузка» — так безопасно даже если очередной ответ
+  /// снова окажется с уже закрытым окном (см. [_lastWindowCloseRefetchAt]).
+  void _maybeRefetchOnWindowClosed(DateTime now) {
+    final items = state.schedules.data?.items ?? const <WorkSchedule>[];
+    if (items.isEmpty) return;
+    final closeAt = items
+        .map((s) => s.nextEndAt)
+        .reduce((a, b) => a.isBefore(b) ? a : b);
+    if (now.isBefore(closeAt)) return;
+    final last = _lastWindowCloseRefetchAt;
+    if (last != null && now.difference(last) < _windowCloseRefetchCooldown) {
+      return;
+    }
+    _lastWindowCloseRefetchAt = now;
+    unawaited(_loadSchedules());
   }
 
   StreamSubscription<List<Organization>>? _orgSubscription;
@@ -528,10 +627,14 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           ),
         );
         // Выбранный график перестал подходить (сервер узнал точку только на
-        // старте) либо был удалён — сбрасываем выбор и перезапрашиваем
-        // список, чтобы сотрудник выбрал заново (см. ТЗ п.1).
+        // старте), был удалён, либо его окно уже закрылось/ещё не открылось
+        // (SCHEDULE_WINDOW_CLOSED — страховка от рассинхрона часов устройства
+        // и сервера, schedule_window_enforcement/mobile.md, п.4) — сбрасываем
+        // выбор и принудительно перезапрашиваем список, чтобы сотрудник
+        // выбрал заново.
         if (error.code == 'SCHEDULE_NOT_AVAILABLE' ||
-            error.code == 'SCHEDULE_NOT_FOUND') {
+            error.code == 'SCHEDULE_NOT_FOUND' ||
+            error.code == 'SCHEDULE_WINDOW_CLOSED') {
           emit(state.copyWith(selectedWorkScheduleId: null));
           unawaited(_reloadSchedulesAfterStartFailure(lat: lat, lng: lng));
         }
@@ -712,8 +815,28 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }
 
   /// Возврат приложения на передний план — мгновенная сверка: на фоне ОС могла
-  /// приморозить 1с-таймер, и авто-финиш остался бы незамеченным.
-  void onAppResumed() => unawaited(_pollSync());
+  /// приморозить 1с-таймер, и авто-финиш остался бы незамеченным (см.
+  /// [_refreshVisibleContext]).
+  void onAppResumed() => unawaited(_refreshVisibleContext());
+
+  /// Возврат на экран трекера (переключение таба обратно на «Смена» — см.
+  /// `ShiftTrackerPage`, `didChangeTabRoute`). Тот же принцип, что и
+  /// [onAppResumed]: пока пользователь был на другом табе, список графиков
+  /// на idle-экране мог устареть, а внутренний тикер — быть неактивным.
+  void onScreenVisible() => unawaited(_refreshVisibleContext());
+
+  /// Общий хвост [onAppResumed]/[onScreenVisible] (mobile.md, п.2): сверяет
+  /// активную смену и, если сейчас снова idle организационной смены,
+  /// принудительно перезапрашивает график — локальный тик мог быть
+  /// заморожен (фон ОС) или экран был на другом табе всё это время.
+  Future<void> _refreshVisibleContext() async {
+    await _pollSync();
+    if (!state.hasActiveShift &&
+        state.isOrgShift &&
+        state.showWorkLocationSelector) {
+      unawaited(_loadSchedules());
+    }
+  }
 
   void clearAutoFinishedNotice() {
     emit(state.copyWith(shiftAutoFinished: false));
@@ -772,6 +895,13 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
             shiftAutoFinished: true,
           ),
         );
+        // Список графиков к моменту авто-финиша устарел (тот самый прод-баг,
+        // mobile.md, контекст) — перезапрашиваем вместе с возвратом в idle.
+        // Только для организаций без гео-проверки: у гео-check список на
+        // idle-экране не грузится заранее вовсе (см. showWorkLocationSelector).
+        if (state.isOrgShift && state.showWorkLocationSelector) {
+          unawaited(_loadSchedules());
+        }
       }
     } finally {
       _syncing = false;
@@ -815,6 +945,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   @override
   Future<void> close() {
     _stopTimer();
+    _stopIdleTicker();
     _orgSubscription?.cancel();
     _connectivitySub?.cancel();
     return super.close();

@@ -305,7 +305,10 @@ as int,
 /// @nodoc
 mixin _$MySchedulesDto {
 
- List<WorkScheduleDto> get items; int get total; bool get requireSchedule;
+ List<WorkScheduleDto> get items; int get total; bool get requireSchedule;/// Отсутствует в ответе старого бэкенда, ещё не знающего
+/// `schedule_window_enforcement`, — дефолт `0` не роняет парсинг
+/// (обратная совместимость).
+ int get earlyStartMinutes;
 /// Create a copy of MySchedulesDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -318,16 +321,16 @@ $MySchedulesDtoCopyWith<MySchedulesDto> get copyWith => _$MySchedulesDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MySchedulesDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MySchedulesDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule)&&(identical(other.earlyStartMinutes, earlyStartMinutes) || other.earlyStartMinutes == earlyStartMinutes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),total,requireSchedule);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),total,requireSchedule,earlyStartMinutes);
 
 @override
 String toString() {
-  return 'MySchedulesDto(items: $items, total: $total, requireSchedule: $requireSchedule)';
+  return 'MySchedulesDto(items: $items, total: $total, requireSchedule: $requireSchedule, earlyStartMinutes: $earlyStartMinutes)';
 }
 
 
@@ -338,7 +341,7 @@ abstract mixin class $MySchedulesDtoCopyWith<$Res>  {
   factory $MySchedulesDtoCopyWith(MySchedulesDto value, $Res Function(MySchedulesDto) _then) = _$MySchedulesDtoCopyWithImpl;
 @useResult
 $Res call({
- List<WorkScheduleDto> items, int total, bool requireSchedule
+ List<WorkScheduleDto> items, int total, bool requireSchedule, int earlyStartMinutes
 });
 
 
@@ -355,12 +358,13 @@ class _$MySchedulesDtoCopyWithImpl<$Res>
 
 /// Create a copy of MySchedulesDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,Object? earlyStartMinutes = null,}) {
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<WorkScheduleDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as int,requireSchedule: null == requireSchedule ? _self.requireSchedule : requireSchedule // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,earlyStartMinutes: null == earlyStartMinutes ? _self.earlyStartMinutes : earlyStartMinutes // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -445,10 +449,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WorkScheduleDto> items,  int total,  bool requireSchedule)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WorkScheduleDto> items,  int total,  bool requireSchedule,  int earlyStartMinutes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MySchedulesDto() when $default != null:
-return $default(_that.items,_that.total,_that.requireSchedule);case _:
+return $default(_that.items,_that.total,_that.requireSchedule,_that.earlyStartMinutes);case _:
   return orElse();
 
 }
@@ -466,10 +470,10 @@ return $default(_that.items,_that.total,_that.requireSchedule);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WorkScheduleDto> items,  int total,  bool requireSchedule)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WorkScheduleDto> items,  int total,  bool requireSchedule,  int earlyStartMinutes)  $default,) {final _that = this;
 switch (_that) {
 case _MySchedulesDto():
-return $default(_that.items,_that.total,_that.requireSchedule);case _:
+return $default(_that.items,_that.total,_that.requireSchedule,_that.earlyStartMinutes);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -486,10 +490,10 @@ return $default(_that.items,_that.total,_that.requireSchedule);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WorkScheduleDto> items,  int total,  bool requireSchedule)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WorkScheduleDto> items,  int total,  bool requireSchedule,  int earlyStartMinutes)?  $default,) {final _that = this;
 switch (_that) {
 case _MySchedulesDto() when $default != null:
-return $default(_that.items,_that.total,_that.requireSchedule);case _:
+return $default(_that.items,_that.total,_that.requireSchedule,_that.earlyStartMinutes);case _:
   return null;
 
 }
@@ -501,7 +505,7 @@ return $default(_that.items,_that.total,_that.requireSchedule);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _MySchedulesDto implements MySchedulesDto {
-  const _MySchedulesDto({required final  List<WorkScheduleDto> items, required this.total, required this.requireSchedule}): _items = items;
+  const _MySchedulesDto({required final  List<WorkScheduleDto> items, required this.total, required this.requireSchedule, this.earlyStartMinutes = 0}): _items = items;
   factory _MySchedulesDto.fromJson(Map<String, dynamic> json) => _$MySchedulesDtoFromJson(json);
 
  final  List<WorkScheduleDto> _items;
@@ -513,6 +517,10 @@ class _MySchedulesDto implements MySchedulesDto {
 
 @override final  int total;
 @override final  bool requireSchedule;
+/// Отсутствует в ответе старого бэкенда, ещё не знающего
+/// `schedule_window_enforcement`, — дефолт `0` не роняет парсинг
+/// (обратная совместимость).
+@override@JsonKey() final  int earlyStartMinutes;
 
 /// Create a copy of MySchedulesDto
 /// with the given fields replaced by the non-null parameter values.
@@ -527,16 +535,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MySchedulesDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MySchedulesDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule)&&(identical(other.earlyStartMinutes, earlyStartMinutes) || other.earlyStartMinutes == earlyStartMinutes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total,requireSchedule);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total,requireSchedule,earlyStartMinutes);
 
 @override
 String toString() {
-  return 'MySchedulesDto(items: $items, total: $total, requireSchedule: $requireSchedule)';
+  return 'MySchedulesDto(items: $items, total: $total, requireSchedule: $requireSchedule, earlyStartMinutes: $earlyStartMinutes)';
 }
 
 
@@ -547,7 +555,7 @@ abstract mixin class _$MySchedulesDtoCopyWith<$Res> implements $MySchedulesDtoCo
   factory _$MySchedulesDtoCopyWith(_MySchedulesDto value, $Res Function(_MySchedulesDto) _then) = __$MySchedulesDtoCopyWithImpl;
 @override @useResult
 $Res call({
- List<WorkScheduleDto> items, int total, bool requireSchedule
+ List<WorkScheduleDto> items, int total, bool requireSchedule, int earlyStartMinutes
 });
 
 
@@ -564,12 +572,13 @@ class __$MySchedulesDtoCopyWithImpl<$Res>
 
 /// Create a copy of MySchedulesDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,Object? earlyStartMinutes = null,}) {
   return _then(_MySchedulesDto(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<WorkScheduleDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as int,requireSchedule: null == requireSchedule ? _self.requireSchedule : requireSchedule // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,earlyStartMinutes: null == earlyStartMinutes ? _self.earlyStartMinutes : earlyStartMinutes // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

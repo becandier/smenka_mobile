@@ -24,6 +24,7 @@ extension MySchedulesMapper on MySchedulesDto {
       items: items.map((e) => e.toDomain()).toList(),
       total: total,
       requireSchedule: requireSchedule,
+      earlyStartMinutes: earlyStartMinutes,
     );
   }
 }

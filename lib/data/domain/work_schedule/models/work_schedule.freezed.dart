@@ -216,8 +216,8 @@ return $default(_that.id,_that.name,_that.startTime,_that.endTime,_that.duration
 /// @nodoc
 
 
-class _WorkSchedule implements WorkSchedule {
-  const _WorkSchedule({required this.id, required this.name, required this.startTime, required this.endTime, required this.durationMinutes, required this.crossesMidnight, required this.nextStartAt, required this.nextEndAt, required this.isCurrent, required this.startsInMinutes});
+class _WorkSchedule extends WorkSchedule {
+  const _WorkSchedule({required this.id, required this.name, required this.startTime, required this.endTime, required this.durationMinutes, required this.crossesMidnight, required this.nextStartAt, required this.nextEndAt, required this.isCurrent, required this.startsInMinutes}): super._();
   
 
 @override final  String id;
