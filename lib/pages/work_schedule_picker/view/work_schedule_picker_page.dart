@@ -25,17 +25,24 @@ class WorkSchedulePickerPage extends StatelessWidget {
   const WorkSchedulePickerPage({
     required this.schedules,
     this.selectedScheduleId,
+    this.earlyStartMinutes = 0,
     this.organizationTimezone = 'Europe/Moscow',
     super.key,
   });
 
   final List<WorkSchedule> schedules;
   final String? selectedScheduleId;
+
+  /// Допуск раннего старта (`schedule_window_enforcement`) — вместе с текущим
+  /// временем определяет, какие карточки ниже выбираемы (см. [_ScheduleCard]
+  /// / `WorkSchedule.isStartableAt`).
+  final int earlyStartMinutes;
   final String organizationTimezone;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final now = DateTime.now().toUtc();
 
     return AppBottomSheet(
       title: l10n.workSchedulePickerTitle,
@@ -46,6 +53,10 @@ class WorkSchedulePickerPage extends StatelessWidget {
             _ScheduleCard(
               schedule: schedule,
               isSelected: schedule.id == selectedScheduleId,
+              isStartable: schedule.isStartableAt(
+                now,
+                earlyStartMinutes: earlyStartMinutes,
+              ),
               organizationTimezone: organizationTimezone,
               onTap: () =>
                   context.router.maybePop(WorkSchedulePickerResult(schedule)),
@@ -58,16 +69,22 @@ class WorkSchedulePickerPage extends StatelessWidget {
   }
 }
 
+/// Карточка графика. Нестартуемые сейчас графики остаются видимыми (сотрудник
+/// должен понимать, что график у него есть, просто не сейчас), но не
+/// выбираемы — приглушены, тап по ним не закрывает модалку (mobile.md, «Что
+/// видит пользователь, когда старт закрыт»).
 class _ScheduleCard extends StatelessWidget {
   const _ScheduleCard({
     required this.schedule,
     required this.isSelected,
+    required this.isStartable,
     required this.organizationTimezone,
     required this.onTap,
   });
 
   final WorkSchedule schedule;
   final bool isSelected;
+  final bool isStartable;
   final String organizationTimezone;
   final VoidCallback onTap;
 
@@ -79,61 +96,64 @@ class _ScheduleCard extends StatelessWidget {
     final hours = schedule.durationMinutes ~/ 60;
     final minutes = schedule.durationMinutes % 60;
 
-    return Material(
-      color: isSelected
-          ? colors.primary.withValues(alpha: 0.08)
-          : colors.surface,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
+    return Opacity(
+      opacity: isStartable ? 1 : 0.5,
+      child: Material(
+        color: isSelected
+            ? colors.primary.withValues(alpha: 0.08)
+            : colors.surface,
         borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          '${schedule.startTime} — ${schedule.endTime}',
-                          style: textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        if (schedule.crossesMidnight) ...[
-                          const SizedBox(width: 6),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: isStartable ? onTap : null,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
                           Text(
-                            l10n.workScheduleCrossesMidnight,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colors.secondary,
+                            '${schedule.startTime} — ${schedule.endTime}',
+                            style: textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
+                          if (schedule.crossesMidnight) ...[
+                            const SizedBox(width: 6),
+                            Text(
+                              l10n.workScheduleCrossesMidnight,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colors.secondary,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${schedule.name} · ${l10n.statsHours(hours, minutes)}',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colors.secondary,
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    _ScheduleStatus(
-                      schedule: schedule,
-                      organizationTimezone: organizationTimezone,
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        '${schedule.name} · ${l10n.statsHours(hours, minutes)}',
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colors.secondary,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      _ScheduleStatus(
+                        schedule: schedule,
+                        organizationTimezone: organizationTimezone,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              if (isSelected) ...[
-                const SizedBox(width: 8),
-                Icon(Icons.check_circle, color: colors.primary),
+                if (isSelected) ...[
+                  const SizedBox(width: 8),
+                  Icon(Icons.check_circle, color: colors.primary),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -217,15 +237,7 @@ class _ScheduleStatus extends StatelessWidget {
     String timezone,
   ) {
     final l10n = context.l10n;
-    final localStart = toOrgLocal(schedule.nextStartAt, timezone);
-    final localNow = toOrgLocal(DateTime.now().toUtc(), timezone);
-    final startDate = DateTime(
-      localStart.year,
-      localStart.month,
-      localStart.day,
-    );
-    final nowDate = DateTime(localNow.year, localNow.month, localNow.day);
-    final diffDays = startDate.difference(nowDate).inDays;
+    final diffDays = orgLocalDayDiff(schedule.nextStartAt, timezone);
 
     if (diffDays == 0) {
       return l10n.workScheduleStartsTodayAt(schedule.startTime);
@@ -233,6 +245,7 @@ class _ScheduleStatus extends StatelessWidget {
     if (diffDays == 1) {
       return l10n.workScheduleStartsTomorrowAt(schedule.startTime);
     }
+    final localStart = toOrgLocal(schedule.nextStartAt, timezone);
     final dateLabel = DateFormat('dd.MM').format(localStart);
     return l10n.workScheduleStartsOnDateAt(dateLabel, schedule.startTime);
   }

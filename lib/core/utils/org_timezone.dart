@@ -31,6 +31,24 @@ DateTime toOrgLocal(DateTime utc, String timezoneName) {
   }
 }
 
+/// Разница в календарных днях (настенное время организации) между
+/// [targetUtc] и текущим моментом: `0` — сегодня, `1` — завтра и т.д.
+/// (отрицательное — прошлое). Общая точка для «когда» подписей графика
+/// (`work_schedule_picker_page.dart` — «начнётся сегодня/завтра/{дата}»,
+/// `work_schedule_selector.dart` — «можно начать с/закрыт, ближайший старт
+/// завтра»), чтобы конвертация в org-local и усечение до даты не дублировались.
+int orgLocalDayDiff(DateTime targetUtc, String timezoneName) {
+  final localTarget = toOrgLocal(targetUtc, timezoneName);
+  final localNow = toOrgLocal(DateTime.now().toUtc(), timezoneName);
+  final targetDate = DateTime(
+    localTarget.year,
+    localTarget.month,
+    localTarget.day,
+  );
+  final nowDate = DateTime(localNow.year, localNow.month, localNow.day);
+  return targetDate.difference(nowDate).inDays;
+}
+
 bool _initialized = false;
 
 void _ensureInitialized() {

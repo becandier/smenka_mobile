@@ -133,6 +133,7 @@ Future<WorkSchedulePickerResult?> _pushWorkSchedulePicker(
     WorkSchedulePickerRoute(
       schedules: state.availableSchedules,
       selectedScheduleId: state.selectedWorkScheduleId,
+      earlyStartMinutes: state.earlyStartMinutes,
       organizationTimezone:
           state.selectedOrganization?.timezone ?? 'Europe/Moscow',
     ),

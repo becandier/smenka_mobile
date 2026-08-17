@@ -146,6 +146,19 @@
             "time": {"type": "String"}
         }
     },
+    "workScheduleAvailableFrom": "Смену можно начать с {time}",
+    "@workScheduleAvailableFrom": {
+        "placeholders": {
+            "time": {"type": "String"}
+        }
+    },
+    "workScheduleClosedNextTomorrowAt": "График «{name}» закончился. Ближайший старт — завтра в {time}",
+    "@workScheduleClosedNextTomorrowAt": {
+        "placeholders": {
+            "name": {"type": "String"},
+            "time": {"type": "String"}
+        }
+    },
 
     "shiftPlannedSchedule": "По графику: {schedule}, до {time}",
     "@shiftPlannedSchedule": {
@@ -668,6 +681,7 @@
     "errorScheduleRequired": "Выберите график работы",
     "errorScheduleNotAvailable": "Этот график недоступен на выбранной точке",
     "errorScheduleNotFound": "График не найден, обновите список",
+    "errorScheduleWindowClosed": "Сейчас не рабочее время по графику. Попробуйте позже",
     "errorOvertimeAlreadyRequested": "Заявка по этой смене уже отправлена",
     "errorOvertimePeriodExpired": "Срок подачи заявки истёк",
     "errorOvertimeNotApplicable": "По этой смене переработку добавить нельзя",

@@ -14,7 +14,13 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MySchedules {
 
- List<WorkSchedule> get items; int get total; bool get requireSchedule;
+ List<WorkSchedule> get items; int get total; bool get requireSchedule;/// За сколько минут до планового начала графика разрешено начать смену
+/// раньше (настройка организации, `schedule_window_enforcement`).
+/// Дублируется в каждом ответе, чтобы клиент пересчитывал стартуемость
+/// локально, не запрашивая `/settings` отдельно. `0` — старый бэкенд, ещё
+/// не отдающий это поле (обратная совместимость), эквивалентно «строго
+/// не раньше начала».
+ int get earlyStartMinutes;
 /// Create a copy of MySchedules
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +31,16 @@ $MySchedulesCopyWith<MySchedules> get copyWith => _$MySchedulesCopyWithImpl<MySc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MySchedules&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MySchedules&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule)&&(identical(other.earlyStartMinutes, earlyStartMinutes) || other.earlyStartMinutes == earlyStartMinutes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),total,requireSchedule);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),total,requireSchedule,earlyStartMinutes);
 
 @override
 String toString() {
-  return 'MySchedules(items: $items, total: $total, requireSchedule: $requireSchedule)';
+  return 'MySchedules(items: $items, total: $total, requireSchedule: $requireSchedule, earlyStartMinutes: $earlyStartMinutes)';
 }
 
 
@@ -45,7 +51,7 @@ abstract mixin class $MySchedulesCopyWith<$Res>  {
   factory $MySchedulesCopyWith(MySchedules value, $Res Function(MySchedules) _then) = _$MySchedulesCopyWithImpl;
 @useResult
 $Res call({
- List<WorkSchedule> items, int total, bool requireSchedule
+ List<WorkSchedule> items, int total, bool requireSchedule, int earlyStartMinutes
 });
 
 
@@ -62,12 +68,13 @@ class _$MySchedulesCopyWithImpl<$Res>
 
 /// Create a copy of MySchedules
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,Object? earlyStartMinutes = null,}) {
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<WorkSchedule>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as int,requireSchedule: null == requireSchedule ? _self.requireSchedule : requireSchedule // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,earlyStartMinutes: null == earlyStartMinutes ? _self.earlyStartMinutes : earlyStartMinutes // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -152,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WorkSchedule> items,  int total,  bool requireSchedule)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WorkSchedule> items,  int total,  bool requireSchedule,  int earlyStartMinutes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MySchedules() when $default != null:
-return $default(_that.items,_that.total,_that.requireSchedule);case _:
+return $default(_that.items,_that.total,_that.requireSchedule,_that.earlyStartMinutes);case _:
   return orElse();
 
 }
@@ -173,10 +180,10 @@ return $default(_that.items,_that.total,_that.requireSchedule);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WorkSchedule> items,  int total,  bool requireSchedule)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WorkSchedule> items,  int total,  bool requireSchedule,  int earlyStartMinutes)  $default,) {final _that = this;
 switch (_that) {
 case _MySchedules():
-return $default(_that.items,_that.total,_that.requireSchedule);case _:
+return $default(_that.items,_that.total,_that.requireSchedule,_that.earlyStartMinutes);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +200,10 @@ return $default(_that.items,_that.total,_that.requireSchedule);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WorkSchedule> items,  int total,  bool requireSchedule)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WorkSchedule> items,  int total,  bool requireSchedule,  int earlyStartMinutes)?  $default,) {final _that = this;
 switch (_that) {
 case _MySchedules() when $default != null:
-return $default(_that.items,_that.total,_that.requireSchedule);case _:
+return $default(_that.items,_that.total,_that.requireSchedule,_that.earlyStartMinutes);case _:
   return null;
 
 }
@@ -208,7 +215,7 @@ return $default(_that.items,_that.total,_that.requireSchedule);case _:
 
 
 class _MySchedules implements MySchedules {
-  const _MySchedules({required final  List<WorkSchedule> items, required this.total, required this.requireSchedule}): _items = items;
+  const _MySchedules({required final  List<WorkSchedule> items, required this.total, required this.requireSchedule, this.earlyStartMinutes = 0}): _items = items;
   
 
  final  List<WorkSchedule> _items;
@@ -220,6 +227,13 @@ class _MySchedules implements MySchedules {
 
 @override final  int total;
 @override final  bool requireSchedule;
+/// За сколько минут до планового начала графика разрешено начать смену
+/// раньше (настройка организации, `schedule_window_enforcement`).
+/// Дублируется в каждом ответе, чтобы клиент пересчитывал стартуемость
+/// локально, не запрашивая `/settings` отдельно. `0` — старый бэкенд, ещё
+/// не отдающий это поле (обратная совместимость), эквивалентно «строго
+/// не раньше начала».
+@override@JsonKey() final  int earlyStartMinutes;
 
 /// Create a copy of MySchedules
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +245,16 @@ _$MySchedulesCopyWith<_MySchedules> get copyWith => __$MySchedulesCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MySchedules&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MySchedules&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.total, total) || other.total == total)&&(identical(other.requireSchedule, requireSchedule) || other.requireSchedule == requireSchedule)&&(identical(other.earlyStartMinutes, earlyStartMinutes) || other.earlyStartMinutes == earlyStartMinutes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total,requireSchedule);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total,requireSchedule,earlyStartMinutes);
 
 @override
 String toString() {
-  return 'MySchedules(items: $items, total: $total, requireSchedule: $requireSchedule)';
+  return 'MySchedules(items: $items, total: $total, requireSchedule: $requireSchedule, earlyStartMinutes: $earlyStartMinutes)';
 }
 
 
@@ -251,7 +265,7 @@ abstract mixin class _$MySchedulesCopyWith<$Res> implements $MySchedulesCopyWith
   factory _$MySchedulesCopyWith(_MySchedules value, $Res Function(_MySchedules) _then) = __$MySchedulesCopyWithImpl;
 @override @useResult
 $Res call({
- List<WorkSchedule> items, int total, bool requireSchedule
+ List<WorkSchedule> items, int total, bool requireSchedule, int earlyStartMinutes
 });
 
 
@@ -268,12 +282,13 @@ class __$MySchedulesCopyWithImpl<$Res>
 
 /// Create a copy of MySchedules
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? total = null,Object? requireSchedule = null,Object? earlyStartMinutes = null,}) {
   return _then(_MySchedules(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<WorkSchedule>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as int,requireSchedule: null == requireSchedule ? _self.requireSchedule : requireSchedule // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,earlyStartMinutes: null == earlyStartMinutes ? _self.earlyStartMinutes : earlyStartMinutes // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

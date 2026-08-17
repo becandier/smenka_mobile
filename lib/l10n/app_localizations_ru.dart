@@ -332,6 +332,16 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String workScheduleAvailableFrom(String time) {
+    return 'Смену можно начать с $time';
+  }
+
+  @override
+  String workScheduleClosedNextTomorrowAt(String name, String time) {
+    return 'График «$name» закончился. Ближайший старт — завтра в $time';
+  }
+
+  @override
   String shiftPlannedSchedule(String schedule, String time) {
     return 'По графику: $schedule, до $time';
   }
@@ -1421,6 +1431,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorScheduleNotFound => 'График не найден, обновите список';
+
+  @override
+  String get errorScheduleWindowClosed =>
+      'Сейчас не рабочее время по графику. Попробуйте позже';
 
   @override
   String get errorOvertimeAlreadyRequested =>

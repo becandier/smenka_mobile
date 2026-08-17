@@ -1901,6 +1901,7 @@ class WorkSchedulePickerRoute
   WorkSchedulePickerRoute({
     required List<WorkSchedule> schedules,
     String? selectedScheduleId,
+    int earlyStartMinutes = 0,
     String organizationTimezone = 'Europe/Moscow',
     Key? key,
     List<PageRouteInfo>? children,
@@ -1909,6 +1910,7 @@ class WorkSchedulePickerRoute
          args: WorkSchedulePickerRouteArgs(
            schedules: schedules,
            selectedScheduleId: selectedScheduleId,
+           earlyStartMinutes: earlyStartMinutes,
            organizationTimezone: organizationTimezone,
            key: key,
          ),
@@ -1924,6 +1926,7 @@ class WorkSchedulePickerRoute
       return WorkSchedulePickerPage(
         schedules: args.schedules,
         selectedScheduleId: args.selectedScheduleId,
+        earlyStartMinutes: args.earlyStartMinutes,
         organizationTimezone: args.organizationTimezone,
         key: args.key,
       );
@@ -1935,6 +1938,7 @@ class WorkSchedulePickerRouteArgs {
   const WorkSchedulePickerRouteArgs({
     required this.schedules,
     this.selectedScheduleId,
+    this.earlyStartMinutes = 0,
     this.organizationTimezone = 'Europe/Moscow',
     this.key,
   });
@@ -1943,13 +1947,15 @@ class WorkSchedulePickerRouteArgs {
 
   final String? selectedScheduleId;
 
+  final int earlyStartMinutes;
+
   final String organizationTimezone;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'WorkSchedulePickerRouteArgs{schedules: $schedules, selectedScheduleId: $selectedScheduleId, organizationTimezone: $organizationTimezone, key: $key}';
+    return 'WorkSchedulePickerRouteArgs{schedules: $schedules, selectedScheduleId: $selectedScheduleId, earlyStartMinutes: $earlyStartMinutes, organizationTimezone: $organizationTimezone, key: $key}';
   }
 
   @override
@@ -1961,6 +1967,7 @@ class WorkSchedulePickerRouteArgs {
           other.schedules,
         ) &&
         selectedScheduleId == other.selectedScheduleId &&
+        earlyStartMinutes == other.earlyStartMinutes &&
         organizationTimezone == other.organizationTimezone &&
         key == other.key;
   }
@@ -1969,6 +1976,7 @@ class WorkSchedulePickerRouteArgs {
   int get hashCode =>
       const ListEquality<WorkSchedule>().hash(schedules) ^
       selectedScheduleId.hashCode ^
+      earlyStartMinutes.hashCode ^
       organizationTimezone.hashCode ^
       key.hashCode;
 }

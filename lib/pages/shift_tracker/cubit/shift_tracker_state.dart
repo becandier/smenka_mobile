@@ -53,6 +53,14 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
     /// Выбранный график старта. `null` — не выбран (0 графиков, либо >1 и
     /// выбор ещё не сделан).
     String? selectedWorkScheduleId,
+
+    /// «Сейчас» на idle-экране — обновляется `ShiftTrackerCubit` раз в
+    /// секунду, пока показывается организационная смена и графики загружены
+    /// (тот же принцип, что и тикающий [elapsedSeconds] для активной смены,
+    /// только для пересчёта стартуемости окна графика, см.
+    /// `schedule_window_enforcement/mobile.md`). `null`, пока тик не
+    /// запущен (сеть ещё грузится / смена активна / кубит закрыт).
+    DateTime? idleNow,
   }) = _ShiftTrackerState;
   const ShiftTrackerState._();
 
@@ -143,6 +151,23 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
     return availableSchedules.where((s) => s.id == id).firstOrNull;
   }
 
+  /// За сколько минут раньше планового начала разрешено стартовать
+  /// (настройка организации, дублируется в ответе `my-schedules`).
+  int get earlyStartMinutes => schedules.data?.earlyStartMinutes ?? 0;
+
+  /// «Сейчас» для пересчёта окна графика: [idleNow], если тикер кубита уже
+  /// тикнул хотя бы раз, иначе момент вызова геттера — это возможно, только
+  /// пока idle-экран ещё не показывается (тикер не идёт при активной смене
+  /// или персональном контексте), так что точность здесь не критична.
+  DateTime get _windowClockNow => idleNow ?? DateTime.now().toUtc();
+
+  /// Стартуем ли [schedule] прямо сейчас — правило S1
+  /// (`schedule_window_enforcement/backend.md`), пересчитывается локально.
+  bool isScheduleStartable(WorkSchedule schedule) => schedule.isStartableAt(
+    _windowClockNow,
+    earlyStartMinutes: earlyStartMinutes,
+  );
+
   /// Можно ли начать смену: точка (если обязательна) и график (если
   /// обязателен по количеству доступных вариантов) должны быть выбраны;
   /// пока список графиков грузится — старт недоступен. Для персональной
@@ -152,5 +177,36 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
       (!isOrgShift ||
           (!schedulesLoading &&
               !scheduleBlockedNoOptions &&
-              (!scheduleSelectionRequired || selectedWorkScheduleId != null)));
+              !scheduleBlockedWindowClosed &&
+              (!scheduleSelectionRequired || selectedWorkScheduleId != null) &&
+              selectedScheduleStillStartable));
+
+  /// `require_schedule=true`, графики есть, но ни один не стартуем прямо
+  /// сейчас (все вне окна с учётом [earlyStartMinutes]) — старт заблокирован
+  /// до открытия ближайшего окна (см. mobile.md, п.1; бэк в этом случае
+  /// вернёт `SCHEDULE_WINDOW_CLOSED`).
+  bool get scheduleBlockedWindowClosed =>
+      requireSchedule &&
+      availableSchedules.isNotEmpty &&
+      !availableSchedules.any(isScheduleStartable);
+
+  /// Выбранный график ещё стартуем (или выбора нет вовсе). Основной сброс
+  /// закрывшегося выбора делает кубит по тику
+  /// (`ShiftTrackerCubit._resetClosedSelection`) — это доп. страховка в
+  /// самом состоянии на случай гонки между закрытием окна и следующим тиком.
+  bool get selectedScheduleStillStartable {
+    final selected = selectedWorkSchedule;
+    return selected == null || isScheduleStartable(selected);
+  }
+
+  /// График, на который ссылается подпись «недоступно» под селектором на
+  /// idle-экране (см. mobile.md, «Что видит пользователь, когда старт
+  /// закрыт»). Сервер сортирует `items` по близости ближайшего старта
+  /// (`can_start_now` desc → `is_current` desc → `abs(starts_in_minutes)`
+  /// asc, backend.md) — при [scheduleBlockedWindowClosed] первый элемент
+  /// списка и есть ближайший к открытию. `null` — подпись не нужна (старт
+  /// доступен либо причина другая — пустой список графиков, для него своя
+  /// подпись, `workScheduleRequiredEmpty`).
+  WorkSchedule? get scheduleWindowReasonSource =>
+      scheduleBlockedWindowClosed ? availableSchedules.firstOrNull : null;
 }
