@@ -1579,6 +1579,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get testAttemptRetry => 'Пройти ещё раз';
 
   @override
+  String get testAttemptUnassignedTitle => 'Тест больше не назначен';
+
+  @override
+  String get testAttemptUnassignedMessage =>
+      'Администратор снял этот тест. Результаты по нему не сохраняются.';
+
+  @override
+  String get testAttemptDeletedTitle => 'Тест удалён';
+
+  @override
+  String get testAttemptBackToList => 'К списку тестов';
+
+  @override
   String get errorTestAttemptsExhausted => 'Попытки для этого теста исчерпаны';
 
   @override
@@ -1596,4 +1609,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorTestAssignmentNotFound => 'Назначение теста не найдено';
+
+  @override
+  String get errorTestTemplateDeleted => 'Тест удалён';
 }

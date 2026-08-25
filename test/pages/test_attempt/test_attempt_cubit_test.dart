@@ -4,6 +4,7 @@ import 'package:smenka_mobile/core/network/api_exceptions.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/employee_test/_employee_test.dart';
 import 'package:smenka_mobile/pages/test_attempt/cubit/test_attempt_cubit.dart';
+import 'package:smenka_mobile/pages/test_attempt/cubit/test_attempt_state.dart';
 
 class _MockTestRepository extends Mock implements TestRepository {}
 
@@ -441,6 +442,141 @@ void main() {
       expect(cubit.state.submitting, isFalse);
       expect(cubit.state.attempt, isNotNull);
       expect(cubit.state.isResult, isFalse);
+    });
+  });
+
+  group('Назначение снято/удалено (TEST_ASSIGNMENT_NOT_FOUND)', () {
+    test('резолв деталей → «больше не назначен» вместо error-экрана', () async {
+      when(() => repo.getAssignmentDetail('a1')).thenAnswer(
+        (_) async => const Task<TestAssignment>.failure(
+          ApiException.server(
+            message: 'Не найдено',
+            code: 'TEST_ASSIGNMENT_NOT_FOUND',
+          ),
+        ),
+      );
+
+      final cubit = build();
+      await pumpEventQueue();
+
+      expect(cubit.state.unassigned, isTrue);
+      expect(cubit.state.errorCode, 'TEST_ASSIGNMENT_NOT_FOUND');
+      expect(cubit.state.isFatalError, isFalse);
+      expect(cubit.state.blocked, isFalse);
+      expect(cubit.state.isFilling, isFalse);
+    });
+
+    test('старт попытки → «больше не назначен» вместо error-экрана', () async {
+      when(
+        () => repo.getAssignmentDetail('a1'),
+      ).thenAnswer((_) async => Task.success(_assignment(attempts: const [])));
+      when(() => repo.startAttempt('a1')).thenAnswer(
+        (_) async => const Task<TestAttemptFill>.failure(
+          ApiException.server(
+            message: 'Не найдено',
+            code: 'TEST_ASSIGNMENT_NOT_FOUND',
+          ),
+        ),
+      );
+
+      final cubit = build();
+      await pumpEventQueue();
+
+      expect(cubit.state.unassigned, isTrue);
+      expect(cubit.state.errorCode, 'TEST_ASSIGNMENT_NOT_FOUND');
+      expect(cubit.state.isFatalError, isFalse);
+      expect(cubit.state.blocked, isFalse);
+    });
+
+    test('загрузка попытки (резюме открытой) → «больше не назначен»'
+        ' вместо error-экрана', () async {
+      when(() => repo.getAssignmentDetail('a1')).thenAnswer(
+        (_) async => Task.success(
+          _assignment(
+            status: TestAssignmentStatus.inProgress,
+            attempts: const [
+              TestAssignmentAttemptBrief(
+                id: 'open1',
+                attemptNumber: 1,
+                percent: 0,
+                passed: false,
+                status: TestAttemptStatus.inProgress,
+              ),
+            ],
+          ),
+        ),
+      );
+      when(() => repo.getAttempt('open1')).thenAnswer(
+        (_) async => const Task<TestAttemptDetail>.failure(
+          ApiException.server(
+            message: 'Не найдено',
+            code: 'TEST_ASSIGNMENT_NOT_FOUND',
+          ),
+        ),
+      );
+
+      final cubit = build();
+      await pumpEventQueue();
+
+      expect(cubit.state.unassigned, isTrue);
+      expect(cubit.state.errorCode, 'TEST_ASSIGNMENT_NOT_FOUND');
+      expect(cubit.state.isFatalError, isFalse);
+    });
+
+    test('submit → «больше не назначен» вместо инлайн submitErrorCode,'
+        ' без ретраев', () async {
+      when(
+        () => repo.getAssignmentDetail('a1'),
+      ).thenAnswer((_) async => Task.success(_assignment(attempts: const [])));
+      when(
+        () => repo.startAttempt('a1'),
+      ).thenAnswer((_) async => Task.success(_attemptFill()));
+      when(
+        () => repo.submitAttempt('attempt1', answers: any(named: 'answers')),
+      ).thenAnswer(
+        (_) async => const Task<TestResult>.failure(
+          ApiException.server(
+            message: 'Не найдено',
+            code: 'TEST_ASSIGNMENT_NOT_FOUND',
+          ),
+        ),
+      );
+
+      final cubit = build();
+      await pumpEventQueue();
+      await cubit.submit();
+
+      expect(cubit.state.unassigned, isTrue);
+      expect(cubit.state.errorCode, 'TEST_ASSIGNMENT_NOT_FOUND');
+      expect(cubit.state.submitting, isFalse);
+      expect(cubit.state.submitErrorCode, isNull);
+      expect(cubit.state.attempt, isNull);
+      expect(cubit.state.isFilling, isFalse);
+    });
+
+    test('TEST_TEMPLATE_DELETED на старте попытки → тоже «больше не назначен»,'
+        ' с отдельной причиной', () async {
+      when(
+        () => repo.getAssignmentDetail('a1'),
+      ).thenAnswer((_) async => Task.success(_assignment(attempts: const [])));
+      when(() => repo.startAttempt('a1')).thenAnswer(
+        (_) async => const Task<TestAttemptFill>.failure(
+          ApiException.server(
+            message: 'Тест удалён',
+            code: 'TEST_TEMPLATE_DELETED',
+          ),
+        ),
+      );
+
+      final cubit = build();
+      await pumpEventQueue();
+
+      expect(cubit.state.unassigned, isTrue);
+      expect(cubit.state.errorCode, 'TEST_TEMPLATE_DELETED');
+      expect(
+        cubit.state.unassignedReason,
+        TestUnassignedReason.templateDeleted,
+      );
     });
   });
 

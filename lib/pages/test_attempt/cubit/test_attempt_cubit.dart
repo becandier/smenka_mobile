@@ -63,6 +63,16 @@ class TestAttemptCubit extends Cubit<TestAttemptState> {
         await _startAttempt();
       },
       onFailure: (error) async {
+        if (_isUnassignedCode(error.code)) {
+          emit(
+            state.copyWith(
+              status: FeatureStatus.success,
+              unassigned: true,
+              errorCode: error.code,
+            ),
+          );
+          return;
+        }
         emit(
           state.copyWith(
             status: FeatureStatus.error,
@@ -101,13 +111,25 @@ class TestAttemptCubit extends Cubit<TestAttemptState> {
           ),
         );
       },
-      onFailure: (error) => emit(
-        state.copyWith(
-          status: FeatureStatus.error,
-          error: error.message,
-          errorCode: error.code,
-        ),
-      ),
+      onFailure: (error) {
+        if (_isUnassignedCode(error.code)) {
+          emit(
+            state.copyWith(
+              status: FeatureStatus.success,
+              unassigned: true,
+              errorCode: error.code,
+            ),
+          );
+          return;
+        }
+        emit(
+          state.copyWith(
+            status: FeatureStatus.error,
+            error: error.message,
+            errorCode: error.code,
+          ),
+        );
+      },
     );
   }
 
@@ -125,6 +147,16 @@ class TestAttemptCubit extends Cubit<TestAttemptState> {
         );
       },
       onFailure: (error) async {
+        if (_isUnassignedCode(error.code)) {
+          emit(
+            state.copyWith(
+              status: FeatureStatus.success,
+              unassigned: true,
+              errorCode: error.code,
+            ),
+          );
+          return;
+        }
         switch (error.code) {
           case 'TEST_ATTEMPT_IN_PROGRESS' when allowRaceRetry:
             // Расхождение со снимком assignment.attempts (гонка/другое
@@ -232,15 +264,38 @@ class TestAttemptCubit extends Cubit<TestAttemptState> {
       onSuccess: (testResult) => emit(
         state.copyWith(submitting: false, result: testResult, attempt: null),
       ),
-      onFailure: (error) => emit(
-        state.copyWith(
-          submitting: false,
-          submitErrorCode: error.code,
-          submitError: error.message,
-        ),
-      ),
+      onFailure: (error) {
+        if (_isUnassignedCode(error.code)) {
+          // Сотрудник дозаполнил тест, но к моменту отправки назначения уже
+          // нет — тот же экран «Тест больше не назначен», без попытки
+          // сохранить ответы локально и без ретраев (см. `mobile.md`).
+          emit(
+            state.copyWith(
+              submitting: false,
+              unassigned: true,
+              errorCode: error.code,
+              attempt: null,
+            ),
+          );
+          return;
+        }
+        emit(
+          state.copyWith(
+            submitting: false,
+            submitErrorCode: error.code,
+            submitError: error.message,
+          ),
+        );
+      },
     );
   }
+
+  /// Назначение снято админом или тест удалён, пока сотрудник был на экране
+  /// (уведомления о снятии не приходит — узнаём только по коду ошибки).
+  /// Проверяется на всех четырёх путях: резолв деталей, старт попытки,
+  /// загрузка попытки, submit.
+  bool _isUnassignedCode(String? code) =>
+      TestUnassignedReason.fromValue(code) != null;
 
   /// «Пройти ещё раз» — новая попытка после результата (сервер — источник
   /// истины по лимиту/уже сдан, клиент лишь инициирует).

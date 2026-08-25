@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,9 +58,17 @@ class _MyTestsView extends StatelessWidget {
                   selector: (state) => state.assignments,
                   itemBuilder: (context, assignment, index) => _MyTestCard(
                     assignment: assignment,
-                    onTap: () => context.router.root.push(
-                      TestAttemptRoute(assignmentId: assignment.id),
-                    ),
+                    onTap: () async {
+                      final cubit = context.read<MyTestsCubit>();
+                      // Экран прохождения может показать «Тест больше не
+                      // назначен» (снятие/удаление за время просмотра) —
+                      // после возврата список должен сам обновиться, а не
+                      // ждать ручного pull-to-refresh.
+                      await context.router.root.push(
+                        TestAttemptRoute(assignmentId: assignment.id),
+                      );
+                      unawaited(cubit.loadAssignments());
+                    },
                   ),
                   onLoadMore: () => context
                       .read<MyTestsCubit>()

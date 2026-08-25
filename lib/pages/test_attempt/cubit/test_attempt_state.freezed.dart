@@ -25,7 +25,11 @@ mixin _$TestAttemptState {
 /// шаблон архивный). Причина — в [errorCode]; итоговый % — из
 /// [assignment] (денормализованные `bestPercent`/`passed`), без
 /// дополнительного похода за попыткой.
- bool get blocked;
+ bool get blocked;/// `true` — назначение снято админом или тест удалён навсегда
+/// (см. [TestUnassignedReason]). В отличие от [blocked] это не
+/// техническая ошибка и не «попробуйте позже» — назначения больше не
+/// существует, повторный запрос ничего не изменит.
+ bool get unassigned;
 /// Create a copy of TestAttemptState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +40,16 @@ $TestAttemptStateCopyWith<TestAttemptState> get copyWith => _$TestAttemptStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAttemptState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode)&&(identical(other.assignment, assignment) || other.assignment == assignment)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&const DeepCollectionEquality().equals(other.selectedOptionIds, selectedOptionIds)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.result, result) || other.result == result)&&(identical(other.blocked, blocked) || other.blocked == blocked));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAttemptState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode)&&(identical(other.assignment, assignment) || other.assignment == assignment)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&const DeepCollectionEquality().equals(other.selectedOptionIds, selectedOptionIds)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.result, result) || other.result == result)&&(identical(other.blocked, blocked) || other.blocked == blocked)&&(identical(other.unassigned, unassigned) || other.unassigned == unassigned));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,error,errorCode,assignment,attempt,const DeepCollectionEquality().hash(selectedOptionIds),submitting,submitErrorCode,submitError,result,blocked);
+int get hashCode => Object.hash(runtimeType,status,error,errorCode,assignment,attempt,const DeepCollectionEquality().hash(selectedOptionIds),submitting,submitErrorCode,submitError,result,blocked,unassigned);
 
 @override
 String toString() {
-  return 'TestAttemptState(status: $status, error: $error, errorCode: $errorCode, assignment: $assignment, attempt: $attempt, selectedOptionIds: $selectedOptionIds, submitting: $submitting, submitErrorCode: $submitErrorCode, submitError: $submitError, result: $result, blocked: $blocked)';
+  return 'TestAttemptState(status: $status, error: $error, errorCode: $errorCode, assignment: $assignment, attempt: $attempt, selectedOptionIds: $selectedOptionIds, submitting: $submitting, submitErrorCode: $submitErrorCode, submitError: $submitError, result: $result, blocked: $blocked, unassigned: $unassigned)';
 }
 
 
@@ -56,7 +60,7 @@ abstract mixin class $TestAttemptStateCopyWith<$Res>  {
   factory $TestAttemptStateCopyWith(TestAttemptState value, $Res Function(TestAttemptState) _then) = _$TestAttemptStateCopyWithImpl;
 @useResult
 $Res call({
- FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttemptFill? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked
+ FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttemptFill? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked, bool unassigned
 });
 
 
@@ -73,7 +77,7 @@ class _$TestAttemptStateCopyWithImpl<$Res>
 
 /// Create a copy of TestAttemptState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? error = freezed,Object? errorCode = freezed,Object? assignment = freezed,Object? attempt = freezed,Object? selectedOptionIds = null,Object? submitting = null,Object? submitErrorCode = freezed,Object? submitError = freezed,Object? result = freezed,Object? blocked = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? error = freezed,Object? errorCode = freezed,Object? assignment = freezed,Object? attempt = freezed,Object? selectedOptionIds = null,Object? submitting = null,Object? submitErrorCode = freezed,Object? submitError = freezed,Object? result = freezed,Object? blocked = null,Object? unassigned = null,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -86,6 +90,7 @@ as bool,submitErrorCode: freezed == submitErrorCode ? _self.submitErrorCode : su
 as String?,submitError: freezed == submitError ? _self.submitError : submitError // ignore: cast_nullable_to_non_nullable
 as String?,result: freezed == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
 as TestResult?,blocked: null == blocked ? _self.blocked : blocked // ignore: cast_nullable_to_non_nullable
+as bool,unassigned: null == unassigned ? _self.unassigned : unassigned // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -207,10 +212,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked,  bool unassigned)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TestAttemptState() when $default != null:
-return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked);case _:
+return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked,_that.unassigned);case _:
   return orElse();
 
 }
@@ -228,10 +233,10 @@ return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked,  bool unassigned)  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptState():
-return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked);case _:
+return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked,_that.unassigned);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -248,10 +253,10 @@ return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FeatureStatus status,  String? error,  String? errorCode,  TestAssignment? assignment,  TestAttemptFill? attempt,  Map<String, Set<String>> selectedOptionIds,  bool submitting,  String? submitErrorCode,  String? submitError,  TestResult? result,  bool blocked,  bool unassigned)?  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptState() when $default != null:
-return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked);case _:
+return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.attempt,_that.selectedOptionIds,_that.submitting,_that.submitErrorCode,_that.submitError,_that.result,_that.blocked,_that.unassigned);case _:
   return null;
 
 }
@@ -263,7 +268,7 @@ return $default(_that.status,_that.error,_that.errorCode,_that.assignment,_that.
 
 
 class _TestAttemptState extends TestAttemptState {
-  const _TestAttemptState({this.status = FeatureStatus.initial, this.error, this.errorCode, this.assignment, this.attempt, final  Map<String, Set<String>> selectedOptionIds = const <String, Set<String>>{}, this.submitting = false, this.submitErrorCode, this.submitError, this.result, this.blocked = false}): _selectedOptionIds = selectedOptionIds,super._();
+  const _TestAttemptState({this.status = FeatureStatus.initial, this.error, this.errorCode, this.assignment, this.attempt, final  Map<String, Set<String>> selectedOptionIds = const <String, Set<String>>{}, this.submitting = false, this.submitErrorCode, this.submitError, this.result, this.blocked = false, this.unassigned = false}): _selectedOptionIds = selectedOptionIds,super._();
   
 
 @override@JsonKey() final  FeatureStatus status;
@@ -296,6 +301,11 @@ class _TestAttemptState extends TestAttemptState {
 /// [assignment] (денормализованные `bestPercent`/`passed`), без
 /// дополнительного похода за попыткой.
 @override@JsonKey() final  bool blocked;
+/// `true` — назначение снято админом или тест удалён навсегда
+/// (см. [TestUnassignedReason]). В отличие от [blocked] это не
+/// техническая ошибка и не «попробуйте позже» — назначения больше не
+/// существует, повторный запрос ничего не изменит.
+@override@JsonKey() final  bool unassigned;
 
 /// Create a copy of TestAttemptState
 /// with the given fields replaced by the non-null parameter values.
@@ -307,16 +317,16 @@ _$TestAttemptStateCopyWith<_TestAttemptState> get copyWith => __$TestAttemptStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAttemptState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode)&&(identical(other.assignment, assignment) || other.assignment == assignment)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&const DeepCollectionEquality().equals(other._selectedOptionIds, _selectedOptionIds)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.result, result) || other.result == result)&&(identical(other.blocked, blocked) || other.blocked == blocked));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAttemptState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorCode, errorCode) || other.errorCode == errorCode)&&(identical(other.assignment, assignment) || other.assignment == assignment)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&const DeepCollectionEquality().equals(other._selectedOptionIds, _selectedOptionIds)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.result, result) || other.result == result)&&(identical(other.blocked, blocked) || other.blocked == blocked)&&(identical(other.unassigned, unassigned) || other.unassigned == unassigned));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,error,errorCode,assignment,attempt,const DeepCollectionEquality().hash(_selectedOptionIds),submitting,submitErrorCode,submitError,result,blocked);
+int get hashCode => Object.hash(runtimeType,status,error,errorCode,assignment,attempt,const DeepCollectionEquality().hash(_selectedOptionIds),submitting,submitErrorCode,submitError,result,blocked,unassigned);
 
 @override
 String toString() {
-  return 'TestAttemptState(status: $status, error: $error, errorCode: $errorCode, assignment: $assignment, attempt: $attempt, selectedOptionIds: $selectedOptionIds, submitting: $submitting, submitErrorCode: $submitErrorCode, submitError: $submitError, result: $result, blocked: $blocked)';
+  return 'TestAttemptState(status: $status, error: $error, errorCode: $errorCode, assignment: $assignment, attempt: $attempt, selectedOptionIds: $selectedOptionIds, submitting: $submitting, submitErrorCode: $submitErrorCode, submitError: $submitError, result: $result, blocked: $blocked, unassigned: $unassigned)';
 }
 
 
@@ -327,7 +337,7 @@ abstract mixin class _$TestAttemptStateCopyWith<$Res> implements $TestAttemptSta
   factory _$TestAttemptStateCopyWith(_TestAttemptState value, $Res Function(_TestAttemptState) _then) = __$TestAttemptStateCopyWithImpl;
 @override @useResult
 $Res call({
- FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttemptFill? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked
+ FeatureStatus status, String? error, String? errorCode, TestAssignment? assignment, TestAttemptFill? attempt, Map<String, Set<String>> selectedOptionIds, bool submitting, String? submitErrorCode, String? submitError, TestResult? result, bool blocked, bool unassigned
 });
 
 
@@ -344,7 +354,7 @@ class __$TestAttemptStateCopyWithImpl<$Res>
 
 /// Create a copy of TestAttemptState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? error = freezed,Object? errorCode = freezed,Object? assignment = freezed,Object? attempt = freezed,Object? selectedOptionIds = null,Object? submitting = null,Object? submitErrorCode = freezed,Object? submitError = freezed,Object? result = freezed,Object? blocked = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? error = freezed,Object? errorCode = freezed,Object? assignment = freezed,Object? attempt = freezed,Object? selectedOptionIds = null,Object? submitting = null,Object? submitErrorCode = freezed,Object? submitError = freezed,Object? result = freezed,Object? blocked = null,Object? unassigned = null,}) {
   return _then(_TestAttemptState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -357,6 +367,7 @@ as bool,submitErrorCode: freezed == submitErrorCode ? _self.submitErrorCode : su
 as String?,submitError: freezed == submitError ? _self.submitError : submitError // ignore: cast_nullable_to_non_nullable
 as String?,result: freezed == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
 as TestResult?,blocked: null == blocked ? _self.blocked : blocked // ignore: cast_nullable_to_non_nullable
+as bool,unassigned: null == unassigned ? _self.unassigned : unassigned // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
