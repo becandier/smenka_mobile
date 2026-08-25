@@ -80,6 +80,7 @@ String localizedErrorMessage(
     'TEST_ATTEMPT_IN_PROGRESS' => l10n.errorTestAttemptInProgress,
     'TEST_TEMPLATE_ARCHIVED' => l10n.errorTestTemplateArchived,
     'TEST_ASSIGNMENT_NOT_FOUND' => l10n.errorTestAssignmentNotFound,
+    'TEST_TEMPLATE_DELETED' => l10n.errorTestTemplateDeleted,
     // Гео-отказы здесь НЕ маппятся: они клиентские (geo_service.dart) и никогда
     // не приходят как error.code с бэка. Отказы геолокации доводятся до UI
     // типизированно — StartShiftResult (shift_tracker → idle_shift_content) и

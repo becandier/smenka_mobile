@@ -767,11 +767,16 @@
         }
     },
     "testAttemptRetry": "Пройти ещё раз",
+    "testAttemptUnassignedTitle": "Тест больше не назначен",
+    "testAttemptUnassignedMessage": "Администратор снял этот тест. Результаты по нему не сохраняются.",
+    "testAttemptDeletedTitle": "Тест удалён",
+    "testAttemptBackToList": "К списку тестов",
 
     "errorTestAttemptsExhausted": "Попытки для этого теста исчерпаны",
     "errorTestAlreadyPassed": "Тест уже сдан",
     "errorTestAttemptAlreadySubmitted": "Эта попытка уже сдана",
     "errorTestAttemptInProgress": "У вас уже есть незавершённая попытка",
     "errorTestTemplateArchived": "Тест больше не доступен",
-    "errorTestAssignmentNotFound": "Назначение теста не найдено"
+    "errorTestAssignmentNotFound": "Назначение теста не найдено",
+    "errorTestTemplateDeleted": "Тест удалён"
 }

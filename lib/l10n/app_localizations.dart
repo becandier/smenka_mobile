@@ -2914,6 +2914,30 @@ abstract class AppLocalizations {
   /// **'Пройти ещё раз'**
   String get testAttemptRetry;
 
+  /// No description provided for @testAttemptUnassignedTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тест больше не назначен'**
+  String get testAttemptUnassignedTitle;
+
+  /// No description provided for @testAttemptUnassignedMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Администратор снял этот тест. Результаты по нему не сохраняются.'**
+  String get testAttemptUnassignedMessage;
+
+  /// No description provided for @testAttemptDeletedTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тест удалён'**
+  String get testAttemptDeletedTitle;
+
+  /// No description provided for @testAttemptBackToList.
+  ///
+  /// In ru, this message translates to:
+  /// **'К списку тестов'**
+  String get testAttemptBackToList;
+
   /// No description provided for @errorTestAttemptsExhausted.
   ///
   /// In ru, this message translates to:
@@ -2949,6 +2973,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Назначение теста не найдено'**
   String get errorTestAssignmentNotFound;
+
+  /// No description provided for @errorTestTemplateDeleted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тест удалён'**
+  String get errorTestTemplateDeleted;
 }
 
 class _AppLocalizationsDelegate

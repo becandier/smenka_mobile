@@ -12,6 +12,7 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 part '../widgets/_blocked_view.dart';
 part '../widgets/_filling_view.dart';
 part '../widgets/_result_view.dart';
+part '../widgets/_unassigned_view.dart';
 
 @RoutePage()
 class TestAttemptPage extends StatelessWidget {
@@ -54,6 +55,9 @@ class _TestAttemptView extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context, TestAttemptState state) {
+    if (state.unassigned) {
+      return _UnassignedView(state: state);
+    }
     if (state.isFatalError) {
       return SectionError(
         error: localizedErrorMessage(
