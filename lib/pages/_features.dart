@@ -3,6 +3,7 @@ export 'checklist_fill/_checklist_fill.dart';
 export 'date_range_picker/_date_range_picker.dart';
 export 'debug/_debug.dart';
 export 'employee_picker/_employee_picker.dart';
+export 'geo_diagnostics/_geo_diagnostics.dart';
 export 'home/_home.dart';
 export 'invite/_invite.dart';
 export 'knowledge_base/_knowledge_base.dart';

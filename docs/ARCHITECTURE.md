@@ -291,6 +291,7 @@ lib/
 | `KnowledgePageCubit` | Готов | Деталь страницы базы знаний (read-only); `KNOWLEDGE_NODE_NOT_FOUND` → error по коду |
 | `NotificationsCubit` | Готов | Глобальный кубит (`lib/shared/notifications/`, по образцу `AuthCubit`) — счётчик непрочитанных (грузится в конструкторе, нужен в аппбаре всех 4 табов) + лента (`PaginatedSectionData`, лениво при открытии `NotificationsPage`); `markRead`/`markAllRead` синхронно обновляют и ленту, и бейдж (notifications) |
 | `MyTestsCubit` | Готов | «Мои тесты»: пагинированный список назначений + фильтр по организации (`OrganizationRepository.watchMyOrganizations`, скрыт при ≤1 организации) (employee_tests) |
+| `GeoDiagnosticsCubit` | Готов | Страница «Проверка геолокации»: состояние разрешений (`GeoService.diagnose`) + ручной тест `getCurrentPosition`; зависит только от `GeoService` (geo_troubleshooting) |
 | `TestAttemptCubit` | Готов | Прохождение одного назначения: резолв при входе (продолжить открытую попытку / показать блок «уже сдан»-«лимит исчерпан» / стартовать новую), локальный выбор ответов (`selectSingle`/`toggleMultiple`), `submit`, «Пройти ещё раз»; независим от `MyTestsCubit`/`NotificationsCubit` — только `TestRepository` (employee_tests) |
 
 ---
@@ -310,6 +311,7 @@ lib/
 | `NotificationsRoute` | `/notifications` | Центр уведомлений (root, push из колокольчика аппбара любого таба) (notifications) |
 | `MyTestsRoute` | `/my-tests` | «Мои тесты» — список назначений по всем организациям (root; `initialOrganizationId?` — предвыбор фильтра из хаба организации) (employee_tests) |
 | `TestAttemptRoute` | `/test-attempt/:assignmentId` | Прохождение назначения (root; открывается и из «Мои тесты», и из уведомления `test_assigned`) (employee_tests) |
+| `GeoDiagnosticsRoute` | `/geo-diagnostics` | «Проверка геолокации» (root; из диалога гео-ошибки на старте смены и из настроек профиля) (geo_troubleshooting) |
 | `ShiftTrackerRoute` | `/shift` | Трекер смены (Tab 1, initial) |
 | `ShiftChecklistsRoute` | `<tab>/shifts/:shiftId/checklists` | Чек-листы смены (push; в табах Смена/История) |
 | `ChecklistFillRoute` | `<tab>/shifts/:shiftId/checklists/:instanceId` | Заполнение чек-листа (push); `organizationId?` для загрузки фото, `readOnly` для чужой/завершённой смены |
@@ -354,7 +356,7 @@ lib/
 - **Remote Config: defaults + non-blocking fetch (прод-критично для web)**: `lib/app/config/remote_config/remote_config_firebase.dart` задаёт `setDefaults` (`remoteConfigDefaults`: `ENDPOINT_PROD=https://api.smenka.pro` — хост, dio добавляет `/api/v1`; `ENDPOINT_DEV`, `PRIVACY_POLICY`, `MIN_VERSION=0.0.0`, `TECH_WORK=false`) **первым делом**, до `fetchAndActivate`. На web нет кэша RC — без дефолтов пустой `endPoint` = мёртвое приложение. `init()` ловит исключения **широко** (на web `firebase_remote_config_web` не оборачивает реджекты в `FirebaseException`), а `RemoteConfigInitializer` оборачивает `init()` в `timeout(8s)` + `.catchError` — старт не блокируется и регистрация сервиса гарантирована. Бэкстоп: `MainAppCubit` бросает `AppConfigException` при пустом `endPoint` → понятный экран ошибки (`error_app.dart`), не белый.
 - **Remote Config cache cleaner**: conditional import `dart:io` — `lib/app/config/remote_config/remote_config_cache_cleaner_io.dart` (реальная очистка кэша) и `..._stub.dart` (no-op для web, где `dart:io` недоступен).
 - **Crashlytics не инициализируется на web**: `MainAppCubit._init` пропускает `CrashlyticsInitializer()` под `if (!kIsWeb)`; в `TalkerInitializer` поле `crashlytics` nullable, запись ошибок — `crashlytics?.recordError/recordFlutterFatalError`.
-- **Geolocator на web — работает (HTTPS), ошибки безопасны**: `lib/core/services/geo_service.dart` — `getCurrentPosition` целиком обёрнут в try/catch; отказ/недоступность → структурный результат (`GeoDenied`/`GeoServiceDisabled`) или `GeoError(code: GEO_UNAVAILABLE)`. Код маппится в `error_localization.dart` → локализованный текст вместо сырого исключения; приложение не падает. `openAppSettings`/`openLocationSettings` — no-op на web. Геопроверка зон (`org.geoCheckEnabled`) на web работает как на нативе.
+- **Geolocator на web — работает (HTTPS), ошибки безопасны**: `lib/core/services/geo_service.dart` — `getCurrentPosition` целиком обёрнут в try/catch; отказ/недоступность → структурный `sealed`-результат `GeoFailure` (`GeoServiceDisabled` / `GeoPermissionDenied` / `GeoPermissionDeniedForever` / `GeoUnavailable` / `GeoInsecureContext` / `GeoUnsupported`) с машинным `code`; UI выбирает текст по типу отказа (`GeoFailureDialog`), а не по сообщению платформы, и приложение не падает. `openAppSettings`/`openLocationSettings` — no-op на web (кнопок настроек web-ветка не рисует). Уровень блокировки на web различает пост-диагностика (`geo_troubleshooting`, раздел ниже). Геопроверка зон (`org.geoCheckEnabled`) на web работает как на нативе.
 - **Upgrader замьючен на web**: `lib/app/main_app/view/success_app.dart` — проверка версии в сторе включается только когда `!kIsWeb`.
 - **Firebase**: `lib/firebase_options.dart` содержит web-конфиг (`FirebaseOptions web`); файл закоммичен (для web эти значения не секрет — уезжают в бандл; защита — Auth + Security Rules; нужен CI-чекауту).
 - **CSP-meta в `web/index.html`**: ограничивает источники (self + `api.smenka.pro` + домены Firebase/Google + объектное хранилище). `'wasm-unsafe-eval'` для CanvasKit; eval/`new Function` не нужны, т.к. web собирается с `--csp` (см. `Dockerfile`/`Makefile`). In-app картинки на CanvasKit идут через `connect-src` (XHR), не `img-src`.
@@ -619,6 +621,32 @@ lib/
 - `core/utils/shift_lookup.dart` и `test/core/utils/shift_lookup_test.dart` удалены полностью.
 - **Тесты**: `test/data/infrastructure/shift/shift_repository_impl_test.dart` — `getShiftById` мапит DTO в успех и пробрасывает `SHIFT_NOT_FOUND` в `Task.failure`.
 - **Не мобильное**: любые действия сотрудника над сменой (правка/восстановление) — их нет по решению заказчика.
+
+---
+
+## Диагностика геолокации (geo_troubleshooting)
+
+Фича `../docs/tasks/geo_troubleshooting/mobile.md`. Проблема прода: на web разрешение геолокации **двухуровневое** — уровень сайта (🔒 в адресной строке) и уровень ОС (macOS «Службы геолокации», Windows «Расположение» — для самого браузера). Если браузеру запрещено системой, сайт получает тот же `PERMISSION_DENIED`, и старый диалог, говоривший только про настройки сайта, заводил в тупик «там уже разрешено → Повторить → та же ошибка».
+
+**Пост-диагностика в `GeoService`** (`lib/core/services/geo_service.dart`):
+- `checkPermissionState()` → `GeoPermissionState` (`granted` / `blocked` / `notRequested` / `unknown`). Под капотом — `GeolocatorPlatform.checkPermission()`; на web `geolocator_web` читает `navigator.permissions` и маппит `granted→whileInUse`, `prompt→denied`, `denied→deniedForever`, поэтому обратный маппинг делается здесь один раз и с комментарием. Исключение (нет Permissions API — старый Safari; `ArgumentError` на незнакомом состоянии) → `unknown`, а не падение.
+- `diagnoseBlockLevel()` → `GeoBlockLevel`: разрешение есть, а позиции нет → `system` (запрещает ОС/браузер глобально); разрешения нет → `site`; состояние неизвестно → `unknown`.
+- `diagnose()` → `GeoDiagnostics(permission, serviceEnabled?)`; `serviceEnabled == null` на web (у браузера нет своего тумблера).
+- `GeoSuccess.accuracyMeters` (additive, nullable) — фактическая точность для экрана самопроверки.
+
+> ⚠️ Это **только пост-диагностика**: флоу получения позиции по состоянию разрешения по-прежнему НЕ строится (см. док-стринг `GeoService` — на web `checkPermission`/`requestPermission` лгут до фактического запроса).
+
+**`GeoFailureDialog`** (`lib/widgets/geo/geo_permission_dialogs.dart`) — один диалог на все ветки `GeoFailure` вместо прежних `GeoServiceDisabledDialog`/`GeoDeniedForeverDialog` (они удалены). Текст выбирается по типу отказа + `GeoBlockLevel` (для web-`deniedForever`: «настройки сайта» / «запрещает система» / универсальный текст про оба уровня). Диалог ничего не делает сам — возвращает `GeoFailureAction` (`retry` / `howToFix` / `openAppSettings` / `openLocationSettings`), навигацию выполняет экран. Кнопка системных настроек рисуется только на native (на web она была бы no-op), «Повторить» — везде кроме `GeoUnsupported`.
+
+**`ShiftTrackerCubit`**: гео-отказ кладёт в состояние сам объект `lastGeoFailure` (а не только ветку `StartShiftResult`) и `geoBlockLevel`; пост-диагностика дёргается **только** для `GeoPermissionDeniedForever` (у остальных отказов состояние разрешения ничего не объясняет). Новая попытка старта сбрасывает оба поля. Системные настройки открываются через `openGeoAppSettings`/`openGeoLocationSettings` кубита — второй экземпляр `GeoService` на экране не создаётся.
+
+**Страница «Проверка геолокации»** (`lib/pages/geo_diagnostics/`, `GeoDiagnosticsRoute` — `/geo-diagnostics`, root-уровня): блок «Статус» (разрешение + службы на native), «Тест» (гоняет тот же `getCurrentPosition`, показывает координаты/точность/предупреждение о низкой точности либо классифицированную ошибку) и «Что делать» — платформенные инструкции. `GeoDiagnosticsCubit` зависит только от `GeoService`; после теста статус перечитывается (браузерный prompt мог его изменить), повторный тап во время прогона игнорируется.
+
+Платформа инструкций (`GeoInstructionsTarget`) резолвится из `kIsWeb` + `defaultTargetPlatform`: на web движок Flutter вычисляет платформу по данным браузера — это и есть требуемое ТЗ «по User-Agent», без собственного парсера и js-interop-зависимости. Варианты: web macOS / Windows / Android / iOS(Safari) / прочее + native (там вместо текста — кнопки «Открыть настройки приложения»/«Открыть настройки геолокации»).
+
+**Точки входа**: кнопка «Как исправить» в `GeoFailureDialog` на старте смены и пункт «Проверка геолокации» в настройках профиля (`_SettingsSection`).
+
+**Тесты**: `test/core/services/geo_service_test.dart` (маппинг состояний, уровень блокировки, `diagnose` web vs native, точность), `test/widgets/geo/geo_permission_dialogs_test.dart` (тексты и наборы действий по веткам/уровням/платформам), `test/pages/geo_diagnostics/geo_diagnostics_cubit_test.dart` (резолв платформы, статус, тест, защита от двойного прогона), `test/pages/shift_tracker/shift_tracker_cubit_test.dart` (сохранение отказа, пост-диагностика только для `deniedForever`, сброс на новой попытке).
 
 ---
 

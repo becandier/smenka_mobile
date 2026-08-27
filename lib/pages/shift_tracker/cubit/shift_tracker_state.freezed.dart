@@ -22,7 +22,16 @@ mixin _$ShiftTrackerState {
  FeatureStatus get actionStatus; String? get actionError;/// Машинный `error.code` последнего действия (для маппинга сетевых ошибок)
  String? get actionErrorCode;/// Нет сетевого подключения (по данным connectivity_plus)
  bool get isOffline;/// Предупреждение о низкой точности GPS
- bool get showLowAccuracyWarning;/// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
+ bool get showLowAccuracyWarning;/// Отказ геолокации на последней попытке старта — сам объект таксономии
+/// `GeoService`, а не только ветка [StartShiftResult]. Нужен UI-слою,
+/// чтобы построить диалог по типу отказа и (в `shift_geo_photo_fallback`)
+/// передать на бэк фактический `GeoFailure.code`, а не выведенную из
+/// enum-ветки строку. `null` — гео-отказа на последней попытке не было.
+ GeoFailure? get lastGeoFailure;/// Уровень блокировки для [lastGeoFailure] — результат пост-диагностики
+/// (`geo_troubleshooting`). Осмыслен только для
+/// `GeoPermissionDeniedForever` на web; в остальных случаях
+/// [GeoBlockLevel.unknown].
+ GeoBlockLevel get geoBlockLevel;/// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
 /// активной/приостановленной смены больше нет). UI показывает тост и
 /// сбрасывает флаг.
  bool get shiftAutoFinished;/// Выбранная сотрудником рабочая точка для старта смены (когда гео
@@ -49,16 +58,16 @@ $ShiftTrackerStateCopyWith<ShiftTrackerState> get copyWith => _$ShiftTrackerStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.lastGeoFailure, lastGeoFailure) || other.lastGeoFailure == lastGeoFailure)&&(identical(other.geoBlockLevel, geoBlockLevel) || other.geoBlockLevel == geoBlockLevel)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow);
+int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,lastGeoFailure,geoBlockLevel,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow);
 
 @override
 String toString() {
-  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow)';
+  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, lastGeoFailure: $lastGeoFailure, geoBlockLevel: $geoBlockLevel, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow)';
 }
 
 
@@ -69,7 +78,7 @@ abstract mixin class $ShiftTrackerStateCopyWith<$Res>  {
   factory $ShiftTrackerStateCopyWith(ShiftTrackerState value, $Res Function(ShiftTrackerState) _then) = _$ShiftTrackerStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow
+ SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, GeoFailure? lastGeoFailure, GeoBlockLevel geoBlockLevel, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow
 });
 
 
@@ -86,7 +95,7 @@ class _$ShiftTrackerStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? lastGeoFailure = freezed,Object? geoBlockLevel = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,}) {
   return _then(_self.copyWith(
 activeShift: null == activeShift ? _self.activeShift : activeShift // ignore: cast_nullable_to_non_nullable
 as SectionData<Shift>,organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
@@ -97,7 +106,9 @@ as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actio
 as String?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode : actionErrorCode // ignore: cast_nullable_to_non_nullable
 as String?,isOffline: null == isOffline ? _self.isOffline : isOffline // ignore: cast_nullable_to_non_nullable
 as bool,showLowAccuracyWarning: null == showLowAccuracyWarning ? _self.showLowAccuracyWarning : showLowAccuracyWarning // ignore: cast_nullable_to_non_nullable
-as bool,shiftAutoFinished: null == shiftAutoFinished ? _self.shiftAutoFinished : shiftAutoFinished // ignore: cast_nullable_to_non_nullable
+as bool,lastGeoFailure: freezed == lastGeoFailure ? _self.lastGeoFailure : lastGeoFailure // ignore: cast_nullable_to_non_nullable
+as GeoFailure?,geoBlockLevel: null == geoBlockLevel ? _self.geoBlockLevel : geoBlockLevel // ignore: cast_nullable_to_non_nullable
+as GeoBlockLevel,shiftAutoFinished: null == shiftAutoFinished ? _self.shiftAutoFinished : shiftAutoFinished // ignore: cast_nullable_to_non_nullable
 as bool,selectedWorkLocation: freezed == selectedWorkLocation ? _self.selectedWorkLocation : selectedWorkLocation // ignore: cast_nullable_to_non_nullable
 as WorkLocation?,schedules: null == schedules ? _self.schedules : schedules // ignore: cast_nullable_to_non_nullable
 as SectionData<MySchedules>,selectedWorkScheduleId: freezed == selectedWorkScheduleId ? _self.selectedWorkScheduleId : selectedWorkScheduleId // ignore: cast_nullable_to_non_nullable
@@ -226,10 +237,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState() when $default != null:
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
   return orElse();
 
 }
@@ -247,10 +258,10 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState():
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -267,10 +278,10 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState() when $default != null:
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
   return null;
 
 }
@@ -282,7 +293,7 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 
 
 class _ShiftTrackerState extends ShiftTrackerState {
-  const _ShiftTrackerState({this.activeShift = const SectionData<Shift>(), this.organizations = const SectionData<List<Organization>>(), this.selectedOrganizationId, this.elapsedSeconds = 0, this.actionStatus = FeatureStatus.initial, this.actionError, this.actionErrorCode, this.isOffline = false, this.showLowAccuracyWarning = false, this.shiftAutoFinished = false, this.selectedWorkLocation, this.schedules = const SectionData<MySchedules>(), this.selectedWorkScheduleId, this.idleNow}): super._();
+  const _ShiftTrackerState({this.activeShift = const SectionData<Shift>(), this.organizations = const SectionData<List<Organization>>(), this.selectedOrganizationId, this.elapsedSeconds = 0, this.actionStatus = FeatureStatus.initial, this.actionError, this.actionErrorCode, this.isOffline = false, this.showLowAccuracyWarning = false, this.lastGeoFailure, this.geoBlockLevel = GeoBlockLevel.unknown, this.shiftAutoFinished = false, this.selectedWorkLocation, this.schedules = const SectionData<MySchedules>(), this.selectedWorkScheduleId, this.idleNow}): super._();
   
 
 /// Активная смена (SectionData — loading/error на init, success при наличии)
@@ -302,6 +313,17 @@ class _ShiftTrackerState extends ShiftTrackerState {
 @override@JsonKey() final  bool isOffline;
 /// Предупреждение о низкой точности GPS
 @override@JsonKey() final  bool showLowAccuracyWarning;
+/// Отказ геолокации на последней попытке старта — сам объект таксономии
+/// `GeoService`, а не только ветка [StartShiftResult]. Нужен UI-слою,
+/// чтобы построить диалог по типу отказа и (в `shift_geo_photo_fallback`)
+/// передать на бэк фактический `GeoFailure.code`, а не выведенную из
+/// enum-ветки строку. `null` — гео-отказа на последней попытке не было.
+@override final  GeoFailure? lastGeoFailure;
+/// Уровень блокировки для [lastGeoFailure] — результат пост-диагностики
+/// (`geo_troubleshooting`). Осмыслен только для
+/// `GeoPermissionDeniedForever` на web; в остальных случаях
+/// [GeoBlockLevel.unknown].
+@override@JsonKey() final  GeoBlockLevel geoBlockLevel;
 /// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
 /// активной/приостановленной смены больше нет). UI показывает тост и
 /// сбрасывает флаг.
@@ -334,16 +356,16 @@ _$ShiftTrackerStateCopyWith<_ShiftTrackerState> get copyWith => __$ShiftTrackerS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.lastGeoFailure, lastGeoFailure) || other.lastGeoFailure == lastGeoFailure)&&(identical(other.geoBlockLevel, geoBlockLevel) || other.geoBlockLevel == geoBlockLevel)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow);
+int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,lastGeoFailure,geoBlockLevel,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow);
 
 @override
 String toString() {
-  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow)';
+  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, lastGeoFailure: $lastGeoFailure, geoBlockLevel: $geoBlockLevel, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow)';
 }
 
 
@@ -354,7 +376,7 @@ abstract mixin class _$ShiftTrackerStateCopyWith<$Res> implements $ShiftTrackerS
   factory _$ShiftTrackerStateCopyWith(_ShiftTrackerState value, $Res Function(_ShiftTrackerState) _then) = __$ShiftTrackerStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow
+ SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, GeoFailure? lastGeoFailure, GeoBlockLevel geoBlockLevel, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow
 });
 
 
@@ -371,7 +393,7 @@ class __$ShiftTrackerStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? lastGeoFailure = freezed,Object? geoBlockLevel = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,}) {
   return _then(_ShiftTrackerState(
 activeShift: null == activeShift ? _self.activeShift : activeShift // ignore: cast_nullable_to_non_nullable
 as SectionData<Shift>,organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
@@ -382,7 +404,9 @@ as FeatureStatus,actionError: freezed == actionError ? _self.actionError : actio
 as String?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode : actionErrorCode // ignore: cast_nullable_to_non_nullable
 as String?,isOffline: null == isOffline ? _self.isOffline : isOffline // ignore: cast_nullable_to_non_nullable
 as bool,showLowAccuracyWarning: null == showLowAccuracyWarning ? _self.showLowAccuracyWarning : showLowAccuracyWarning // ignore: cast_nullable_to_non_nullable
-as bool,shiftAutoFinished: null == shiftAutoFinished ? _self.shiftAutoFinished : shiftAutoFinished // ignore: cast_nullable_to_non_nullable
+as bool,lastGeoFailure: freezed == lastGeoFailure ? _self.lastGeoFailure : lastGeoFailure // ignore: cast_nullable_to_non_nullable
+as GeoFailure?,geoBlockLevel: null == geoBlockLevel ? _self.geoBlockLevel : geoBlockLevel // ignore: cast_nullable_to_non_nullable
+as GeoBlockLevel,shiftAutoFinished: null == shiftAutoFinished ? _self.shiftAutoFinished : shiftAutoFinished // ignore: cast_nullable_to_non_nullable
 as bool,selectedWorkLocation: freezed == selectedWorkLocation ? _self.selectedWorkLocation : selectedWorkLocation // ignore: cast_nullable_to_non_nullable
 as WorkLocation?,schedules: null == schedules ? _self.schedules : schedules // ignore: cast_nullable_to_non_nullable
 as SectionData<MySchedules>,selectedWorkScheduleId: freezed == selectedWorkScheduleId ? _self.selectedWorkScheduleId : selectedWorkScheduleId // ignore: cast_nullable_to_non_nullable

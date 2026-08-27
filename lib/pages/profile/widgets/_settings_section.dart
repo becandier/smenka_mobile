@@ -43,6 +43,41 @@ class _SettingsSection extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 12),
+          // Самопроверка геолокации (geo_troubleshooting): вход не только из
+          // ошибки старта смены — сотрудник может проверить доступ заранее.
+          Material(
+            color: appColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () =>
+                  context.router.root.push(const GeoDiagnosticsRoute()),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.my_location_outlined,
+                      size: 20,
+                      color: appColors.secondary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.geoDiagnosticsTitle,
+                        style: textTheme.bodyMedium,
+                      ),
+                    ),
+                    Icon(Icons.chevron_right, size: 20, color: appColors.muted),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

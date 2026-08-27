@@ -30,11 +30,19 @@ class GeoSuccess extends GeoResult {
     required this.latitude,
     required this.longitude,
     required this.lowAccuracy,
+    this.accuracyMeters,
   });
 
   final double latitude;
   final double longitude;
   final bool lowAccuracy;
+
+  /// Радиус погрешности в метрах, как его отдала платформа. `null` — значение
+  /// недоступно (кадр собран не из [Position], напр. в тестах). Используется
+  /// страницей «Проверка геолокации» (`geo_troubleshooting`) для показа
+  /// фактической точности; на старте смены роли не играет — там достаточно
+  /// [lowAccuracy].
+  final double? accuracyMeters;
 }
 
 /// База всех неуспешных исходов. Несёт машинный [code] для локализации и
@@ -106,6 +114,62 @@ class GeoUnsupported extends GeoFailure {
 }
 
 // =============================================================================
+// Пост-диагностика (geo_troubleshooting)
+// =============================================================================
+
+/// Состояние разрешения геолокации «на своём уровне»: на web — уровень сайта
+/// (Permissions API), на native — разрешение приложения.
+///
+/// ⚠️ Только ПОСТ-диагностика: на web состояние читается через
+/// `navigator.permissions` и НЕ годится для управления флоу до запроса позиции
+/// (см. док-стринг [GeoService]). Используется, чтобы объяснить пользователю
+/// уже полученную ошибку.
+enum GeoPermissionState {
+  /// Доступ выдан (web: состояние сайта `granted`; native: whileInUse/always).
+  granted,
+
+  /// Доступ заблокирован (web: состояние сайта `denied`; native:
+  /// `deniedForever`) — вернуть его можно только через настройки.
+  blocked,
+
+  /// Доступ ещё не выдан, но и не заблокирован навсегда: браузер пока не
+  /// спрашивал (`prompt`) либо native-разрешение можно запросить снова.
+  notRequested,
+
+  /// Определить не удалось: Permissions API недоступен (старый Safari),
+  /// платформа вернула `unableToDetermine` или бросила исключение.
+  unknown,
+}
+
+/// Уровень, на котором заблокирована геолокация — ключ к тексту диалога.
+enum GeoBlockLevel {
+  /// Блок на «своём» уровне: настройки сайта в браузере (web) или разрешение
+  /// приложения (native). Чинится там же, где обычно.
+  site,
+
+  /// Сайту доступ разрешён, а позиция всё равно не приходит → запрещено выше:
+  /// ОС не даёт геолокацию самому браузеру (macOS «Службы геолокации»,
+  /// Windows «Расположение») либо геолокация выключена глобально в браузере.
+  system,
+
+  /// Уровень определить не удалось (Permissions API недоступен) — показываем
+  /// универсальный текст, охватывающий оба уровня.
+  unknown,
+}
+
+/// Снимок состояния геолокации для страницы «Проверка геолокации».
+class GeoDiagnostics {
+  const GeoDiagnostics({required this.permission, this.serviceEnabled});
+
+  /// Разрешение сайта (web) / приложения (native).
+  final GeoPermissionState permission;
+
+  /// Системный переключатель служб геолокации. `null` — не применимо (web: у
+  /// браузера нет своего тумблера) либо проверить не удалось.
+  final bool? serviceEnabled;
+}
+
+// =============================================================================
 // Сервис
 // =============================================================================
 
@@ -159,6 +223,11 @@ class GeoService {
 
   /// Точность (в метрах) хуже этого порога считается низкой.
   static const _lowAccuracyThreshold = 100.0;
+
+  /// Платформа исполнения: `true` — web. Нужна UI-слою, чтобы выбрать
+  /// платформо-корректный текст/набор действий, не дублируя `kIsWeb` и не
+  /// теряя подменённое в тестах значение.
+  bool get isWeb => _isWeb;
 
   /// Получить текущую позицию. Никогда не бросает — всегда отдаёт [GeoResult].
   Future<GeoResult> getCurrentPosition() async {
@@ -343,6 +412,69 @@ class GeoService {
       latitude: position.latitude,
       longitude: position.longitude,
       lowAccuracy: lowAccuracy,
+      accuracyMeters: position.accuracy,
+    );
+  }
+
+  // --- Пост-диагностика (geo_troubleshooting) --------------------------------
+
+  /// Текущее состояние разрешения на «своём» уровне: настройки сайта на web
+  /// (Permissions API через `geolocator_web`: `granted→whileInUse`,
+  /// `prompt→denied`, `denied→deniedForever`), разрешение приложения на native.
+  ///
+  /// ⚠️ Только для ОБЪЯСНЕНИЯ уже полученной ошибки и для экрана самопроверки.
+  /// Флоу получения позиции по этому значению НЕ строится — на web оно
+  /// неоднозначно до фактического запроса (см. док-стринг класса).
+  Future<GeoPermissionState> checkPermissionState() async {
+    try {
+      final permission = await _geolocator.checkPermission();
+      _log.step('permission state probe=$permission');
+      return switch (permission) {
+        LocationPermission.always ||
+        LocationPermission.whileInUse => GeoPermissionState.granted,
+        LocationPermission.deniedForever => GeoPermissionState.blocked,
+        LocationPermission.denied => GeoPermissionState.notRequested,
+        LocationPermission.unableToDetermine => GeoPermissionState.unknown,
+      };
+    } on Object catch (e) {
+      // Permissions API недоступен (старый Safari) или вернул незнакомое
+      // состояние — `geolocator_web` бросает ArgumentError. Это не ошибка
+      // приложения: просто уровень блокировки определить нельзя.
+      _log.step('permission state probe failed: $e');
+      return GeoPermissionState.unknown;
+    }
+  }
+
+  /// На каком уровне заблокирована геолокация — вызывается ПОСЛЕ того, как
+  /// [getCurrentPosition] уже вернул [GeoPermissionDeniedForever].
+  ///
+  /// Разрешение на своём уровне есть, а позиции нет → блокирует кто-то выше
+  /// ([GeoBlockLevel.system]); нет разрешения → блок на своём уровне
+  /// ([GeoBlockLevel.site]); состояние неизвестно → [GeoBlockLevel.unknown].
+  Future<GeoBlockLevel> diagnoseBlockLevel() async {
+    final permission = await checkPermissionState();
+    return switch (permission) {
+      GeoPermissionState.granted => GeoBlockLevel.system,
+      GeoPermissionState.blocked ||
+      GeoPermissionState.notRequested => GeoBlockLevel.site,
+      GeoPermissionState.unknown => GeoBlockLevel.unknown,
+    };
+  }
+
+  /// Полный снимок состояния для страницы «Проверка геолокации».
+  Future<GeoDiagnostics> diagnose() async {
+    final permission = await checkPermissionState();
+    if (_isWeb) return GeoDiagnostics(permission: permission);
+
+    bool? serviceEnabled;
+    try {
+      serviceEnabled = await _geolocator.isLocationServiceEnabled();
+    } on Object catch (e) {
+      _log.step('service state probe failed: $e');
+    }
+    return GeoDiagnostics(
+      permission: permission,
+      serviceEnabled: serviceEnabled,
     );
   }
 

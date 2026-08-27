@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
+import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/work_schedule/models/_models.dart';
@@ -35,6 +36,19 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
 
     /// Предупреждение о низкой точности GPS
     @Default(false) bool showLowAccuracyWarning,
+
+    /// Отказ геолокации на последней попытке старта — сам объект таксономии
+    /// `GeoService`, а не только ветка `StartShiftResult`. Нужен UI-слою,
+    /// чтобы построить диалог по типу отказа и (в `shift_geo_photo_fallback`)
+    /// передать на бэк фактический `GeoFailure.code`, а не выведенную из
+    /// enum-ветки строку. `null` — гео-отказа на последней попытке не было.
+    GeoFailure? lastGeoFailure,
+
+    /// Уровень блокировки для [lastGeoFailure] — результат пост-диагностики
+    /// (`geo_troubleshooting`). Осмыслен только для
+    /// `GeoPermissionDeniedForever` на web; в остальных случаях
+    /// [GeoBlockLevel.unknown].
+    @Default(GeoBlockLevel.unknown) GeoBlockLevel geoBlockLevel,
 
     /// Одноразовый нотис: смену авто-завершил бэкенд (поллинг обнаружил, что
     /// активной/приостановленной смены больше нет). UI показывает тост и

@@ -381,6 +381,22 @@ class ExampleHomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [GeoDiagnosticsPage]
+class GeoDiagnosticsRoute extends PageRouteInfo<void> {
+  const GeoDiagnosticsRoute({List<PageRouteInfo>? children})
+    : super(GeoDiagnosticsRoute.name, initialChildren: children);
+
+  static const String name = 'GeoDiagnosticsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const GeoDiagnosticsPage();
+    },
+  );
+}
+
+/// generated route for
 /// [HistoryTabPage]
 class HistoryTab extends PageRouteInfo<void> {
   const HistoryTab({List<PageRouteInfo>? children})

@@ -77,6 +77,9 @@ class AppRouter extends RootStackRouter {
     // Центр уведомлений (notifications) — root-уровня: колокольчик в
     // аппбаре любого таба пушит его через `context.router.root.push(...)`.
     AutoRoute(page: NotificationsRoute.page, path: '/notifications'),
+    // Проверка геолокации (geo_troubleshooting) — root-уровня: открывается и
+    // из диалога гео-ошибки на табе «Смена», и из настроек профиля.
+    AutoRoute(page: GeoDiagnosticsRoute.page, path: '/geo-diagnostics'),
     // «Мои тесты» + прохождение (employee_tests) — root-уровня: список
     // фильтруется по всем организациям пользователя (не завязан на один
     // `<org-base>`), а прохождение открывается и из списка, и из

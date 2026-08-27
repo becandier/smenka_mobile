@@ -134,6 +134,12 @@ void main() {
     when(
       () => connectivity.checkConnectivity(),
     ).thenAnswer((_) async => [ConnectivityResult.wifi]);
+    // Пост-диагностика уровня блокировки (geo_troubleshooting): кубит дёргает
+    // её на ветке GeoPermissionDeniedForever. По умолчанию — «уровень сайта»;
+    // тесты уровня переопределяют стаб точечно.
+    when(
+      () => geo.diagnoseBlockLevel(),
+    ).thenAnswer((_) async => GeoBlockLevel.site);
 
     // По умолчанию активной/приостановленной смены нет.
     when(
@@ -610,6 +616,9 @@ void main() {
         // Гео-отказ обрывает старт до сети и не помечает action-ошибку
         // (иначе BlocListener сетевых ошибок показал бы ложный тост).
         expect(cubit.state.actionStatus, FeatureStatus.initial);
+        // Сам объект отказа сохранён — по нему UI строит диалог, а
+        // shift_geo_photo_fallback берёт машинный код причины.
+        expect(cubit.state.lastGeoFailure, same(geoResult));
         verifyNever(
           () => shiftRepo.startShift(
             organizationId: any(named: 'organizationId'),
@@ -659,6 +668,57 @@ void main() {
       await cubit.startShift();
 
       expect(cubit.state.showLowAccuracyWarning, isTrue);
+      await cubit.close();
+    });
+
+    test('GeoPermissionDeniedForever → пост-диагностика уровня блокировки '
+        '(geo_troubleshooting)', () async {
+      when(
+        () => geo.getCurrentPosition(),
+      ).thenAnswer((_) async => const GeoPermissionDeniedForever());
+      when(
+        () => geo.diagnoseBlockLevel(),
+      ).thenAnswer((_) async => GeoBlockLevel.system);
+
+      final cubit = await buildWithGeoOrgSelected();
+      await cubit.startShift();
+
+      expect(cubit.state.geoBlockLevel, GeoBlockLevel.system);
+      verify(() => geo.diagnoseBlockLevel()).called(1);
+      await cubit.close();
+    });
+
+    test('прочие гео-отказы не дёргают пост-диагностику', () async {
+      when(
+        () => geo.getCurrentPosition(),
+      ).thenAnswer((_) async => const GeoUnavailable());
+
+      final cubit = await buildWithGeoOrgSelected();
+      await cubit.startShift();
+
+      expect(cubit.state.geoBlockLevel, GeoBlockLevel.unknown);
+      verifyNever(() => geo.diagnoseBlockLevel());
+      await cubit.close();
+    });
+
+    test('новая попытка старта сбрасывает прошлый гео-отказ', () async {
+      when(
+        () => geo.getCurrentPosition(),
+      ).thenAnswer((_) async => const GeoUnavailable());
+
+      final cubit = await buildWithGeoOrgSelected();
+      await cubit.startShift();
+      expect(cubit.state.lastGeoFailure, isNotNull);
+
+      when(() => geo.getCurrentPosition()).thenAnswer(
+        (_) async =>
+            const GeoSuccess(latitude: 55, longitude: 37, lowAccuracy: false),
+      );
+      stubStartShift(Task<Shift>.success(_activeShift()));
+      await cubit.startShift();
+
+      expect(cubit.state.lastGeoFailure, isNull);
+      expect(cubit.state.geoBlockLevel, GeoBlockLevel.unknown);
       await cubit.close();
     });
   });

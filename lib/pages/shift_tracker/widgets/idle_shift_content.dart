@@ -76,26 +76,17 @@ class _IdleShiftContent extends StatelessWidget {
     switch (result) {
       case StartShiftResult.success:
         context.modals.showSuccess(l10n.shiftStarted);
-      case StartShiftResult.geoServiceDisabled:
-        // native: сервис геолокации выключен → диалог + системные настройки.
-        await showGeoServiceDisabledDialog(context, GeoService());
-      case StartShiftResult.geoPermissionDenied:
-        // Короткий тост; повтор — это повторное нажатие «Начать».
-        context.modals.showError(l10n.geoPermissionDenied);
-      case StartShiftResult.geoPermissionDeniedForever:
-        // native: настройки приложения; web: инструкция по браузеру +
-        // «Повторить» (без мёртвой кнопки настроек — она на web no-op).
-        await showGeoDeniedForeverDialog(
-          context,
-          geoService: GeoService(),
-          onRetry: () => _onStartShift(context),
-        );
-      case StartShiftResult.geoUnavailable:
-        context.modals.showError(l10n.errorGeoUnavailable);
-      case StartShiftResult.geoInsecureContext:
-        context.modals.showError(l10n.geoInsecureContextMessage);
-      case StartShiftResult.geoUnsupported:
-        context.modals.showError(l10n.geoUnsupportedMessage);
+      // Все ветки гео-отказа ведут в один диалог: текст он выбирает по типу
+      // GeoFailure и уровню блокировки, а набор действий («Повторить»,
+      // «Как исправить», системные настройки) — по платформе. См.
+      // docs/tasks/geo_troubleshooting/mobile.md.
+      case StartShiftResult.geoServiceDisabled ||
+          StartShiftResult.geoPermissionDenied ||
+          StartShiftResult.geoPermissionDeniedForever ||
+          StartShiftResult.geoUnavailable ||
+          StartShiftResult.geoInsecureContext ||
+          StartShiftResult.geoUnsupported:
+        await _handleGeoFailure(context);
       case StartShiftResult.error:
         break; // Обрабатывается BlocListener
       case StartShiftResult.scheduleSelectionRequired:
@@ -115,6 +106,38 @@ class _IdleShiftContent extends StatelessWidget {
         );
         if (!context.mounted) return;
         await _handleStartShiftResult(context, continueResult);
+    }
+  }
+
+  /// Диалог финальной гео-неудачи + отработка выбранного действия.
+  ///
+  /// Сам отказ берём из состояния кубита ([ShiftTrackerState.lastGeoFailure]),
+  /// а не из ветки [StartShiftResult]: диалогу нужен объект таксономии, а не
+  /// выведенная из enum строка.
+  Future<void> _handleGeoFailure(BuildContext context) async {
+    final cubit = context.read<ShiftTrackerCubit>();
+    final failure = cubit.state.lastGeoFailure;
+    // Защита от гонки: пока диалог собирался, состояние успели перезаписать.
+    if (failure == null) return;
+
+    final action = await showGeoFailureDialog(
+      context,
+      failure: failure,
+      blockLevel: cubit.state.geoBlockLevel,
+    );
+    if (!context.mounted) return;
+
+    switch (action) {
+      case GeoFailureAction.retry:
+        await _onStartShift(context);
+      case GeoFailureAction.howToFix:
+        await context.router.root.push(const GeoDiagnosticsRoute());
+      case GeoFailureAction.openAppSettings:
+        await cubit.openGeoAppSettings();
+      case GeoFailureAction.openLocationSettings:
+        await cubit.openGeoLocationSettings();
+      case null:
+        break;
     }
   }
 }
