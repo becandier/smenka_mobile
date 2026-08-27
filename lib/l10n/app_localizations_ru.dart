@@ -580,6 +580,76 @@ class AppLocalizationsRu extends AppLocalizations {
       'Открыть настройки геолокации';
 
   @override
+  String get shiftStartWithPhoto => 'Начать по фото';
+
+  @override
+  String get geoFallbackTitle => 'Старт смены по фото';
+
+  @override
+  String get geoFallbackIntro =>
+      'Геолокация недоступна. Чтобы не терять учёт времени, выберите рабочую точку и приложите фото — администратор увидит пометку и разберётся.';
+
+  @override
+  String get geoFallbackLocationStep => '1. Рабочая точка';
+
+  @override
+  String get geoFallbackScheduleStep => '2. График работы';
+
+  @override
+  String get geoFallbackPhotoStep => '3. Фото';
+
+  @override
+  String get geoFallbackLocationSelect => 'Выбрать точку';
+
+  @override
+  String get geoFallbackScheduleSelect => 'Выбрать график';
+
+  @override
+  String get geoFallbackScheduleLocationFirst =>
+      'Сначала выберите рабочую точку';
+
+  @override
+  String get geoFallbackScheduleEmpty =>
+      'Доступных графиков нет — обратитесь к администратору';
+
+  @override
+  String get geoFallbackScheduleNotRequired => 'График не требуется';
+
+  @override
+  String get geoFallbackCameraPreparing => 'Проверяем камеру…';
+
+  @override
+  String get geoFallbackCameraHint =>
+      'Сделайте снимок — он подтвердит, что вы на месте.';
+
+  @override
+  String get geoFallbackCameraShoot => 'Снять';
+
+  @override
+  String get geoFallbackCameraUnavailable =>
+      'Камера недоступна — приложите файл с изображением.';
+
+  @override
+  String get geoFallbackPickFile => 'Выбрать файл';
+
+  @override
+  String get geoFallbackRetakePhoto => 'Переснять';
+
+  @override
+  String get geoFallbackPhotoProcessing => 'Готовим снимок…';
+
+  @override
+  String get geoFallbackSubmit => 'Начать смену';
+
+  @override
+  String get geoFallbackStarted =>
+      'Смена начата, старт помечен как без геопроверки';
+
+  @override
+  String get errorGeoFallbackPhotoInvalid =>
+      'Не удалось прикрепить фото, попробуйте снять заново';
+
+  @override
   String get shiftConfirmFinish => 'Завершить смену?';
 
   @override

@@ -119,6 +119,13 @@ class AppRouter extends RootStackRouter {
               initial: true,
               page: ShiftTrackerRoute.page,
             ),
+            // Фолбэк-старт смены по фото (shift_geo_photo_fallback) —
+            // внутри таба «Смена», чтобы переиспользовать те же модалки
+            // выбора точки и графика (они зарегистрированы соседями).
+            AutoRoute(
+              path: 'geo-fallback-start',
+              page: GeoFallbackStartRoute.page,
+            ),
             // Выбор рабочей точки при старте смены — модальный bottom sheet.
             CustomRoute<WorkLocationPickerResult?>(
               path: 'work-location-picker',

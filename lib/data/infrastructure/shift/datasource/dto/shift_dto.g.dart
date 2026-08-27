@@ -95,6 +95,9 @@ _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
   createdByName: json['created_by_name'] as String?,
   editedByName: json['edited_by_name'] as String?,
   isDeleted: json['is_deleted'] as bool? ?? false,
+  geoFallback: json['geo_fallback'] as bool? ?? false,
+  geoFallbackReason: json['geo_fallback_reason'] as String?,
+  geoFallbackPhotoFileId: json['geo_fallback_photo_file_id'] as String?,
 );
 
 Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
@@ -128,4 +131,7 @@ Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
   'created_by_name': instance.createdByName,
   'edited_by_name': instance.editedByName,
   'is_deleted': instance.isDeleted,
+  'geo_fallback': instance.geoFallback,
+  'geo_fallback_reason': instance.geoFallbackReason,
+  'geo_fallback_photo_file_id': instance.geoFallbackPhotoFileId,
 };

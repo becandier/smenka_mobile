@@ -23,7 +23,7 @@ mixin _$ShiftTrackerState {
  String? get actionErrorCode;/// Нет сетевого подключения (по данным connectivity_plus)
  bool get isOffline;/// Предупреждение о низкой точности GPS
  bool get showLowAccuracyWarning;/// Отказ геолокации на последней попытке старта — сам объект таксономии
-/// `GeoService`, а не только ветка [StartShiftResult]. Нужен UI-слою,
+/// `GeoService`, а не только ветка `StartShiftResult`. Нужен UI-слою,
 /// чтобы построить диалог по типу отказа и (в `shift_geo_photo_fallback`)
 /// передать на бэк фактический `GeoFailure.code`, а не выведенную из
 /// enum-ветки строку. `null` — гео-отказа на последней попытке не было.
@@ -314,7 +314,7 @@ class _ShiftTrackerState extends ShiftTrackerState {
 /// Предупреждение о низкой точности GPS
 @override@JsonKey() final  bool showLowAccuracyWarning;
 /// Отказ геолокации на последней попытке старта — сам объект таксономии
-/// `GeoService`, а не только ветка [StartShiftResult]. Нужен UI-слою,
+/// `GeoService`, а не только ветка `StartShiftResult`. Нужен UI-слою,
 /// чтобы построить диалог по типу отказа и (в `shift_geo_photo_fallback`)
 /// передать на бэк фактический `GeoFailure.code`, а не выведенную из
 /// enum-ветки строку. `null` — гео-отказа на последней попытке не было.

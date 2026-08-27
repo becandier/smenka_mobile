@@ -61,6 +61,8 @@ String localizedErrorMessage(
     'SCHEDULE_NOT_FOUND' => l10n.errorScheduleNotFound,
     // schedule_window_enforcement: старт вне окна графика
     'SCHEDULE_WINDOW_CLOSED' => l10n.errorScheduleWindowClosed,
+    // shift_geo_photo_fallback: фото вместо координат при старте смены
+    'GEO_FALLBACK_PHOTO_INVALID' => l10n.errorGeoFallbackPhotoInvalid,
     'OVERTIME_ALREADY_REQUESTED' => l10n.errorOvertimeAlreadyRequested,
     'OVERTIME_PERIOD_EXPIRED' => l10n.errorOvertimePeriodExpired,
     'OVERTIME_NOT_APPLICABLE' => l10n.errorOvertimeNotApplicable,

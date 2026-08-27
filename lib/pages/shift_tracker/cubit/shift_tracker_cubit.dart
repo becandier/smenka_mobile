@@ -553,6 +553,26 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     return result;
   }
 
+  /// Принять смену, стартовавшую в отдельном флоу (фолбэк-старт по фото,
+  /// `shift_geo_photo_fallback`): трекер показывает её как активную и
+  /// запускает таймер, будто стартовал сам.
+  ///
+  /// Кубиты флоу и трекера друг о друге не знают — связь только через
+  /// результат навигации (см. `_IdleShiftContent`).
+  void adoptStartedShift(Shift shift) {
+    emit(
+      state.copyWith(
+        activeShift: state.activeShift.toSuccess(shift),
+        actionStatus: FeatureStatus.success,
+        actionError: null,
+        actionErrorCode: null,
+        lastGeoFailure: null,
+        geoBlockLevel: GeoBlockLevel.unknown,
+      ),
+    );
+    _startTimer(shift);
+  }
+
   /// Системные настройки приложения/геолокации (native) — UI дёргает их через
   /// кубит, чтобы не создавать второй экземпляр [GeoService] на экране.
   Future<void> openGeoAppSettings() => _geoService.openAppSettings();

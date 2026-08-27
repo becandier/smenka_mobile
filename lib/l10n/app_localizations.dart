@@ -1108,6 +1108,132 @@ abstract class AppLocalizations {
   /// **'Открыть настройки геолокации'**
   String get geoDiagnosticsOpenLocationSettings;
 
+  /// No description provided for @shiftStartWithPhoto.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать по фото'**
+  String get shiftStartWithPhoto;
+
+  /// No description provided for @geoFallbackTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Старт смены по фото'**
+  String get geoFallbackTitle;
+
+  /// No description provided for @geoFallbackIntro.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация недоступна. Чтобы не терять учёт времени, выберите рабочую точку и приложите фото — администратор увидит пометку и разберётся.'**
+  String get geoFallbackIntro;
+
+  /// No description provided for @geoFallbackLocationStep.
+  ///
+  /// In ru, this message translates to:
+  /// **'1. Рабочая точка'**
+  String get geoFallbackLocationStep;
+
+  /// No description provided for @geoFallbackScheduleStep.
+  ///
+  /// In ru, this message translates to:
+  /// **'2. График работы'**
+  String get geoFallbackScheduleStep;
+
+  /// No description provided for @geoFallbackPhotoStep.
+  ///
+  /// In ru, this message translates to:
+  /// **'3. Фото'**
+  String get geoFallbackPhotoStep;
+
+  /// No description provided for @geoFallbackLocationSelect.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать точку'**
+  String get geoFallbackLocationSelect;
+
+  /// No description provided for @geoFallbackScheduleSelect.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать график'**
+  String get geoFallbackScheduleSelect;
+
+  /// No description provided for @geoFallbackScheduleLocationFirst.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сначала выберите рабочую точку'**
+  String get geoFallbackScheduleLocationFirst;
+
+  /// No description provided for @geoFallbackScheduleEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступных графиков нет — обратитесь к администратору'**
+  String get geoFallbackScheduleEmpty;
+
+  /// No description provided for @geoFallbackScheduleNotRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'График не требуется'**
+  String get geoFallbackScheduleNotRequired;
+
+  /// No description provided for @geoFallbackCameraPreparing.
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверяем камеру…'**
+  String get geoFallbackCameraPreparing;
+
+  /// No description provided for @geoFallbackCameraHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделайте снимок — он подтвердит, что вы на месте.'**
+  String get geoFallbackCameraHint;
+
+  /// No description provided for @geoFallbackCameraShoot.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять'**
+  String get geoFallbackCameraShoot;
+
+  /// No description provided for @geoFallbackCameraUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Камера недоступна — приложите файл с изображением.'**
+  String get geoFallbackCameraUnavailable;
+
+  /// No description provided for @geoFallbackPickFile.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать файл'**
+  String get geoFallbackPickFile;
+
+  /// No description provided for @geoFallbackRetakePhoto.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переснять'**
+  String get geoFallbackRetakePhoto;
+
+  /// No description provided for @geoFallbackPhotoProcessing.
+  ///
+  /// In ru, this message translates to:
+  /// **'Готовим снимок…'**
+  String get geoFallbackPhotoProcessing;
+
+  /// No description provided for @geoFallbackSubmit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать смену'**
+  String get geoFallbackSubmit;
+
+  /// No description provided for @geoFallbackStarted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена начата, старт помечен как без геопроверки'**
+  String get geoFallbackStarted;
+
+  /// No description provided for @errorGeoFallbackPhotoInvalid.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось прикрепить фото, попробуйте снять заново'**
+  String get errorGeoFallbackPhotoInvalid;
+
   /// No description provided for @shiftConfirmFinish.
   ///
   /// In ru, this message translates to:

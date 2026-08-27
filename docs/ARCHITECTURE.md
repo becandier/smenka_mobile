@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-07-24 (фичи: notifications, employee_tests)
+Последнее обновление: 2026-08-27 (фичи: geo_troubleshooting, shift_geo_photo_fallback)
 
 ---
 
@@ -42,7 +42,7 @@ lib/
 │   ├── network/                   # Dio errors, Task, TaskHandler
 │   ├── router/                    # AppRouter, AppModals (context.modals)
 │   ├── deep_link/                 # DeepLinkService, PendingInviteStorage
-│   ├── services/                  # GeoService (geolocator; no-op на web)
+│   ├── services/                  # GeoService (geolocator + пост-диагностика), PhotoPickerService (image_picker/camera)
 │   ├── web/                       # url_strategy (conditional export web/stub)
 │   ├── utils/                     # money_format и пр.
 │   └── theme/                     # Тема, цвета
@@ -87,6 +87,8 @@ lib/
     ├── verify/                    # Верификация email + VerifyCubit
     ├── home/                      # ExampleHome (заглушка, не в основной навигации)
     ├── main_router/               # Bottom tabs router (4 таба)
+    ├── geo_diagnostics/           # «Проверка геолокации» (root-роут, geo_troubleshooting)
+    ├── geo_fallback_start/        # Старт смены по фото при недоступной гео (таб «Смена», shift_geo_photo_fallback)
     ├── notifications/             # Центр уведомлений (root-роут, notifications)
     │   ├── notification_navigation.dart  # Маппинг type → переход (test_assigned → TestAttemptRoute; незнакомый тип — no-op)
     │   ├── view/                  # NotificationsPage (лента + «Прочитать все»; кубит — глобальный, из lib/shared/notifications)
@@ -291,6 +293,7 @@ lib/
 | `KnowledgePageCubit` | Готов | Деталь страницы базы знаний (read-only); `KNOWLEDGE_NODE_NOT_FOUND` → error по коду |
 | `NotificationsCubit` | Готов | Глобальный кубит (`lib/shared/notifications/`, по образцу `AuthCubit`) — счётчик непрочитанных (грузится в конструкторе, нужен в аппбаре всех 4 табов) + лента (`PaginatedSectionData`, лениво при открытии `NotificationsPage`); `markRead`/`markAllRead` синхронно обновляют и ленту, и бейдж (notifications) |
 | `MyTestsCubit` | Готов | «Мои тесты»: пагинированный список назначений + фильтр по организации (`OrganizationRepository.watchMyOrganizations`, скрыт при ≤1 организации) (employee_tests) |
+| `GeoFallbackStartCubit` | Готов | Фолбэк-старт смены по фото: точка → график → кадр → `POST /files` + `POST /shifts/start` с `geo_fallback_*`; независим от `ShiftTrackerCubit` (связь через результат навигации) (shift_geo_photo_fallback) |
 | `GeoDiagnosticsCubit` | Готов | Страница «Проверка геолокации»: состояние разрешений (`GeoService.diagnose`) + ручной тест `getCurrentPosition`; зависит только от `GeoService` (geo_troubleshooting) |
 | `TestAttemptCubit` | Готов | Прохождение одного назначения: резолв при входе (продолжить открытую попытку / показать блок «уже сдан»-«лимит исчерпан» / стартовать новую), локальный выбор ответов (`selectSingle`/`toggleMultiple`), `submit`, «Пройти ещё раз»; независим от `MyTestsCubit`/`NotificationsCubit` — только `TestRepository` (employee_tests) |
 
@@ -318,6 +321,7 @@ lib/
 | `ChecklistPhotoViewerRoute` | `/checklist-photo-viewer` | Полноэкранный вьюер фото (root, поверх табов; `photo_view` зум/пан/свайп, удаление) |
 | `ChecklistPhotoSourceRoute` | `/checklist-photo-source` | Bottom-sheet выбора источника фото (камера/галерея) для `camera_or_gallery` |
 | `WorkSchedulePickerRoute` | `shift/work-schedule-picker` | Выбор графика при старте смены (CustomRoute, `WorkSchedulePickerResult?`, work_schedules) |
+| `GeoFallbackStartRoute` | `shift/geo-fallback-start` | Старт смены по фото при недоступной геолокации (push внутри таба «Смена», возвращает `Shift?`) (shift_geo_photo_fallback) |
 | `ShiftHistoryRoute` | `/history` | История смен (Tab 2, initial) |
 | `ShiftDetailRoute` | `/history/detail` | Детали смены (push) |
 | `OvertimeRequestRoute` | `/history/detail/overtime-request` | Модалка «Добавить переработку» (CustomRoute, `ShiftOvertimeRequest?`, work_schedules) |
@@ -371,7 +375,7 @@ lib/
 
 ## Выбор и подготовка фото: `PhotoPickerService`
 
-Единая точка выбора + подготовки фото (`lib/core/services/photo_picker_service.dart`). Спроектирован по образцу `GeoService`: **никогда не бросает** — всегда возвращает типизированный `sealed`-результат. Пока единственный потребитель — заполнение чек-листов (`ChecklistFillCubit`), но сервис общий (аватарки и др. в будущем).
+Единая точка выбора + подготовки фото (`lib/core/services/photo_picker_service.dart`). Спроектирован по образцу `GeoService`: **никогда не бросает** — всегда возвращает типизированный `sealed`-результат. Потребители — заполнение чек-листов (`ChecklistFillCubit`) и фолбэк-старт смены по фото (`GeoFallbackStartCubit`, см. раздел `shift_geo_photo_fallback`); сервис общий (аватарки и др. в будущем).
 
 **Контракт.** `pickPhoto({required PhotoSource source, int maxSide = 1600, int quality = 88})` → `PhotoPickResult`:
 - `PhotoPickSuccess(bytes, sourceName?, sourceMimeType?, unprocessed)` — кадр выбран, прочитан, подготовлен (JPEG, ориентация впечатана). **Меньшая** сторона приведена к ~`maxSide`; большая сторона **не гарантируется** — `compressWithList` расходится по платформам (native скейлит по min-сторонам: `4032×3024 → 2133×1600`; web 0.1.5 капит только ширину). Точный кап по большей стороне делает потребитель (`burnStamp`, см. ниже). `unprocessed=true` — ресайз не удался, отданы исходные байты (web-fallback).
@@ -391,7 +395,7 @@ lib/
 
 **Зависимость от CSP.** На web `readAsBytes()` читает выбранный кадр по `blob:`-URL через XMLHttpRequest — регулируется `connect-src`. `web/index.html` содержит `blob:` в `connect-src` (иначе `cross_file` бросает «Could not load Blob from its URL» и фото не прикрепляется ни в одном браузере) — не удалять при аудите CSP.
 
-**Инъекции для тестов:** `picker`, `logger`, `isWeb`, `compressor`, `readRetryDelay`. Юнит-тесты — `test/core/services/photo_picker_service_test.dart` (отмена, permission, не-`Exception` на каждом этапе, ретрай чтения, пустые байты, web-fallback vs native-decode-fail, happy path). Инвариант кубита «любой отказ после показа черновика убирает черновик» — `test/pages/checklist_fill/checklist_fill_cubit_test.dart`.
+**Инъекции для тестов:** `picker`, `logger`, `isWeb`, `compressor`, `cameraProbe`, `readRetryDelay`. Юнит-тесты — `test/core/services/photo_picker_service_test.dart` (отмена, permission, не-`Exception` на каждом этапе, ретрай чтения, пустые байты, web-fallback vs native-decode-fail, happy path). Инвариант кубита «любой отказ после показа черновика убирает черновик» — `test/pages/checklist_fill/checklist_fill_cubit_test.dart`.
 
 ---
 
@@ -647,6 +651,33 @@ lib/
 **Точки входа**: кнопка «Как исправить» в `GeoFailureDialog` на старте смены и пункт «Проверка геолокации» в настройках профиля (`_SettingsSection`).
 
 **Тесты**: `test/core/services/geo_service_test.dart` (маппинг состояний, уровень блокировки, `diagnose` web vs native, точность), `test/widgets/geo/geo_permission_dialogs_test.dart` (тексты и наборы действий по веткам/уровням/платформам), `test/pages/geo_diagnostics/geo_diagnostics_cubit_test.dart` (резолв платформы, статус, тест, защита от двойного прогона), `test/pages/shift_tracker/shift_tracker_cubit_test.dart` (сохранение отказа, пост-диагностика только для `deniedForever`, сброс на новой попытке).
+
+---
+
+## Старт смены по фото при недоступной геолокации (shift_geo_photo_fallback)
+
+Фича `../docs/tasks/shift_geo_photo_fallback/mobile.md`. `geo_troubleshooting` учит гео чинить; эта фича даёт выход, когда починить не вышло: смена стартует с фото вместо координат и уходит на бэк помеченной — админ разбирается в админке.
+
+**Вход**: действие «Начать по фото» в `GeoFailureDialog` — доступно на **любой** финальной ветке `GeoFailure` и только в организации с геопроверкой (`allowPhotoFallback`). Серверный `GEO_CHECK_FAILED` (координаты получены, сотрудник вне зоны) сюда не приводит вовсе: он прилетает как ошибка действия, а не как `GeoFailure`, — обходить «вне зоны» фотографией нельзя.
+
+**Экран** `GeoFallbackStartRoute` (`shift/geo-fallback-start`) зарегистрирован **внутри таба «Смена»**, чтобы переиспользовать соседние модалки `WorkLocationPickerRoute`/`WorkSchedulePickerRoute` без дублей регистрации. Три шага на одной прокручиваемой странице: точка (обязательна — сервер её не резолвит, координат нет) → график (`my-schedules?work_location_id=…`, те же правила 0/1/>1, что и в обычном старте) → кадр. Возвращает стартовавшую `Shift` через `pop`.
+
+**`GeoFallbackStartCubit`** ни от каких кубитов не зависит; связь с трекером — только через результат навигации: `ShiftTrackerCubit.adoptStartedShift(shift)` показывает смену активной и запускает таймер. `submit()` грузит `POST /files` (`category=shift_geo_photo`, `organization_id`) и затем `POST /shifts/start` с `geo_fallback_photo_id` + `geo_fallback_reason`. Файл грузится на **каждой** попытке: бэк принимает только непривязанный файл, а после отказа старта его состояние клиенту неизвестно — сирот подберёт штатная чистка. Реакции строго по `error.code`: `GEO_FALLBACK_PHOTO_INVALID` → кадр сброшен, шаг фото заново; `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND`/`SCHEDULE_WINDOW_CLOSED` → выбор сброшен + перезапрос набора.
+
+**Кадр — только съёмка in-app.** Добавлена зависимость `camera` (на web это `getUserMedia` + живое `<video>`-превью): `image_picker` с `ImageSource.camera` для «только съёмки» не годится — на десктопе атрибут `capture` игнорируется и открывается обычный файловый диалог. `CameraController` живёт в виджете `_CameraCapture` (свой жизненный цикл, привязанный к дереву), наружу уходит только снятый `XFile`.
+
+`PhotoPickerService` расширен под этот режим, таксономия та же:
+- `isCameraAvailable()` — проба `availableCameras()` (инъекция `cameraProbe` для тестов). Пустой список и любая ошибка = «камеры нет»;
+- `preparePhoto(XFile)` — публичный вход в этапы read+prepare для источников, добывающих кадр сами (пайплайн `pickPhoto` теперь делегирует туда же);
+- `classifyCaptureError(Object)` — `CameraException` отказа доступа (native-коды + `NotAllowedError`/`PermissionDeniedError` из getUserMedia) → `PhotoPermissionDenied`, прочее → `PhotoPickFailed`.
+
+Выбор файла предлагается **только** когда камеры нет или доступ к ней не дали (`GeoFallbackPhotoMode.file`) — фолбэк фолбэка «мало ли человек с компа сидит», а не равноправный источник.
+
+**Контракт данных**: `FileCategory.shiftGeoPhoto` (`shift_geo_photo`); `ShiftRepository/DataSource.startShift` + `geoFallbackPhotoId`/`geoFallbackReason` (передаются строго вместе и только без координат); `ShiftDto`/`Shift` + additive `geoFallback`/`geoFallbackReason`/`geoFallbackPhotoFileId` (старый бэк → `false`/`null`; в UI сотрудника не выводятся — это для админки). `geo_fallback_reason` — `GeoFailure.code` фактически полученного отказа, никаких строк по месту. Новый код `GEO_FALLBACK_PHOTO_INVALID` замаплен в `error_localization.dart`.
+
+**CSP/разрешения**: правок `web/index.html` не потребовалось — `MediaStream` через `srcObject` под CSP не попадает, а `blob:` в `connect-src` (нужен для чтения снятого кадра) уже был. iOS `NSCameraUsageDescription`/`NSPhotoLibraryUsageDescription` расширены упоминанием старта смены; Android-разрешение `CAMERA` приносит сам `camera_android_camerax`.
+
+**Тесты**: `test/pages/geo_fallback_start/geo_fallback_start_cubit_test.dart` (режим камеры/файла, резолв графика по точке, блокировки старта, happy path с проверкой категории файла и кода причины, сбой аплоада, `GEO_FALLBACK_PHOTO_INVALID`, повторный аплоад, `SCHEDULE_WINDOW_CLOSED`), `test/core/services/photo_picker_service_test.dart` (проба камеры, `preparePhoto`, классификация ошибок камеры), `test/data/shift/shift_geo_fallback_mapper_test.dart` (additive-поля), `test/widgets/geo/geo_permission_dialogs_test.dart` (действие есть на всех ветках `GeoFailure` и отсутствует без разрешения).
 
 ---
 

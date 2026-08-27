@@ -16,6 +16,7 @@ void main() {
     required GeoFailure failure,
     required bool isWeb,
     GeoBlockLevel blockLevel = GeoBlockLevel.unknown,
+    bool allowPhotoFallback = false,
     void Function(GeoFailureAction?)? captured,
   }) {
     return MaterialApp(
@@ -30,6 +31,7 @@ void main() {
                 context,
                 failure: failure,
                 blockLevel: blockLevel,
+                allowPhotoFallback: allowPhotoFallback,
                 isWeb: isWeb,
               );
               captured?.call(action);
@@ -202,6 +204,51 @@ void main() {
 
       expect(find.text(l10n.geoPermissionDenied), findsOneWidget);
       expect(find.text(l10n.geoRetry), findsOneWidget);
+    });
+  });
+
+  group('фолбэк по фото (shift_geo_photo_fallback)', () {
+    // Матрица: действие доступно на ЛЮБОЙ финальной ветке GeoFailure.
+    final failures = <GeoFailure>[
+      const GeoServiceDisabled(),
+      const GeoPermissionDenied(),
+      const GeoPermissionDeniedForever(),
+      const GeoUnavailable(),
+      const GeoInsecureContext(),
+      const GeoUnsupported(),
+    ];
+
+    for (final failure in failures) {
+      testWidgets('${failure.runtimeType}: «Начать по фото» показывается', (
+        tester,
+      ) async {
+        GeoFailureAction? action;
+        await tester.pumpWidget(
+          harness(
+            failure: failure,
+            isWeb: true,
+            allowPhotoFallback: true,
+            captured: (value) => action = value,
+          ),
+        );
+        await open(tester);
+
+        expect(find.text(l10n.shiftStartWithPhoto), findsOneWidget);
+
+        await tester.tap(find.text(l10n.shiftStartWithPhoto));
+        await tester.pumpAndSettle();
+
+        expect(action, GeoFailureAction.startWithPhoto);
+      });
+    }
+
+    testWidgets('без разрешения фолбэка кнопки нет', (tester) async {
+      await tester.pumpWidget(
+        harness(failure: const GeoUnavailable(), isWeb: true),
+      );
+      await open(tester);
+
+      expect(find.text(l10n.shiftStartWithPhoto), findsNothing);
     });
   });
 }

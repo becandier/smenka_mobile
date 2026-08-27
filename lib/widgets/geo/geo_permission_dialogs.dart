@@ -19,14 +19,18 @@ enum GeoFailureAction {
 
   /// «Включить» — системные настройки геолокации (native, сервис выключен).
   openLocationSettings,
+
+  /// «Начать по фото» — фолбэк-старт смены (`shift_geo_photo_fallback`).
+  startWithPhoto,
 }
 
 /// Единый диалог финальной гео-неудачи: покрывает все ветки [GeoFailure] и
 /// показывает набор действий, осмысленный именно для этой ветки и платформы.
 ///
-/// Почему один диалог на все ветки: набор действий у них общий и растущий
-/// («Повторить» + «Как исправить» из `geo_troubleshooting`), а различается
-/// только текст. Раздельные виджеты пришлось бы синхронно расширять четырежды.
+/// Почему один диалог на все ветки: набор действий у них общий («Повторить» +
+/// «Как исправить» из `geo_troubleshooting` + «Начать по фото» из
+/// `shift_geo_photo_fallback`), а различается только текст. Раздельные виджеты
+/// пришлось бы синхронно расширять четырежды.
 ///
 /// Для [GeoPermissionDeniedForever] на web текст выбирается по [blockLevel] —
 /// результату пост-диагностики [GeoService.diagnoseBlockLevel] (см.
@@ -36,6 +40,7 @@ class GeoFailureDialog extends StatelessWidget {
     required this.failure,
     required this.isWeb,
     this.blockLevel = GeoBlockLevel.unknown,
+    this.allowPhotoFallback = false,
     super.key,
   });
 
@@ -48,6 +53,12 @@ class GeoFailureDialog extends StatelessWidget {
 
   /// На каком уровне блок — только для [GeoPermissionDeniedForever] на web.
   final GeoBlockLevel blockLevel;
+
+  /// Показывать ли «Начать по фото» (`shift_geo_photo_fallback`). Доступно
+  /// только на старте смены в организации с геопроверкой; при серверном
+  /// `GEO_CHECK_FAILED` (координаты есть, сотрудник вне зоны) этот диалог не
+  /// показывается вовсе — обходить проверку зоны фото нельзя.
+  final bool allowPhotoFallback;
 
   /// Повтор осмыслен везде, кроме «браузер не умеет геолокацию» — там ни
   /// повтор, ни настройки ничего не изменят.
@@ -124,6 +135,12 @@ class GeoFailureDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(GeoFailureAction.howToFix),
           child: Text(l10n.geoHowToFix),
         ),
+        if (allowPhotoFallback)
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).pop(GeoFailureAction.startWithPhoto),
+            child: Text(l10n.shiftStartWithPhoto),
+          ),
         if (settingsAction != null)
           TextButton(
             onPressed: () => Navigator.of(context).pop(settingsAction),
@@ -145,6 +162,7 @@ Future<GeoFailureAction?> showGeoFailureDialog(
   BuildContext context, {
   required GeoFailure failure,
   GeoBlockLevel blockLevel = GeoBlockLevel.unknown,
+  bool allowPhotoFallback = false,
   bool? isWeb,
 }) {
   return showDialog<GeoFailureAction>(
@@ -153,6 +171,7 @@ Future<GeoFailureAction?> showGeoFailureDialog(
       failure: failure,
       isWeb: isWeb ?? kIsWeb,
       blockLevel: blockLevel,
+      allowPhotoFallback: allowPhotoFallback,
     ),
   );
 }

@@ -1,3 +1,5 @@
+import 'package:camera/camera.dart'
+    show CameraDescription, CameraException, CameraLensDirection;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
@@ -284,5 +286,93 @@ void main() {
     expect(success.unprocessed, isFalse);
     expect(success.sourceName, 'photo.jpg');
     expect(success.sourceMimeType, 'image/jpeg');
+  });
+
+  group('режим «только камера» (shift_geo_photo_fallback)', () {
+    PhotoPickerService withProbe(CameraProbe probe) => PhotoPickerService(
+      picker: picker,
+      logger: PhotoLogger.silent(),
+      isWeb: true,
+      compressor: _okCompressor,
+      cameraProbe: probe,
+      readRetryDelay: Duration.zero,
+    );
+
+    test('камера есть → isCameraAvailable = true', () async {
+      final available = await withProbe(
+        () async => const [
+          CameraDescription(
+            name: 'cam0',
+            lensDirection: CameraLensDirection.back,
+            sensorOrientation: 0,
+          ),
+        ],
+      ).isCameraAvailable();
+
+      expect(available, isTrue);
+    });
+
+    test('пустой список камер → false (уходим на выбор файла)', () async {
+      final available = await withProbe(
+        () async => const <CameraDescription>[],
+      ).isCameraAvailable();
+
+      expect(available, isFalse);
+    });
+
+    test('проба упала (не-Exception, JS-интероп) → false', () async {
+      final service = withProbe(() async {
+        // ignore: only_throw_errors — имитация DOMException из enumerateDevices.
+        throw _JsLikeError();
+      });
+
+      expect(await service.isCameraAvailable(), isFalse);
+    });
+
+    test('снимок камеры готовится тем же пайплайном', () async {
+      stubRead(_readBytes);
+
+      final result = await service().preparePhoto(file);
+
+      expect(result, isA<PhotoPickSuccess>());
+      expect((result as PhotoPickSuccess).bytes, _compressedBytes);
+      // Кадр пришёл готовым — ImagePicker в этом пути не участвует.
+      verifyNever(() => picker.pickImage(source: any(named: 'source')));
+    });
+
+    test('сбой чтения снимка → та же sealed-таксономия', () async {
+      when(() => file.readAsBytes()).thenThrow(_JsLikeError());
+
+      final result = await service().preparePhoto(file);
+
+      expect(result, isA<PhotoReadFailed>());
+      expect((result as PhotoPickFailure).code, photoReadFailedCode);
+    });
+
+    test('отказ доступа к камере → PhotoPermissionDenied', () {
+      final failure = service().classifyCaptureError(
+        CameraException('CameraAccessDenied', 'denied'),
+      );
+
+      expect(failure, isA<PhotoPermissionDenied>());
+      expect(failure.code, photoPermissionDeniedCode);
+    });
+
+    test('web: NotAllowedError из getUserMedia → PhotoPermissionDenied', () {
+      final failure = service().classifyCaptureError(
+        CameraException('NotAllowedError', 'denied by user'),
+      );
+
+      expect(failure, isA<PhotoPermissionDenied>());
+    });
+
+    test('прочий сбой камеры → PhotoPickFailed', () {
+      final failure = service().classifyCaptureError(
+        CameraException('CameraNotReadable', 'busy'),
+      );
+
+      expect(failure, isA<PhotoPickFailed>());
+      expect(failure.code, photoPickFailedCode);
+    });
   });
 }

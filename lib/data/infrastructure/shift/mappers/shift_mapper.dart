@@ -76,6 +76,9 @@ extension ShiftMapper on ShiftDto {
       createdByName: createdByName,
       editedByName: editedByName,
       isDeleted: isDeleted,
+      geoFallback: geoFallback,
+      geoFallbackReason: geoFallbackReason,
+      geoFallbackPhotoFileId: geoFallbackPhotoFileId,
     );
   }
 }

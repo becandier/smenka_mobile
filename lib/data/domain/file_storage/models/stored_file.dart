@@ -11,6 +11,11 @@ enum FileCategory {
   checklistPhoto('checklist_photo'),
   knowledgeBase('knowledge_base'),
   avatar('avatar'),
+
+  /// Фото вместо координат при старте смены с недоступной геолокацией
+  /// (`shift_geo_photo_fallback`). Org-категория: `organization_id`
+  /// обязателен, политика бэка — как у `checklist_photo`.
+  shiftGeoPhoto('shift_geo_photo'),
   other('other');
 
   const FileCategory(this.value);

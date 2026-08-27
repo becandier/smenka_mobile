@@ -124,6 +124,12 @@ class _IdleShiftContent extends StatelessWidget {
       context,
       failure: failure,
       blockLevel: cubit.state.geoBlockLevel,
+      // Фолбэк по фото — только в организации с геопроверкой (координаты там
+      // и требуются). Серверный GEO_CHECK_FAILED сюда не приходит вовсе: он
+      // прилетает как ошибка действия, а не как GeoFailure, — обходить
+      // «вне зоны» фотографией нельзя.
+      allowPhotoFallback:
+          cubit.state.selectedOrganization?.geoCheckEnabled ?? false,
     );
     if (!context.mounted) return;
 
@@ -136,9 +142,32 @@ class _IdleShiftContent extends StatelessWidget {
         await cubit.openGeoAppSettings();
       case GeoFailureAction.openLocationSettings:
         await cubit.openGeoLocationSettings();
+      case GeoFailureAction.startWithPhoto:
+        await _startWithPhoto(context, failure);
       case null:
         break;
     }
+  }
+
+  /// Фолбэк-старт по фото (`shift_geo_photo_fallback`). Отдельный экран со
+  /// своим кубитом; связь с трекером — только через результат навигации:
+  /// вернулась стартовавшая смена → трекер её принимает.
+  Future<void> _startWithPhoto(BuildContext context, GeoFailure failure) async {
+    final cubit = context.read<ShiftTrackerCubit>();
+    final org = cubit.state.selectedOrganization;
+    if (org == null) return;
+
+    final shift = await context.router.push<Shift?>(
+      GeoFallbackStartRoute(
+        organizationId: org.id,
+        // Машинный код фактически полученного отказа — не выведенная из
+        // enum-ветки строка (см. ТЗ: «передавать code, не хардкодить»).
+        geoFallbackReason: failure.code,
+        organizationTimezone: org.timezone,
+      ),
+    );
+    if (shift == null) return;
+    cubit.adoptStartedShift(shift);
   }
 }
 

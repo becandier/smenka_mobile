@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -121,6 +122,10 @@ class PhotoPickFailed extends PhotoPickFailure {
 /// Источник кадра.
 enum PhotoSource { camera, gallery }
 
+/// Проба «есть ли на устройстве камера». По умолчанию — `availableCameras()`
+/// плагина `camera` (на web это `enumerateDevices`); инъекция для тестов.
+typedef CameraProbe = Future<List<CameraDescription>> Function();
+
 /// Ресайз + пере-кодирование в JPEG. По умолчанию — обёртка над
 /// `FlutterImageCompress.compressWithList`; инъекция для тестов.
 typedef PhotoCompressor =
@@ -149,16 +154,19 @@ class PhotoPickerService {
     PhotoLogger? logger,
     bool? isWeb,
     PhotoCompressor? compressor,
+    CameraProbe? cameraProbe,
     this.readRetryDelay = const Duration(milliseconds: 300),
   }) : _picker = picker ?? ImagePicker(),
        _log = logger ?? PhotoLogger(),
        _isWeb = isWeb ?? kIsWeb,
-       _compress = compressor ?? _defaultCompressor;
+       _compress = compressor ?? _defaultCompressor,
+       _cameraProbe = cameraProbe ?? availableCameras;
 
   final ImagePicker _picker;
   final PhotoLogger _log;
   final bool _isWeb;
   final PhotoCompressor _compress;
+  final CameraProbe _cameraProbe;
 
   /// Пауза перед единственным ретраем чтения байтов (транзиентные сбои
   /// blob/файловой системы).
@@ -206,6 +214,27 @@ class PhotoPickerService {
       }
       _log.step('picked name=${picked.name} mime=${picked.mimeType}');
 
+      return await preparePhoto(picked, maxSide: maxSide, quality: quality);
+    } on Object catch (e, st) {
+      // Последний рубеж: любую неклассифицированную ошибку отдаём как
+      // PhotoPickFailed, а не роняем вызывающий код.
+      _log.error('unexpected', e, st);
+      return PhotoPickFailed(detail: e.toString());
+    }
+  }
+
+  /// Прочитать и подготовить уже полученный кадр (этапы 2–3 пайплайна).
+  ///
+  /// Публичный вход для источников, которые добывают [XFile] сами, минуя
+  /// `ImagePicker` — прежде всего съёмка через `CameraController.takePicture`
+  /// в режиме «только камера» (`shift_geo_photo_fallback`). Таксономия и
+  /// гарантии те же, что у [pickPhoto]: никогда не бросает.
+  Future<PhotoPickResult> preparePhoto(
+    XFile picked, {
+    int maxSide = 1600,
+    int quality = 88,
+  }) async {
+    try {
       // --- Этап 2: read ---
       final read = await _read(picked);
       final Uint8List original;
@@ -236,12 +265,49 @@ class PhotoPickerService {
         unprocessed: prepared.unprocessed,
       );
     } on Object catch (e, st) {
-      // Последний рубеж: любую неклассифицированную ошибку отдаём как
-      // PhotoPickFailed, а не роняем вызывающий код.
-      _log.error('unexpected', e, st);
+      _log.error('prepare-picked', e, st);
       return PhotoPickFailed(detail: e.toString());
     }
   }
+
+  /// Есть ли на устройстве камера, которой можно снять кадр.
+  ///
+  /// Режим «только съёмка» (`shift_geo_photo_fallback`) падает на выбор файла
+  /// ровно тогда, когда это вернуло `false`: камеры нет физически, либо
+  /// браузер/ОС не дают её перечислить. Пустой список и любая ошибка пробы —
+  /// это «камеры нет», а не сбой флоу.
+  Future<bool> isCameraAvailable() async {
+    try {
+      final cameras = await _cameraProbe();
+      _log.step('camera probe count=${cameras.length}');
+      return cameras.isNotEmpty;
+    } on Object catch (e) {
+      _log.step('camera probe failed: $e');
+      return false;
+    }
+  }
+
+  /// Классифицирует ошибку инициализации/съёмки камеры в ту же
+  /// `sealed`-таксономию, что и остальной пайплайн — чтобы у потребителя был
+  /// один набор кодов независимо от источника кадра.
+  PhotoPickFailure classifyCaptureError(Object error) {
+    if (error is CameraException &&
+        _permissionCameraCodes.contains(error.code)) {
+      return PhotoPermissionDenied(detail: error.toString());
+    }
+    return PhotoPickFailed(detail: error.toString());
+  }
+
+  /// Коды `CameraException`, означающие именно отказ в доступе (native-коды
+  /// плагина + имена DOMException из getUserMedia на web).
+  static const _permissionCameraCodes = {
+    'CameraAccessDenied',
+    'CameraAccessDeniedWithoutPrompt',
+    'CameraAccessRestricted',
+    'cameraPermission',
+    'NotAllowedError',
+    'PermissionDeniedError',
+  };
 
   /// Чтение байтов кадра: `on Object` (не `Exception`), один ретрай через
   /// [readRetryDelay] при сбое, отдельный ретрай при пустом результате.

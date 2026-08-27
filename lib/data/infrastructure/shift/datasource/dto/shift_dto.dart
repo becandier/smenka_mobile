@@ -78,6 +78,13 @@ abstract class ShiftDto with _$ShiftDto {
     String? createdByName,
     String? editedByName,
     @Default(false) bool isDeleted,
+
+    /// Additive-поля старта без геопроверки (`shift_geo_photo_fallback`).
+    /// Старый бэк не шлёт → `false`/`null`. `geo_fallback` на бэке —
+    /// derived-признак `geo_fallback_reason IS NOT NULL`.
+    @Default(false) bool geoFallback,
+    String? geoFallbackReason,
+    String? geoFallbackPhotoFileId,
   }) = _ShiftDto;
 
   factory ShiftDto.fromJson(Map<String, dynamic> json) =>

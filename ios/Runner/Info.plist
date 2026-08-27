@@ -54,9 +54,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Для проверки вашего местоположения при начале смены</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Для съёмки фото-подтверждений к пунктам чек-листов</string>
+	<string>Для съёмки фото-подтверждений к пунктам чек-листов и фото при начале смены без геолокации</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Для прикрепления фото к пунктам чек-листов</string>
+	<string>Для прикрепления фото к пунктам чек-листов и к началу смены без геолокации</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

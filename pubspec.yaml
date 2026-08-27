@@ -59,6 +59,11 @@ dependencies:
   google_sign_in_web: ^1.1.3
   sign_in_with_apple: ^8.1.0
   timezone: ^0.11.1
+  # Съёмка кадра прямо в приложении (shift_geo_photo_fallback): на web это
+  # getUserMedia + <video> живого превью. image_picker с ImageSource.camera
+  # для этого не годится — на десктопе атрибут `capture` игнорируется и
+  # открывается обычный файловый диалог, т.е. «только съёмка» не обеспечить.
+  camera: ^0.12.0+2
 
 dev_dependencies:
   flutter_test:
