@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smenka_mobile/data/domain/organization/models/member.dart';
+import 'package:smenka_mobile/data/domain/organization/models/organization_subscription.dart';
 import 'package:smenka_mobile/data/domain/organization_role/models/_models.dart';
 
 part 'organization.freezed.dart';
@@ -35,6 +36,12 @@ abstract class Organization with _$Organization {
     @Default(7) int overtimeRequestDays,
     OrgMembershipRole? myRole,
     OrganizationRole? myCustomRole,
+
+    /// Состояние подписки (`tariffs`). Заполняется бэком только для
+    /// owner/admin/super_admin и только в `GET /organizations/{org_id}` —
+    /// в списке организаций и для employee всегда `null` (additive-поле,
+    /// см. mobile.md фичи `tariffs`).
+    OrganizationSubscription? subscription,
   }) = _Organization;
 }
 

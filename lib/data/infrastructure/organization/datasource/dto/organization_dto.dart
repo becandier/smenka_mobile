@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:smenka_mobile/data/infrastructure/organization/datasource/dto/organization_subscription_dto.dart';
 import 'package:smenka_mobile/data/infrastructure/organization_role/datasource/dto/_dto.dart';
 
 part 'organization_dto.freezed.dart';
@@ -20,6 +21,7 @@ abstract class OrganizationDto with _$OrganizationDto {
     @Default(7) int overtimeRequestDays,
     String? myRole,
     OrganizationRoleDto? myCustomRole,
+    OrganizationSubscriptionDto? subscription,
   }) = _OrganizationDto;
 
   factory OrganizationDto.fromJson(Map<String, dynamic> json) =>

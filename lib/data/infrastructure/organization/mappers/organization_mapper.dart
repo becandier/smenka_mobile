@@ -1,5 +1,6 @@
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/infrastructure/organization/datasource/dto/_dto.dart';
+import 'package:smenka_mobile/data/infrastructure/organization/mappers/organization_subscription_mapper.dart';
 import 'package:smenka_mobile/data/infrastructure/organization_role/mappers/_mappers.dart';
 
 OrgMembershipRole? _parseMyRole(String? value) => switch (value) {
@@ -24,6 +25,7 @@ extension OrganizationMapper on OrganizationDto {
       overtimeRequestDays: overtimeRequestDays,
       myRole: _parseMyRole(myRole),
       myCustomRole: myCustomRole?.toDomain(),
+      subscription: subscription?.toDomain(),
     );
   }
 }
