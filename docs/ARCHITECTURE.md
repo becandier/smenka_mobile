@@ -688,6 +688,22 @@ lib/
 
 ---
 
+## Тарифы и подписки (tariffs)
+
+Фича `../docs/tasks/tariffs/mobile.md`. Мобилка тарифами не управляет (оплата/выбор плана — веб-кабинет и админка); её задача — понятные тексты вместо сырых ошибок и ненавязчивый баннер владельцу/админу. Персональный режим не затронут вовсе — там подписки нет.
+
+**Данные**: additive-поле `Organization.subscription` (`OrganizationSubscription?`) — `status` (`enum SubscriptionStatus` со значениями `active`/`trialing`/`pastDue`/`suspended`/`canceled`, парсинг через `value`/`fromValue`, незнакомый статус → `null`, не падение), `daysLeft`, `currentPeriodEnd`, `graceEndsAt`. Модель мапит только подмножество backend-контракта `SubscriptionResponse` — лимиты/фичи/цена мобилке не нужны (гейтинга нет, штрафы видны на всех тарифах, импорт тестов — только в админке). `banner`-геттер на модели — чистая derived-функция (trialing + `daysLeft ≤ 5` → `trialEnding`; `pastDue` → `pastDue`; `suspended`/`canceled` → `readOnly`; иначе `null`), протестирована на все статусы.
+
+**Отдельного Cubit нет** — состояние подписки приезжает вместе с организацией. Важная особенность контракта: бэк заполняет `subscription` ТОЛЬКО в `GET /organizations/{org_id}` (единичный fetch, только owner/admin/super_admin) — список организаций (`GET /organizations`), которым живёт `ShiftTrackerCubit`/главный таб «Смена», это поле не содержит никогда, даже для owner/admin (см. `src/app/api/v1/organizations.py`, `list_organizations`). Поэтому баннер размещён на `OrganizationDetailPage` (навигационный хаб организации, единственный экран, уже фетчащий объект с этим полем через `OrganizationDetailCubit._loadOrganization` → `getById`) — без нового Cubit и нового сетевого вызова. Виджет `_SubscriptionBanner` (`pages/organization_detail/widgets/_subscription_banner.dart`) некликабельный, с общей подписью «Продлите тариф в веб-кабинете»; для employee `organization.subscription == null` — виджет не создаётся вовсе, для `active` — `banner == null`, тоже не рисуется.
+
+**Ошибки**: три новых кода в `error_localization.dart` — `SUBSCRIPTION_INACTIVE`/`PLAN_LIMIT_REACHED`/`PLAN_FEATURE_UNAVAILABLE`, тексты без слов «оплата»/«тариф»/«долг» (сотрудник на тариф не влияет). Кнопки завершения/паузы уже начатой смены не трогались — бэк их не блокирует в read-only организации (`require_active_subscription` гейтит только `start_shift`, не `pause`/`resume`/`finish`).
+
+**Находка вне явного текста ТЗ**: `join_by_invite` на бэке проверяет `require_active_subscription` раньше `require_capacity` — вступление по инвайт-коду в приостановленную организацию даёт `SUBSCRIPTION_INACTIVE`, а не только `PLAN_LIMIT_REACHED` (единственный код, упомянутый в mobile.md для этого экрана). `InviteCubit`/`InvitePage` (`invite_links`) раньше сваливали оба тарифных кода в общий бакет `InviteErrorKind.network` (иконка wifi-off, заголовок «Произошла ошибка», сырой `message` с бэка) — заведены отдельные финальные (неповторяемые) состояния `planLimitReached`/`subscriptionInactive` с текстами из `error_localization.dart`.
+
+**Тесты**: `test/data/organization/organization_subscription_mapper_test.dart` (DTO → domain, включая незнакомый статус и отсутствие поля; `banner` на всех статусах), `test/pages/invite/invite_cubit_test.dart` (новые кейсы `PLAN_LIMIT_REACHED`/`SUBSCRIPTION_INACTIVE`).
+
+---
+
 ## Ключевые решения
 
 См. `docs/decisions/` для полных ADR.

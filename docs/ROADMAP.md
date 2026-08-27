@@ -350,3 +350,14 @@
 - [x] **Постоянная точка входа**: `PwaInstallButton` в аппбаре трекера смены; сам схлопывается вне web / в standalone / после `appinstalled`
 - [x] **Вне scope (не трогали)**: `web/manifest.json`, иконки, сервис-воркер, аналитика конверсии
 - [x] `make gen` + `make loc` прогнаны, `make check` зелёный (290/290, включая новый `test/shared/pwa/pwa_install_cubit_test.dart` — 17 тестов), `flutter build web --release --csp --no-tree-shake-icons` собирается (web-реализация реально попадает в бандл — проверено grep'ом по `main.dart.js`)
+
+---
+
+## Фича — Тарифы и подписки (tariffs) `[~]` (`../docs/tasks/tariffs/mobile.md`)
+- [x] **Данные**: additive nullable `Organization.subscription` (`OrganizationSubscription` — `status`/`daysLeft`/`currentPeriodEnd`/`graceEndsAt`, `enum SubscriptionStatus` c `value`/`fromValue`, незнакомый статус → `null` без падения); модель мапит только подмножество backend-контракта `SubscriptionResponse`, нужное баннеру (лимиты/фичи/цена мобилке не нужны — гейтинга фич в мобилке нет)
+- [x] **Баннер**: derived-геттер `OrganizationSubscription.banner` (trialing + `daysLeft ≤ 5` → «Пробный период заканчивается через N дней»; `past_due` → «Период оплачен до … Доступ сохранится до …»; `suspended`/`canceled` → «Организация в режиме только для чтения»; `active` — без баннера) + некликабельный виджет `_SubscriptionBanner` с общей подписью «Продлите тариф в веб-кабинете»
+- [x] **Отдельного Cubit нет**: состояние подписки приезжает вместе с организацией. Размещение — на `OrganizationDetailPage`, а не на главном табе «Смена»: бэк заполняет `subscription` только в `GET /organizations/{org_id}` (единичный fetch), список организаций (питает главный таб) поле никогда не содержит — иначе потребовался бы новый сетевой вызов, что противоречило бы самому ТЗ
+- [x] **Ошибки**: `SUBSCRIPTION_INACTIVE`/`PLAN_LIMIT_REACHED`/`PLAN_FEATURE_UNAVAILABLE` в `error_localization.dart`, тексты без слов «оплата»/«тариф»/«долг» там, где виден employee; кнопки завершения/паузы уже начатой смены не блокировались и не трогались (бэк их не гейтит)
+- [x] **Находка вне ТЗ**: `join_by_invite` проверяет активность подписки раньше лимита мест — экран приглашения (`invite_links`) может получить и `SUBSCRIPTION_INACTIVE`, не только `PLAN_LIMIT_REACHED`; оба раньше проваливались в общий бакет «сеть/неизвестно» с неверной иконкой и текстом — заведены отдельные финальные состояния `InviteErrorKind.planLimitReached`/`subscriptionInactive`
+- [x] `make check` зелёный (367/367), `make gen` + `make loc` прогнаны, `/code-review` + `/simplify` прогнаны
+- [ ] **Мерж в `main`** — за аналитиком (корень)
