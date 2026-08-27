@@ -59,12 +59,18 @@ class ShiftDataSource {
     return ShiftStatsDto.fromJson(response.data!);
   }
 
+  /// Старт смены. [geoFallbackPhotoId] + [geoFallbackReason] — ветка старта
+  /// без координат по фото (`shift_geo_photo_fallback`): передаются только
+  /// вместе и только когда координат нет (иначе бэк вернёт 422
+  /// `VALIDATION_ERROR` — фото не обходит проверку «вне зоны»).
   Future<ShiftDto> startShift({
     String? organizationId,
     double? latitude,
     double? longitude,
     String? workLocationId,
     String? workScheduleId,
+    String? geoFallbackPhotoId,
+    String? geoFallbackReason,
   }) async {
     final data = <String, dynamic>{};
     if (organizationId != null) data['organization_id'] = organizationId;
@@ -72,6 +78,12 @@ class ShiftDataSource {
     if (longitude != null) data['longitude'] = longitude;
     if (workLocationId != null) data['work_location_id'] = workLocationId;
     if (workScheduleId != null) data['work_schedule_id'] = workScheduleId;
+    if (geoFallbackPhotoId != null) {
+      data['geo_fallback_photo_id'] = geoFallbackPhotoId;
+    }
+    if (geoFallbackReason != null) {
+      data['geo_fallback_reason'] = geoFallbackReason;
+    }
 
     final response = await _dio.post<Map<String, dynamic>>(
       '/shifts/start',

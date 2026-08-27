@@ -62,6 +62,8 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
     double? longitude,
     String? workLocationId,
     String? workScheduleId,
+    String? geoFallbackPhotoId,
+    String? geoFallbackReason,
   }) {
     return execute(() async {
       final dto = await _dataSource.startShift(
@@ -70,6 +72,8 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
         longitude: longitude,
         workLocationId: workLocationId,
         workScheduleId: workScheduleId,
+        geoFallbackPhotoId: geoFallbackPhotoId,
+        geoFallbackReason: geoFallbackReason,
       );
       return dto.toDomain();
     });

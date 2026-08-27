@@ -24,12 +24,21 @@ abstract class ShiftRepository {
     DateTime? dateTo,
   });
 
+  /// Старт смены.
+  ///
+  /// [geoFallbackPhotoId] и [geoFallbackReason] — ветка старта без координат
+  /// по фото (`shift_geo_photo_fallback`). Передаются строго вместе, только
+  /// когда координат нет и точка выбрана вручную; [geoFallbackReason] — код
+  /// фактически полученного `GeoFailure`. Вместе с координатами бэк вернёт
+  /// 422 `VALIDATION_ERROR`: фото не обходит проверку «вне зоны».
   Future<Task<Shift>> startShift({
     String? organizationId,
     double? latitude,
     double? longitude,
     String? workLocationId,
     String? workScheduleId,
+    String? geoFallbackPhotoId,
+    String? geoFallbackReason,
   });
 
   Future<Task<Shift>> pauseShift(String shiftId);

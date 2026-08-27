@@ -105,5 +105,18 @@ abstract class Shift with _$Shift {
 
     /// Смена удалена (soft-delete). В обычных выборках всегда `false`.
     @Default(false) bool isDeleted,
+
+    /// Смена стартовала без геопроверки — по фото вместо координат
+    /// (`shift_geo_photo_fallback`). `false` — обычная смена либо старый бэк.
+    /// В UI сотрудника не выводится (вне scope) — признак нужен админке.
+    @Default(false) bool geoFallback,
+
+    /// Машинный код гео-ошибки, приведшей в fallback (`GEO_*` из таксономии
+    /// `GeoService`). `null` — обычная смена.
+    String? geoFallbackReason,
+
+    /// Файл фото, приложенного к fallback-старту. `null` — обычная смена или
+    /// файл удалён (FK `ON DELETE SET NULL`, причина при этом остаётся).
+    String? geoFallbackPhotoFileId,
   }) = _Shift;
 }

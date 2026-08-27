@@ -451,6 +451,205 @@ class AppLocalizationsRu extends AppLocalizations {
       'Для доступа к геолокации откройте сайт по защищённому соединению (HTTPS).';
 
   @override
+  String get geoPermissionDeniedTitle => 'Нужен доступ к геолокации';
+
+  @override
+  String get geoUnavailableTitle => 'Геопозиция не определена';
+
+  @override
+  String get geoUnsupportedTitle => 'Геолокация не поддерживается';
+
+  @override
+  String get geoInsecureContextTitle => 'Небезопасное соединение';
+
+  @override
+  String get geoBlockedBySystemTitle => 'Геолокацию запрещает система';
+
+  @override
+  String get geoBlockedBySystemMessage =>
+      'В браузере доступ разрешён, но система запрещает геолокацию самому браузеру. Включите доступ к геопозиции для браузера в настройках операционной системы.';
+
+  @override
+  String get geoBlockedUnknownLevelMessage =>
+      'Доступ к геолокации заблокирован. Проверьте два уровня: настройки сайта в браузере (значок 🔒 слева от адреса) и разрешение геолокации для браузера в настройках системы.';
+
+  @override
+  String get geoHowToFix => 'Как исправить';
+
+  @override
+  String get geoDiagnosticsTitle => 'Проверка геолокации';
+
+  @override
+  String get geoDiagnosticsStatusSection => 'Статус';
+
+  @override
+  String get geoDiagnosticsPermissionSiteLabel => 'Доступ сайта к геолокации';
+
+  @override
+  String get geoDiagnosticsPermissionAppLabel =>
+      'Доступ приложения к геолокации';
+
+  @override
+  String get geoDiagnosticsServiceLabel => 'Службы геолокации устройства';
+
+  @override
+  String get geoDiagnosticsStateGranted => 'Разрешено';
+
+  @override
+  String get geoDiagnosticsStateBlocked => 'Заблокировано';
+
+  @override
+  String get geoDiagnosticsStateNotRequested => 'Не запрошено';
+
+  @override
+  String get geoDiagnosticsStateUnknown => 'Неизвестно';
+
+  @override
+  String get geoDiagnosticsStateOn => 'Включены';
+
+  @override
+  String get geoDiagnosticsStateOff => 'Выключены';
+
+  @override
+  String get geoDiagnosticsRefreshStatus => 'Обновить статус';
+
+  @override
+  String get geoDiagnosticsTestSection => 'Тест';
+
+  @override
+  String get geoDiagnosticsRunTest => 'Проверить геолокацию';
+
+  @override
+  String get geoDiagnosticsTestRunning => 'Определяем геопозицию…';
+
+  @override
+  String get geoDiagnosticsTestSuccess => 'Геопозиция получена';
+
+  @override
+  String geoDiagnosticsTestCoords(String coords) {
+    return 'Координаты: $coords';
+  }
+
+  @override
+  String geoDiagnosticsTestAccuracy(String meters) {
+    return 'Точность: ±$meters м';
+  }
+
+  @override
+  String get geoDiagnosticsInstructionsSection => 'Что делать';
+
+  @override
+  String get geoDiagnosticsSiteStepTitle => 'Шаг 1. Доступ в браузере';
+
+  @override
+  String get geoDiagnosticsSiteStepBody =>
+      'Нажмите значок 🔒 (или ⓘ) слева от адреса сайта → «Настройки сайтов» → «Геопозиция» → «Разрешить». Затем обновите страницу.';
+
+  @override
+  String get geoDiagnosticsSystemStepTitle => 'Шаг 2. Доступ в системе';
+
+  @override
+  String get geoDiagnosticsSystemStepMacOs =>
+      'Системные настройки → Конфиденциальность и безопасность → Службы геолокации: включите службы и разрешите доступ вашему браузеру.';
+
+  @override
+  String get geoDiagnosticsSystemStepWindows =>
+      'Параметры → Конфиденциальность и защита → Расположение: включите «Службы определения местоположения» для устройства и доступ для вашего браузера.';
+
+  @override
+  String get geoDiagnosticsSystemStepAndroid =>
+      'Настройки → Приложения → ваш браузер → Разрешения → «Местоположение» → «Разрешить». Проверьте, что геолокация включена в шторке устройства.';
+
+  @override
+  String get geoDiagnosticsSystemStepIos =>
+      'Настройки → Конфиденциальность и безопасность → Службы геолокации: включите службы, затем Настройки → Приложения → Safari → «Геопозиция» → «Спросить» или «Разрешить».';
+
+  @override
+  String get geoDiagnosticsSystemStepOther =>
+      'Разрешите геолокацию вашему браузеру в настройках операционной системы — раздел конфиденциальности или местоположения.';
+
+  @override
+  String get geoDiagnosticsNativeStepTitle => 'Настройки приложения';
+
+  @override
+  String get geoDiagnosticsNativeStepBody =>
+      'Разрешите доступ к геопозиции для приложения и убедитесь, что службы геолокации устройства включены.';
+
+  @override
+  String get geoDiagnosticsOpenLocationSettings =>
+      'Открыть настройки геолокации';
+
+  @override
+  String get shiftStartWithPhoto => 'Начать по фото';
+
+  @override
+  String get geoFallbackTitle => 'Старт смены по фото';
+
+  @override
+  String get geoFallbackIntro =>
+      'Геолокация недоступна. Чтобы не терять учёт времени, выберите рабочую точку и приложите фото — администратор увидит пометку и разберётся.';
+
+  @override
+  String get geoFallbackLocationStep => '1. Рабочая точка';
+
+  @override
+  String get geoFallbackScheduleStep => '2. График работы';
+
+  @override
+  String get geoFallbackPhotoStep => '3. Фото';
+
+  @override
+  String get geoFallbackLocationSelect => 'Выбрать точку';
+
+  @override
+  String get geoFallbackScheduleSelect => 'Выбрать график';
+
+  @override
+  String get geoFallbackScheduleLocationFirst =>
+      'Сначала выберите рабочую точку';
+
+  @override
+  String get geoFallbackScheduleEmpty =>
+      'Доступных графиков нет — обратитесь к администратору';
+
+  @override
+  String get geoFallbackScheduleNotRequired => 'График не требуется';
+
+  @override
+  String get geoFallbackCameraPreparing => 'Проверяем камеру…';
+
+  @override
+  String get geoFallbackCameraHint =>
+      'Сделайте снимок — он подтвердит, что вы на месте.';
+
+  @override
+  String get geoFallbackCameraShoot => 'Снять';
+
+  @override
+  String get geoFallbackCameraUnavailable =>
+      'Камера недоступна — приложите файл с изображением.';
+
+  @override
+  String get geoFallbackPickFile => 'Выбрать файл';
+
+  @override
+  String get geoFallbackRetakePhoto => 'Переснять';
+
+  @override
+  String get geoFallbackPhotoProcessing => 'Готовим снимок…';
+
+  @override
+  String get geoFallbackSubmit => 'Начать смену';
+
+  @override
+  String get geoFallbackStarted =>
+      'Смена начата, старт помечен как без геопроверки';
+
+  @override
+  String get errorGeoFallbackPhotoInvalid =>
+      'Не удалось прикрепить фото, попробуйте снять заново';
+
+  @override
   String get shiftConfirmFinish => 'Завершить смену?';
 
   @override

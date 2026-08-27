@@ -452,6 +452,98 @@ void main() {
     });
   });
 
+  group('пост-диагностика (geo_troubleshooting)', () {
+    // Маппинг geolocator_web: granted→whileInUse, prompt→denied,
+    // denied→deniedForever. Проверяем, что читаем его именно так.
+    final permissionCases = <(LocationPermission, GeoPermissionState)>[
+      (LocationPermission.whileInUse, GeoPermissionState.granted),
+      (LocationPermission.always, GeoPermissionState.granted),
+      (LocationPermission.deniedForever, GeoPermissionState.blocked),
+      (LocationPermission.denied, GeoPermissionState.notRequested),
+      (LocationPermission.unableToDetermine, GeoPermissionState.unknown),
+    ];
+
+    for (final (platformValue, expected) in permissionCases) {
+      test('checkPermissionState: $platformValue → $expected', () async {
+        when(
+          () => geolocator.checkPermission(),
+        ).thenAnswer((_) async => platformValue);
+
+        expect(await webService().checkPermissionState(), expected);
+      });
+    }
+
+    test('Permissions API недоступен (исключение) → unknown', () async {
+      // geolocator_web бросает ArgumentError на незнакомом состоянии, старый
+      // Safari — вовсе не отдаёт navigator.permissions.
+      when(() => geolocator.checkPermission()).thenThrow(ArgumentError('nope'));
+
+      expect(
+        await webService().checkPermissionState(),
+        GeoPermissionState.unknown,
+      );
+    });
+
+    test('сайту доступ разрешён, а позиции нет → блок на уровне ОС', () async {
+      when(
+        () => geolocator.checkPermission(),
+      ).thenAnswer((_) async => LocationPermission.whileInUse);
+
+      expect(await webService().diagnoseBlockLevel(), GeoBlockLevel.system);
+    });
+
+    test('доступ заблокирован в браузере → блок на уровне сайта', () async {
+      when(
+        () => geolocator.checkPermission(),
+      ).thenAnswer((_) async => LocationPermission.deniedForever);
+
+      expect(await webService().diagnoseBlockLevel(), GeoBlockLevel.site);
+    });
+
+    test('уровень не определить → unknown', () async {
+      when(
+        () => geolocator.checkPermission(),
+      ).thenAnswer((_) async => LocationPermission.unableToDetermine);
+
+      expect(await webService().diagnoseBlockLevel(), GeoBlockLevel.unknown);
+    });
+
+    test('diagnose на web не спрашивает системный переключатель', () async {
+      when(
+        () => geolocator.checkPermission(),
+      ).thenAnswer((_) async => LocationPermission.whileInUse);
+
+      final diagnostics = await webService().diagnose();
+
+      expect(diagnostics.permission, GeoPermissionState.granted);
+      // У браузера нет своего тумблера геолокации — поле не применимо.
+      expect(diagnostics.serviceEnabled, isNull);
+      verifyNever(() => geolocator.isLocationServiceEnabled());
+    });
+
+    test('diagnose на native отдаёт состояние служб геолокации', () async {
+      when(
+        () => geolocator.checkPermission(),
+      ).thenAnswer((_) async => LocationPermission.deniedForever);
+      when(
+        () => geolocator.isLocationServiceEnabled(),
+      ).thenAnswer((_) async => false);
+
+      final diagnostics = await nativeService().diagnose();
+
+      expect(diagnostics.permission, GeoPermissionState.blocked);
+      expect(diagnostics.serviceEnabled, isFalse);
+    });
+
+    test('успешная позиция несёт фактическую точность', () async {
+      stubGetPosition(_position(accuracy: 42));
+
+      final result = await webService().getCurrentPosition();
+
+      expect((result as GeoSuccess).accuracyMeters, 42);
+    });
+  });
+
   group('логирование шагов', () {
     test('пишет платформу и успех в крошки', () async {
       final steps = <String>[];

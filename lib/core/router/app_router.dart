@@ -77,6 +77,9 @@ class AppRouter extends RootStackRouter {
     // Центр уведомлений (notifications) — root-уровня: колокольчик в
     // аппбаре любого таба пушит его через `context.router.root.push(...)`.
     AutoRoute(page: NotificationsRoute.page, path: '/notifications'),
+    // Проверка геолокации (geo_troubleshooting) — root-уровня: открывается и
+    // из диалога гео-ошибки на табе «Смена», и из настроек профиля.
+    AutoRoute(page: GeoDiagnosticsRoute.page, path: '/geo-diagnostics'),
     // «Мои тесты» + прохождение (employee_tests) — root-уровня: список
     // фильтруется по всем организациям пользователя (не завязан на один
     // `<org-base>`), а прохождение открывается и из списка, и из
@@ -115,6 +118,17 @@ class AppRouter extends RootStackRouter {
               path: 'shift',
               initial: true,
               page: ShiftTrackerRoute.page,
+            ),
+            // Фолбэк-старт смены по фото (shift_geo_photo_fallback) —
+            // внутри таба «Смена», чтобы переиспользовать те же модалки
+            // выбора точки и графика (они зарегистрированы соседями).
+            // Результат (стартовавшая смена) типизируется на месте вызова:
+            // `context.router.push<Shift?>(...)` — сам `AutoRoute` не
+            // параметризуется типом (в отличие от `CustomRoute<T>`), а
+            // completer создаётся по типу из push.
+            AutoRoute(
+              path: 'geo-fallback-start',
+              page: GeoFallbackStartRoute.page,
             ),
             // Выбор рабочей точки при старте смены — модальный bottom sheet.
             CustomRoute<WorkLocationPickerResult?>(

@@ -381,6 +381,97 @@ class ExampleHomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [GeoDiagnosticsPage]
+class GeoDiagnosticsRoute extends PageRouteInfo<void> {
+  const GeoDiagnosticsRoute({List<PageRouteInfo>? children})
+    : super(GeoDiagnosticsRoute.name, initialChildren: children);
+
+  static const String name = 'GeoDiagnosticsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const GeoDiagnosticsPage();
+    },
+  );
+}
+
+/// generated route for
+/// [GeoFallbackStartPage]
+class GeoFallbackStartRoute extends PageRouteInfo<GeoFallbackStartRouteArgs> {
+  GeoFallbackStartRoute({
+    required String organizationId,
+    required String geoFallbackReason,
+    String organizationTimezone = 'Europe/Moscow',
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         GeoFallbackStartRoute.name,
+         args: GeoFallbackStartRouteArgs(
+           organizationId: organizationId,
+           geoFallbackReason: geoFallbackReason,
+           organizationTimezone: organizationTimezone,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'GeoFallbackStartRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<GeoFallbackStartRouteArgs>();
+      return GeoFallbackStartPage(
+        organizationId: args.organizationId,
+        geoFallbackReason: args.geoFallbackReason,
+        organizationTimezone: args.organizationTimezone,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class GeoFallbackStartRouteArgs {
+  const GeoFallbackStartRouteArgs({
+    required this.organizationId,
+    required this.geoFallbackReason,
+    this.organizationTimezone = 'Europe/Moscow',
+    this.key,
+  });
+
+  final String organizationId;
+
+  final String geoFallbackReason;
+
+  final String organizationTimezone;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'GeoFallbackStartRouteArgs{organizationId: $organizationId, geoFallbackReason: $geoFallbackReason, organizationTimezone: $organizationTimezone, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! GeoFallbackStartRouteArgs) return false;
+    return organizationId == other.organizationId &&
+        geoFallbackReason == other.geoFallbackReason &&
+        organizationTimezone == other.organizationTimezone &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      organizationId.hashCode ^
+      geoFallbackReason.hashCode ^
+      organizationTimezone.hashCode ^
+      key.hashCode;
+}
+
+/// generated route for
 /// [HistoryTabPage]
 class HistoryTab extends PageRouteInfo<void> {
   const HistoryTab({List<PageRouteInfo>? children})

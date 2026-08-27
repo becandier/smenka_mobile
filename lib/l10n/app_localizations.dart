@@ -880,6 +880,360 @@ abstract class AppLocalizations {
   /// **'Для доступа к геолокации откройте сайт по защищённому соединению (HTTPS).'**
   String get geoInsecureContextMessage;
 
+  /// No description provided for @geoPermissionDeniedTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужен доступ к геолокации'**
+  String get geoPermissionDeniedTitle;
+
+  /// No description provided for @geoUnavailableTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геопозиция не определена'**
+  String get geoUnavailableTitle;
+
+  /// No description provided for @geoUnsupportedTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация не поддерживается'**
+  String get geoUnsupportedTitle;
+
+  /// No description provided for @geoInsecureContextTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Небезопасное соединение'**
+  String get geoInsecureContextTitle;
+
+  /// No description provided for @geoBlockedBySystemTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокацию запрещает система'**
+  String get geoBlockedBySystemTitle;
+
+  /// No description provided for @geoBlockedBySystemMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'В браузере доступ разрешён, но система запрещает геолокацию самому браузеру. Включите доступ к геопозиции для браузера в настройках операционной системы.'**
+  String get geoBlockedBySystemMessage;
+
+  /// No description provided for @geoBlockedUnknownLevelMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступ к геолокации заблокирован. Проверьте два уровня: настройки сайта в браузере (значок 🔒 слева от адреса) и разрешение геолокации для браузера в настройках системы.'**
+  String get geoBlockedUnknownLevelMessage;
+
+  /// No description provided for @geoHowToFix.
+  ///
+  /// In ru, this message translates to:
+  /// **'Как исправить'**
+  String get geoHowToFix;
+
+  /// No description provided for @geoDiagnosticsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверка геолокации'**
+  String get geoDiagnosticsTitle;
+
+  /// No description provided for @geoDiagnosticsStatusSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Статус'**
+  String get geoDiagnosticsStatusSection;
+
+  /// No description provided for @geoDiagnosticsPermissionSiteLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступ сайта к геолокации'**
+  String get geoDiagnosticsPermissionSiteLabel;
+
+  /// No description provided for @geoDiagnosticsPermissionAppLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступ приложения к геолокации'**
+  String get geoDiagnosticsPermissionAppLabel;
+
+  /// No description provided for @geoDiagnosticsServiceLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Службы геолокации устройства'**
+  String get geoDiagnosticsServiceLabel;
+
+  /// No description provided for @geoDiagnosticsStateGranted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешено'**
+  String get geoDiagnosticsStateGranted;
+
+  /// No description provided for @geoDiagnosticsStateBlocked.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заблокировано'**
+  String get geoDiagnosticsStateBlocked;
+
+  /// No description provided for @geoDiagnosticsStateNotRequested.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не запрошено'**
+  String get geoDiagnosticsStateNotRequested;
+
+  /// No description provided for @geoDiagnosticsStateUnknown.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неизвестно'**
+  String get geoDiagnosticsStateUnknown;
+
+  /// No description provided for @geoDiagnosticsStateOn.
+  ///
+  /// In ru, this message translates to:
+  /// **'Включены'**
+  String get geoDiagnosticsStateOn;
+
+  /// No description provided for @geoDiagnosticsStateOff.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выключены'**
+  String get geoDiagnosticsStateOff;
+
+  /// No description provided for @geoDiagnosticsRefreshStatus.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обновить статус'**
+  String get geoDiagnosticsRefreshStatus;
+
+  /// No description provided for @geoDiagnosticsTestSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тест'**
+  String get geoDiagnosticsTestSection;
+
+  /// No description provided for @geoDiagnosticsRunTest.
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверить геолокацию'**
+  String get geoDiagnosticsRunTest;
+
+  /// No description provided for @geoDiagnosticsTestRunning.
+  ///
+  /// In ru, this message translates to:
+  /// **'Определяем геопозицию…'**
+  String get geoDiagnosticsTestRunning;
+
+  /// No description provided for @geoDiagnosticsTestSuccess.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геопозиция получена'**
+  String get geoDiagnosticsTestSuccess;
+
+  /// No description provided for @geoDiagnosticsTestCoords.
+  ///
+  /// In ru, this message translates to:
+  /// **'Координаты: {coords}'**
+  String geoDiagnosticsTestCoords(String coords);
+
+  /// No description provided for @geoDiagnosticsTestAccuracy.
+  ///
+  /// In ru, this message translates to:
+  /// **'Точность: ±{meters} м'**
+  String geoDiagnosticsTestAccuracy(String meters);
+
+  /// No description provided for @geoDiagnosticsInstructionsSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Что делать'**
+  String get geoDiagnosticsInstructionsSection;
+
+  /// No description provided for @geoDiagnosticsSiteStepTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаг 1. Доступ в браузере'**
+  String get geoDiagnosticsSiteStepTitle;
+
+  /// No description provided for @geoDiagnosticsSiteStepBody.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нажмите значок 🔒 (или ⓘ) слева от адреса сайта → «Настройки сайтов» → «Геопозиция» → «Разрешить». Затем обновите страницу.'**
+  String get geoDiagnosticsSiteStepBody;
+
+  /// No description provided for @geoDiagnosticsSystemStepTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шаг 2. Доступ в системе'**
+  String get geoDiagnosticsSystemStepTitle;
+
+  /// No description provided for @geoDiagnosticsSystemStepMacOs.
+  ///
+  /// In ru, this message translates to:
+  /// **'Системные настройки → Конфиденциальность и безопасность → Службы геолокации: включите службы и разрешите доступ вашему браузеру.'**
+  String get geoDiagnosticsSystemStepMacOs;
+
+  /// No description provided for @geoDiagnosticsSystemStepWindows.
+  ///
+  /// In ru, this message translates to:
+  /// **'Параметры → Конфиденциальность и защита → Расположение: включите «Службы определения местоположения» для устройства и доступ для вашего браузера.'**
+  String get geoDiagnosticsSystemStepWindows;
+
+  /// No description provided for @geoDiagnosticsSystemStepAndroid.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки → Приложения → ваш браузер → Разрешения → «Местоположение» → «Разрешить». Проверьте, что геолокация включена в шторке устройства.'**
+  String get geoDiagnosticsSystemStepAndroid;
+
+  /// No description provided for @geoDiagnosticsSystemStepIos.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки → Конфиденциальность и безопасность → Службы геолокации: включите службы, затем Настройки → Приложения → Safari → «Геопозиция» → «Спросить» или «Разрешить».'**
+  String get geoDiagnosticsSystemStepIos;
+
+  /// No description provided for @geoDiagnosticsSystemStepOther.
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешите геолокацию вашему браузеру в настройках операционной системы — раздел конфиденциальности или местоположения.'**
+  String get geoDiagnosticsSystemStepOther;
+
+  /// No description provided for @geoDiagnosticsNativeStepTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки приложения'**
+  String get geoDiagnosticsNativeStepTitle;
+
+  /// No description provided for @geoDiagnosticsNativeStepBody.
+  ///
+  /// In ru, this message translates to:
+  /// **'Разрешите доступ к геопозиции для приложения и убедитесь, что службы геолокации устройства включены.'**
+  String get geoDiagnosticsNativeStepBody;
+
+  /// No description provided for @geoDiagnosticsOpenLocationSettings.
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть настройки геолокации'**
+  String get geoDiagnosticsOpenLocationSettings;
+
+  /// No description provided for @shiftStartWithPhoto.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать по фото'**
+  String get shiftStartWithPhoto;
+
+  /// No description provided for @geoFallbackTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Старт смены по фото'**
+  String get geoFallbackTitle;
+
+  /// No description provided for @geoFallbackIntro.
+  ///
+  /// In ru, this message translates to:
+  /// **'Геолокация недоступна. Чтобы не терять учёт времени, выберите рабочую точку и приложите фото — администратор увидит пометку и разберётся.'**
+  String get geoFallbackIntro;
+
+  /// No description provided for @geoFallbackLocationStep.
+  ///
+  /// In ru, this message translates to:
+  /// **'1. Рабочая точка'**
+  String get geoFallbackLocationStep;
+
+  /// No description provided for @geoFallbackScheduleStep.
+  ///
+  /// In ru, this message translates to:
+  /// **'2. График работы'**
+  String get geoFallbackScheduleStep;
+
+  /// No description provided for @geoFallbackPhotoStep.
+  ///
+  /// In ru, this message translates to:
+  /// **'3. Фото'**
+  String get geoFallbackPhotoStep;
+
+  /// No description provided for @geoFallbackLocationSelect.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать точку'**
+  String get geoFallbackLocationSelect;
+
+  /// No description provided for @geoFallbackScheduleSelect.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать график'**
+  String get geoFallbackScheduleSelect;
+
+  /// No description provided for @geoFallbackScheduleLocationFirst.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сначала выберите рабочую точку'**
+  String get geoFallbackScheduleLocationFirst;
+
+  /// No description provided for @geoFallbackScheduleEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доступных графиков нет — обратитесь к администратору'**
+  String get geoFallbackScheduleEmpty;
+
+  /// No description provided for @geoFallbackScheduleNotRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'График не требуется'**
+  String get geoFallbackScheduleNotRequired;
+
+  /// No description provided for @geoFallbackCameraPreparing.
+  ///
+  /// In ru, this message translates to:
+  /// **'Проверяем камеру…'**
+  String get geoFallbackCameraPreparing;
+
+  /// No description provided for @geoFallbackCameraHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделайте снимок — он подтвердит, что вы на месте.'**
+  String get geoFallbackCameraHint;
+
+  /// No description provided for @geoFallbackCameraShoot.
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять'**
+  String get geoFallbackCameraShoot;
+
+  /// No description provided for @geoFallbackCameraUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Камера недоступна — приложите файл с изображением.'**
+  String get geoFallbackCameraUnavailable;
+
+  /// No description provided for @geoFallbackPickFile.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать файл'**
+  String get geoFallbackPickFile;
+
+  /// No description provided for @geoFallbackRetakePhoto.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переснять'**
+  String get geoFallbackRetakePhoto;
+
+  /// No description provided for @geoFallbackPhotoProcessing.
+  ///
+  /// In ru, this message translates to:
+  /// **'Готовим снимок…'**
+  String get geoFallbackPhotoProcessing;
+
+  /// No description provided for @geoFallbackSubmit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать смену'**
+  String get geoFallbackSubmit;
+
+  /// No description provided for @geoFallbackStarted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена начата, старт помечен как без геопроверки'**
+  String get geoFallbackStarted;
+
+  /// No description provided for @errorGeoFallbackPhotoInvalid.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось прикрепить фото, попробуйте снять заново'**
+  String get errorGeoFallbackPhotoInvalid;
+
   /// No description provided for @shiftConfirmFinish.
   ///
   /// In ru, this message translates to:

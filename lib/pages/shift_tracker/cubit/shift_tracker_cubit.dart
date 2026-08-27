@@ -455,6 +455,9 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         actionStatus: FeatureStatus.loading,
         actionError: null,
         actionErrorCode: null,
+        // Новая попытка — прошлый гео-отказ больше не описывает реальность.
+        lastGeoFailure: null,
+        geoBlockLevel: GeoBlockLevel.unknown,
       ),
     );
 
@@ -475,27 +478,33 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
             emit(state.copyWith(showLowAccuracyWarning: true));
           }
         // Гео-отказы не пишем в actionStatus/actionError: конкретный
-        // платформо-зависимый UX (диалог/тост) выбирает вызывающий код по
+        // платформо-зависимый UX (диалог) выбирает вызывающий код по
         // возвращённому StartShiftResult. Статус возвращаем в initial, чтобы
         // BlocListener сетевых ошибок не показал ложный тост.
         case GeoServiceDisabled():
-          emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoServiceDisabled;
+          return _failStartWithGeo(
+            geoResult,
+            StartShiftResult.geoServiceDisabled,
+          );
         case GeoPermissionDenied():
-          emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoPermissionDenied;
+          return _failStartWithGeo(
+            geoResult,
+            StartShiftResult.geoPermissionDenied,
+          );
         case GeoPermissionDeniedForever():
-          emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoPermissionDeniedForever;
+          return _failStartWithGeo(
+            geoResult,
+            StartShiftResult.geoPermissionDeniedForever,
+          );
         case GeoUnavailable():
-          emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoUnavailable;
+          return _failStartWithGeo(geoResult, StartShiftResult.geoUnavailable);
         case GeoInsecureContext():
-          emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoInsecureContext;
+          return _failStartWithGeo(
+            geoResult,
+            StartShiftResult.geoInsecureContext,
+          );
         case GeoUnsupported():
-          emit(state.copyWith(actionStatus: FeatureStatus.initial));
-          return StartShiftResult.geoUnsupported;
+          return _failStartWithGeo(geoResult, StartShiftResult.geoUnsupported);
       }
 
       // Гео-check организация: точка известна только сейчас (только что
@@ -517,6 +526,58 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     return _performStart(lat: lat, lng: lng);
   }
+
+  /// Общий хвост всех гео-отказов старта: кладёт в состояние сам объект
+  /// [GeoFailure] (UI строит по нему диалог, а `shift_geo_photo_fallback` —
+  /// машинный `code` причины) и, для «запрещено навсегда», уровень блокировки
+  /// из пост-диагностики (`geo_troubleshooting`, сценарий 1).
+  ///
+  /// Пост-диагностика запускается только для [GeoPermissionDeniedForever]:
+  /// у остальных отказов уровень разрешения ничего не объясняет (сервис
+  /// выключен / нет HTTPS / браузер не умеет), а лишний запрос к Permissions
+  /// API затянул бы показ диалога.
+  Future<StartShiftResult> _failStartWithGeo(
+    GeoFailure failure,
+    StartShiftResult result,
+  ) async {
+    final blockLevel = failure is GeoPermissionDeniedForever
+        ? await _geoService.diagnoseBlockLevel()
+        : GeoBlockLevel.unknown;
+    emit(
+      state.copyWith(
+        actionStatus: FeatureStatus.initial,
+        lastGeoFailure: failure,
+        geoBlockLevel: blockLevel,
+      ),
+    );
+    return result;
+  }
+
+  /// Принять смену, стартовавшую в отдельном флоу (фолбэк-старт по фото,
+  /// `shift_geo_photo_fallback`): трекер показывает её как активную и
+  /// запускает таймер, будто стартовал сам.
+  ///
+  /// Кубиты флоу и трекера друг о друге не знают — связь только через
+  /// результат навигации (см. `_IdleShiftContent`).
+  void adoptStartedShift(Shift shift) {
+    emit(
+      state.copyWith(
+        activeShift: state.activeShift.toSuccess(shift),
+        actionStatus: FeatureStatus.success,
+        actionError: null,
+        actionErrorCode: null,
+        lastGeoFailure: null,
+        geoBlockLevel: GeoBlockLevel.unknown,
+      ),
+    );
+    _startTimer(shift);
+  }
+
+  /// Системные настройки приложения/геолокации (native) — UI дёргает их через
+  /// кубит, чтобы не создавать второй экземпляр [GeoService] на экране.
+  Future<void> openGeoAppSettings() => _geoService.openAppSettings();
+
+  Future<void> openGeoLocationSettings() => _geoService.openLocationSettings();
 
   /// Резолвит эффективный набор графиков по свежим координатам
   /// непосредственно перед стартом (только гео-check организации).
