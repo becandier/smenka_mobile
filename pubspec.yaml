@@ -59,6 +59,11 @@ dependencies:
   google_sign_in_web: ^1.1.3
   sign_in_with_apple: ^8.1.0
   timezone: ^0.11.1
+  # JS-interop к DOM. Нужен ровно одному web-only файлу
+  # (`lib/core/pwa/pwa_install_platform_web.dart`, фича pwa_install_promo):
+  # события `beforeinstallprompt`/`appinstalled` и media query `display-mode`.
+  # На native не попадает — файл подключается conditional export'ом.
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:

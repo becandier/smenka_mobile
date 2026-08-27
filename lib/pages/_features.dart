@@ -23,6 +23,7 @@ export 'overtime_request/_overtime_request.dart';
 export 'payroll/_payroll.dart';
 export 'penalty_form/_penalty_form.dart';
 export 'profile/_profile.dart';
+export 'pwa_install/_pwa_install.dart';
 export 'shift_checklists/_shift_checklists.dart';
 export 'shift_detail/_shift_detail.dart';
 export 'shift_history/_shift_history.dart';

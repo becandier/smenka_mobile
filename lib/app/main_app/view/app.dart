@@ -16,6 +16,7 @@ import 'package:smenka_mobile/core/constants/prefs_keys.dart';
 import 'package:smenka_mobile/core/deep_link/deep_link_service.dart';
 import 'package:smenka_mobile/core/deep_link/pending_invite_storage.dart';
 import 'package:smenka_mobile/core/theme/app_theme.dart';
+import 'package:smenka_mobile/data/api/local/pwa_promo_storage.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/api/local/theme_local_storage_api.dart';
 import 'package:smenka_mobile/data/domain/adjustment/_adjustment.dart';
@@ -46,6 +47,7 @@ import 'package:smenka_mobile/pages/theme/cubit/theme_cubit.dart';
 import 'package:smenka_mobile/shared/auth/cubit/auth_cubit.dart';
 import 'package:smenka_mobile/shared/auth/cubit/auth_state.dart';
 import 'package:smenka_mobile/shared/notifications/_notifications.dart';
+import 'package:smenka_mobile/shared/pwa/_pwa.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:upgrader/upgrader.dart';
 

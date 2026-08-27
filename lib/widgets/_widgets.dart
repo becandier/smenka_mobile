@@ -13,6 +13,7 @@ export 'notification_bell_button.dart';
 export 'paginated_section_data/_paginated_section_data.dart';
 export 'period_preset_selector.dart';
 export 'pin_code_field.dart';
+export 'pwa_install_button.dart';
 export 'section_data/_section_data.dart';
 export 'shift_author_block.dart';
 export 'shift_pause_list.dart';

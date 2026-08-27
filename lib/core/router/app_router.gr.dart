@@ -1483,6 +1483,22 @@ class ProfileTab extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PwaInstallModal]
+class PwaInstallRoute extends PageRouteInfo<void> {
+  const PwaInstallRoute({List<PageRouteInfo>? children})
+    : super(PwaInstallRoute.name, initialChildren: children);
+
+  static const String name = 'PwaInstallRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PwaInstallModal();
+    },
+  );
+}
+
+/// generated route for
 /// [ShiftChecklistsPage]
 class ShiftChecklistsRoute extends PageRouteInfo<ShiftChecklistsRouteArgs> {
   ShiftChecklistsRoute({

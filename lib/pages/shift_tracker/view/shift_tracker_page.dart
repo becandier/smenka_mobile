@@ -29,6 +29,7 @@ import 'package:smenka_mobile/widgets/app_button.dart';
 import 'package:smenka_mobile/widgets/app_shimmer_loader.dart';
 import 'package:smenka_mobile/widgets/geo/geo_permission_dialogs.dart';
 import 'package:smenka_mobile/widgets/notification_bell_button.dart';
+import 'package:smenka_mobile/widgets/pwa_install_button.dart';
 
 part '../widgets/idle_shift_content.dart';
 part '../widgets/active_shift_content.dart';
@@ -152,7 +153,9 @@ class _ShiftTrackerViewState extends State<_ShiftTrackerView>
         appBar: AppBar(
           title: Text(context.l10n.shiftTracker),
           centerTitle: true,
-          actions: const [NotificationBellButton()],
+          // «Установить приложение» (pwa_install_promo) — постоянная точка
+          // входа; сама скрывается вне web / в standalone / после установки.
+          actions: const [PwaInstallButton(), NotificationBellButton()],
         ),
         body: SafeArea(
           child: BlocBuilder<ShiftTrackerCubit, ShiftTrackerState>(
