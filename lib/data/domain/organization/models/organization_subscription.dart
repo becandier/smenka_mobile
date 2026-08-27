@@ -37,6 +37,7 @@ abstract class OrganizationSubscription with _$OrganizationSubscription {
   const factory OrganizationSubscription({
     SubscriptionStatus? status,
     int? daysLeft,
+    DateTime? trialEndsAt,
     DateTime? currentPeriodEnd,
     DateTime? graceEndsAt,
   }) = _OrganizationSubscription;
@@ -56,8 +57,12 @@ abstract class OrganizationSubscription with _$OrganizationSubscription {
     return switch (status) {
       SubscriptionStatus.trialing when left != null && left <= 5 =>
         SubscriptionBanner.trialEnding(left),
+      // `current_period_end` пуст в самом частом случае past_due — организация
+      // не пережила бесплатный период и ни разу не переходила в `active`, там
+      // точка отсчёта на бэке (`entitlements._resolve`) — `trial_ends_at`.
+      // Тот же фолбэк — в админке (`SubscriptionBanner.tsx`).
       SubscriptionStatus.pastDue => SubscriptionBanner.pastDue(
-        paidUntil: currentPeriodEnd,
+        paidUntil: currentPeriodEnd ?? trialEndsAt,
         accessUntil: graceEndsAt,
       ),
       SubscriptionStatus.suspended ||

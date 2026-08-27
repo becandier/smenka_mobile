@@ -16,6 +16,7 @@ abstract class OrganizationSubscriptionDto with _$OrganizationSubscriptionDto {
   const factory OrganizationSubscriptionDto({
     required String status,
     int? daysLeft,
+    DateTime? trialEndsAt,
     DateTime? currentPeriodEnd,
     DateTime? graceEndsAt,
   }) = _OrganizationSubscriptionDto;

@@ -6,6 +6,7 @@ extension OrganizationSubscriptionMapper on OrganizationSubscriptionDto {
     return OrganizationSubscription(
       status: SubscriptionStatus.fromValue(status),
       daysLeft: daysLeft,
+      trialEndsAt: trialEndsAt,
       currentPeriodEnd: currentPeriodEnd,
       graceEndsAt: graceEndsAt,
     );
