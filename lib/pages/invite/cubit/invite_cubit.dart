@@ -75,6 +75,8 @@ class InviteCubit extends Cubit<InviteState> {
     'INVALID_INVITE' => InviteErrorKind.invalidInvite,
     'OWNER_CANNOT_JOIN' => InviteErrorKind.ownerCannotJoin,
     'ALREADY_MEMBER' => InviteErrorKind.alreadyMember,
+    'PLAN_LIMIT_REACHED' => InviteErrorKind.planLimitReached,
+    'SUBSCRIPTION_INACTIVE' => InviteErrorKind.subscriptionInactive,
     _ => InviteErrorKind.network,
   };
 

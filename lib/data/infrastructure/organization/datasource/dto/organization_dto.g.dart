@@ -25,6 +25,11 @@ _OrganizationDto _$OrganizationDtoFromJson(Map<String, dynamic> json) =>
           : OrganizationRoleDto.fromJson(
               json['my_custom_role'] as Map<String, dynamic>,
             ),
+      subscription: json['subscription'] == null
+          ? null
+          : OrganizationSubscriptionDto.fromJson(
+              json['subscription'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$OrganizationDtoToJson(_OrganizationDto instance) =>
@@ -41,4 +46,5 @@ Map<String, dynamic> _$OrganizationDtoToJson(_OrganizationDto instance) =>
       'overtime_request_days': instance.overtimeRequestDays,
       'my_role': instance.myRole,
       'my_custom_role': instance.myCustomRole,
+      'subscription': instance.subscription,
     };

@@ -1813,6 +1813,43 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorTestTemplateDeleted => 'Тест удалён';
 
   @override
+  String get errorSubscriptionInactive =>
+      'Организация временно приостановлена. Обратитесь к руководителю';
+
+  @override
+  String get errorPlanLimitReached =>
+      'В организации закончились свободные места. Обратитесь к руководителю';
+
+  @override
+  String get errorPlanFeatureUnavailable =>
+      'Функция недоступна на текущем тарифе';
+
+  @override
+  String subscriptionBannerTrialEnding(num days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дня',
+      many: '$days дней',
+      few: '$days дня',
+      one: '$days день',
+    );
+    return 'Пробный период заканчивается через $_temp0';
+  }
+
+  @override
+  String subscriptionBannerPastDue(String paidUntil, String accessUntil) {
+    return 'Период оплачен до $paidUntil. Доступ сохранится до $accessUntil';
+  }
+
+  @override
+  String get subscriptionBannerReadOnly =>
+      'Организация в режиме только для чтения';
+
+  @override
+  String get subscriptionBannerAction => 'Продлите тариф в веб-кабинете';
+
+  @override
   String get pwaInstallEntryPoint => 'Установить приложение';
 
   @override

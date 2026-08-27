@@ -853,6 +853,26 @@
     "errorTestAssignmentNotFound": "Назначение теста не найдено",
     "errorTestTemplateDeleted": "Тест удалён",
 
+    "errorSubscriptionInactive": "Организация временно приостановлена. Обратитесь к руководителю",
+    "errorPlanLimitReached": "В организации закончились свободные места. Обратитесь к руководителю",
+    "errorPlanFeatureUnavailable": "Функция недоступна на текущем тарифе",
+
+    "subscriptionBannerTrialEnding": "Пробный период заканчивается через {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}",
+    "@subscriptionBannerTrialEnding": {
+        "placeholders": {
+            "days": {"type": "num"}
+        }
+    },
+    "subscriptionBannerPastDue": "Период оплачен до {paidUntil}. Доступ сохранится до {accessUntil}",
+    "@subscriptionBannerPastDue": {
+        "placeholders": {
+            "paidUntil": {"type": "String"},
+            "accessUntil": {"type": "String"}
+        }
+    },
+    "subscriptionBannerReadOnly": "Организация в режиме только для чтения",
+    "subscriptionBannerAction": "Продлите тариф в веб-кабинете",
+
     "pwaInstallEntryPoint": "Установить приложение",
     "pwaInstallTitle": "Установите Smenka на устройство",
     "pwaInstallSubtitle": "Займёт пару секунд — приложение появится рядом с остальными.",
