@@ -18,13 +18,14 @@ Map<String, dynamic> _orgJson({Map<String, dynamic>? subscription}) => {
 Map<String, dynamic> _fullSubscriptionJson({
   String status = 'trialing',
   int? daysLeft = 3,
+  String? trialEndsAt = '2026-08-30T00:00:00Z',
   String? currentPeriodEnd,
   String? graceEndsAt,
 }) => {
   'plan_code': 'premium',
   'plan_name': 'Премиум',
   'status': status,
-  'trial_ends_at': '2026-08-30T00:00:00Z',
+  'trial_ends_at': trialEndsAt,
   'current_period_start': null,
   'current_period_end': currentPeriodEnd,
   'grace_ends_at': graceEndsAt,
@@ -63,6 +64,10 @@ void main() {
       expect(org.subscription?.status, SubscriptionStatus.pastDue);
       expect(org.subscription?.daysLeft, isNull);
       expect(
+        org.subscription?.trialEndsAt,
+        DateTime.parse('2026-08-30T00:00:00Z'),
+      );
+      expect(
         org.subscription?.currentPeriodEnd,
         DateTime.parse('2026-09-01T00:00:00Z'),
       );
@@ -71,6 +76,37 @@ void main() {
         DateTime.parse('2026-09-08T00:00:00Z'),
       );
     });
+
+    test(
+      'past_due после истёкшего триала (current_period_end пуст, '
+      'организация ни разу не платила) → банер держится на trial_ends_at',
+      () {
+        final dto = OrganizationDto.fromJson(
+          _orgJson(
+            subscription: _fullSubscriptionJson(
+              status: 'past_due',
+              daysLeft: null,
+              trialEndsAt: '2026-08-20T00:00:00Z',
+              graceEndsAt: '2026-08-27T00:00:00Z',
+            ),
+          ),
+        );
+        final org = dto.toDomain();
+
+        expect(org.subscription?.currentPeriodEnd, isNull);
+        expect(
+          org.subscription?.trialEndsAt,
+          DateTime.parse('2026-08-20T00:00:00Z'),
+        );
+        expect(
+          org.subscription?.banner,
+          SubscriptionBanner.pastDue(
+            paidUntil: DateTime.parse('2026-08-20T00:00:00Z'),
+            accessUntil: DateTime.parse('2026-08-27T00:00:00Z'),
+          ),
+        );
+      },
+    );
 
     test(
       'незнакомый (будущий) статус → SubscriptionStatus null, не падает',
@@ -121,6 +157,43 @@ void main() {
       final accessUntil = DateTime.utc(2026, 9, 8);
       final sub = base.copyWith(
         status: SubscriptionStatus.pastDue,
+        currentPeriodEnd: paidUntil,
+        graceEndsAt: accessUntil,
+      );
+      expect(
+        sub.banner,
+        SubscriptionBanner.pastDue(
+          paidUntil: paidUntil,
+          accessUntil: accessUntil,
+        ),
+      );
+    });
+
+    test('past_due, currentPeriodEnd = null (истёк триал, оплаты не было) → '
+        'paidUntil берётся из trialEndsAt, а не остаётся null', () {
+      final trialEndsAt = DateTime.utc(2026, 8, 20);
+      final accessUntil = DateTime.utc(2026, 8, 27);
+      final sub = base.copyWith(
+        status: SubscriptionStatus.pastDue,
+        trialEndsAt: trialEndsAt,
+        graceEndsAt: accessUntil,
+      );
+      expect(
+        sub.banner,
+        SubscriptionBanner.pastDue(
+          paidUntil: trialEndsAt,
+          accessUntil: accessUntil,
+        ),
+      );
+    });
+
+    test('past_due, оба поля заполнены → paidUntil берёт currentPeriodEnd, '
+        'trialEndsAt игнорируется', () {
+      final paidUntil = DateTime.utc(2026, 9);
+      final accessUntil = DateTime.utc(2026, 9, 8);
+      final sub = base.copyWith(
+        status: SubscriptionStatus.pastDue,
+        trialEndsAt: DateTime.utc(2026, 8, 20),
         currentPeriodEnd: paidUntil,
         graceEndsAt: accessUntil,
       );

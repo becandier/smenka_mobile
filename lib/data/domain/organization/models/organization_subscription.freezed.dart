@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OrganizationSubscription {
 
- SubscriptionStatus? get status; int? get daysLeft; DateTime? get currentPeriodEnd; DateTime? get graceEndsAt;
+ SubscriptionStatus? get status; int? get daysLeft; DateTime? get trialEndsAt; DateTime? get currentPeriodEnd; DateTime? get graceEndsAt;
 /// Create a copy of OrganizationSubscription
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $OrganizationSubscriptionCopyWith<OrganizationSubscription> get copyWith => _$Or
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationSubscription&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationSubscription&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.trialEndsAt, trialEndsAt) || other.trialEndsAt == trialEndsAt)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,daysLeft,currentPeriodEnd,graceEndsAt);
+int get hashCode => Object.hash(runtimeType,status,daysLeft,trialEndsAt,currentPeriodEnd,graceEndsAt);
 
 @override
 String toString() {
-  return 'OrganizationSubscription(status: $status, daysLeft: $daysLeft, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
+  return 'OrganizationSubscription(status: $status, daysLeft: $daysLeft, trialEndsAt: $trialEndsAt, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $OrganizationSubscriptionCopyWith<$Res>  {
   factory $OrganizationSubscriptionCopyWith(OrganizationSubscription value, $Res Function(OrganizationSubscription) _then) = _$OrganizationSubscriptionCopyWithImpl;
 @useResult
 $Res call({
- SubscriptionStatus? status, int? daysLeft, DateTime? currentPeriodEnd, DateTime? graceEndsAt
+ SubscriptionStatus? status, int? daysLeft, DateTime? trialEndsAt, DateTime? currentPeriodEnd, DateTime? graceEndsAt
 });
 
 
@@ -62,11 +62,12 @@ class _$OrganizationSubscriptionCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationSubscription
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = freezed,Object? daysLeft = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = freezed,Object? daysLeft = freezed,Object? trialEndsAt = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
   return _then(_self.copyWith(
 status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as SubscriptionStatus?,daysLeft: freezed == daysLeft ? _self.daysLeft : daysLeft // ignore: cast_nullable_to_non_nullable
-as int?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
+as int?,trialEndsAt: freezed == trialEndsAt ? _self.trialEndsAt : trialEndsAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
 as DateTime?,graceEndsAt: freezed == graceEndsAt ? _self.graceEndsAt : graceEndsAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SubscriptionStatus? status,  int? daysLeft,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SubscriptionStatus? status,  int? daysLeft,  DateTime? trialEndsAt,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrganizationSubscription() when $default != null:
-return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEndsAt);case _:
+return $default(_that.status,_that.daysLeft,_that.trialEndsAt,_that.currentPeriodEnd,_that.graceEndsAt);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEn
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SubscriptionStatus? status,  int? daysLeft,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SubscriptionStatus? status,  int? daysLeft,  DateTime? trialEndsAt,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationSubscription():
-return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEndsAt);case _:
+return $default(_that.status,_that.daysLeft,_that.trialEndsAt,_that.currentPeriodEnd,_that.graceEndsAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEn
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SubscriptionStatus? status,  int? daysLeft,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SubscriptionStatus? status,  int? daysLeft,  DateTime? trialEndsAt,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationSubscription() when $default != null:
-return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEndsAt);case _:
+return $default(_that.status,_that.daysLeft,_that.trialEndsAt,_that.currentPeriodEnd,_that.graceEndsAt);case _:
   return null;
 
 }
@@ -209,11 +210,12 @@ return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEn
 
 
 class _OrganizationSubscription extends OrganizationSubscription {
-  const _OrganizationSubscription({this.status, this.daysLeft, this.currentPeriodEnd, this.graceEndsAt}): super._();
+  const _OrganizationSubscription({this.status, this.daysLeft, this.trialEndsAt, this.currentPeriodEnd, this.graceEndsAt}): super._();
   
 
 @override final  SubscriptionStatus? status;
 @override final  int? daysLeft;
+@override final  DateTime? trialEndsAt;
 @override final  DateTime? currentPeriodEnd;
 @override final  DateTime? graceEndsAt;
 
@@ -227,16 +229,16 @@ _$OrganizationSubscriptionCopyWith<_OrganizationSubscription> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationSubscription&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationSubscription&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.trialEndsAt, trialEndsAt) || other.trialEndsAt == trialEndsAt)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,daysLeft,currentPeriodEnd,graceEndsAt);
+int get hashCode => Object.hash(runtimeType,status,daysLeft,trialEndsAt,currentPeriodEnd,graceEndsAt);
 
 @override
 String toString() {
-  return 'OrganizationSubscription(status: $status, daysLeft: $daysLeft, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
+  return 'OrganizationSubscription(status: $status, daysLeft: $daysLeft, trialEndsAt: $trialEndsAt, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
 }
 
 
@@ -247,7 +249,7 @@ abstract mixin class _$OrganizationSubscriptionCopyWith<$Res> implements $Organi
   factory _$OrganizationSubscriptionCopyWith(_OrganizationSubscription value, $Res Function(_OrganizationSubscription) _then) = __$OrganizationSubscriptionCopyWithImpl;
 @override @useResult
 $Res call({
- SubscriptionStatus? status, int? daysLeft, DateTime? currentPeriodEnd, DateTime? graceEndsAt
+ SubscriptionStatus? status, int? daysLeft, DateTime? trialEndsAt, DateTime? currentPeriodEnd, DateTime? graceEndsAt
 });
 
 
@@ -264,11 +266,12 @@ class __$OrganizationSubscriptionCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationSubscription
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = freezed,Object? daysLeft = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = freezed,Object? daysLeft = freezed,Object? trialEndsAt = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
   return _then(_OrganizationSubscription(
 status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as SubscriptionStatus?,daysLeft: freezed == daysLeft ? _self.daysLeft : daysLeft // ignore: cast_nullable_to_non_nullable
-as int?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
+as int?,trialEndsAt: freezed == trialEndsAt ? _self.trialEndsAt : trialEndsAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
 as DateTime?,graceEndsAt: freezed == graceEndsAt ? _self.graceEndsAt : graceEndsAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));

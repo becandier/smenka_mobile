@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OrganizationSubscriptionDto {
 
- String get status; int? get daysLeft; DateTime? get currentPeriodEnd; DateTime? get graceEndsAt;
+ String get status; int? get daysLeft; DateTime? get trialEndsAt; DateTime? get currentPeriodEnd; DateTime? get graceEndsAt;
 /// Create a copy of OrganizationSubscriptionDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $OrganizationSubscriptionDtoCopyWith<OrganizationSubscriptionDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationSubscriptionDto&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationSubscriptionDto&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.trialEndsAt, trialEndsAt) || other.trialEndsAt == trialEndsAt)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status,daysLeft,currentPeriodEnd,graceEndsAt);
+int get hashCode => Object.hash(runtimeType,status,daysLeft,trialEndsAt,currentPeriodEnd,graceEndsAt);
 
 @override
 String toString() {
-  return 'OrganizationSubscriptionDto(status: $status, daysLeft: $daysLeft, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
+  return 'OrganizationSubscriptionDto(status: $status, daysLeft: $daysLeft, trialEndsAt: $trialEndsAt, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $OrganizationSubscriptionDtoCopyWith<$Res>  {
   factory $OrganizationSubscriptionDtoCopyWith(OrganizationSubscriptionDto value, $Res Function(OrganizationSubscriptionDto) _then) = _$OrganizationSubscriptionDtoCopyWithImpl;
 @useResult
 $Res call({
- String status, int? daysLeft, DateTime? currentPeriodEnd, DateTime? graceEndsAt
+ String status, int? daysLeft, DateTime? trialEndsAt, DateTime? currentPeriodEnd, DateTime? graceEndsAt
 });
 
 
@@ -65,11 +65,12 @@ class _$OrganizationSubscriptionDtoCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationSubscriptionDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? daysLeft = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? daysLeft = freezed,Object? trialEndsAt = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,daysLeft: freezed == daysLeft ? _self.daysLeft : daysLeft // ignore: cast_nullable_to_non_nullable
-as int?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
+as int?,trialEndsAt: freezed == trialEndsAt ? _self.trialEndsAt : trialEndsAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
 as DateTime?,graceEndsAt: freezed == graceEndsAt ? _self.graceEndsAt : graceEndsAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String status,  int? daysLeft,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String status,  int? daysLeft,  DateTime? trialEndsAt,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrganizationSubscriptionDto() when $default != null:
-return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEndsAt);case _:
+return $default(_that.status,_that.daysLeft,_that.trialEndsAt,_that.currentPeriodEnd,_that.graceEndsAt);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEn
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String status,  int? daysLeft,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String status,  int? daysLeft,  DateTime? trialEndsAt,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationSubscriptionDto():
-return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEndsAt);case _:
+return $default(_that.status,_that.daysLeft,_that.trialEndsAt,_that.currentPeriodEnd,_that.graceEndsAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEn
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String status,  int? daysLeft,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String status,  int? daysLeft,  DateTime? trialEndsAt,  DateTime? currentPeriodEnd,  DateTime? graceEndsAt)?  $default,) {final _that = this;
 switch (_that) {
 case _OrganizationSubscriptionDto() when $default != null:
-return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEndsAt);case _:
+return $default(_that.status,_that.daysLeft,_that.trialEndsAt,_that.currentPeriodEnd,_that.graceEndsAt);case _:
   return null;
 
 }
@@ -212,11 +213,12 @@ return $default(_that.status,_that.daysLeft,_that.currentPeriodEnd,_that.graceEn
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _OrganizationSubscriptionDto implements OrganizationSubscriptionDto {
-  const _OrganizationSubscriptionDto({required this.status, this.daysLeft, this.currentPeriodEnd, this.graceEndsAt});
+  const _OrganizationSubscriptionDto({required this.status, this.daysLeft, this.trialEndsAt, this.currentPeriodEnd, this.graceEndsAt});
   factory _OrganizationSubscriptionDto.fromJson(Map<String, dynamic> json) => _$OrganizationSubscriptionDtoFromJson(json);
 
 @override final  String status;
 @override final  int? daysLeft;
+@override final  DateTime? trialEndsAt;
 @override final  DateTime? currentPeriodEnd;
 @override final  DateTime? graceEndsAt;
 
@@ -233,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationSubscriptionDto&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationSubscriptionDto&&(identical(other.status, status) || other.status == status)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.trialEndsAt, trialEndsAt) || other.trialEndsAt == trialEndsAt)&&(identical(other.currentPeriodEnd, currentPeriodEnd) || other.currentPeriodEnd == currentPeriodEnd)&&(identical(other.graceEndsAt, graceEndsAt) || other.graceEndsAt == graceEndsAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status,daysLeft,currentPeriodEnd,graceEndsAt);
+int get hashCode => Object.hash(runtimeType,status,daysLeft,trialEndsAt,currentPeriodEnd,graceEndsAt);
 
 @override
 String toString() {
-  return 'OrganizationSubscriptionDto(status: $status, daysLeft: $daysLeft, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
+  return 'OrganizationSubscriptionDto(status: $status, daysLeft: $daysLeft, trialEndsAt: $trialEndsAt, currentPeriodEnd: $currentPeriodEnd, graceEndsAt: $graceEndsAt)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$OrganizationSubscriptionDtoCopyWith<$Res> implements $Org
   factory _$OrganizationSubscriptionDtoCopyWith(_OrganizationSubscriptionDto value, $Res Function(_OrganizationSubscriptionDto) _then) = __$OrganizationSubscriptionDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String status, int? daysLeft, DateTime? currentPeriodEnd, DateTime? graceEndsAt
+ String status, int? daysLeft, DateTime? trialEndsAt, DateTime? currentPeriodEnd, DateTime? graceEndsAt
 });
 
 
@@ -270,11 +272,12 @@ class __$OrganizationSubscriptionDtoCopyWithImpl<$Res>
 
 /// Create a copy of OrganizationSubscriptionDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? daysLeft = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? daysLeft = freezed,Object? trialEndsAt = freezed,Object? currentPeriodEnd = freezed,Object? graceEndsAt = freezed,}) {
   return _then(_OrganizationSubscriptionDto(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,daysLeft: freezed == daysLeft ? _self.daysLeft : daysLeft // ignore: cast_nullable_to_non_nullable
-as int?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
+as int?,trialEndsAt: freezed == trialEndsAt ? _self.trialEndsAt : trialEndsAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,currentPeriodEnd: freezed == currentPeriodEnd ? _self.currentPeriodEnd : currentPeriodEnd // ignore: cast_nullable_to_non_nullable
 as DateTime?,graceEndsAt: freezed == graceEndsAt ? _self.graceEndsAt : graceEndsAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
