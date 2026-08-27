@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-07-24 (фичи: notifications, employee_tests)
+Последнее обновление: 2026-08-27 (фичи: notifications, employee_tests, pwa_install_promo)
 
 ---
 
@@ -43,6 +43,7 @@ lib/
 │   ├── router/                    # AppRouter, AppModals (context.modals)
 │   ├── deep_link/                 # DeepLinkService, PendingInviteStorage
 │   ├── services/                  # GeoService (geolocator; no-op на web)
+│   ├── pwa/                       # Промо установки PWA: PwaInstallPlatformApi + web/stub (conditional export), PwaInstallMethod
 │   ├── web/                       # url_strategy (conditional export web/stub)
 │   ├── utils/                     # money_format и пр.
 │   └── theme/                     # Тема, цвета
@@ -74,7 +75,8 @@ lib/
 │       └── employee_test/         # TestDataSource (/my/test-assignments* + /my/test-attempts*) + TestRepositoryImpl (employee_tests)
 ├── shared/                        # Глобальные cubit'ы вне страниц
 │   ├── auth/                      # AuthCubit + AuthState (глобальная авторизация)
-│   └── notifications/             # NotificationsCubit + State (глобальный счётчик/лента, notifications)
+│   ├── notifications/             # NotificationsCubit + State (глобальный счётчик/лента, notifications)
+│   └── pwa/                       # PwaInstallCubit + State (промо установки PWA, web-only, pwa_install_promo)
 ├── l10n/                          # Локализация (ARB)
 ├── widgets/                       # Переиспользуемые виджеты
 │   ├── app_toast/                 # Toast-уведомления (AppToast, AppToastManager)
@@ -291,6 +293,7 @@ lib/
 | `KnowledgePageCubit` | Готов | Деталь страницы базы знаний (read-only); `KNOWLEDGE_NODE_NOT_FOUND` → error по коду |
 | `NotificationsCubit` | Готов | Глобальный кубит (`lib/shared/notifications/`, по образцу `AuthCubit`) — счётчик непрочитанных (грузится в конструкторе, нужен в аппбаре всех 4 табов) + лента (`PaginatedSectionData`, лениво при открытии `NotificationsPage`); `markRead`/`markAllRead` синхронно обновляют и ленту, и бейдж (notifications) |
 | `MyTestsCubit` | Готов | «Мои тесты»: пагинированный список назначений + фильтр по организации (`OrganizationRepository.watchMyOrganizations`, скрыт при ≤1 организации) (employee_tests) |
+| `PwaInstallCubit` | Готов | Глобальный кубит (`lib/shared/pwa/`) — состояние установки PWA: web? standalone? пойман `beforeinstallprompt`? уже показывали промо? Триггерит разовое промо (`promoRequested`) и прячет точку входа после `appinstalled`; весь браузерный код за `PwaInstallPlatformApi`, на native кубит пустой (pwa_install_promo) |
 | `TestAttemptCubit` | Готов | Прохождение одного назначения: резолв при входе (продолжить открытую попытку / показать блок «уже сдан»-«лимит исчерпан» / стартовать новую), локальный выбор ответов (`selectSingle`/`toggleMultiple`), `submit`, «Пройти ещё раз»; независим от `MyTestsCubit`/`NotificationsCubit` — только `TestRepository` (employee_tests) |
 
 ---
@@ -315,6 +318,7 @@ lib/
 | `ChecklistFillRoute` | `<tab>/shifts/:shiftId/checklists/:instanceId` | Заполнение чек-листа (push); `organizationId?` для загрузки фото, `readOnly` для чужой/завершённой смены |
 | `ChecklistPhotoViewerRoute` | `/checklist-photo-viewer` | Полноэкранный вьюер фото (root, поверх табов; `photo_view` зум/пан/свайп, удаление) |
 | `ChecklistPhotoSourceRoute` | `/checklist-photo-source` | Bottom-sheet выбора источника фото (камера/галерея) для `camera_or_gallery` |
+| `PwaInstallRoute` | `/install-app` | Промо установки PWA — bottom-sheet (root, поверх табов): разово после первого входа + по иконке в аппбаре главной; только web (pwa_install_promo) |
 | `WorkSchedulePickerRoute` | `shift/work-schedule-picker` | Выбор графика при старте смены (CustomRoute, `WorkSchedulePickerResult?`, work_schedules) |
 | `ShiftHistoryRoute` | `/history` | История смен (Tab 2, initial) |
 | `ShiftDetailRoute` | `/history/detail` | Детали смены (push) |
@@ -359,6 +363,7 @@ lib/
 - **Firebase**: `lib/firebase_options.dart` содержит web-конфиг (`FirebaseOptions web`); файл закоммичен (для web эти значения не секрет — уезжают в бандл; защита — Auth + Security Rules; нужен CI-чекауту).
 - **CSP-meta в `web/index.html`**: ограничивает источники (self + `api.smenka.pro` + домены Firebase/Google + объектное хранилище). `'wasm-unsafe-eval'` для CanvasKit; eval/`new Function` не нужны, т.к. web собирается с `--csp` (см. `Dockerfile`/`Makefile`). In-app картинки на CanvasKit идут через `connect-src` (XHR), не `img-src`.
 - **Воспроизводимая сборка + Docker-образ web**: `Dockerfile` (multi-stage: `cirruslabs/flutter:3.41.2` → `flutter build web --release --csp` → `nginx:1.27-alpine` со SPA-fallback, конфиг `nginx.conf`), `make build-web`/`make docker-web`, CI `.github/workflows/release-web.yml` (push `main`/тег → `ghcr.io/becandier/smenka_web`) и `ci.yml` (analyze+test на PR).
+- **Промо установки PWA (`pwa_install_promo`)**: весь JS-interop фичи живёт в одном файле `lib/core/pwa/pwa_install_platform_web.dart` (события `beforeinstallprompt` c `preventDefault` + отложенным `prompt()`, `appinstalled`, media query `display-mode: standalone`, легаси `navigator.standalone` и UA-детект iOS/iPadOS). Наружу торчит только `PwaInstallPlatformApi`; на native подключается no-op `pwa_install_platform_stub.dart` (conditional export по `dart.library.js_interop`, как у `url_strategy`), поэтому native-сборки и `flutter test` (VM) браузерного кода не видят. Зависимость `web: ^1.1.1` в `pubspec.yaml` — ровно для этого файла. Состояние — глобальный `PwaInstallCubit` (`lib/shared/pwa/`), отметка «промо показано» — `PwaPromoStorage` (SharedPreferences → localStorage, привязка к браузеру, не к пользователю). UI: разовая модалка `PwaInstallRoute` (`/install-app`), которую пушит шелл `MainRouterPage` по `promoRequested` (задержка 3с — Chromium присылает `beforeinstallprompt` уже после загрузки), и постоянная иконка `PwaInstallButton` в аппбаре трекера смены. Содержимое модалки зависит от браузера: кнопка «Установить» (Chromium), инструкция «Поделиться → На экран „Домой“» (iOS), универсальная подсказка (прочие). В standalone и после `appinstalled` обе точки входа скрыты.
 
 **Вне клиента (нужно на стороне инфраструктуры):**
 - CORS на бэке для домена web-хостинга (готово — фича `web_cors`).
@@ -401,6 +406,7 @@ lib/
 | `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
 | `PendingInviteStorage` | SharedPreferences | pending_invite_code |
 | `ShiftContextStorage` | SharedPreferences | last_shift_context (`personal` либо UUID организации) |
+| `PwaPromoStorage` | SharedPreferences (на web — localStorage) | pwa_install_promo_shown — отметка «разовое промо установки PWA показано»; привязана к браузеру/устройству, переживает перелогин (pwa_install_promo) |
 
 ### `AuthTokenStorage` — безопасное хранение токенов (security_hardening)
 - Токены лежат в `flutter_secure_storage` (Keychain на iOS, EncryptedSharedPreferences/Keystore на Android). Нечувствительные данные (тема, контекст смены) остаются в `SharedPreferences`.
@@ -439,6 +445,7 @@ lib/
 - `ChecklistInstanceTile` — плитка экземпляра чек-листа с `onTap` (список чек-листов + read-only блок на детали) (файл: `lib/widgets/checklist_instance_tile.dart`)
 - `DateRangeFilterChip` — чип фильтра диапазона дат («01.06 – 09.06» / «с…» / «по…», крестик-сброс); используется в истории смен, орг-сменах, статистике и payroll-экранах (файл: `lib/widgets/date_range_filter_chip.dart`)
 - `PeriodPresetSelector` — селектор окна периода payroll-экранов: SegmentedButton (день/неделя/месяц) + чип произвольного диапазона (файл: `lib/widgets/period_preset_selector.dart`)
+- `PwaInstallButton` — иконка «Установить приложение» в аппбаре трекера смены; читает глобальный `PwaInstallCubit` и сама схлопывается в `SizedBox.shrink()` вне web / в standalone / после `appinstalled` (файл: `lib/widgets/pwa_install_button.dart`, pwa_install_promo)
 - Barrel file: `lib/widgets/_widgets.dart`
 
 ### Утилиты дат и денег
