@@ -122,6 +122,10 @@ class AppRouter extends RootStackRouter {
             // Фолбэк-старт смены по фото (shift_geo_photo_fallback) —
             // внутри таба «Смена», чтобы переиспользовать те же модалки
             // выбора точки и графика (они зарегистрированы соседями).
+            // Результат (стартовавшая смена) типизируется на месте вызова:
+            // `context.router.push<Shift?>(...)` — сам `AutoRoute` не
+            // параметризуется типом (в отличие от `CustomRoute<T>`), а
+            // completer создаётся по типу из push.
             AutoRoute(
               path: 'geo-fallback-start',
               page: GeoFallbackStartRoute.page,
