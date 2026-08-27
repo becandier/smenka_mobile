@@ -134,6 +134,18 @@ class _ErrorContent extends StatelessWidget {
         actionLabel: l10n.inviteGoHomeAction,
         onAction: onGoHome,
       ),
+      InviteErrorKind.planLimitReached => AppEmptyState(
+        icon: Icons.people_outline,
+        title: l10n.errorPlanLimitReached,
+        actionLabel: l10n.inviteGoHomeAction,
+        onAction: onGoHome,
+      ),
+      InviteErrorKind.subscriptionInactive => AppEmptyState(
+        icon: Icons.pause_circle_outline,
+        title: l10n.errorSubscriptionInactive,
+        actionLabel: l10n.inviteGoHomeAction,
+        onAction: onGoHome,
+      ),
       InviteErrorKind.network => AppEmptyState(
         icon: Icons.wifi_off,
         title: l10n.errorOccurred,

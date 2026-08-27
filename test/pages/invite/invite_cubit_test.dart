@@ -117,6 +117,49 @@ void main() {
       await cubit.close();
     });
 
+    test('PLAN_LIMIT_REACHED (402) → error(kind: planLimitReached)', () async {
+      when(() => organizationRepository.join(code)).thenAnswer(
+        (_) async => const Task.failure(
+          ApiException.server(
+            message: 'no free slots',
+            code: 'PLAN_LIMIT_REACHED',
+          ),
+        ),
+      );
+
+      final cubit = buildCubit();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(
+        cubit.state.mapOrNull(error: (s) => s.kind),
+        InviteErrorKind.planLimitReached,
+      );
+      await cubit.close();
+    });
+
+    test(
+      'SUBSCRIPTION_INACTIVE (402) → error(kind: subscriptionInactive)',
+      () async {
+        when(() => organizationRepository.join(code)).thenAnswer(
+          (_) async => const Task.failure(
+            ApiException.server(
+              message: 'read-only',
+              code: 'SUBSCRIPTION_INACTIVE',
+            ),
+          ),
+        );
+
+        final cubit = buildCubit();
+        await Future<void>.delayed(Duration.zero);
+
+        expect(
+          cubit.state.mapOrNull(error: (s) => s.kind),
+          InviteErrorKind.subscriptionInactive,
+        );
+        await cubit.close();
+      },
+    );
+
     test(
       'неизвестный/сетевой код → error(kind: network), retry() пробует снова',
       () async {
