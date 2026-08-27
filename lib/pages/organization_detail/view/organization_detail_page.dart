@@ -9,7 +9,6 @@ import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/user/repositories/user_repository.dart';
-import 'package:smenka_mobile/l10n/app_localizations.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_cubit.dart';
 import 'package:smenka_mobile/pages/organization_detail/cubit/organization_detail_state.dart';
@@ -61,7 +60,7 @@ class _OrganizationDetailView extends StatelessWidget {
               // видят непустой `subscription` (бэк заполняет его только для
               // них, см. Organization.subscription); в `active` `banner`
               // возвращает null, виджет не создаётся вовсе.
-              final subscription = org.subscription;
+              final banner = org.subscription?.banner;
 
               return RefreshIndicator.adaptive(
                 onRefresh: () =>
@@ -70,9 +69,9 @@ class _OrganizationDetailView extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 32),
                   children: [
                     _OrgHeader(organization: org),
-                    if (subscription != null) ...[
+                    if (banner != null) ...[
                       const SizedBox(height: 16),
-                      _SubscriptionBanner(subscription: subscription),
+                      _SubscriptionBanner(banner: banner),
                     ],
                     const SizedBox(height: 24),
                     const _OrgNavigationSection(),

@@ -5,68 +5,35 @@ part of '../view/organization_detail_page.dart';
 /// `Organization.subscription`). В `active` не рисуется вовсе — вызывающая
 /// сторона не создаёт виджет, если `OrganizationSubscription.banner == null`.
 class _SubscriptionBanner extends StatelessWidget {
-  const _SubscriptionBanner({required this.subscription});
+  const _SubscriptionBanner({required this.banner});
 
-  final OrganizationSubscription subscription;
+  static final DateFormat _dateFormat = DateFormat('dd.MM.yyyy');
+
+  final SubscriptionBanner banner;
 
   @override
   Widget build(BuildContext context) {
-    final banner = subscription.banner;
-    if (banner == null) return const SizedBox.shrink();
-
     final l10n = context.l10n;
     final appColors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return switch (banner) {
-      SubscriptionBanner.trialEnding => _buildTrialEnding(context, l10n),
-      SubscriptionBanner.pastDue => _buildPastDue(context, l10n),
-      SubscriptionBanner.readOnly => _bannerCard(
-        context,
-        icon: Icons.lock_outline,
-        color: appColors.error,
-        title: l10n.subscriptionBannerReadOnly,
+    final (IconData icon, Color color, String title) = switch (banner) {
+      SubscriptionBannerTrialEnding(:final daysLeft) => (
+        Icons.access_time_outlined,
+        appColors.warning,
+        l10n.subscriptionBannerTrialEnding(daysLeft),
+      ),
+      SubscriptionBannerPastDue(:final paidUntil, :final accessUntil) => (
+        Icons.warning_amber_outlined,
+        appColors.warning,
+        l10n.subscriptionBannerPastDue(_date(paidUntil), _date(accessUntil)),
+      ),
+      SubscriptionBannerReadOnly() => (
+        Icons.lock_outline,
+        appColors.error,
+        l10n.subscriptionBannerReadOnly,
       ),
     };
-  }
-
-  Widget _buildTrialEnding(BuildContext context, AppLocalizations l10n) {
-    final daysLeft = subscription.daysLeft;
-    // Инвариант `OrganizationSubscription.banner`: trialEnding возвращается
-    // только при daysLeft != null. Явная проверка вместо `!`.
-    if (daysLeft == null) return const SizedBox.shrink();
-
-    return _bannerCard(
-      context,
-      icon: Icons.access_time_outlined,
-      color: context.appColors.warning,
-      title: l10n.subscriptionBannerTrialEnding(daysLeft),
-    );
-  }
-
-  Widget _buildPastDue(BuildContext context, AppLocalizations l10n) {
-    final dateFormat = DateFormat('dd.MM.yyyy');
-    final paidUntil = subscription.currentPeriodEnd;
-    final accessUntil = subscription.graceEndsAt;
-
-    return _bannerCard(
-      context,
-      icon: Icons.warning_amber_outlined,
-      color: context.appColors.warning,
-      title: l10n.subscriptionBannerPastDue(
-        paidUntil == null ? '—' : dateFormat.format(paidUntil.toLocal()),
-        accessUntil == null ? '—' : dateFormat.format(accessUntil.toLocal()),
-      ),
-    );
-  }
-
-  Widget _bannerCard(
-    BuildContext context, {
-    required IconData icon,
-    required Color color,
-    required String title,
-  }) {
-    final l10n = context.l10n;
-    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -107,4 +74,9 @@ class _SubscriptionBanner extends StatelessWidget {
       ),
     );
   }
+
+  /// Бэк отдаёт `null`, если дату считать не от чего — прочерк вместо
+  /// пустоты в середине фразы.
+  static String _date(DateTime? value) =>
+      value == null ? '—' : _dateFormat.format(value.toLocal());
 }

@@ -95,12 +95,12 @@ void main() {
       expect(base.banner, isNull);
     });
 
-    test('trialing, daysLeft <= 5 → trialEnding', () {
+    test('trialing, daysLeft <= 5 → trialEnding с числом дней внутри', () {
       final sub = base.copyWith(
         status: SubscriptionStatus.trialing,
         daysLeft: 5,
       );
-      expect(sub.banner, SubscriptionBanner.trialEnding);
+      expect(sub.banner, const SubscriptionBanner.trialEnding(5));
     });
 
     test('trialing, daysLeft > 5 → нет баннера', () {
@@ -116,19 +116,31 @@ void main() {
       expect(sub.banner, isNull);
     });
 
-    test('past_due → pastDue', () {
-      final sub = base.copyWith(status: SubscriptionStatus.pastDue);
-      expect(sub.banner, SubscriptionBanner.pastDue);
+    test('past_due → pastDue с датами периода и grace', () {
+      final paidUntil = DateTime.utc(2026, 9);
+      final accessUntil = DateTime.utc(2026, 9, 8);
+      final sub = base.copyWith(
+        status: SubscriptionStatus.pastDue,
+        currentPeriodEnd: paidUntil,
+        graceEndsAt: accessUntil,
+      );
+      expect(
+        sub.banner,
+        SubscriptionBanner.pastDue(
+          paidUntil: paidUntil,
+          accessUntil: accessUntil,
+        ),
+      );
     });
 
     test('suspended → readOnly', () {
       final sub = base.copyWith(status: SubscriptionStatus.suspended);
-      expect(sub.banner, SubscriptionBanner.readOnly);
+      expect(sub.banner, const SubscriptionBanner.readOnly());
     });
 
     test('canceled → readOnly', () {
       final sub = base.copyWith(status: SubscriptionStatus.canceled);
-      expect(sub.banner, SubscriptionBanner.readOnly);
+      expect(sub.banner, const SubscriptionBanner.readOnly());
     });
 
     test('status = null (не должно приходить с бэка) → нет баннера', () {

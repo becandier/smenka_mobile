@@ -45,26 +45,46 @@ abstract class OrganizationSubscription with _$OrganizationSubscription {
   /// Какой баннер показать owner/admin на карточке организации — `null`,
   /// если баннер не нужен (см. mobile.md, «Владелец/админ: баннер
   /// состояния»).
+  ///
+  /// Данные, нужные тексту баннера, уезжают в сам вариант: UI получает
+  /// готовый `daysLeft`/даты и не перепроверяет `null` там, где эта функция
+  /// уже гарантировала их наличие.
   SubscriptionBanner? get banner {
-    final effectiveStatus = status;
-    if (effectiveStatus == null) return null;
-    switch (effectiveStatus) {
-      case SubscriptionStatus.trialing:
-        final left = daysLeft;
-        if (left != null && left <= 5) {
-          return SubscriptionBanner.trialEnding;
-        }
-        return null;
-      case SubscriptionStatus.pastDue:
-        return SubscriptionBanner.pastDue;
-      case SubscriptionStatus.suspended:
-      case SubscriptionStatus.canceled:
-        return SubscriptionBanner.readOnly;
-      case SubscriptionStatus.active:
-        return null;
-    }
+    // Локальная копия ради промоушена: `daysLeft` — геттер freezed-класса,
+    // внутри guard он бы не промоутился до non-null.
+    final left = daysLeft;
+    return switch (status) {
+      SubscriptionStatus.trialing when left != null && left <= 5 =>
+        SubscriptionBanner.trialEnding(left),
+      SubscriptionStatus.pastDue => SubscriptionBanner.pastDue(
+        paidUntil: currentPeriodEnd,
+        accessUntil: graceEndsAt,
+      ),
+      SubscriptionStatus.suspended ||
+      SubscriptionStatus.canceled => const SubscriptionBanner.readOnly(),
+      // `active`, триал вне порога и незнакомый (будущий) статус — молчим.
+      SubscriptionStatus.trialing || SubscriptionStatus.active || null => null,
+    };
   }
 }
 
-/// Вид баннера состояния подписки на карточке организации (owner/admin).
-enum SubscriptionBanner { trialEnding, pastDue, readOnly }
+/// Баннер состояния подписки на карточке организации (owner/admin) вместе с
+/// данными для его текста. Union, а не enum: так «есть `daysLeft`» и «есть
+/// даты периода» — свойство типа, а не инвариант в комментарии, и UI не
+/// содержит недостижимых веток на случай `null`.
+@freezed
+sealed class SubscriptionBanner with _$SubscriptionBanner {
+  /// Триал заканчивается: `days_left ≤ 5`.
+  const factory SubscriptionBanner.trialEnding(int daysLeft) =
+      SubscriptionBannerTrialEnding;
+
+  /// Период не оплачен, но доступ ещё жив до конца grace. Обе даты
+  /// nullable: бэк отдаёт `null`, если считать не от чего.
+  const factory SubscriptionBanner.pastDue({
+    DateTime? paidUntil,
+    DateTime? accessUntil,
+  }) = SubscriptionBannerPastDue;
+
+  /// `suspended`/`canceled` — организация в режиме только для чтения.
+  const factory SubscriptionBanner.readOnly() = SubscriptionBannerReadOnly;
+}
