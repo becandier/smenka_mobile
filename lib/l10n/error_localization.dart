@@ -94,6 +94,13 @@ String localizedErrorMessage(
     'OAUTH_PROVIDER_UNAVAILABLE' => l10n.errorOauthProviderUnavailable,
     // клиентский код (google_sign_in/sign_in_with_apple SDK) — LoginCubit
     'OAUTH_CLIENT_ERROR' => l10n.errorOauthClientError,
+    // tariffs: тарифы и подписки организаций. Тексты не содержат слов
+    // «оплата»/«тариф»/«долг» там, где код может увидеть employee
+    // (SUBSCRIPTION_INACTIVE — старт смены; PLAN_LIMIT_REACHED — вступление
+    // по инвайту) — тарифные вопросы решает руководитель, см. mobile.md.
+    'SUBSCRIPTION_INACTIVE' => l10n.errorSubscriptionInactive,
+    'PLAN_LIMIT_REACHED' => l10n.errorPlanLimitReached,
+    'PLAN_FEATURE_UNAVAILABLE' => l10n.errorPlanFeatureUnavailable,
     // сетевые ошибки (см. ApiErrorInterceptor) → единое «нет соединения»
     'NETWORK_ERROR' || 'CONNECTION_ERROR' => l10n.commonNoConnection,
     _ => null,

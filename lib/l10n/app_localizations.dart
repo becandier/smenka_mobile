@@ -3334,6 +3334,48 @@ abstract class AppLocalizations {
   /// **'Тест удалён'**
   String get errorTestTemplateDeleted;
 
+  /// No description provided for @errorSubscriptionInactive.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация временно приостановлена. Обратитесь к руководителю'**
+  String get errorSubscriptionInactive;
+
+  /// No description provided for @errorPlanLimitReached.
+  ///
+  /// In ru, this message translates to:
+  /// **'В организации закончились свободные места. Обратитесь к руководителю'**
+  String get errorPlanLimitReached;
+
+  /// No description provided for @errorPlanFeatureUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Функция недоступна на текущем тарифе'**
+  String get errorPlanFeatureUnavailable;
+
+  /// No description provided for @subscriptionBannerTrialEnding.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пробный период заканчивается через {days, plural, one{{days} день} few{{days} дня} many{{days} дней} other{{days} дня}}'**
+  String subscriptionBannerTrialEnding(num days);
+
+  /// No description provided for @subscriptionBannerPastDue.
+  ///
+  /// In ru, this message translates to:
+  /// **'Период оплачен до {paidUntil}. Доступ сохранится до {accessUntil}'**
+  String subscriptionBannerPastDue(String paidUntil, String accessUntil);
+
+  /// No description provided for @subscriptionBannerReadOnly.
+  ///
+  /// In ru, this message translates to:
+  /// **'Организация в режиме только для чтения'**
+  String get subscriptionBannerReadOnly;
+
+  /// No description provided for @subscriptionBannerAction.
+  ///
+  /// In ru, this message translates to:
+  /// **'Продлите тариф в веб-кабинете'**
+  String get subscriptionBannerAction;
+
   /// No description provided for @pwaInstallEntryPoint.
   ///
   /// In ru, this message translates to:
