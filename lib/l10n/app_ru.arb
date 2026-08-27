@@ -851,5 +851,21 @@
     "errorTestAttemptInProgress": "У вас уже есть незавершённая попытка",
     "errorTestTemplateArchived": "Тест больше не доступен",
     "errorTestAssignmentNotFound": "Назначение теста не найдено",
-    "errorTestTemplateDeleted": "Тест удалён"
+    "errorTestTemplateDeleted": "Тест удалён",
+
+    "pwaInstallEntryPoint": "Установить приложение",
+    "pwaInstallTitle": "Установите Smenka на устройство",
+    "pwaInstallSubtitle": "Займёт пару секунд — приложение появится рядом с остальными.",
+    "pwaInstallBenefitIcon": "Значок на экране устройства",
+    "pwaInstallBenefitFullscreen": "Полный экран без адресной строки",
+    "pwaInstallBenefitFast": "Быстрый запуск в один тап",
+    "pwaInstallAction": "Установить",
+    "pwaInstallLater": "Позже",
+    "pwaInstallGotIt": "Понятно",
+    "pwaInstallIosStepsTitle": "Как установить в Safari",
+    "pwaInstallIosStepShare": "Нажмите «Поделиться» в нижней панели браузера",
+    "pwaInstallIosStepAddToHome": "Выберите «На экран „Домой“»",
+    "pwaInstallIosStepConfirm": "Подтвердите — «Добавить»",
+    "pwaInstallManualStepsTitle": "Как установить",
+    "pwaInstallManualHint": "Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран»."
 }

@@ -3333,6 +3333,96 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Тест удалён'**
   String get errorTestTemplateDeleted;
+
+  /// No description provided for @pwaInstallEntryPoint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Установить приложение'**
+  String get pwaInstallEntryPoint;
+
+  /// No description provided for @pwaInstallTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Установите Smenka на устройство'**
+  String get pwaInstallTitle;
+
+  /// No description provided for @pwaInstallSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Займёт пару секунд — приложение появится рядом с остальными.'**
+  String get pwaInstallSubtitle;
+
+  /// No description provided for @pwaInstallBenefitIcon.
+  ///
+  /// In ru, this message translates to:
+  /// **'Значок на экране устройства'**
+  String get pwaInstallBenefitIcon;
+
+  /// No description provided for @pwaInstallBenefitFullscreen.
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный экран без адресной строки'**
+  String get pwaInstallBenefitFullscreen;
+
+  /// No description provided for @pwaInstallBenefitFast.
+  ///
+  /// In ru, this message translates to:
+  /// **'Быстрый запуск в один тап'**
+  String get pwaInstallBenefitFast;
+
+  /// No description provided for @pwaInstallAction.
+  ///
+  /// In ru, this message translates to:
+  /// **'Установить'**
+  String get pwaInstallAction;
+
+  /// No description provided for @pwaInstallLater.
+  ///
+  /// In ru, this message translates to:
+  /// **'Позже'**
+  String get pwaInstallLater;
+
+  /// No description provided for @pwaInstallGotIt.
+  ///
+  /// In ru, this message translates to:
+  /// **'Понятно'**
+  String get pwaInstallGotIt;
+
+  /// No description provided for @pwaInstallIosStepsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Как установить в Safari'**
+  String get pwaInstallIosStepsTitle;
+
+  /// No description provided for @pwaInstallIosStepShare.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нажмите «Поделиться» в нижней панели браузера'**
+  String get pwaInstallIosStepShare;
+
+  /// No description provided for @pwaInstallIosStepAddToHome.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите «На экран „Домой“»'**
+  String get pwaInstallIosStepAddToHome;
+
+  /// No description provided for @pwaInstallIosStepConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подтвердите — «Добавить»'**
+  String get pwaInstallIosStepConfirm;
+
+  /// No description provided for @pwaInstallManualStepsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Как установить'**
+  String get pwaInstallManualStepsTitle;
+
+  /// No description provided for @pwaInstallManualHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран».'**
+  String get pwaInstallManualHint;
 }
 
 class _AppLocalizationsDelegate

@@ -64,6 +64,11 @@ dependencies:
   # для этого не годится — на десктопе атрибут `capture` игнорируется и
   # открывается обычный файловый диалог, т.е. «только съёмка» не обеспечить.
   camera: ^0.12.0+2
+  # JS-interop к DOM. Нужен ровно одному web-only файлу
+  # (`lib/core/pwa/pwa_install_platform_web.dart`, фича pwa_install_promo):
+  # события `beforeinstallprompt`/`appinstalled` и media query `display-mode`.
+  # На native не попадает — файл подключается conditional export'ом.
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:

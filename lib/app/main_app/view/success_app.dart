@@ -204,6 +204,14 @@ class _SuccessAppState extends State<_SuccessApp> {
               repository: context.read<NotificationRepository>(),
             ),
           ),
+          // Промо установки PWA (pwa_install_promo) — глобальный кубит: одно и
+          // то же состояние нужно шеллу (разовое промо) и аппбару главной
+          // (иконка «Установить приложение»). Вне web остаётся пустым.
+          BlocProvider(
+            create: (_) => PwaInstallCubit(
+              storage: PwaPromoStorage(prefs: widget.sharedPreferences),
+            ),
+          ),
         ],
         child: BlocListener<AuthCubit, AuthCubitState>(
           listener: (context, authState) async {

@@ -106,6 +106,16 @@ class AppRouter extends RootStackRouter {
       page: ChecklistPhotoSourceRoute.page,
       customRouteBuilder: _modalBottomSheetBuilder,
     ),
+    // Промо установки PWA (pwa_install_promo) — модальный bottom sheet поверх
+    // табов: открывается разово после первого входа (шелл слушает
+    // `PwaInstallState.promoRequested`) и по иконке в аппбаре главной.
+    // Только web: на native `PwaInstallCubit` остаётся пустым и роут никто
+    // не пушит.
+    CustomRoute<void>(
+      path: '/install-app',
+      page: PwaInstallRoute.page,
+      customRouteBuilder: _modalBottomSheetBuilder,
+    ),
     AutoRoute(
       path: '/',
       page: MainRouterRoute.page,

@@ -1811,4 +1811,52 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorTestTemplateDeleted => 'Тест удалён';
+
+  @override
+  String get pwaInstallEntryPoint => 'Установить приложение';
+
+  @override
+  String get pwaInstallTitle => 'Установите Smenka на устройство';
+
+  @override
+  String get pwaInstallSubtitle =>
+      'Займёт пару секунд — приложение появится рядом с остальными.';
+
+  @override
+  String get pwaInstallBenefitIcon => 'Значок на экране устройства';
+
+  @override
+  String get pwaInstallBenefitFullscreen => 'Полный экран без адресной строки';
+
+  @override
+  String get pwaInstallBenefitFast => 'Быстрый запуск в один тап';
+
+  @override
+  String get pwaInstallAction => 'Установить';
+
+  @override
+  String get pwaInstallLater => 'Позже';
+
+  @override
+  String get pwaInstallGotIt => 'Понятно';
+
+  @override
+  String get pwaInstallIosStepsTitle => 'Как установить в Safari';
+
+  @override
+  String get pwaInstallIosStepShare =>
+      'Нажмите «Поделиться» в нижней панели браузера';
+
+  @override
+  String get pwaInstallIosStepAddToHome => 'Выберите «На экран „Домой“»';
+
+  @override
+  String get pwaInstallIosStepConfirm => 'Подтвердите — «Добавить»';
+
+  @override
+  String get pwaInstallManualStepsTitle => 'Как установить';
+
+  @override
+  String get pwaInstallManualHint =>
+      'Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран».';
 }
