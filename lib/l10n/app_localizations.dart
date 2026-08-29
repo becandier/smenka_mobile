@@ -490,17 +490,53 @@ abstract class AppLocalizations {
   /// **'Завершить'**
   String get shiftFinish;
 
-  /// No description provided for @shiftPersonal.
-  ///
-  /// In ru, this message translates to:
-  /// **'Персональная'**
-  String get shiftPersonal;
-
   /// No description provided for @shiftSelectOrg.
   ///
   /// In ru, this message translates to:
-  /// **'Выберите организацию'**
+  /// **'Организация'**
   String get shiftSelectOrg;
+
+  /// No description provided for @shiftOrgBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смена в: {orgName}'**
+  String shiftOrgBadge(String orgName);
+
+  /// No description provided for @shiftStartPersonalLink.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать персональную смену'**
+  String get shiftStartPersonalLink;
+
+  /// No description provided for @shiftPersonalConfirmTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать персональную смену?'**
+  String get shiftPersonalConfirmTitle;
+
+  /// No description provided for @shiftPersonalConfirmBody.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персональная смена не привязана к организации: руководитель её не увидит, в отчёты и начисления она не попадёт.'**
+  String get shiftPersonalConfirmBody;
+
+  /// No description provided for @shiftPersonalConfirmStartOrg.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать в «{orgName}»'**
+  String shiftPersonalConfirmStartOrg(String orgName);
+
+  /// No description provided for @shiftPersonalConfirmChooseOrg.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать организацию'**
+  String get shiftPersonalConfirmChooseOrg;
+
+  /// No description provided for @shiftPersonalConfirmStartPersonal.
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё равно персональную'**
+  String get shiftPersonalConfirmStartPersonal;
 
   /// No description provided for @shiftActive.
   ///

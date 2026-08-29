@@ -24,6 +24,7 @@ export 'organizations/_organizations.dart';
 export 'overtime_request/_overtime_request.dart';
 export 'payroll/_payroll.dart';
 export 'penalty_form/_penalty_form.dart';
+export 'personal_shift_confirm/_personal_shift_confirm.dart';
 export 'profile/_profile.dart';
 export 'pwa_install/_pwa_install.dart';
 export 'shift_checklists/_shift_checklists.dart';

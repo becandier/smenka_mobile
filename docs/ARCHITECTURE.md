@@ -98,9 +98,11 @@ lib/
     ├── shift_tracker/             # Трекер смены (Tab 1 «Смена»)
     │   ├── cubit/                 # ShiftTrackerCubit + State
     │   ├── view/                  # ShiftTrackerPage
-    │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent (+_SchedulePlanLine), _OfflineBanner, _OrgSelector, _WorkLocationSelector, _WorkScheduleSelector (work_schedules), _PauseList, _PauseCard, _ShiftActionErrorBar, _ShiftChecklistsTile
+    │   └── widgets/               # _IdleShiftContent, _ActiveShiftContent (+_SchedulePlanLine), _OfflineBanner, _OrgSelector (только между организациями, myRole != owner), _SingleOrgBadge, _PersonalShiftLink, _WorkLocationSelector, _WorkScheduleSelector (work_schedules), _PauseList, _PauseCard, _ShiftActionErrorBar, _ShiftChecklistsTile
     ├── work_schedule_picker/      # Выбор графика при старте смены (CustomRoute, work_schedules)
     │   └── view/                  # WorkSchedulePickerPage (без cubit — список уже загружен ShiftTrackerCubit)
+    ├── personal_shift_confirm/    # Подтверждение персональной смены при доступных организациях (CustomRoute, shift_org_default)
+    │   └── view/                  # PersonalShiftConfirmPage (без cubit — чистое подтверждение)
     ├── shift_checklists/          # Чек-листы текущей смены (push)
     │   ├── cubit/                 # ShiftChecklistsCubit + State
     │   └── view/                  # ShiftChecklistsPage
@@ -272,7 +274,7 @@ lib/
 | `AuthCubit` | Готов | Глобальное состояние авторизации (`lib/shared/auth/`) |
 | `LoginCubit` | Готов | Login/Register форма с валидацией + OAuth-вход Google/Apple (`oauth_login`, см. раздел ниже) |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
-| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор и запоминание контекста (`ShiftContextStorage`); выбор графика (work_schedules) — резолв набора по org+точке, автовыбор при 1, обязательный выбор при >1, запоминание (`WorkScheduleContextStorage`), сброс+перезапрос при `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` |
+| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор контекста (`shift_org_default`) — дефолт всегда организация (первая доступная, `myRole != owner`), персональная смена только осознанным выбором через `startPersonalShift()` + модалку подтверждения (`PersonalShiftConfirmPage`), не запоминается (`ShiftContextStorage`, только `org_id`); выбор графика (work_schedules) — резолв набора по org+точке, автовыбор при 1, обязательный выбор при >1, запоминание (`WorkScheduleContextStorage`), сброс+перезапрос при `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` |
 | `ShiftChecklistsCubit` | Готов | Список чек-листов текущей смены (read) |
 | `ChecklistFillCubit` | Готов | Заполнение пунктов (toggle + debounced комментарий) + фото-подтверждения: антифрод-флоу `addPhoto` (image_picker → гео → штамп в изоляте → flutter_image_compress → `POST /files` → привязка), `retryPhoto` (частичный сбой), `removePhoto`; черновики загрузки в стейте, байты — в приватной мапе; read-only для чужой/завершённой смены |
 | `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, диапазон дат через общий пикер) |
@@ -325,6 +327,7 @@ lib/
 | `ChecklistPhotoSourceRoute` | `/checklist-photo-source` | Bottom-sheet выбора источника фото (камера/галерея) для `camera_or_gallery` |
 | `PwaInstallRoute` | `/install-app` | Промо установки PWA — bottom-sheet (root, поверх табов): разово после первого входа + по иконке в аппбаре главной; только web (pwa_install_promo) |
 | `WorkSchedulePickerRoute` | `shift/work-schedule-picker` | Выбор графика при старте смены (CustomRoute, `WorkSchedulePickerResult?`, work_schedules) |
+| `PersonalShiftConfirmRoute` | `shift/personal-shift-confirm` | Подтверждение персональной смены при доступных организациях (CustomRoute, `PersonalShiftConfirmAction?`, shift_org_default) |
 | `GeoFallbackStartRoute` | `shift/geo-fallback-start` | Старт смены по фото при недоступной геолокации (push внутри таба «Смена», возвращает `Shift?`) (shift_geo_photo_fallback) |
 | `ShiftHistoryRoute` | `/history` | История смен (Tab 2, initial) |
 | `ShiftDetailRoute` | `/history/detail` | Детали смены (push) |
@@ -411,7 +414,7 @@ lib/
 | `AuthTokenStorage` | **flutter_secure_storage** (+ in-memory кэш) | access_token, refresh_token |
 | `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
 | `PendingInviteStorage` | SharedPreferences | pending_invite_code |
-| `ShiftContextStorage` | SharedPreferences | last_shift_context (`personal` либо UUID организации) |
+| `ShiftContextStorage` | SharedPreferences | last_shift_context — UUID организации (`shift_org_default`: персональный контекст больше не пишется; легаси-значение `personal` при чтении игнорируется и чистится) |
 | `PwaPromoStorage` | SharedPreferences (на web — localStorage) | pwa_install_promo_shown — отметка «разовое промо установки PWA показано»; привязана к браузеру/устройству, переживает перелогин (pwa_install_promo) |
 
 ### `AuthTokenStorage` — безопасное хранение токенов (security_hardening)
@@ -532,6 +535,18 @@ lib/
   2. уточнение в `admin.md`, что для `(google, android)` в `oauth_provider_settings` должен вводиться Web Client ID, а не Android Client ID.
 
 ---
+
+## Организация по умолчанию при старте смены (shift_org_default)
+
+Фича `shift_org_default` (`../docs/tasks/shift_org_default/mobile.md`, продолжение `shift_quick_start`) чинит прод-баг: сотрудники организаций массово стартовали персональные смены — персональная была равноправным пунктом дропдауна и дефолтом при 2+ организациях, а однажды выбранная запоминалась навсегда. Персональная смена не привязана к организации: не видна руководителю, не попадает в отчёты/начисления, чинится только вручную (`manual_time_entry`). Изменение чисто клиентское — контракты `GET /organizations`/`GET /shifts`/`POST /shifts/start` не меняются.
+
+- **`ShiftTrackerState.availableOrganizations`** — подмножество `organizations`, где `myRole != owner` (по ADR-001 owner НЕ member — старт с `organization_id` такой организации отвечает `403 FORBIDDEN`). `hasOrganizations`/`selectedOrganization` теперь читают именно этот список, а не сырой `organizations.data` — организация, где пользователь только владелец, в селектор не попадает и не предвыбирается.
+- **`ShiftTrackerCubit._maybePreselectContext`** — правило инвертировано: (1) сохранённый `org_id` есть среди `availableOrganizations` → подставить; (2) иначе, если доступных организаций одна и более → **первая** (раньше — персональная при 2+, только единственная org предвыбиралась); (3) доступных организаций нет → персональный контекст. Легаси-маркер `ShiftContextStorage.personalMarker` при чтении игнорируется и чистится (`clear()`) — на предвыбор больше не влияет.
+- **`ShiftTrackerCubit.selectOrganization(String organizationId)`** — сигнатура стала non-nullable: селектор выбирает только между организациями, «Персональная» ушла из дропдауна. `ShiftContextStorage` хранит только `org_id`, маркер `personal` больше не пишется.
+- **`ShiftTrackerCubit.startPersonalShift()`** — отдельный метод для осознанного старта персональной смены поверх открытого организационного контекста: НЕ читает/не трогает `selectedOrganizationId`/`selectedWorkLocation`/`selectedWorkScheduleId` (org-контекст на экране остаётся как есть при отмене), шлёт `POST /shifts/start` без параметров, гео не запрашивает, чистит `ShiftContextStorage` (разовый выбор — на следующем заходе снова правило A).
+- **UI idle-экрана** (`_IdleShiftContent`): 0 доступных организаций — как раньше (без селектора/плашки/ссылки, «Начать» стартует персональную). 1 — неинтерактивная плашка `_SingleOrgBadge` («Смена в: {orgName}») вместо селектора. 2+ — `_OrgSelector` без пункта «Персональная», заголовок «Организация». Кнопка «Начать» при наличии организаций всегда стартует организационную смену. Второстепенная ссылка `_PersonalShiftLink` («Начать персональную смену») — блёклым стилем под основной кнопкой, видна только когда есть организационная альтернатива.
+- **Подтверждение** (`personal_shift_confirm/`, `PersonalShiftConfirmPage`, `CustomRoute<PersonalShiftConfirmAction?>` bottom sheet): тап по ссылке показывает модалку с предупреждением; основное действие — «Начать в «Name»» (1 org, продолжает обычный флоу `startShift()`) либо «Выбрать организацию» (2+ orgs, просто закрывает модалку, `context.router.maybePop()`); второстепенное — «Всё равно персональную» (`startPersonalShift()`). Закрытие свайпом = отмена, контекст не меняется.
+- **Тесты**: группа «предвыбор контекста — инверсия дефолта (shift_org_default)» и «персональная смена при активном орг-контексте» в `shift_tracker_cubit_test.dart` — 2+ орг → первая доступная, пропавший `org_id` → первая доступная, легаси `personal` → игнор+чистка, owner-only org исключена из списка, 0 организаций → персональный контекст без предвыбора, `startPersonalShift()` не трогает org-контекст и чистит storage.
 
 ## Графики работы и переработки (work_schedules)
 

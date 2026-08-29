@@ -10,6 +10,11 @@ class _IdleShiftContent extends StatelessWidget {
     final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     final colors = context.appColors;
+    // Организации, доступные для смены (myRole != owner, shift_org_default) —
+    // персональная смена в этот список не входит, это отдельная
+    // второстепенная ссылка ниже кнопки «Начать» (см. _PersonalShiftLink).
+    final orgs = state.availableOrganizations;
+    final selectedOrgId = state.selectedOrganizationId;
 
     return Center(
       child: SingleChildScrollView(
@@ -31,10 +36,18 @@ class _IdleShiftContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            if (state.hasOrganizations) ...[
+            // Одна доступная организация — неинтерактивная плашка вместо
+            // селектора (выбирать не из чего). Две и более — селектор.
+            // Значение селектора всегда одна из [orgs] — предвыбор
+            // (ShiftTrackerCubit._maybePreselectContext) гарантирует
+            // selectedOrgId непустым, как только организации загружены.
+            if (orgs.length == 1) ...[
+              _SingleOrgBadge(organizationName: orgs.first.name),
+              const SizedBox(height: 24),
+            ] else if (orgs.length > 1 && selectedOrgId != null) ...[
               _OrgSelector(
-                organizations: state.organizations.data ?? [],
-                selectedOrganizationId: state.selectedOrganizationId,
+                organizations: orgs,
+                selectedOrganizationId: selectedOrgId,
                 onChanged: context.read<ShiftTrackerCubit>().selectOrganization,
               ),
               const SizedBox(height: 24),
@@ -53,10 +66,44 @@ class _IdleShiftContent extends StatelessWidget {
               isEnabled: state.canStartShift,
               onPressed: () => _onStartShift(context),
             ),
+            // Персональная смена — осознанный отдельный выбор, не дефолт
+            // (shift_org_default, блок A): второстепенная ссылка, видна
+            // только когда есть организационная альтернатива. При нуле
+            // доступных организаций «Начать» выше и так стартует
+            // персональную смену — ссылка и подтверждение не нужны.
+            if (orgs.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              _PersonalShiftLink(onTap: () => _onStartPersonalTapped(context)),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  /// Тап по «Начать персональную смену»: показывает модалку подтверждения
+  /// (`shift_org_default`, блок B) и обрабатывает выбор. Закрытие
+  /// свайпом/тапом по фону (`action == null`) — отмена, ничего не меняется.
+  Future<void> _onStartPersonalTapped(BuildContext context) async {
+    final cubit = context.read<ShiftTrackerCubit>();
+    final orgs = cubit.state.availableOrganizations;
+    final singleOrgName = orgs.length == 1 ? orgs.first.name : null;
+
+    final action = await context.router.push<PersonalShiftConfirmAction?>(
+      PersonalShiftConfirmRoute(singleOrganizationName: singleOrgName),
+    );
+    if (!context.mounted || action == null) return;
+
+    switch (action) {
+      case PersonalShiftConfirmAction.startOrganization:
+        // Единственная доступная организация уже выбрана в состоянии
+        // (плашка вместо селектора) — обычный флоу старта, как по «Начать».
+        await _onStartShift(context);
+      case PersonalShiftConfirmAction.startPersonal:
+        final result = await cubit.startPersonalShift();
+        if (!context.mounted) return;
+        await _handleStartShiftResult(context, result);
+    }
   }
 
   Future<void> _onStartShift(BuildContext context) async {
@@ -168,6 +215,64 @@ class _IdleShiftContent extends StatelessWidget {
     );
     if (shift == null) return;
     cubit.adoptStartedShift(shift);
+  }
+}
+
+/// Неинтерактивная плашка «Смена в: <Название>» — заменяет селектор, когда
+/// доступна ровно одна организация: выбирать не из чего, а раньше в этом
+/// случае селектор либо не показывался вовсе, либо равноправно предлагал
+/// персональную (тот самый баг, который чинит shift_org_default).
+class _SingleOrgBadge extends StatelessWidget {
+  const _SingleOrgBadge({required this.organizationName});
+
+  final String organizationName;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Icon(Icons.apartment_outlined, size: 18, color: colors.primary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                context.l10n.shiftOrgBadge(organizationName),
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Второстепенная ссылка «Начать персональную смену» под основной кнопкой
+/// «Начать» (shift_org_default, блок A) — блёклым стилем, чтобы не выглядеть
+/// равноправной альтернативой организационному старту. Тап ведёт в модалку
+/// подтверждения (блок B), а не сразу стартует смену.
+class _PersonalShiftLink extends StatelessWidget {
+  const _PersonalShiftLink({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onTap,
+      child: Text(context.l10n.shiftStartPersonalLink),
+    );
   }
 }
 
