@@ -220,12 +220,23 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     _maybePreselectContext();
   }
 
-  /// Предвыбор контекста смены (shift_quick_start).
+  /// Предвыбор контекста смены (shift_org_default, инверсия дефолта
+  /// shift_quick_start).
   ///
   /// Применяется один раз после завершения [_init], когда известно,
   /// есть ли активная/приостановленная смена, и организации загружены.
   /// Ручной выбор пользователя не перетирается; повторные эмиты
   /// [OrganizationRepository.watchMyOrganizations] выбор не передёргивают.
+  ///
+  /// Правило (mobile.md, блок A): (1) сохранённый `org_id` есть среди
+  /// доступных для смены организаций
+  /// ([ShiftTrackerState.availableOrganizations], т.е. `myRole != owner`) →
+  /// подставить её; (2) иначе, если доступных
+  /// организаций одна и более → первая в порядке репозитория (раньше — только
+  /// при ровно одной, персональная была дефолтом при двух и более — тот самый
+  /// баг); (3) доступных организаций нет → персональный контекст остаётся
+  /// дефолтом. Легаси-маркер `personal` (шёл до этой фичи) на предвыбор
+  /// больше не влияет — игнорируется и чистится из хранилища.
   void _maybePreselectContext() {
     if (_contextPreselectApplied || _contextSelectedManually) return;
     if (!_initCompleted || !state.organizations.isSuccess) return;
@@ -234,18 +245,25 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
     if (state.hasActiveShift || state.selectedOrganizationId != null) return;
 
-    final orgs = state.organizations.data ?? const <Organization>[];
+    final orgs = state.availableOrganizations;
     final savedMarker = _contextStorage.read();
 
-    String? preselectedId;
     if (savedMarker == ShiftContextStorage.personalMarker) {
-      // Личная смена — selectedOrganizationId остаётся null
-      preselectedId = null;
-    } else if (savedMarker != null &&
+      // Легаси-маркер персональной смены (до shift_org_default) больше не
+      // подставляется и не имеет смысла как значение — чистим, дальше
+      // действует правило A наравне со случаем «маркера нет вовсе».
+      unawaited(_contextStorage.clear());
+    }
+
+    String? preselectedId;
+    if (savedMarker != null &&
+        savedMarker != ShiftContextStorage.personalMarker &&
         orgs.any((org) => org.id == savedMarker)) {
       preselectedId = savedMarker;
-    } else if (orgs.length == 1) {
-      // Сохранённого валидного контекста нет, организация ровно одна
+    } else if (orgs.isNotEmpty) {
+      // Сохранённого валидного org-контекста нет (маркера нет, был `personal`,
+      // либо организация пропала из доступных — исключили/удалили/стал
+      // owner) → первая доступная.
       preselectedId = orgs.first.id;
     }
 
@@ -309,11 +327,14 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     }
   }
 
-  void selectOrganization(String? organizationId) {
+  /// Выбор организации в селекторе idle-экрана (shift_org_default: селектор
+  /// выбирает только между организациями, персональная смена — отдельная
+  /// ссылка с подтверждением, см. [startPersonalShift]).
+  void selectOrganization(String organizationId) {
     _contextSelectedManually = true;
     // Смена контекста сбрасывает выбранную точку: точка принадлежит конкретной
-    // организации и не должна «перетекать» в другую org или персональную смену.
-    // Набор графиков зависит от org+точки — сбрасываем и его тоже.
+    // организации и не должна «перетекать» в другую org. Набор графиков
+    // зависит от org+точки — сбрасываем и его тоже.
     emit(
       state.copyWith(
         selectedOrganizationId: organizationId,
@@ -322,16 +343,12 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         schedules: const SectionData(),
       ),
     );
-    unawaited(
-      _contextStorage.save(
-        organizationId ?? ShiftContextStorage.personalMarker,
-      ),
-    );
+    unawaited(_contextStorage.save(organizationId));
     // При гео-проверке точка неизвестна клиенту заранее (её резолвит сервер
     // только на старте по координатам) — ранний запрос без точки исключил бы
     // location-only графики (баг, см. work_schedules_geo_resolve/mobile.md).
     // Список для таких организаций грузится только внутри startShift().
-    if (organizationId != null && state.showWorkLocationSelector) {
+    if (state.showWorkLocationSelector) {
       unawaited(_loadSchedules());
     }
   }
@@ -525,6 +542,62 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     }
 
     return _performStart(lat: lat, lng: lng);
+  }
+
+  /// Старт персональной смены как осознанный выбор поверх активного
+  /// организационного контекста (`shift_org_default`, блок B) — вызывается
+  /// только из «Всё равно персональную» модалки подтверждения
+  /// (`PersonalShiftConfirmRoute`), НЕ из обычного «Начать». В отличие от
+  /// [startShift]/[_performStart] намеренно НЕ читает и НЕ трогает
+  /// `selectedOrganizationId`/`selectedWorkLocation`/`selectedWorkScheduleId`
+  /// состояния — они принадлежат организационному контексту на экране,
+  /// который остаётся как есть при отмене модалки (mobile.md: «контекст
+  /// остаётся организационным, как был до тапа по ссылке»). Персональная
+  /// смена не поддерживает гео-проверку/точку/график — запрос уходит без них.
+  Future<StartShiftResult> startPersonalShift() async {
+    _lastAction = startPersonalShift;
+    // Осознанный выбор персональной смены — не запоминается (mobile.md, блок
+    // C): ранее сохранённый `org_id`, если был, больше не годится как
+    // «последний выбор»; следующий заход на экран снова определит правило A.
+    unawaited(_contextStorage.clear());
+    emit(
+      state.copyWith(
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+        actionErrorCode: null,
+        lastGeoFailure: null,
+        geoBlockLevel: GeoBlockLevel.unknown,
+      ),
+    );
+
+    // Без аргументов: все параметры (organizationId/latitude/longitude/
+    // workLocationId/workScheduleId) остаются `null` по умолчанию —
+    // намеренно не читаем их из состояния, в отличие от _performStart
+    // (org-контекст на экране не трогаем).
+    final result = await _shiftRepository.startShift();
+
+    return result.fold(
+      onSuccess: (shift) {
+        emit(
+          state.copyWith(
+            activeShift: state.activeShift.toSuccess(shift),
+            actionStatus: FeatureStatus.success,
+          ),
+        );
+        _startTimer(shift);
+        return StartShiftResult.success;
+      },
+      onFailure: (error) {
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+            actionErrorCode: error.code,
+          ),
+        );
+        return StartShiftResult.error;
+      },
+    );
   }
 
   /// Общий хвост всех гео-отказов старта: кладёт в состояние сам объект

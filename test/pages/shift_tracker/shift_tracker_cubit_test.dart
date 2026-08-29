@@ -1511,4 +1511,176 @@ void main() {
       });
     });
   });
+
+  group('предвыбор контекста — инверсия дефолта (shift_org_default)', () {
+    Organization orgWithRole(
+      String id, {
+      String name = 'Org',
+      OrgMembershipRole? myRole,
+    }) => Organization(
+      id: id,
+      name: name,
+      ownerId: 'owner1',
+      inviteCode: 'INV$id',
+      isDeleted: false,
+      createdAt: DateTime.utc(2026),
+      myRole: myRole,
+    );
+
+    ShiftTrackerCubit buildWithOrgs(List<Organization> orgs) {
+      when(
+        () => orgRepo.watchMyOrganizations(),
+      ).thenAnswer((_) => Stream<List<Organization>>.value(orgs));
+      return buildCubit();
+    }
+
+    setUp(() {
+      when(() => contextStorage.save(any())).thenAnswer((_) async {});
+      when(() => contextStorage.clear()).thenAnswer((_) async {});
+    });
+
+    test('2 и более организаций без сохранённого контекста → первая доступная '
+        '(раньше дефолтом была персональная — тот самый баг)', () async {
+      final orgs = [
+        orgWithRole('org1', name: 'Org 1', myRole: OrgMembershipRole.employee),
+        orgWithRole('org2', name: 'Org 2', myRole: OrgMembershipRole.admin),
+      ];
+
+      final cubit = buildWithOrgs(orgs);
+      await pumpEventQueue();
+
+      expect(cubit.state.selectedOrganizationId, 'org1');
+      expect(cubit.state.isOrgShift, isTrue);
+      await cubit.close();
+    });
+
+    test('сохранённый org_id исчез из доступных → молча первая доступная '
+        '(без ошибки)', () async {
+      when(() => contextStorage.read()).thenReturn('gone');
+      final orgs = [
+        orgWithRole('org1', name: 'Org 1', myRole: OrgMembershipRole.employee),
+        orgWithRole('org2', name: 'Org 2', myRole: OrgMembershipRole.employee),
+      ];
+
+      final cubit = buildWithOrgs(orgs);
+      await pumpEventQueue();
+
+      expect(cubit.state.selectedOrganizationId, 'org1');
+      await cubit.close();
+    });
+
+    test('сохранённый легаси-маркер `personal` игнорируется и чистится → '
+        'действует правило A (организация, не персональная)', () async {
+      when(
+        () => contextStorage.read(),
+      ).thenReturn(ShiftContextStorage.personalMarker);
+      final org = orgWithRole('org1', myRole: OrgMembershipRole.employee);
+
+      final cubit = buildWithOrgs([org]);
+      await pumpEventQueue();
+
+      expect(cubit.state.selectedOrganizationId, 'org1');
+      verify(() => contextStorage.clear()).called(1);
+      await cubit.close();
+    });
+
+    test('организация, где пользователь только владелец, не входит в '
+        'доступные и не предвыбирается (ADR-001 — owner не member, старт дал '
+        'бы 403)', () async {
+      final ownerOrg = orgWithRole('org1', myRole: OrgMembershipRole.owner);
+
+      final cubit = buildWithOrgs([ownerOrg]);
+      await pumpEventQueue();
+
+      expect(cubit.state.availableOrganizations, isEmpty);
+      expect(cubit.state.hasOrganizations, isFalse);
+      expect(cubit.state.selectedOrganizationId, isNull);
+      await cubit.close();
+    });
+
+    test('владелец в одной организации и сотрудник в другой → доступна только '
+        'та, где не owner', () async {
+      final ownerOrg = orgWithRole('org1', myRole: OrgMembershipRole.owner);
+      final employeeOrg = orgWithRole(
+        'org2',
+        name: 'Org 2',
+        myRole: OrgMembershipRole.employee,
+      );
+
+      final cubit = buildWithOrgs([ownerOrg, employeeOrg]);
+      await pumpEventQueue();
+
+      expect(cubit.state.availableOrganizations.map((o) => o.id), ['org2']);
+      expect(cubit.state.selectedOrganizationId, 'org2');
+      await cubit.close();
+    });
+
+    test('доступных организаций нет → персональный контекст, ничего не '
+        'предвыбирается', () async {
+      final cubit = buildCubit();
+      await pumpEventQueue();
+
+      expect(cubit.state.hasOrganizations, isFalse);
+      expect(cubit.state.selectedOrganizationId, isNull);
+      await cubit.close();
+    });
+  });
+
+  group('персональная смена при активном орг-контексте (shift_org_default, '
+      'блок B)', () {
+    final org = _org(geoCheckEnabled: false);
+
+    setUp(() {
+      when(() => contextStorage.save(any())).thenAnswer((_) async {});
+      when(() => contextStorage.clear()).thenAnswer((_) async {});
+    });
+
+    test('успех: org-контекст на экране не трогается, storage чистится, гео '
+        'не запрашивается', () async {
+      // Персональный старт вызывает startShift() совсем без аргументов
+      // (см. ShiftTrackerCubit.startPersonalShift) — стаб без named-стрелок.
+      when(
+        () => shiftRepo.startShift(),
+      ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+      final cubit = buildWithOrgSelected(org);
+      await pumpEventQueue();
+      expect(cubit.state.selectedOrganizationId, 'org1');
+
+      final result = await cubit.startPersonalShift();
+
+      expect(result, StartShiftResult.success);
+      expect(cubit.state.hasActiveShift, isTrue);
+      // Контекст на экране не поменялся — после finishShift снова org1.
+      expect(cubit.state.selectedOrganizationId, 'org1');
+      verify(() => contextStorage.clear()).called(1);
+      verifyNever(() => geo.getCurrentPosition());
+      await cubit.close();
+    });
+
+    test('сеть падает → ошибка действия, ретрай повторяет именно '
+        'персональный старт', () async {
+      var calls = 0;
+      when(() => shiftRepo.startShift()).thenAnswer((_) async {
+        calls++;
+        return calls == 1
+            ? const Task<Shift>.failure(_networkError)
+            : Task<Shift>.success(_activeShift());
+      });
+
+      final cubit = buildWithOrgSelected(org);
+      await pumpEventQueue();
+
+      final result = await cubit.startPersonalShift();
+
+      expect(result, StartShiftResult.error);
+      expect(cubit.state.isActionNetworkError, isTrue);
+
+      await cubit.retryLastAction();
+
+      expect(cubit.state.actionStatus, FeatureStatus.success);
+      expect(cubit.state.hasActiveShift, isTrue);
+      await cubit.close();
+    });
+  });
 }

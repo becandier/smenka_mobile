@@ -76,8 +76,24 @@
     "shiftPause": "Пауза",
     "shiftResume": "Продолжить",
     "shiftFinish": "Завершить",
-    "shiftPersonal": "Персональная",
-    "shiftSelectOrg": "Выберите организацию",
+    "shiftSelectOrg": "Организация",
+    "shiftOrgBadge": "Смена в: {orgName}",
+    "@shiftOrgBadge": {
+        "placeholders": {
+            "orgName": {"type": "String"}
+        }
+    },
+    "shiftStartPersonalLink": "Начать персональную смену",
+    "shiftPersonalConfirmTitle": "Начать персональную смену?",
+    "shiftPersonalConfirmBody": "Персональная смена не привязана к организации: руководитель её не увидит, в отчёты и начисления она не попадёт.",
+    "shiftPersonalConfirmStartOrg": "Начать в «{orgName}»",
+    "@shiftPersonalConfirmStartOrg": {
+        "placeholders": {
+            "orgName": {"type": "String"}
+        }
+    },
+    "shiftPersonalConfirmChooseOrg": "Выбрать организацию",
+    "shiftPersonalConfirmStartPersonal": "Всё равно персональную",
     "shiftActive": "Смена активна",
     "shiftPaused": "Смена на паузе",
     "shiftElapsed": "Время работы",

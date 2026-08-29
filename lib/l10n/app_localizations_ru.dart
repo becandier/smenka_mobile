@@ -216,10 +216,33 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftFinish => 'Завершить';
 
   @override
-  String get shiftPersonal => 'Персональная';
+  String get shiftSelectOrg => 'Организация';
 
   @override
-  String get shiftSelectOrg => 'Выберите организацию';
+  String shiftOrgBadge(String orgName) {
+    return 'Смена в: $orgName';
+  }
+
+  @override
+  String get shiftStartPersonalLink => 'Начать персональную смену';
+
+  @override
+  String get shiftPersonalConfirmTitle => 'Начать персональную смену?';
+
+  @override
+  String get shiftPersonalConfirmBody =>
+      'Персональная смена не привязана к организации: руководитель её не увидит, в отчёты и начисления она не попадёт.';
+
+  @override
+  String shiftPersonalConfirmStartOrg(String orgName) {
+    return 'Начать в «$orgName»';
+  }
+
+  @override
+  String get shiftPersonalConfirmChooseOrg => 'Выбрать организацию';
+
+  @override
+  String get shiftPersonalConfirmStartPersonal => 'Всё равно персональную';
 
   @override
   String get shiftActive => 'Смена активна';

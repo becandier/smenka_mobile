@@ -1,5 +1,10 @@
 part of '../view/shift_tracker_page.dart';
 
+/// Селектор выбирает только между организациями, доступными для смены
+/// (`myRole != owner`) — персональная смена в него не входит, это отдельная
+/// второстепенная ссылка на idle-экране (см. `_PersonalShiftLink`,
+/// `shift_org_default/mobile.md`, блок A). Значение всегда одна из
+/// [organizations] — пустого/несуществующего выбора не бывает.
 class _OrgSelector extends StatelessWidget {
   const _OrgSelector({
     required this.organizations,
@@ -8,8 +13,8 @@ class _OrgSelector extends StatelessWidget {
   });
 
   final List<Organization> organizations;
-  final String? selectedOrganizationId;
-  final ValueChanged<String?> onChanged;
+  final String selectedOrganizationId;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +26,11 @@ class _OrgSelector extends StatelessWidget {
       children: [
         Text(l10n.shiftSelectOrg, style: textTheme.titleSmall),
         const SizedBox(height: 8),
-        DropdownButtonFormField<String?>(
+        DropdownButtonFormField<String>(
           // initialValue применяется один раз при создании state формы:
           // ValueKey пересоздаёт поле при внешней смене выбора
           // (асинхронный предвыбор, сохранение контекста после finishShift)
-          key: ValueKey<String?>(selectedOrganizationId),
+          key: ValueKey<String>(selectedOrganizationId),
           initialValue: selectedOrganizationId,
           isExpanded: true,
           decoration: InputDecoration(
@@ -36,15 +41,12 @@ class _OrgSelector extends StatelessWidget {
             ),
           ),
           items: [
-            DropdownMenuItem<String?>(child: Text(l10n.shiftPersonal)),
-            ...organizations.map(
-              (org) => DropdownMenuItem<String?>(
-                value: org.id,
-                child: Text(org.name),
-              ),
-            ),
+            for (final org in organizations)
+              DropdownMenuItem<String>(value: org.id, child: Text(org.name)),
           ],
-          onChanged: onChanged,
+          onChanged: (value) {
+            if (value != null) onChanged(value);
+          },
         ),
       ],
     );

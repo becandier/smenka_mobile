@@ -88,16 +88,27 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   bool get isActionNetworkError =>
       actionErrorCode == 'NETWORK_ERROR' ||
       actionErrorCode == 'CONNECTION_ERROR';
-  bool get hasOrganizations {
+
+  /// Организации, доступные для старта смены: подмножество [organizations],
+  /// где пользователь — участник (`myRole != owner`). По ADR-001 owner НЕ
+  /// member — старт смены с `organization_id` организации, где пользователь
+  /// только владелец, отвечает `403 FORBIDDEN` (см. `shift_org_default/
+  /// mobile.md`, «Терминология»). Именно этот список показывает селектор
+  /// idle-экрана и использует предвыбор контекста ([showWorkLocationSelector]
+  /// и другие геттеры ниже читают его через [selectedOrganization]).
+  List<Organization> get availableOrganizations {
     final orgs = organizations.data;
-    return orgs != null && orgs.isNotEmpty;
+    if (orgs == null) return const <Organization>[];
+    return orgs.where((o) => !o.myRole.isOwner).toList(growable: false);
   }
+
+  bool get hasOrganizations => availableOrganizations.isNotEmpty;
 
   Organization? get selectedOrganization {
     if (selectedOrganizationId == null) return null;
-    final orgs = organizations.data;
-    if (orgs == null) return null;
-    return orgs.where((o) => o.id == selectedOrganizationId).firstOrNull;
+    return availableOrganizations
+        .where((o) => o.id == selectedOrganizationId)
+        .firstOrNull;
   }
 
   /// Организация активной смены. НЕ то же самое, что [selectedOrganization]:

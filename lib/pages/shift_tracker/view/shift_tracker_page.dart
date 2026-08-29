@@ -21,6 +21,7 @@ import 'package:smenka_mobile/data/domain/work_schedule/models/_models.dart';
 import 'package:smenka_mobile/data/domain/work_schedule/repositories/work_schedule_repository.dart';
 import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/personal_shift_confirm/view/personal_shift_confirm_page.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_cubit.dart';
 import 'package:smenka_mobile/pages/shift_tracker/cubit/shift_tracker_state.dart';
 import 'package:smenka_mobile/pages/work_location_picker/view/work_location_picker_page.dart';

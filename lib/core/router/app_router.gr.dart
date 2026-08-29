@@ -1542,6 +1542,63 @@ class PenaltyFormRouteArgs {
 }
 
 /// generated route for
+/// [PersonalShiftConfirmPage]
+class PersonalShiftConfirmRoute
+    extends PageRouteInfo<PersonalShiftConfirmRouteArgs> {
+  PersonalShiftConfirmRoute({
+    String? singleOrganizationName,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         PersonalShiftConfirmRoute.name,
+         args: PersonalShiftConfirmRouteArgs(
+           singleOrganizationName: singleOrganizationName,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'PersonalShiftConfirmRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PersonalShiftConfirmRouteArgs>(
+        orElse: () => const PersonalShiftConfirmRouteArgs(),
+      );
+      return PersonalShiftConfirmPage(
+        singleOrganizationName: args.singleOrganizationName,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class PersonalShiftConfirmRouteArgs {
+  const PersonalShiftConfirmRouteArgs({this.singleOrganizationName, this.key});
+
+  final String? singleOrganizationName;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'PersonalShiftConfirmRouteArgs{singleOrganizationName: $singleOrganizationName, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PersonalShiftConfirmRouteArgs) return false;
+    return singleOrganizationName == other.singleOrganizationName &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode => singleOrganizationName.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [ProfilePage]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})

@@ -153,6 +153,13 @@ class AppRouter extends RootStackRouter {
               page: WorkSchedulePickerRoute.page,
               customRouteBuilder: _modalBottomSheetBuilder,
             ),
+            // Подтверждение персональной смены при наличии организационного
+            // контекста (shift_org_default, блок B) — модальный bottom sheet.
+            CustomRoute<PersonalShiftConfirmAction?>(
+              path: 'personal-shift-confirm',
+              page: PersonalShiftConfirmRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
             AutoRoute(
               path: 'shifts/:shiftId/checklists',
               page: ShiftChecklistsRoute.page,
