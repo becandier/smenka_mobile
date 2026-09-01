@@ -264,7 +264,7 @@ class _EarningsContent extends StatelessWidget {
         Divider(height: 1, color: colors.line),
         const SizedBox(height: 12),
         Text(
-          l10n.payrollToPay,
+          l10n.historyEarned,
           style: textTheme.bodySmall?.copyWith(color: colors.secondary),
         ),
         const SizedBox(height: 4),
@@ -282,7 +282,7 @@ class _EarningsContent extends StatelessWidget {
           runSpacing: 4,
           children: [
             Text(
-              '${l10n.payrollAccrued} '
+              '${l10n.historyByRate} '
               '${formatMoneyMinor(earnings.grossAmountMinor)}',
               style: textTheme.bodySmall?.copyWith(color: colors.secondary),
             ),

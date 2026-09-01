@@ -144,7 +144,7 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.historyTitle),
+        title: const _ContextTitle(),
         centerTitle: true,
         actions: const [NotificationBellButton()],
       ),
@@ -160,7 +160,6 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
 
           return Column(
             children: [
-              const _ContextSelector(),
               const _StatsSection(),
               const _ShiftFilters(),
               Expanded(

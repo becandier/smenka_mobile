@@ -229,7 +229,7 @@ class _ShiftEarningsBlock extends StatelessWidget {
   String _breakdownLabel(BuildContext context) {
     final l10n = context.l10n;
     final parts = <String>[
-      '${l10n.payrollAccrued} ${formatMoneyMinor(earnings.grossAmountMinor)}',
+      '${l10n.historyByRate} ${formatMoneyMinor(earnings.grossAmountMinor)}',
     ];
     if (earnings.penaltiesCount > 0) {
       parts.add('−${formatMoneyMinor(earnings.penaltyAmountMinor)}');

@@ -333,6 +333,8 @@
     "historyEmptyOrganization": "В этой организации смен пока нет",
     "historyEmptyPersonal": "Персональных смен пока нет",
     "historyEmptyContextHint": "Переключите контекст выше, чтобы увидеть другие смены",
+    "historyEarned": "Заработано",
+    "historyByRate": "По ставке",
 
     "statsTitle": "Статистика",
     "statsPeriodDay": "День",
