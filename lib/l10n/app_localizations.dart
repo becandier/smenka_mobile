@@ -1378,6 +1378,18 @@ abstract class AppLocalizations {
   /// **'Переключите контекст выше, чтобы увидеть другие смены'**
   String get historyEmptyContextHint;
 
+  /// No description provided for @historyEarned.
+  ///
+  /// In ru, this message translates to:
+  /// **'Заработано'**
+  String get historyEarned;
+
+  /// No description provided for @historyByRate.
+  ///
+  /// In ru, this message translates to:
+  /// **'По ставке'**
+  String get historyByRate;
+
   /// No description provided for @statsTitle.
   ///
   /// In ru, this message translates to:

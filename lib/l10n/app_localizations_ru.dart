@@ -729,6 +729,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Переключите контекст выше, чтобы увидеть другие смены';
 
   @override
+  String get historyEarned => 'Заработано';
+
+  @override
+  String get historyByRate => 'По ставке';
+
+  @override
   String get statsTitle => 'Статистика';
 
   @override
