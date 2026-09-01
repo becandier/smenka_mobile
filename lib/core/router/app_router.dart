@@ -196,6 +196,19 @@ class AppRouter extends RootStackRouter {
               path: 'shifts/:shiftId/checklists/:instanceId',
               page: ChecklistFillRoute.page,
             ),
+            // Блок «Заработано» в шапке истории ведёт в «Мой заработок» той
+            // же организации (earnings_drilldown) — в отличие от
+            // `_orgDetailRoutes`, где `orgId` приходит из basePath родителя,
+            // здесь его нет, поэтому параметр указан в пути явно.
+            AutoRoute(path: 'my-earnings/:orgId', page: MyEarningsRoute.page),
+            // Дальше по цепочке из «Моего заработка» — штрафы и ручные
+            // начисления (fines/manual_time_entry); без них следующий тап
+            // из этой же вкладки так же молча не сработает.
+            AutoRoute(path: 'my-penalties/:orgId', page: MyPenaltiesRoute.page),
+            AutoRoute(
+              path: 'my-adjustments/:orgId',
+              page: MyAdjustmentsRoute.page,
+            ),
           ],
         ),
         AutoRoute(
