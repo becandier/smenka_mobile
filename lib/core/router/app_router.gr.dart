@@ -913,11 +913,18 @@ class MyAdjustmentsRouteArgs {
 class MyEarningsRoute extends PageRouteInfo<MyEarningsRouteArgs> {
   MyEarningsRoute({
     required String orgId,
+    DateTime? initialDateFrom,
+    DateTime? initialDateTo,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          MyEarningsRoute.name,
-         args: MyEarningsRouteArgs(orgId: orgId, key: key),
+         args: MyEarningsRouteArgs(
+           orgId: orgId,
+           initialDateFrom: initialDateFrom,
+           initialDateTo: initialDateTo,
+           key: key,
+         ),
          rawPathParams: {'orgId': orgId},
          initialChildren: children,
        );
@@ -931,32 +938,53 @@ class MyEarningsRoute extends PageRouteInfo<MyEarningsRouteArgs> {
       final args = data.argsAs<MyEarningsRouteArgs>(
         orElse: () => MyEarningsRouteArgs(orgId: pathParams.getString('orgId')),
       );
-      return MyEarningsPage(orgId: args.orgId, key: args.key);
+      return MyEarningsPage(
+        orgId: args.orgId,
+        initialDateFrom: args.initialDateFrom,
+        initialDateTo: args.initialDateTo,
+        key: args.key,
+      );
     },
   );
 }
 
 class MyEarningsRouteArgs {
-  const MyEarningsRouteArgs({required this.orgId, this.key});
+  const MyEarningsRouteArgs({
+    required this.orgId,
+    this.initialDateFrom,
+    this.initialDateTo,
+    this.key,
+  });
 
   final String orgId;
+
+  final DateTime? initialDateFrom;
+
+  final DateTime? initialDateTo;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'MyEarningsRouteArgs{orgId: $orgId, key: $key}';
+    return 'MyEarningsRouteArgs{orgId: $orgId, initialDateFrom: $initialDateFrom, initialDateTo: $initialDateTo, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! MyEarningsRouteArgs) return false;
-    return orgId == other.orgId && key == other.key;
+    return orgId == other.orgId &&
+        initialDateFrom == other.initialDateFrom &&
+        initialDateTo == other.initialDateTo &&
+        key == other.key;
   }
 
   @override
-  int get hashCode => orgId.hashCode ^ key.hashCode;
+  int get hashCode =>
+      orgId.hashCode ^
+      initialDateFrom.hashCode ^
+      initialDateTo.hashCode ^
+      key.hashCode;
 }
 
 /// generated route for

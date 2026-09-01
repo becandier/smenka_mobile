@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyEarningsDto {
 
- PayrollPeriodDto get period; String get currency; int get workedSeconds; int get shiftsCount; int get grossAmountMinor; bool get hasMissingRate; int get penaltyAmountMinor; int get penaltiesCount; int get adjustmentAmountMinor; int get adjustmentsCount; int get netAmountMinor; int get plannedAmountMinor; int get deltaAmountMinor; int get overtimeSeconds; CurrentRateDto? get currentRate;
+ PayrollPeriodDto get period; String get currency; int get workedSeconds; int get shiftsCount; int get grossAmountMinor; bool get hasMissingRate; int get penaltyAmountMinor; int get penaltiesCount; int get adjustmentAmountMinor; int get adjustmentsCount; int get netAmountMinor; int get plannedAmountMinor; int get deltaAmountMinor; int get overtimeSeconds; int get lateCount; int get lateSecondsTotal; CurrentRateDto? get currentRate;
 /// Create a copy of MyEarningsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $MyEarningsDtoCopyWith<MyEarningsDto> get copyWith => _$MyEarningsDtoCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyEarningsDto&&(identical(other.period, period) || other.period == period)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.adjustmentAmountMinor, adjustmentAmountMinor) || other.adjustmentAmountMinor == adjustmentAmountMinor)&&(identical(other.adjustmentsCount, adjustmentsCount) || other.adjustmentsCount == adjustmentsCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor)&&(identical(other.plannedAmountMinor, plannedAmountMinor) || other.plannedAmountMinor == plannedAmountMinor)&&(identical(other.deltaAmountMinor, deltaAmountMinor) || other.deltaAmountMinor == deltaAmountMinor)&&(identical(other.overtimeSeconds, overtimeSeconds) || other.overtimeSeconds == overtimeSeconds)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyEarningsDto&&(identical(other.period, period) || other.period == period)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.adjustmentAmountMinor, adjustmentAmountMinor) || other.adjustmentAmountMinor == adjustmentAmountMinor)&&(identical(other.adjustmentsCount, adjustmentsCount) || other.adjustmentsCount == adjustmentsCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor)&&(identical(other.plannedAmountMinor, plannedAmountMinor) || other.plannedAmountMinor == plannedAmountMinor)&&(identical(other.deltaAmountMinor, deltaAmountMinor) || other.deltaAmountMinor == deltaAmountMinor)&&(identical(other.overtimeSeconds, overtimeSeconds) || other.overtimeSeconds == overtimeSeconds)&&(identical(other.lateCount, lateCount) || other.lateCount == lateCount)&&(identical(other.lateSecondsTotal, lateSecondsTotal) || other.lateSecondsTotal == lateSecondsTotal)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,period,currency,workedSeconds,shiftsCount,grossAmountMinor,hasMissingRate,penaltyAmountMinor,penaltiesCount,adjustmentAmountMinor,adjustmentsCount,netAmountMinor,plannedAmountMinor,deltaAmountMinor,overtimeSeconds,currentRate);
+int get hashCode => Object.hash(runtimeType,period,currency,workedSeconds,shiftsCount,grossAmountMinor,hasMissingRate,penaltyAmountMinor,penaltiesCount,adjustmentAmountMinor,adjustmentsCount,netAmountMinor,plannedAmountMinor,deltaAmountMinor,overtimeSeconds,lateCount,lateSecondsTotal,currentRate);
 
 @override
 String toString() {
-  return 'MyEarningsDto(period: $period, currency: $currency, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, adjustmentAmountMinor: $adjustmentAmountMinor, adjustmentsCount: $adjustmentsCount, netAmountMinor: $netAmountMinor, plannedAmountMinor: $plannedAmountMinor, deltaAmountMinor: $deltaAmountMinor, overtimeSeconds: $overtimeSeconds, currentRate: $currentRate)';
+  return 'MyEarningsDto(period: $period, currency: $currency, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, adjustmentAmountMinor: $adjustmentAmountMinor, adjustmentsCount: $adjustmentsCount, netAmountMinor: $netAmountMinor, plannedAmountMinor: $plannedAmountMinor, deltaAmountMinor: $deltaAmountMinor, overtimeSeconds: $overtimeSeconds, lateCount: $lateCount, lateSecondsTotal: $lateSecondsTotal, currentRate: $currentRate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $MyEarningsDtoCopyWith<$Res>  {
   factory $MyEarningsDtoCopyWith(MyEarningsDto value, $Res Function(MyEarningsDto) _then) = _$MyEarningsDtoCopyWithImpl;
 @useResult
 $Res call({
- PayrollPeriodDto period, String currency, int workedSeconds, int shiftsCount, int grossAmountMinor, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int adjustmentAmountMinor, int adjustmentsCount, int netAmountMinor, int plannedAmountMinor, int deltaAmountMinor, int overtimeSeconds, CurrentRateDto? currentRate
+ PayrollPeriodDto period, String currency, int workedSeconds, int shiftsCount, int grossAmountMinor, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int adjustmentAmountMinor, int adjustmentsCount, int netAmountMinor, int plannedAmountMinor, int deltaAmountMinor, int overtimeSeconds, int lateCount, int lateSecondsTotal, CurrentRateDto? currentRate
 });
 
 
@@ -65,7 +65,7 @@ class _$MyEarningsDtoCopyWithImpl<$Res>
 
 /// Create a copy of MyEarningsDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? period = null,Object? currency = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? adjustmentAmountMinor = null,Object? adjustmentsCount = null,Object? netAmountMinor = null,Object? plannedAmountMinor = null,Object? deltaAmountMinor = null,Object? overtimeSeconds = null,Object? currentRate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? period = null,Object? currency = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? adjustmentAmountMinor = null,Object? adjustmentsCount = null,Object? netAmountMinor = null,Object? plannedAmountMinor = null,Object? deltaAmountMinor = null,Object? overtimeSeconds = null,Object? lateCount = null,Object? lateSecondsTotal = null,Object? currentRate = freezed,}) {
   return _then(_self.copyWith(
 period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as PayrollPeriodDto,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
@@ -81,6 +81,8 @@ as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmount
 as int,plannedAmountMinor: null == plannedAmountMinor ? _self.plannedAmountMinor : plannedAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,deltaAmountMinor: null == deltaAmountMinor ? _self.deltaAmountMinor : deltaAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,overtimeSeconds: null == overtimeSeconds ? _self.overtimeSeconds : overtimeSeconds // ignore: cast_nullable_to_non_nullable
+as int,lateCount: null == lateCount ? _self.lateCount : lateCount // ignore: cast_nullable_to_non_nullable
+as int,lateSecondsTotal: null == lateSecondsTotal ? _self.lateSecondsTotal : lateSecondsTotal // ignore: cast_nullable_to_non_nullable
 as int,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
 as CurrentRateDto?,
   ));
@@ -188,10 +190,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PayrollPeriodDto period,  String currency,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int adjustmentAmountMinor,  int adjustmentsCount,  int netAmountMinor,  int plannedAmountMinor,  int deltaAmountMinor,  int overtimeSeconds,  CurrentRateDto? currentRate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PayrollPeriodDto period,  String currency,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int adjustmentAmountMinor,  int adjustmentsCount,  int netAmountMinor,  int plannedAmountMinor,  int deltaAmountMinor,  int overtimeSeconds,  int lateCount,  int lateSecondsTotal,  CurrentRateDto? currentRate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyEarningsDto() when $default != null:
-return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.adjustmentAmountMinor,_that.adjustmentsCount,_that.netAmountMinor,_that.plannedAmountMinor,_that.deltaAmountMinor,_that.overtimeSeconds,_that.currentRate);case _:
+return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.adjustmentAmountMinor,_that.adjustmentsCount,_that.netAmountMinor,_that.plannedAmountMinor,_that.deltaAmountMinor,_that.overtimeSeconds,_that.lateCount,_that.lateSecondsTotal,_that.currentRate);case _:
   return orElse();
 
 }
@@ -209,10 +211,10 @@ return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCoun
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PayrollPeriodDto period,  String currency,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int adjustmentAmountMinor,  int adjustmentsCount,  int netAmountMinor,  int plannedAmountMinor,  int deltaAmountMinor,  int overtimeSeconds,  CurrentRateDto? currentRate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PayrollPeriodDto period,  String currency,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int adjustmentAmountMinor,  int adjustmentsCount,  int netAmountMinor,  int plannedAmountMinor,  int deltaAmountMinor,  int overtimeSeconds,  int lateCount,  int lateSecondsTotal,  CurrentRateDto? currentRate)  $default,) {final _that = this;
 switch (_that) {
 case _MyEarningsDto():
-return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.adjustmentAmountMinor,_that.adjustmentsCount,_that.netAmountMinor,_that.plannedAmountMinor,_that.deltaAmountMinor,_that.overtimeSeconds,_that.currentRate);case _:
+return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.adjustmentAmountMinor,_that.adjustmentsCount,_that.netAmountMinor,_that.plannedAmountMinor,_that.deltaAmountMinor,_that.overtimeSeconds,_that.lateCount,_that.lateSecondsTotal,_that.currentRate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -229,10 +231,10 @@ return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCoun
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PayrollPeriodDto period,  String currency,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int adjustmentAmountMinor,  int adjustmentsCount,  int netAmountMinor,  int plannedAmountMinor,  int deltaAmountMinor,  int overtimeSeconds,  CurrentRateDto? currentRate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PayrollPeriodDto period,  String currency,  int workedSeconds,  int shiftsCount,  int grossAmountMinor,  bool hasMissingRate,  int penaltyAmountMinor,  int penaltiesCount,  int adjustmentAmountMinor,  int adjustmentsCount,  int netAmountMinor,  int plannedAmountMinor,  int deltaAmountMinor,  int overtimeSeconds,  int lateCount,  int lateSecondsTotal,  CurrentRateDto? currentRate)?  $default,) {final _that = this;
 switch (_that) {
 case _MyEarningsDto() when $default != null:
-return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.adjustmentAmountMinor,_that.adjustmentsCount,_that.netAmountMinor,_that.plannedAmountMinor,_that.deltaAmountMinor,_that.overtimeSeconds,_that.currentRate);case _:
+return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCount,_that.grossAmountMinor,_that.hasMissingRate,_that.penaltyAmountMinor,_that.penaltiesCount,_that.adjustmentAmountMinor,_that.adjustmentsCount,_that.netAmountMinor,_that.plannedAmountMinor,_that.deltaAmountMinor,_that.overtimeSeconds,_that.lateCount,_that.lateSecondsTotal,_that.currentRate);case _:
   return null;
 
 }
@@ -244,7 +246,7 @@ return $default(_that.period,_that.currency,_that.workedSeconds,_that.shiftsCoun
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _MyEarningsDto implements MyEarningsDto {
-  const _MyEarningsDto({required this.period, required this.currency, required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, required this.hasMissingRate, this.penaltyAmountMinor = 0, this.penaltiesCount = 0, this.adjustmentAmountMinor = 0, this.adjustmentsCount = 0, this.netAmountMinor = 0, this.plannedAmountMinor = 0, this.deltaAmountMinor = 0, this.overtimeSeconds = 0, this.currentRate});
+  const _MyEarningsDto({required this.period, required this.currency, required this.workedSeconds, required this.shiftsCount, required this.grossAmountMinor, required this.hasMissingRate, this.penaltyAmountMinor = 0, this.penaltiesCount = 0, this.adjustmentAmountMinor = 0, this.adjustmentsCount = 0, this.netAmountMinor = 0, this.plannedAmountMinor = 0, this.deltaAmountMinor = 0, this.overtimeSeconds = 0, this.lateCount = 0, this.lateSecondsTotal = 0, this.currentRate});
   factory _MyEarningsDto.fromJson(Map<String, dynamic> json) => _$MyEarningsDtoFromJson(json);
 
 @override final  PayrollPeriodDto period;
@@ -261,6 +263,8 @@ class _MyEarningsDto implements MyEarningsDto {
 @override@JsonKey() final  int plannedAmountMinor;
 @override@JsonKey() final  int deltaAmountMinor;
 @override@JsonKey() final  int overtimeSeconds;
+@override@JsonKey() final  int lateCount;
+@override@JsonKey() final  int lateSecondsTotal;
 @override final  CurrentRateDto? currentRate;
 
 /// Create a copy of MyEarningsDto
@@ -276,16 +280,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyEarningsDto&&(identical(other.period, period) || other.period == period)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.adjustmentAmountMinor, adjustmentAmountMinor) || other.adjustmentAmountMinor == adjustmentAmountMinor)&&(identical(other.adjustmentsCount, adjustmentsCount) || other.adjustmentsCount == adjustmentsCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor)&&(identical(other.plannedAmountMinor, plannedAmountMinor) || other.plannedAmountMinor == plannedAmountMinor)&&(identical(other.deltaAmountMinor, deltaAmountMinor) || other.deltaAmountMinor == deltaAmountMinor)&&(identical(other.overtimeSeconds, overtimeSeconds) || other.overtimeSeconds == overtimeSeconds)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyEarningsDto&&(identical(other.period, period) || other.period == period)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.workedSeconds, workedSeconds) || other.workedSeconds == workedSeconds)&&(identical(other.shiftsCount, shiftsCount) || other.shiftsCount == shiftsCount)&&(identical(other.grossAmountMinor, grossAmountMinor) || other.grossAmountMinor == grossAmountMinor)&&(identical(other.hasMissingRate, hasMissingRate) || other.hasMissingRate == hasMissingRate)&&(identical(other.penaltyAmountMinor, penaltyAmountMinor) || other.penaltyAmountMinor == penaltyAmountMinor)&&(identical(other.penaltiesCount, penaltiesCount) || other.penaltiesCount == penaltiesCount)&&(identical(other.adjustmentAmountMinor, adjustmentAmountMinor) || other.adjustmentAmountMinor == adjustmentAmountMinor)&&(identical(other.adjustmentsCount, adjustmentsCount) || other.adjustmentsCount == adjustmentsCount)&&(identical(other.netAmountMinor, netAmountMinor) || other.netAmountMinor == netAmountMinor)&&(identical(other.plannedAmountMinor, plannedAmountMinor) || other.plannedAmountMinor == plannedAmountMinor)&&(identical(other.deltaAmountMinor, deltaAmountMinor) || other.deltaAmountMinor == deltaAmountMinor)&&(identical(other.overtimeSeconds, overtimeSeconds) || other.overtimeSeconds == overtimeSeconds)&&(identical(other.lateCount, lateCount) || other.lateCount == lateCount)&&(identical(other.lateSecondsTotal, lateSecondsTotal) || other.lateSecondsTotal == lateSecondsTotal)&&(identical(other.currentRate, currentRate) || other.currentRate == currentRate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,period,currency,workedSeconds,shiftsCount,grossAmountMinor,hasMissingRate,penaltyAmountMinor,penaltiesCount,adjustmentAmountMinor,adjustmentsCount,netAmountMinor,plannedAmountMinor,deltaAmountMinor,overtimeSeconds,currentRate);
+int get hashCode => Object.hash(runtimeType,period,currency,workedSeconds,shiftsCount,grossAmountMinor,hasMissingRate,penaltyAmountMinor,penaltiesCount,adjustmentAmountMinor,adjustmentsCount,netAmountMinor,plannedAmountMinor,deltaAmountMinor,overtimeSeconds,lateCount,lateSecondsTotal,currentRate);
 
 @override
 String toString() {
-  return 'MyEarningsDto(period: $period, currency: $currency, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, adjustmentAmountMinor: $adjustmentAmountMinor, adjustmentsCount: $adjustmentsCount, netAmountMinor: $netAmountMinor, plannedAmountMinor: $plannedAmountMinor, deltaAmountMinor: $deltaAmountMinor, overtimeSeconds: $overtimeSeconds, currentRate: $currentRate)';
+  return 'MyEarningsDto(period: $period, currency: $currency, workedSeconds: $workedSeconds, shiftsCount: $shiftsCount, grossAmountMinor: $grossAmountMinor, hasMissingRate: $hasMissingRate, penaltyAmountMinor: $penaltyAmountMinor, penaltiesCount: $penaltiesCount, adjustmentAmountMinor: $adjustmentAmountMinor, adjustmentsCount: $adjustmentsCount, netAmountMinor: $netAmountMinor, plannedAmountMinor: $plannedAmountMinor, deltaAmountMinor: $deltaAmountMinor, overtimeSeconds: $overtimeSeconds, lateCount: $lateCount, lateSecondsTotal: $lateSecondsTotal, currentRate: $currentRate)';
 }
 
 
@@ -296,7 +300,7 @@ abstract mixin class _$MyEarningsDtoCopyWith<$Res> implements $MyEarningsDtoCopy
   factory _$MyEarningsDtoCopyWith(_MyEarningsDto value, $Res Function(_MyEarningsDto) _then) = __$MyEarningsDtoCopyWithImpl;
 @override @useResult
 $Res call({
- PayrollPeriodDto period, String currency, int workedSeconds, int shiftsCount, int grossAmountMinor, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int adjustmentAmountMinor, int adjustmentsCount, int netAmountMinor, int plannedAmountMinor, int deltaAmountMinor, int overtimeSeconds, CurrentRateDto? currentRate
+ PayrollPeriodDto period, String currency, int workedSeconds, int shiftsCount, int grossAmountMinor, bool hasMissingRate, int penaltyAmountMinor, int penaltiesCount, int adjustmentAmountMinor, int adjustmentsCount, int netAmountMinor, int plannedAmountMinor, int deltaAmountMinor, int overtimeSeconds, int lateCount, int lateSecondsTotal, CurrentRateDto? currentRate
 });
 
 
@@ -313,7 +317,7 @@ class __$MyEarningsDtoCopyWithImpl<$Res>
 
 /// Create a copy of MyEarningsDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? period = null,Object? currency = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? adjustmentAmountMinor = null,Object? adjustmentsCount = null,Object? netAmountMinor = null,Object? plannedAmountMinor = null,Object? deltaAmountMinor = null,Object? overtimeSeconds = null,Object? currentRate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? period = null,Object? currency = null,Object? workedSeconds = null,Object? shiftsCount = null,Object? grossAmountMinor = null,Object? hasMissingRate = null,Object? penaltyAmountMinor = null,Object? penaltiesCount = null,Object? adjustmentAmountMinor = null,Object? adjustmentsCount = null,Object? netAmountMinor = null,Object? plannedAmountMinor = null,Object? deltaAmountMinor = null,Object? overtimeSeconds = null,Object? lateCount = null,Object? lateSecondsTotal = null,Object? currentRate = freezed,}) {
   return _then(_MyEarningsDto(
 period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as PayrollPeriodDto,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
@@ -329,6 +333,8 @@ as int,netAmountMinor: null == netAmountMinor ? _self.netAmountMinor : netAmount
 as int,plannedAmountMinor: null == plannedAmountMinor ? _self.plannedAmountMinor : plannedAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,deltaAmountMinor: null == deltaAmountMinor ? _self.deltaAmountMinor : deltaAmountMinor // ignore: cast_nullable_to_non_nullable
 as int,overtimeSeconds: null == overtimeSeconds ? _self.overtimeSeconds : overtimeSeconds // ignore: cast_nullable_to_non_nullable
+as int,lateCount: null == lateCount ? _self.lateCount : lateCount // ignore: cast_nullable_to_non_nullable
+as int,lateSecondsTotal: null == lateSecondsTotal ? _self.lateSecondsTotal : lateSecondsTotal // ignore: cast_nullable_to_non_nullable
 as int,currentRate: freezed == currentRate ? _self.currentRate : currentRate // ignore: cast_nullable_to_non_nullable
 as CurrentRateDto?,
   ));

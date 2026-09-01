@@ -9,9 +9,11 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
   MyEarningsCubit({
     required String orgId,
     required PayrollRepository payrollRepository,
+    DateTime? initialDateFrom,
+    DateTime? initialDateTo,
   }) : _orgId = orgId,
        _payrollRepository = payrollRepository,
-       super(const MyEarningsState()) {
+       super(_resolveInitialState(initialDateFrom, initialDateTo)) {
     load();
   }
 
@@ -19,6 +21,22 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
   final PayrollRepository _payrollRepository;
 
   String get orgId => _orgId;
+
+  /// Границы пришли из истории смен (`earnings_drilldown/mobile.md`, «A») —
+  /// стартуем сразу на произвольном окне с этими датами вместо дефолтного
+  /// пресета «месяц». Обе даты должны быть заданы вместе: `dateFrom`/
+  /// `dateTo` в истории всегда приходят парой (`ShiftHistoryPeriodState`).
+  static MyEarningsState _resolveInitialState(
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  ) {
+    if (dateFrom == null || dateTo == null) return const MyEarningsState();
+    return MyEarningsState(
+      preset: null,
+      customFrom: dateFrom,
+      customTo: dateTo,
+    );
+  }
 
   /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
   int _requestId = 0;

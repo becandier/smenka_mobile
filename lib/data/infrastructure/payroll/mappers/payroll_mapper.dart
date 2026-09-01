@@ -61,6 +61,8 @@ extension MyEarningsMapper on MyEarningsDto {
       plannedAmountMinor: plannedAmountMinor,
       deltaAmountMinor: deltaAmountMinor,
       overtimeSeconds: overtimeSeconds,
+      lateCount: lateCount,
+      lateSecondsTotal: lateSecondsTotal,
       currentRate: currentRate?.toDomainOrNull(),
     );
   }

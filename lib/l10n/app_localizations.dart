@@ -2629,8 +2629,20 @@ abstract class AppLocalizations {
   /// No description provided for @myEarningsApprovedOvertime.
   ///
   /// In ru, this message translates to:
-  /// **'Согласованная переработка: {duration}'**
+  /// **'Переработка {duration} уже учтена в заработке'**
   String myEarningsApprovedOvertime(String duration);
+
+  /// No description provided for @myEarningsLateCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Опоздания'**
+  String get myEarningsLateCount;
+
+  /// No description provided for @myEarningsLateDuration.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время опозданий'**
+  String get myEarningsLateDuration;
 
   /// No description provided for @payrollMissingRateBadge.
   ///
