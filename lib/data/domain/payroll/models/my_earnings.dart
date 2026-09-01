@@ -40,7 +40,25 @@ abstract class MyEarnings with _$MyEarnings {
     /// секунды. Уже учтена в [grossAmountMinor] (влияет на оплату).
     @Default(0) int overtimeSeconds,
 
+    /// Количество опозданий за период (`work_schedules`). `0` — опозданий
+    /// нет либо организация графики не использует.
+    @Default(0) int lateCount,
+
+    /// Суммарное время опозданий за период, секунды. Уже уменьшило
+    /// фактически отработанное время и, соответственно, [grossAmountMinor]
+    /// — отдельной суммой из заработка не вычитается.
+    @Default(0) int lateSecondsTotal,
+
     /// Действующая ставка; null — ставка ещё не задана.
     CurrentRate? currentRate,
   }) = _MyEarnings;
+  const MyEarnings._();
+
+  /// «Сколько можно было заработать» есть смысл показывать, только если
+  /// есть хоть один ненулевой сигнал графика (`earnings_drilldown/
+  /// mobile.md`, «B», п.3): недобор/перебор плана, переработка или
+  /// опоздания. Для организаций без графиков и смен без графика план
+  /// равен факту (R8 backend.md) — все три сигнала нулевые.
+  bool get hasScheduleSignal =>
+      deltaAmountMinor != 0 || overtimeSeconds != 0 || lateCount != 0;
 }

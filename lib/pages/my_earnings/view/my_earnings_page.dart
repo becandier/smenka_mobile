@@ -14,11 +14,26 @@ import 'package:smenka_mobile/pages/my_earnings/cubit/my_earnings_state.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
 
 /// «Мой заработок» — личный заработок сотрудника за период (org_member).
+///
+/// [initialDateFrom]/[initialDateTo] — необязательные границы периода
+/// (`earnings_drilldown/mobile.md`, «A»): открыт из истории смен — экран
+/// стартует на том же окне, что было выбрано там; открыт обычным путём
+/// (навигация по организации) — оба `null`, экран работает как раньше
+/// (свой пресет, по умолчанию текущий месяц). Не query-параметры URL — оба
+/// поля передаются программно через `context.router.push`, как уже сделано
+/// для `ChecklistFillPage.organizationId`.
 @RoutePage()
 class MyEarningsPage extends StatelessWidget {
-  const MyEarningsPage({@pathParam required this.orgId, super.key});
+  const MyEarningsPage({
+    @pathParam required this.orgId,
+    this.initialDateFrom,
+    this.initialDateTo,
+    super.key,
+  });
 
   final String orgId;
+  final DateTime? initialDateFrom;
+  final DateTime? initialDateTo;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +41,8 @@ class MyEarningsPage extends StatelessWidget {
       create: (_) => MyEarningsCubit(
         orgId: orgId,
         payrollRepository: context.read<PayrollRepository>(),
+        initialDateFrom: initialDateFrom,
+        initialDateTo: initialDateTo,
       ),
       child: const _MyEarningsView(),
     );
@@ -116,14 +133,16 @@ class _MyEarningsView extends StatelessWidget {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                          _SummaryCard(earnings: earnings),
+                          _EarnedCard(earnings: earnings),
                           const SizedBox(height: 16),
-                          _PlanVsFactCard(earnings: earnings),
-                          const SizedBox(height: 16),
-                          _PenaltiesEarningsCard(
+                          _BreakdownCard(
                             earnings: earnings,
                             orgId: context.read<MyEarningsCubit>().orgId,
                           ),
+                          const SizedBox(height: 16),
+                          _PotentialEarningsCard(earnings: earnings),
+                          const SizedBox(height: 16),
+                          _WorkedStatsCard(earnings: earnings),
                           const SizedBox(height: 16),
                           _CurrentRateCard(currentRate: earnings.currentRate),
                           if (earnings.hasMissingRate) ...[
@@ -142,8 +161,53 @@ class _MyEarningsView extends StatelessWidget {
   }
 }
 
-class _SummaryCard extends StatelessWidget {
-  const _SummaryCard({required this.earnings});
+/// «Заработано за период» — крупно, это ответ на главный вопрос экрана,
+/// читается первым (`earnings_drilldown/mobile.md`, «B», п.1). Тот же
+/// термин («Заработано», `net_amount_minor`), что и в истории смен.
+class _EarnedCard extends StatelessWidget {
+  const _EarnedCard({required this.earnings});
+
+  final MyEarnings earnings;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+    final net = earnings.netAmountMinor;
+
+    return Material(
+      color: colors.surface,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.historyEarned,
+              style: textTheme.bodyMedium?.copyWith(color: colors.secondary),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              formatMoneyMinor(net),
+              style: textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: net < 0 ? colors.error : null,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// «Отработано / смен» (`earnings_drilldown/mobile.md`, «B», п.4) — как
+/// сейчас, только без «По ставке»: та цифра переехала в [_BreakdownCard]
+/// первым звеном цепочки «из чего сложилось».
+class _WorkedStatsCard extends StatelessWidget {
+  const _WorkedStatsCard({required this.earnings});
 
   final MyEarnings earnings;
 
@@ -159,12 +223,6 @@ class _SummaryCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Expanded(
-              child: _SummaryItem(
-                value: formatMoneyMinor(earnings.grossAmountMinor),
-                label: l10n.payrollAccrued,
-              ),
-            ),
             Expanded(
               child: _SummaryItem(
                 value: _formatDuration(context, earnings.workedSeconds),
@@ -229,14 +287,15 @@ class _SummaryItem extends StatelessWidget {
   }
 }
 
-/// Блок штрафов и ручных начислений на «Мой заработок» (фичи fines +
-/// `manual_time_entry`): суммы за период, «К выплате» (net = начислено −
-/// штрафы + начисления; может быть отрицательным) и переходы на списки
-/// «Мои штрафы» / «Мои начисления». Для self штрафы учитываются всегда
-/// (флага нет); строка начислений скрыта при `adjustmentsCount == 0`
-/// (mobile.md §4 — не засорять экран).
-class _PenaltiesEarningsCard extends StatelessWidget {
-  const _PenaltiesEarningsCard({required this.earnings, required this.orgId});
+/// «Из чего сложилось» (`earnings_drilldown/mobile.md`, «B», п.2): по
+/// ставке (`gross_amount_minor`) → −штрафы → +доплаты → «Заработано»
+/// (`net_amount_minor` — тот же термин, что и в [_EarnedCard] сверху,
+/// цепочка замыкается на нём). Штрафы/доплаты (фичи fines +
+/// `manual_time_entry`) — строками, только если они есть за период; ссылки
+/// на «Мои штрафы» / «Мои начисления» — всегда, независимо от того, есть
+/// ли что показывать (можно провалиться и увидеть пустой список).
+class _BreakdownCard extends StatelessWidget {
+  const _BreakdownCard({required this.earnings, required this.orgId});
 
   final MyEarnings earnings;
   final String orgId;
@@ -249,6 +308,7 @@ class _PenaltiesEarningsCard extends StatelessWidget {
     final hasAdjustments = earnings.adjustmentsCount > 0;
     final adjustmentAmountMinor = earnings.adjustmentAmountMinor;
     final isAdjustmentCredit = adjustmentAmountMinor >= 0;
+    final net = earnings.netAmountMinor;
 
     return Material(
       color: colors.surface,
@@ -258,53 +318,54 @@ class _PenaltiesEarningsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (hasPenalties) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: _SummaryItem(
+                    value: formatMoneyMinor(earnings.grossAmountMinor),
+                    label: l10n.historyByRate,
+                  ),
+                ),
+                Expanded(
+                  child: _SummaryItem(
+                    value: formatMoneyMinor(net),
+                    label: l10n.historyEarned,
+                    valueColor: net < 0 ? colors.error : null,
+                  ),
+                ),
+              ],
+            ),
+            if (hasPenalties || hasAdjustments) ...[
+              const SizedBox(height: 8),
               Row(
                 children: [
-                  Expanded(
-                    child: _SummaryItem(
-                      value:
-                          '−${formatMoneyMinor(earnings.penaltyAmountMinor)}',
-                      label:
-                          '${l10n.finesAmount} · '
-                          '${l10n.finesCount(earnings.penaltiesCount)}',
-                    ),
-                  ),
-                  if (!hasAdjustments)
+                  if (hasPenalties)
                     Expanded(
                       child: _SummaryItem(
-                        value: formatMoneyMinor(earnings.netAmountMinor),
-                        label: l10n.finesToPay,
+                        value:
+                            '−${formatMoneyMinor(earnings.penaltyAmountMinor)}',
+                        label:
+                            '${l10n.finesAmount} · '
+                            '${l10n.finesCount(earnings.penaltiesCount)}',
+                        valueColor: colors.error,
+                      ),
+                    ),
+                  if (hasAdjustments)
+                    Expanded(
+                      child: _SummaryItem(
+                        value: isAdjustmentCredit
+                            ? '+${formatMoneyMinor(adjustmentAmountMinor)}'
+                            : formatMoneyMinor(adjustmentAmountMinor),
+                        label: l10n.myEarningsAdjustments,
+                        valueColor: isAdjustmentCredit
+                            ? colors.success
+                            : colors.error,
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: 8),
             ],
-            if (hasAdjustments) ...[
-              Row(
-                children: [
-                  Expanded(
-                    child: _SummaryItem(
-                      value: isAdjustmentCredit
-                          ? '+${formatMoneyMinor(adjustmentAmountMinor)}'
-                          : formatMoneyMinor(adjustmentAmountMinor),
-                      label: l10n.myEarningsAdjustments,
-                      valueColor: isAdjustmentCredit
-                          ? colors.success
-                          : colors.error,
-                    ),
-                  ),
-                  Expanded(
-                    child: _SummaryItem(
-                      value: formatMoneyMinor(earnings.netAmountMinor),
-                      label: l10n.finesToPay,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-            ],
+            const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               runSpacing: 4,
@@ -330,21 +391,29 @@ class _PenaltiesEarningsCard extends StatelessWidget {
   }
 }
 
-/// План против факта (фича `work_schedules`): «По графику» + «Разница» +
-/// согласованная переработка отдельной строкой. Формулировки мягкие
-/// («Меньше плана на 1 200 ₽», не «Вы недоработали») — см. mobile.md п.4.
+/// «Сколько можно было заработать» (`earnings_drilldown/mobile.md`, «B»,
+/// п.3): «По графику» (`planned_amount_minor`) + разница с фактом
+/// (`delta_amount_minor`, знак уже в значении) + опоздания (`late_count`/
+/// `late_seconds_total`) + согласованная переработка — с пояснением, что
+/// она уже учтена в заработке. Формулировки мягкие («Меньше плана на
+/// 1 200 ₽», не «Вы недоработали») — см. mobile.md п.4.
 ///
-/// Скрыт, если организация не использует графики: тогда `delta == 0` и
-/// `overtimeSeconds == 0` (план для смен без графика равен факту, R8
-/// backend.md) — карточка не добавляет информации, показывать её незачем.
-class _PlanVsFactCard extends StatelessWidget {
-  const _PlanVsFactCard({required this.earnings});
+/// Опоздание уменьшает фактическое отработанное время, а значит и
+/// заработок — поэтому показывается рядом с дельтой, а не отдельной
+/// статистикой в другом месте.
+///
+/// Скрыт, если организация не использует графики и опозданий не было
+/// ([MyEarnings.hasScheduleSignal] == `false`; план для смен без графика
+/// равен факту, R8 backend.md) — карточка не добавляет информации,
+/// показывать её незачем.
+class _PotentialEarningsCard extends StatelessWidget {
+  const _PotentialEarningsCard({required this.earnings});
 
   final MyEarnings earnings;
 
   @override
   Widget build(BuildContext context) {
-    if (earnings.deltaAmountMinor == 0 && earnings.overtimeSeconds == 0) {
+    if (!earnings.hasScheduleSignal) {
       return const SizedBox.shrink();
     }
 
@@ -375,6 +444,28 @@ class _PlanVsFactCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (earnings.lateCount > 0) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: _SummaryItem(
+                      value: earnings.lateCount.toString(),
+                      label: l10n.myEarningsLateCount,
+                    ),
+                  ),
+                  Expanded(
+                    child: _SummaryItem(
+                      value: _formatDuration(
+                        context,
+                        earnings.lateSecondsTotal,
+                      ),
+                      label: l10n.myEarningsLateDuration,
+                    ),
+                  ),
+                ],
+              ),
+            ],
             if (earnings.overtimeSeconds > 0) ...[
               const SizedBox(height: 8),
               Text(

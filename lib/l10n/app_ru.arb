@@ -681,12 +681,14 @@
             "amount": {"type": "String"}
         }
     },
-    "myEarningsApprovedOvertime": "Согласованная переработка: {duration}",
+    "myEarningsApprovedOvertime": "Переработка {duration} уже учтена в заработке",
     "@myEarningsApprovedOvertime": {
         "placeholders": {
             "duration": {"type": "String"}
         }
     },
+    "myEarningsLateCount": "Опоздания",
+    "myEarningsLateDuration": "Время опозданий",
     "payrollMissingRateBadge": "Есть смены без ставки",
     "payrollUnpaidHint": "{count, plural, one{{count} смена} few{{count} смены} many{{count} смен} other{{count} смены}} / {hours} не оплачены: нет ставки на дату смены",
     "@payrollUnpaidHint": {

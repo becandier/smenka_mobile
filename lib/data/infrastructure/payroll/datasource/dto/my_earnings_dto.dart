@@ -23,6 +23,8 @@ abstract class MyEarningsDto with _$MyEarningsDto {
     @Default(0) int plannedAmountMinor,
     @Default(0) int deltaAmountMinor,
     @Default(0) int overtimeSeconds,
+    @Default(0) int lateCount,
+    @Default(0) int lateSecondsTotal,
     CurrentRateDto? currentRate,
   }) = _MyEarningsDto;
 

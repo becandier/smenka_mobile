@@ -211,6 +211,11 @@ class _StatItem extends StatelessWidget {
 /// Грузится отдельным запросом независимо от времени/количества смен
 /// ([_StatsContent]): пока заработок в пути — плейсхолдер, время уже
 /// видно. Ошибка запроса заработка не ломает остальной экран.
+///
+/// Одна цифра — «Заработано» (`net_amount_minor`), без расшифровки
+/// (`earnings_drilldown/mobile.md`, «A»): подробный расчёт («из чего
+/// сложилось», план по графику, опоздания, переработка) переехал на «Мой
+/// заработок» — блок кликабельный и открывает его за тот же период.
 class _EarningsSummary extends StatelessWidget {
   const _EarningsSummary();
 
@@ -238,19 +243,39 @@ class _EarningsSummary extends StatelessWidget {
                   itemCount: 1,
                   padding: EdgeInsets.zero,
                 ),
-                contentBuilder: (earnings) =>
-                    _EarningsContent(earnings: earnings),
+                contentBuilder: (earnings) => _EarningsContent(
+                  earnings: earnings,
+                  onTap: () => _openMyEarnings(context),
+                ),
               ),
         );
       },
     );
   }
+
+  /// Открывает «Мой заработок» текущей организации за то же окно, что
+  /// выбрано в истории (`earnings_drilldown/mobile.md`, «A» — «Передача
+  /// периода»). Читает состояние на момент тапа, не подписывается —
+  /// тот же приём, что и у `_openDateRangePicker`.
+  void _openMyEarnings(BuildContext context) {
+    final state = context.read<ShiftEarningsCubit>().state;
+    final orgId = state.organizationId;
+    if (orgId == null) return;
+    context.router.push(
+      MyEarningsRoute(
+        orgId: orgId,
+        initialDateFrom: state.dateFrom,
+        initialDateTo: state.dateTo,
+      ),
+    );
+  }
 }
 
 class _EarningsContent extends StatelessWidget {
-  const _EarningsContent({required this.earnings});
+  const _EarningsContent({required this.earnings, required this.onTap});
 
   final MyEarnings earnings;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -263,47 +288,42 @@ class _EarningsContent extends StatelessWidget {
       children: [
         Divider(height: 1, color: colors.line),
         const SizedBox(height: 12),
-        Text(
-          l10n.historyEarned,
-          style: textTheme.bodySmall?.copyWith(color: colors.secondary),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          formatMoneyMinor(net),
-          style: textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: net < 0 ? colors.error : null,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 12,
-          runSpacing: 4,
-          children: [
-            Text(
-              '${l10n.historyByRate} '
-              '${formatMoneyMinor(earnings.grossAmountMinor)}',
-              style: textTheme.bodySmall?.copyWith(color: colors.secondary),
+        Material(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(12),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.historyEarned,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.secondary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        formatMoneyMinor(net),
+                        style: textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: net < 0 ? colors.error : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.chevron_right, size: 20, color: colors.secondary),
+                ],
+              ),
             ),
-            if (earnings.penaltyAmountMinor != 0)
-              Text(
-                '${l10n.finesAmount} '
-                '−${formatMoneyMinor(earnings.penaltyAmountMinor)}',
-                style: textTheme.bodySmall?.copyWith(color: colors.error),
-              ),
-            if (earnings.adjustmentAmountMinor != 0)
-              Text(
-                '${l10n.shiftHistoryAdjustments} '
-                '${earnings.adjustmentAmountMinor >= 0 ? '+' : ''}'
-                '${formatMoneyMinor(earnings.adjustmentAmountMinor)}',
-                style: textTheme.bodySmall?.copyWith(
-                  color: earnings.adjustmentAmountMinor >= 0
-                      ? colors.success
-                      : colors.error,
-                ),
-              ),
-          ],
+          ),
         ),
         if (earnings.hasMissingRate) ...[
           const SizedBox(height: 8),

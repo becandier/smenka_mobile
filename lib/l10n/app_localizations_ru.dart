@@ -1408,8 +1408,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String myEarningsApprovedOvertime(String duration) {
-    return 'Согласованная переработка: $duration';
+    return 'Переработка $duration уже учтена в заработке';
   }
+
+  @override
+  String get myEarningsLateCount => 'Опоздания';
+
+  @override
+  String get myEarningsLateDuration => 'Время опозданий';
 
   @override
   String get payrollMissingRateBadge => 'Есть смены без ставки';

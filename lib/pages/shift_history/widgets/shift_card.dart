@@ -171,13 +171,13 @@ class _ManualBadge extends StatelessWidget {
   }
 }
 
-/// Деньги за смену (`shift_history_earnings/mobile.md`, «C»).
+/// Деньги за смену (`earnings_drilldown/mobile.md`, «A»: в карточке смены
+/// остаётся только сумма, мини-расшифровка убрана — она теперь доступна на
+/// «Моём заработке» по тапу на «Заработано» в шапке истории).
 ///
 /// [ShiftEarnings.hasRate] == `false` → «Ставка не задана» вместо суммы —
-/// это НЕ «0 ₽» (ADR-005 п.3). Иначе — сумма к выплате
-/// (`net_amount_minor`), готовая из API, ниже — компактная расшифровка
-/// (начислено / −штраф / +доплата), только если по смене есть штраф или
-/// корректировка (`penalties_count`/`adjustments_count` > 0).
+/// это НЕ «0 ₽» (ADR-005 п.3). Иначе — сумма к выплате (`net_amount_minor`),
+/// готовая из API.
 class _ShiftEarningsBlock extends StatelessWidget {
   const _ShiftEarningsBlock({required this.earnings});
 
@@ -201,47 +201,14 @@ class _ShiftEarningsBlock extends StatelessWidget {
     }
 
     final net = earnings.netAmountMinor;
-    final hasBreakdown =
-        earnings.penaltiesCount > 0 || earnings.adjustmentsCount > 0;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          formatMoneyMinor(net),
-          style: textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: net < 0 ? colors.error : null,
-          ),
-        ),
-        if (hasBreakdown) ...[
-          const SizedBox(height: 2),
-          Text(
-            _breakdownLabel(context),
-            style: textTheme.labelSmall?.copyWith(color: colors.secondary),
-            textAlign: TextAlign.end,
-          ),
-        ],
-      ],
+    return Text(
+      formatMoneyMinor(net),
+      style: textTheme.titleSmall?.copyWith(
+        fontWeight: FontWeight.w700,
+        color: net < 0 ? colors.error : null,
+      ),
+      textAlign: TextAlign.end,
     );
-  }
-
-  String _breakdownLabel(BuildContext context) {
-    final l10n = context.l10n;
-    final parts = <String>[
-      '${l10n.historyByRate} ${formatMoneyMinor(earnings.grossAmountMinor)}',
-    ];
-    if (earnings.penaltiesCount > 0) {
-      parts.add('−${formatMoneyMinor(earnings.penaltyAmountMinor)}');
-    }
-    if (earnings.adjustmentsCount > 0) {
-      final adjustment = earnings.adjustmentAmountMinor;
-      parts.add(
-        adjustment >= 0
-            ? '+${formatMoneyMinor(adjustment)}'
-            : formatMoneyMinor(adjustment),
-      );
-    }
-    return parts.join(' · ');
   }
 }
