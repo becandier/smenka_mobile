@@ -710,6 +710,25 @@ class AppLocalizationsRu extends AppLocalizations {
   String get historyResetFilters => 'Сбросить';
 
   @override
+  String get historyContextLabel => 'Контекст истории';
+
+  @override
+  String get historyContextPersonal => 'Персональные';
+
+  @override
+  String get historyContextAll => 'Все смены';
+
+  @override
+  String get historyEmptyOrganization => 'В этой организации смен пока нет';
+
+  @override
+  String get historyEmptyPersonal => 'Персональных смен пока нет';
+
+  @override
+  String get historyEmptyContextHint =>
+      'Переключите контекст выше, чтобы увидеть другие смены';
+
+  @override
   String get statsTitle => 'Статистика';
 
   @override

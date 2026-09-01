@@ -1,20 +1,40 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_stats_state.dart';
 
 class ShiftStatsCubit extends Cubit<ShiftStatsState> {
   ShiftStatsCubit({required ShiftRepository shiftRepository})
     : _shiftRepository = shiftRepository,
-      super(const ShiftStatsState()) {
-    loadStats();
-  }
+      super(const ShiftStatsState());
+  // Не грузит сразу: контекст приходит извне через `setContext`, см.
+  // `ShiftHistoryCubit` (тот же принцип, тот же источник координации).
 
   final ShiftRepository _shiftRepository;
+
+  /// Контекст применён хотя бы раз — гейт первого запроса (см.
+  /// `ShiftHistoryCubit._contextApplied`, тот же приём).
+  bool _contextApplied = false;
 
   /// Монотонный токен запроса: ответы устаревших запросов (пользователь
   /// успел сменить окно) игнорируются, чтобы не перетереть актуальные данные.
   int _requestId = 0;
+
+  /// Контекст (`shift_history_scope`) пришёл извне — см.
+  /// `ShiftHistoryCubit.setContext`. Независим от него: оба кубита экрана
+  /// получают контекст из одного источника (`ShiftHistoryPage`), но друг о
+  /// друге не знают.
+  void setContext(ShiftScope? scope, String? organizationId) {
+    final unchanged =
+        _contextApplied &&
+        state.scope == scope &&
+        state.organizationId == organizationId;
+    if (unchanged) return;
+    _contextApplied = true;
+    emit(state.copyWith(scope: scope, organizationId: organizationId));
+    loadStats();
+  }
 
   /// Перезапрос статистики. Ровно один источник окна: пресет
   /// `selectedPeriod` ЛИБО диапазон `customFrom`/`customTo` (UTC).
@@ -27,6 +47,8 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
       period: isCustom ? null : state.selectedPeriod?.name,
       dateFrom: isCustom ? state.customFrom : null,
       dateTo: isCustom ? state.customTo : null,
+      scope: state.scope,
+      organizationId: state.organizationId,
     );
     if (requestId != _requestId) return;
 

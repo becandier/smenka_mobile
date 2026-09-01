@@ -327,6 +327,13 @@
     "historyDateTo": "Дата до",
     "historyResetFilters": "Сбросить",
 
+    "historyContextLabel": "Контекст истории",
+    "historyContextPersonal": "Персональные",
+    "historyContextAll": "Все смены",
+    "historyEmptyOrganization": "В этой организации смен пока нет",
+    "historyEmptyPersonal": "Персональных смен пока нет",
+    "historyEmptyContextHint": "Переключите контекст выше, чтобы увидеть другие смены",
+
     "statsTitle": "Статистика",
     "statsPeriodDay": "День",
     "statsPeriodWeek": "Неделя",

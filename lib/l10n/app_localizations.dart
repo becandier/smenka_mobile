@@ -1342,6 +1342,42 @@ abstract class AppLocalizations {
   /// **'Сбросить'**
   String get historyResetFilters;
 
+  /// No description provided for @historyContextLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Контекст истории'**
+  String get historyContextLabel;
+
+  /// No description provided for @historyContextPersonal.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персональные'**
+  String get historyContextPersonal;
+
+  /// No description provided for @historyContextAll.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все смены'**
+  String get historyContextAll;
+
+  /// No description provided for @historyEmptyOrganization.
+  ///
+  /// In ru, this message translates to:
+  /// **'В этой организации смен пока нет'**
+  String get historyEmptyOrganization;
+
+  /// No description provided for @historyEmptyPersonal.
+  ///
+  /// In ru, this message translates to:
+  /// **'Персональных смен пока нет'**
+  String get historyEmptyPersonal;
+
+  /// No description provided for @historyEmptyContextHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Переключите контекст выше, чтобы увидеть другие смены'**
+  String get historyEmptyContextHint;
+
   /// No description provided for @statsTitle.
   ///
   /// In ru, this message translates to:

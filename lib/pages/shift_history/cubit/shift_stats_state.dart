@@ -19,6 +19,13 @@ abstract class ShiftStatsState with _$ShiftStatsState {
     /// `selectedPeriod == null`, хотя бы одна из границ непуста.
     DateTime? customFrom,
     DateTime? customTo,
+
+    /// Контекст (`shift_history_scope`), приходит извне от
+    /// `ShiftHistoryContextCubit` через `setContext` — `null` = без
+    /// ограничения (не передаётся на бэк). Считается по тому же множеству
+    /// смен, что отдаёт список (`ShiftHistoryCubit`).
+    ShiftScope? scope,
+    String? organizationId,
   }) = _ShiftStatsState;
   const ShiftStatsState._();
 
