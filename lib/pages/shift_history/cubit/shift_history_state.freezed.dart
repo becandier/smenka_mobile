@@ -17,7 +17,12 @@ mixin _$ShiftHistoryState {
  PaginatedSectionData<Shift> get shifts;/// Фильтр по статусу (null = все)
  ShiftStatus? get filterStatus;/// Фильтр по дате — от
  DateTime? get filterDateFrom;/// Фильтр по дате — до
- DateTime? get filterDateTo;
+ DateTime? get filterDateTo;/// Контекст (`shift_history_scope`), приходит извне от
+/// `ShiftHistoryContextCubit` через `setContext` — `null` = без
+/// ограничения (не передаётся на бэк). Ортогонален [filterStatus]/
+/// [filterDateFrom]/[filterDateTo]: сбрасывается только сменой
+/// контекста, не затрагивается [resetFilters].
+ ShiftScope? get scope; String? get organizationId;
 /// Create a copy of ShiftHistoryState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +33,16 @@ $ShiftHistoryStateCopyWith<ShiftHistoryState> get copyWith => _$ShiftHistoryStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftHistoryState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftHistoryState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo);
+int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo,scope,organizationId);
 
 @override
 String toString() {
-  return 'ShiftHistoryState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo)';
+  return 'ShiftHistoryState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo, scope: $scope, organizationId: $organizationId)';
 }
 
 
@@ -48,7 +53,7 @@ abstract mixin class $ShiftHistoryStateCopyWith<$Res>  {
   factory $ShiftHistoryStateCopyWith(ShiftHistoryState value, $Res Function(ShiftHistoryState) _then) = _$ShiftHistoryStateCopyWithImpl;
 @useResult
 $Res call({
- PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo
+ PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, ShiftScope? scope, String? organizationId
 });
 
 
@@ -65,13 +70,15 @@ class _$ShiftHistoryStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftHistoryState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? scope = freezed,Object? organizationId = freezed,}) {
   return _then(_self.copyWith(
 shifts: null == shifts ? _self.shifts : shifts // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<Shift>,filterStatus: freezed == filterStatus ? _self.filterStatus : filterStatus // ignore: cast_nullable_to_non_nullable
 as ShiftStatus?,filterDateFrom: freezed == filterDateFrom ? _self.filterDateFrom : filterDateFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,filterDateTo: freezed == filterDateTo ? _self.filterDateTo : filterDateTo // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,scope: freezed == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
+as ShiftScope?,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of ShiftHistoryState
@@ -165,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  ShiftScope? scope,  String? organizationId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftHistoryState() when $default != null:
-return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo);case _:
+return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.scope,_that.organizationId);case _:
   return orElse();
 
 }
@@ -186,10 +193,10 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  ShiftScope? scope,  String? organizationId)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftHistoryState():
-return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo);case _:
+return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.scope,_that.organizationId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +213,10 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  ShiftScope? scope,  String? organizationId)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftHistoryState() when $default != null:
-return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo);case _:
+return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.scope,_that.organizationId);case _:
   return null;
 
 }
@@ -221,7 +228,7 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 
 
 class _ShiftHistoryState extends ShiftHistoryState {
-  const _ShiftHistoryState({this.shifts = const PaginatedSectionData<Shift>(), this.filterStatus, this.filterDateFrom, this.filterDateTo}): super._();
+  const _ShiftHistoryState({this.shifts = const PaginatedSectionData<Shift>(), this.filterStatus, this.filterDateFrom, this.filterDateTo, this.scope, this.organizationId}): super._();
   
 
 @override@JsonKey() final  PaginatedSectionData<Shift> shifts;
@@ -231,6 +238,13 @@ class _ShiftHistoryState extends ShiftHistoryState {
 @override final  DateTime? filterDateFrom;
 /// Фильтр по дате — до
 @override final  DateTime? filterDateTo;
+/// Контекст (`shift_history_scope`), приходит извне от
+/// `ShiftHistoryContextCubit` через `setContext` — `null` = без
+/// ограничения (не передаётся на бэк). Ортогонален [filterStatus]/
+/// [filterDateFrom]/[filterDateTo]: сбрасывается только сменой
+/// контекста, не затрагивается [resetFilters].
+@override final  ShiftScope? scope;
+@override final  String? organizationId;
 
 /// Create a copy of ShiftHistoryState
 /// with the given fields replaced by the non-null parameter values.
@@ -242,16 +256,16 @@ _$ShiftHistoryStateCopyWith<_ShiftHistoryState> get copyWith => __$ShiftHistoryS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftHistoryState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftHistoryState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo);
+int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo,scope,organizationId);
 
 @override
 String toString() {
-  return 'ShiftHistoryState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo)';
+  return 'ShiftHistoryState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo, scope: $scope, organizationId: $organizationId)';
 }
 
 
@@ -262,7 +276,7 @@ abstract mixin class _$ShiftHistoryStateCopyWith<$Res> implements $ShiftHistoryS
   factory _$ShiftHistoryStateCopyWith(_ShiftHistoryState value, $Res Function(_ShiftHistoryState) _then) = __$ShiftHistoryStateCopyWithImpl;
 @override @useResult
 $Res call({
- PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo
+ PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, ShiftScope? scope, String? organizationId
 });
 
 
@@ -279,13 +293,15 @@ class __$ShiftHistoryStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftHistoryState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? scope = freezed,Object? organizationId = freezed,}) {
   return _then(_ShiftHistoryState(
 shifts: null == shifts ? _self.shifts : shifts // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<Shift>,filterStatus: freezed == filterStatus ? _self.filterStatus : filterStatus // ignore: cast_nullable_to_non_nullable
 as ShiftStatus?,filterDateFrom: freezed == filterDateFrom ? _self.filterDateFrom : filterDateFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,filterDateTo: freezed == filterDateTo ? _self.filterDateTo : filterDateTo // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,scope: freezed == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
+as ShiftScope?,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

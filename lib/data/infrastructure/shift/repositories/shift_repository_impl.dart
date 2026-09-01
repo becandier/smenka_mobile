@@ -16,6 +16,8 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
     ShiftStatus? status,
     DateTime? dateFrom,
     DateTime? dateTo,
+    ShiftScope? scope,
+    String? organizationId,
     int limit = 20,
     int offset = 0,
   }) {
@@ -24,6 +26,8 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
         status: status?.name,
         dateFrom: dateFrom,
         dateTo: dateTo,
+        scope: scope?.value,
+        organizationId: organizationId,
         limit: limit,
         offset: offset,
       );
@@ -44,12 +48,16 @@ class ShiftRepositoryImpl with TaskHandler implements ShiftRepository {
     String? period,
     DateTime? dateFrom,
     DateTime? dateTo,
+    ShiftScope? scope,
+    String? organizationId,
   }) {
     return execute(() async {
       final dto = await _dataSource.getStats(
         period: period,
         dateFrom: dateFrom,
         dateTo: dateTo,
+        scope: scope?.value,
+        organizationId: organizationId,
       );
       return dto.toDomain();
     });

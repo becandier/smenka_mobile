@@ -3,10 +3,16 @@ import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 
 abstract class ShiftRepository {
+  /// [scope]/[organizationId] — срез истории (`shift_history_scope`):
+  /// `null` = параметр `scope` не передаётся вовсе (текущее поведение,
+  /// эквивалент [ShiftScope.all] на бэке). [organizationId] осмыслен
+  /// только при `scope == ShiftScope.organization`.
   Future<Task<DefaultPaginator<Shift>>> getShifts({
     ShiftStatus? status,
     DateTime? dateFrom,
     DateTime? dateTo,
+    ShiftScope? scope,
+    String? organizationId,
     int limit = 20,
     int offset = 0,
   });
@@ -17,11 +23,15 @@ abstract class ShiftRepository {
   Future<Task<Shift>> getShiftById(String shiftId);
 
   /// Окно статистики: ровно один источник — либо [period],
-  /// либо [dateFrom]/[dateTo] (UTC).
+  /// либо [dateFrom]/[dateTo] (UTC). [scope]/[organizationId] — см.
+  /// [getShifts]; та же семантика, статистика считается по тому же
+  /// множеству смен, что отдаёт список.
   Future<Task<ShiftStats>> getStats({
     String? period,
     DateTime? dateFrom,
     DateTime? dateTo,
+    ShiftScope? scope,
+    String? organizationId,
   });
 
   /// Старт смены.

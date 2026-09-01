@@ -17,6 +17,14 @@ abstract class ShiftHistoryState with _$ShiftHistoryState {
 
     /// Фильтр по дате — до
     DateTime? filterDateTo,
+
+    /// Контекст (`shift_history_scope`), приходит извне от
+    /// `ShiftHistoryContextCubit` через `setContext` — `null` = без
+    /// ограничения (не передаётся на бэк). Ортогонален [filterStatus]/
+    /// [filterDateFrom]/[filterDateTo]: сбрасывается только сменой
+    /// контекста, не затрагивается `resetFilters`.
+    ShiftScope? scope,
+    String? organizationId,
   }) = _ShiftHistoryState;
   const ShiftHistoryState._();
 

@@ -111,9 +111,9 @@ lib/
     │   ├── view/                  # ChecklistFillPage + ChecklistPhotoViewerPage (вьюер) + ChecklistPhotoSourcePage (камера/галерея)
     │   └── widgets/               # _FillItemTile + _ItemPhotosSection (лента превью/кнопка/бейдж/черновики)
     ├── shift_history/             # История смен (Tab 2 «История»)
-    │   ├── cubit/                 # ShiftHistoryCubit, ShiftStatsCubit + States
+    │   ├── cubit/                 # ShiftHistoryCubit, ShiftStatsCubit, ShiftHistoryContextCubit (shift_history_scope) + States
     │   ├── view/                  # ShiftHistoryPage
-    │   └── widgets/               # _StatsSection, _ShiftFilters, _ShiftCard, _FilterChip
+    │   └── widgets/               # _StatsSection, _ShiftFilters, _ShiftCard, _FilterChip, _ContextSelector (shift_history_scope)
     ├── shift_detail/              # Детали смены (push)
     │   ├── cubit/                 # ShiftDetailCubit + State (+организация лениво — таймзона плана; заявка на переработку)
     │   ├── view/                  # ShiftDetailPage
@@ -277,8 +277,9 @@ lib/
 | `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор контекста (`shift_org_default`) — дефолт всегда организация (первая доступная, `myRole != owner`), персональная смена только осознанным выбором через `startPersonalShift()` + модалку подтверждения (`PersonalShiftConfirmPage`), не запоминается (`ShiftContextStorage`, только `org_id`); выбор графика (work_schedules) — резолв набора по org+точке, автовыбор при 1, обязательный выбор при >1, запоминание (`WorkScheduleContextStorage`), сброс+перезапрос при `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` |
 | `ShiftChecklistsCubit` | Готов | Список чек-листов текущей смены (read) |
 | `ChecklistFillCubit` | Готов | Заполнение пунктов (toggle + debounced комментарий) + фото-подтверждения: антифрод-флоу `addPhoto` (image_picker → гео → штамп в изоляте → flutter_image_compress → `POST /files` → привязка), `retryPhoto` (частичный сбой), `removePhoto`; черновики загрузки в стейте, байты — в приватной мапе; read-only для чужой/завершённой смены |
-| `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, диапазон дат через общий пикер) |
-| `ShiftStatsCubit` | Готов | Статистика смен: пресет день/неделя/месяц XOR произвольный диапазон; request-token от устаревших ответов |
+| `ShiftHistoryCubit` | Готов | Пагинированный список смен с фильтрами (статус, диапазон дат через общий пикер); контекст (`scope`/`organizationId`, `shift_history_scope`) приходит извне через `setContext` — до первого вызова не грузит, смена контекста сбрасывает пагинацию, фильтры статуса/дат сохраняются |
+| `ShiftStatsCubit` | Готов | Статистика смен: пресет день/неделя/месяц XOR произвольный диапазон; request-token от устаревших ответов; контекст (`scope`/`organizationId`, `shift_history_scope`) приходит извне через `setContext`, независимо от `ShiftHistoryCubit` |
+| `ShiftHistoryContextCubit` | Готов | Селектор контекста истории смен (`shift_history_scope`): организации (`myRole != owner`) + «Персональные» + «Все смены»; дефолт — сохранённый маркер (`ShiftHistoryContextStorage`) применяется сразу, иначе первая доступная организация после загрузки, иначе без ограничения; молча откатывается на дефолт, если сохранённая организация пропала из доступных; персистится только осознанный выбор пользователя. Не зависит от `ShiftHistoryCubit`/`ShiftStatsCubit` — `ShiftHistoryPage` слушает его и прокидывает контекст в оба |
 | `ShiftDetailCubit` | Готов | Детали одной смены; лениво грузит организацию (только когда у смены есть график — таймзона плана), owns отмену заявки на переработку (`cancelOvertimeRequest`) и применение результата модалки подачи (`applyOvertimeRequest`) (work_schedules) |
 | `OvertimeRequestCubit` | Готов | Модалка «Добавить переработку»: только отправка формы (`POST /shifts/{id}/overtime`), поля формы — в виджете, как `PenaltyFormCubit` (work_schedules) |
 | `OrganizationsCubit` | Готов | Список организаций (watch), присоединение по инвайту, текущий юзер |
@@ -415,6 +416,7 @@ lib/
 | `ThemeLocalStorageApi` | SharedPreferences | Режим темы (light/dark/system) |
 | `PendingInviteStorage` | SharedPreferences | pending_invite_code |
 | `ShiftContextStorage` | SharedPreferences | last_shift_context — UUID организации (`shift_org_default`: персональный контекст больше не пишется; легаси-значение `personal` при чтении игнорируется и чистится) |
+| `ShiftHistoryContextStorage` | SharedPreferences | shift_history_context — контекст таба «История смен» (`shift_history_scope`): UUID организации либо `ShiftScope.personal`/`ShiftScope.all` (`.value`); отдельный ключ от `ShiftContextStorage`, не синхронизируется с контекстом главного экрана; не регистрируется глобально, создаётся на месте в `ShiftHistoryPage` (по образцу `WorkScheduleContextStorage`) |
 | `PwaPromoStorage` | SharedPreferences (на web — localStorage) | pwa_install_promo_shown — отметка «разовое промо установки PWA показано»; привязана к браузеру/устройству, переживает перелогин (pwa_install_promo) |
 
 ### `AuthTokenStorage` — безопасное хранение токенов (security_hardening)
@@ -718,6 +720,19 @@ lib/
 **Тесты**: `test/data/organization/organization_subscription_mapper_test.dart` (DTO → domain, включая незнакомый статус и отсутствие поля; `banner` на всех статусах), `test/pages/invite/invite_cubit_test.dart` (новые кейсы `PLAN_LIMIT_REACHED`/`SUBSCRIPTION_INACTIVE`).
 
 ---
+
+## Фильтр контекста в истории смен (shift_history_scope)
+
+Фича `../docs/tasks/shift_history_scope/mobile.md` — продолжение `shift_org_default`, но для таба «История». После `shift_org_default` главный экран по умолчанию работает в организационном контексте; история — до этой фичи нет: показывала все смены пользователя (персональные + все организации) вперемешку. Контракт `GET /shifts`/`GET /shifts/stats` получил два новых query-параметра — `scope` (`all`/`personal`/`organization`, дефолт `all`) и `organization_id` (обязателен только при `scope=organization`); отсутствие параметра = прежнее поведение (обратная совместимость).
+
+- **`ShiftScope`** (`data/domain/shift/models/shift_scope.dart`) — enum с полем `value` и `fromValue`, значения `all`/`personal`/`organization`; строковых литералов контракта в коде нет. `null` на уровне репозитория/кубитов = параметр `scope` не передаётся вовсе.
+- **`ShiftHistoryContextStorage`** (`data/api/local/`) — своё хранилище (ключ `shift_history_context`), НЕ `ShiftContextStorage` главного экрана: выбор истории независим от контекста трекера и не синхронизируется с ним. Не регистрируется глобально — создаётся на месте в `ShiftHistoryPage` из `SharedPreferences` (по образцу `WorkScheduleContextStorage`).
+- **`ShiftHistoryContextCubit`** — резолвит контекст (правило): (1) сохранённый маркер валиден (для организации — она среди доступных, `myRole != owner`, ADR-001) → применяется сразу, не дожидаясь загрузки организаций (список смен/статистика уходят с ним немедленно); (2) иначе, после загрузки организаций, доступна хотя бы одна → первая; (3) иначе — без ограничения (селектор скрыт, `scope` не уходит на бэк — для персонального пользователя ничего не меняется). Сохранённая организация пропала из доступных (исключили/удалили/стал owner) → молча правило 2/3, без ошибки и тоста. Персистится только осознанный выбор пользователя (`selectOrganization`/`selectPersonal`/`selectAll`) — авто-резолв и авто-коррекция в хранилище не пишут, по аналогии с `ShiftTrackerCubit._maybePreselectContext`.
+- **`ShiftHistoryCubit`/`ShiftStatsCubit`** остаются независимыми друг от друга и не знают об источнике контекста: получают его извне через новый метод `setContext(ShiftScope?, String?)` — до первого вызова не грузят данные вовсе (устраняет лишний запрос «за всеми сменами» с последующим перезапросом на холодном старте), смена контекста сбрасывает пагинацию списка, фильтры статуса/дат сохраняются (ортогональны контексту, `resetFilters()` их не трогает).
+- **`ShiftHistoryPage`/`_ShiftHistoryViewState`** — координатор: слушает `ShiftHistoryContextCubit.stream` И явно читает его текущее состояние в `initState` (не полагается на один `BlocListener` — тот не увидел бы состояние, если контекст резолвился синхронно ещё внутри конструктора кубита, до подписки любого слушателя), прокидывает в оба независимых кубита. Пока контекст не резолвлен — экран показывает общий `SectionLoader` вместо списка/статистики.
+- **`_ContextSelector`** (`pages/shift_history/widgets/`) — компактный `PopupMenuButton`-пилюля над фильтрами; пункты: организации (порядок из репозитория) → «Персональные» → «Все смены»; текущий выбор виден без раскрытия списка. Скрыт целиком при `!hasOrganizations`.
+- **Пустые состояния**: приоритет — если пусто из-за фильтров статуса/дат, показывается прежний текст (`shiftsEmptyForRange`/`historyEmpty`); иначе, по контексту — `historyEmptyOrganization`/`historyEmptyPersonal` + общая подсказка `historyEmptyContextHint` («переключите контекст»); «Все смены»/без ограничения — прежний `historyEmpty`.
+- **Тесты**: `shift_history_context_cubit_test.dart` (дефолт без сохранённого выбора, eager-применение сохранённого маркера до загрузки организаций, перепроверка валидности/молчаливый откат, owner-only организация исключена, персонал/all персистятся, авто-резолв не пишет в storage), `shift_history_cubit_test.dart`/`shift_stats_cubit_test.dart` (загрузка блокируется до первого `setContext`, идемпотентность повторного вызова с тем же контекстом, сброс пагинации, сохранение фильтров при смене контекста).
 
 ## Ключевые решения
 
