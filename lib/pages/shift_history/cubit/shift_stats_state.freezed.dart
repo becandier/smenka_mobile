@@ -14,11 +14,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ShiftStatsState {
 
- SectionData<ShiftStats> get stats;/// Пресет окна; null — активен произвольный диапазон
-/// ([customFrom]/[customTo]). Ровно один источник окна одновременно.
- StatsPeriod? get selectedPeriod;/// Границы произвольного окна (UTC); заданы только при
-/// `selectedPeriod == null`, хотя бы одна из границ непуста.
- DateTime? get customFrom; DateTime? get customTo;/// Контекст (`shift_history_scope`), приходит извне от
+ SectionData<ShiftStats> get stats;/// Окно (`shift_history_earnings/mobile.md`), приходит извне от
+/// `ShiftHistoryPeriodCubit` через `setPeriod` — единый источник
+/// периода на экран, те же границы, что уходят в `GET /shifts` и
+/// `GET /organizations/{org_id}/my-earnings`.
+ DateTime? get dateFrom; DateTime? get dateTo;/// Контекст (`shift_history_scope`), приходит извне от
 /// `ShiftHistoryContextCubit` через `setContext` — `null` = без
 /// ограничения (не передаётся на бэк). Считается по тому же множеству
 /// смен, что отдаёт список (`ShiftHistoryCubit`).
@@ -33,16 +33,16 @@ $ShiftStatsStateCopyWith<ShiftStatsState> get copyWith => _$ShiftStatsStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftStatsState&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.selectedPeriod, selectedPeriod) || other.selectedPeriod == selectedPeriod)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftStatsState&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.dateFrom, dateFrom) || other.dateFrom == dateFrom)&&(identical(other.dateTo, dateTo) || other.dateTo == dateTo)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,stats,selectedPeriod,customFrom,customTo,scope,organizationId);
+int get hashCode => Object.hash(runtimeType,stats,dateFrom,dateTo,scope,organizationId);
 
 @override
 String toString() {
-  return 'ShiftStatsState(stats: $stats, selectedPeriod: $selectedPeriod, customFrom: $customFrom, customTo: $customTo, scope: $scope, organizationId: $organizationId)';
+  return 'ShiftStatsState(stats: $stats, dateFrom: $dateFrom, dateTo: $dateTo, scope: $scope, organizationId: $organizationId)';
 }
 
 
@@ -53,7 +53,7 @@ abstract mixin class $ShiftStatsStateCopyWith<$Res>  {
   factory $ShiftStatsStateCopyWith(ShiftStatsState value, $Res Function(ShiftStatsState) _then) = _$ShiftStatsStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<ShiftStats> stats, StatsPeriod? selectedPeriod, DateTime? customFrom, DateTime? customTo, ShiftScope? scope, String? organizationId
+ SectionData<ShiftStats> stats, DateTime? dateFrom, DateTime? dateTo, ShiftScope? scope, String? organizationId
 });
 
 
@@ -70,12 +70,11 @@ class _$ShiftStatsStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftStatsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? stats = null,Object? selectedPeriod = freezed,Object? customFrom = freezed,Object? customTo = freezed,Object? scope = freezed,Object? organizationId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? stats = null,Object? dateFrom = freezed,Object? dateTo = freezed,Object? scope = freezed,Object? organizationId = freezed,}) {
   return _then(_self.copyWith(
 stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
-as SectionData<ShiftStats>,selectedPeriod: freezed == selectedPeriod ? _self.selectedPeriod : selectedPeriod // ignore: cast_nullable_to_non_nullable
-as StatsPeriod?,customFrom: freezed == customFrom ? _self.customFrom : customFrom // ignore: cast_nullable_to_non_nullable
-as DateTime?,customTo: freezed == customTo ? _self.customTo : customTo // ignore: cast_nullable_to_non_nullable
+as SectionData<ShiftStats>,dateFrom: freezed == dateFrom ? _self.dateFrom : dateFrom // ignore: cast_nullable_to_non_nullable
+as DateTime?,dateTo: freezed == dateTo ? _self.dateTo : dateTo // ignore: cast_nullable_to_non_nullable
 as DateTime?,scope: freezed == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
 as ShiftScope?,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -172,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<ShiftStats> stats,  StatsPeriod? selectedPeriod,  DateTime? customFrom,  DateTime? customTo,  ShiftScope? scope,  String? organizationId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<ShiftStats> stats,  DateTime? dateFrom,  DateTime? dateTo,  ShiftScope? scope,  String? organizationId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftStatsState() when $default != null:
-return $default(_that.stats,_that.selectedPeriod,_that.customFrom,_that.customTo,_that.scope,_that.organizationId);case _:
+return $default(_that.stats,_that.dateFrom,_that.dateTo,_that.scope,_that.organizationId);case _:
   return orElse();
 
 }
@@ -193,10 +192,10 @@ return $default(_that.stats,_that.selectedPeriod,_that.customFrom,_that.customTo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<ShiftStats> stats,  StatsPeriod? selectedPeriod,  DateTime? customFrom,  DateTime? customTo,  ShiftScope? scope,  String? organizationId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<ShiftStats> stats,  DateTime? dateFrom,  DateTime? dateTo,  ShiftScope? scope,  String? organizationId)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftStatsState():
-return $default(_that.stats,_that.selectedPeriod,_that.customFrom,_that.customTo,_that.scope,_that.organizationId);case _:
+return $default(_that.stats,_that.dateFrom,_that.dateTo,_that.scope,_that.organizationId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +212,10 @@ return $default(_that.stats,_that.selectedPeriod,_that.customFrom,_that.customTo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<ShiftStats> stats,  StatsPeriod? selectedPeriod,  DateTime? customFrom,  DateTime? customTo,  ShiftScope? scope,  String? organizationId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<ShiftStats> stats,  DateTime? dateFrom,  DateTime? dateTo,  ShiftScope? scope,  String? organizationId)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftStatsState() when $default != null:
-return $default(_that.stats,_that.selectedPeriod,_that.customFrom,_that.customTo,_that.scope,_that.organizationId);case _:
+return $default(_that.stats,_that.dateFrom,_that.dateTo,_that.scope,_that.organizationId);case _:
   return null;
 
 }
@@ -227,18 +226,17 @@ return $default(_that.stats,_that.selectedPeriod,_that.customFrom,_that.customTo
 /// @nodoc
 
 
-class _ShiftStatsState extends ShiftStatsState {
-  const _ShiftStatsState({this.stats = const SectionData<ShiftStats>(), this.selectedPeriod = StatsPeriod.day, this.customFrom, this.customTo, this.scope, this.organizationId}): super._();
+class _ShiftStatsState implements ShiftStatsState {
+  const _ShiftStatsState({this.stats = const SectionData<ShiftStats>(), this.dateFrom, this.dateTo, this.scope, this.organizationId});
   
 
 @override@JsonKey() final  SectionData<ShiftStats> stats;
-/// Пресет окна; null — активен произвольный диапазон
-/// ([customFrom]/[customTo]). Ровно один источник окна одновременно.
-@override@JsonKey() final  StatsPeriod? selectedPeriod;
-/// Границы произвольного окна (UTC); заданы только при
-/// `selectedPeriod == null`, хотя бы одна из границ непуста.
-@override final  DateTime? customFrom;
-@override final  DateTime? customTo;
+/// Окно (`shift_history_earnings/mobile.md`), приходит извне от
+/// `ShiftHistoryPeriodCubit` через `setPeriod` — единый источник
+/// периода на экран, те же границы, что уходят в `GET /shifts` и
+/// `GET /organizations/{org_id}/my-earnings`.
+@override final  DateTime? dateFrom;
+@override final  DateTime? dateTo;
 /// Контекст (`shift_history_scope`), приходит извне от
 /// `ShiftHistoryContextCubit` через `setContext` — `null` = без
 /// ограничения (не передаётся на бэк). Считается по тому же множеству
@@ -256,16 +254,16 @@ _$ShiftStatsStateCopyWith<_ShiftStatsState> get copyWith => __$ShiftStatsStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftStatsState&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.selectedPeriod, selectedPeriod) || other.selectedPeriod == selectedPeriod)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftStatsState&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.dateFrom, dateFrom) || other.dateFrom == dateFrom)&&(identical(other.dateTo, dateTo) || other.dateTo == dateTo)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,stats,selectedPeriod,customFrom,customTo,scope,organizationId);
+int get hashCode => Object.hash(runtimeType,stats,dateFrom,dateTo,scope,organizationId);
 
 @override
 String toString() {
-  return 'ShiftStatsState(stats: $stats, selectedPeriod: $selectedPeriod, customFrom: $customFrom, customTo: $customTo, scope: $scope, organizationId: $organizationId)';
+  return 'ShiftStatsState(stats: $stats, dateFrom: $dateFrom, dateTo: $dateTo, scope: $scope, organizationId: $organizationId)';
 }
 
 
@@ -276,7 +274,7 @@ abstract mixin class _$ShiftStatsStateCopyWith<$Res> implements $ShiftStatsState
   factory _$ShiftStatsStateCopyWith(_ShiftStatsState value, $Res Function(_ShiftStatsState) _then) = __$ShiftStatsStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<ShiftStats> stats, StatsPeriod? selectedPeriod, DateTime? customFrom, DateTime? customTo, ShiftScope? scope, String? organizationId
+ SectionData<ShiftStats> stats, DateTime? dateFrom, DateTime? dateTo, ShiftScope? scope, String? organizationId
 });
 
 
@@ -293,12 +291,11 @@ class __$ShiftStatsStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftStatsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? stats = null,Object? selectedPeriod = freezed,Object? customFrom = freezed,Object? customTo = freezed,Object? scope = freezed,Object? organizationId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? stats = null,Object? dateFrom = freezed,Object? dateTo = freezed,Object? scope = freezed,Object? organizationId = freezed,}) {
   return _then(_ShiftStatsState(
 stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
-as SectionData<ShiftStats>,selectedPeriod: freezed == selectedPeriod ? _self.selectedPeriod : selectedPeriod // ignore: cast_nullable_to_non_nullable
-as StatsPeriod?,customFrom: freezed == customFrom ? _self.customFrom : customFrom // ignore: cast_nullable_to_non_nullable
-as DateTime?,customTo: freezed == customTo ? _self.customTo : customTo // ignore: cast_nullable_to_non_nullable
+as SectionData<ShiftStats>,dateFrom: freezed == dateFrom ? _self.dateFrom : dateFrom // ignore: cast_nullable_to_non_nullable
+as DateTime?,dateTo: freezed == dateTo ? _self.dateTo : dateTo // ignore: cast_nullable_to_non_nullable
 as DateTime?,scope: freezed == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
 as ShiftScope?,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as String?,

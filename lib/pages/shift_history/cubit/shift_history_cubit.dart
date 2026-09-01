@@ -9,9 +9,11 @@ class ShiftHistoryCubit extends Cubit<ShiftHistoryState>
   ShiftHistoryCubit({required ShiftRepository shiftRepository})
     : _shiftRepository = shiftRepository,
       super(const ShiftHistoryState());
-  // Не грузит сразу: контекст (`scope`/`organizationId`) приходит извне от
-  // `ShiftHistoryContextCubit` через `setContext` — первый вызов запускает
-  // первичную загрузку (shift_history_scope/mobile.md, «Загрузка»).
+  // Не грузит сразу: контекст (`scope`/`organizationId`) и окно периода
+  // приходят извне — от `ShiftHistoryContextCubit` через `setContext` и от
+  // `ShiftHistoryPeriodCubit` через `setPeriod` (shift_history_scope/
+  // mobile.md, «Загрузка»; shift_history_earnings/mobile.md, «A»). Первая
+  // загрузка запускается, только когда применены оба.
 
   final ShiftRepository _shiftRepository;
 
@@ -22,13 +24,16 @@ class ShiftHistoryCubit extends Cubit<ShiftHistoryState>
   /// отличить «контекст ещё не приходил» от «пришёл и совпал с дефолтом».
   bool _contextApplied = false;
 
+  /// Тот же приём для окна периода — см. [_contextApplied].
+  bool _periodApplied = false;
+
   Future<void> loadShifts({bool isRefresh = true}) => fetchPaginated<Shift>(
     getSection: (s) => s.shifts,
     updateState: (s, section) => s.copyWith(shifts: section),
     fetch: (page, perPage) => _shiftRepository.getShifts(
       status: state.filterStatus,
-      dateFrom: state.filterDateFrom,
-      dateTo: state.filterDateTo,
+      dateFrom: state.dateFrom,
+      dateTo: state.dateTo,
       scope: state.scope,
       organizationId: state.organizationId,
       limit: perPage,
@@ -39,17 +44,34 @@ class ShiftHistoryCubit extends Cubit<ShiftHistoryState>
 
   /// Контекст (`shift_history_scope`) пришёл извне — см. `ShiftHistoryPage`,
   /// слушает `ShiftHistoryContextCubit` и прокидывает сюда и в
-  /// `ShiftStatsCubit` независимо (инвариант «кубиты не зависят друг от
-  /// друга» сохраняется — они не знают друг о друге и об источнике
-  /// контекста). Сбрасывает пагинацию, фильтры статуса/дат сохраняются.
+  /// `ShiftStatsCubit`/`ShiftEarningsCubit` независимо (инвариант «кубиты
+  /// не зависят друг от друга» сохраняется — они не знают друг о друге и об
+  /// источнике контекста). Сбрасывает пагинацию, фильтр статуса сохраняется.
   void setContext(ShiftScope? scope, String? organizationId) {
     final unchanged =
         _contextApplied &&
         state.scope == scope &&
         state.organizationId == organizationId;
-    if (unchanged) return;
     _contextApplied = true;
+    if (unchanged) return;
     emit(state.copyWith(scope: scope, organizationId: organizationId));
+    _maybeLoad();
+  }
+
+  /// Окно (`shift_history_earnings/mobile.md`) пришло извне от
+  /// `ShiftHistoryPeriodCubit` — единый источник периода на весь экран.
+  /// Сбрасывает пагинацию, фильтр статуса сохраняется.
+  void setPeriod(DateTime? dateFrom, DateTime? dateTo) {
+    final unchanged =
+        _periodApplied && state.dateFrom == dateFrom && state.dateTo == dateTo;
+    _periodApplied = true;
+    if (unchanged) return;
+    emit(state.copyWith(dateFrom: dateFrom, dateTo: dateTo));
+    _maybeLoad();
+  }
+
+  void _maybeLoad() {
+    if (!_contextApplied || !_periodApplied) return;
     loadShifts();
   }
 
@@ -58,24 +80,12 @@ class ShiftHistoryCubit extends Cubit<ShiftHistoryState>
     loadShifts();
   }
 
-  /// Применить диапазон дат (UTC-границы, обе включительно по `started_at`).
-  /// Обе `null` — сброс диапазона. Один перезапрос с первой страницы.
-  void setDateRange(DateTime? dateFrom, DateTime? dateTo) {
-    emit(state.copyWith(filterDateFrom: dateFrom, filterDateTo: dateTo));
-    loadShifts();
-  }
-
-  /// Сбрасывает только фильтры статуса/дат — контекст (`scope`/
-  /// `organizationId`) ортогонален и не трогается (mobile.md: «"Сбросить
-  /// фильтры" сбрасывает статус и даты, но не контекст»).
+  /// Сбрасывает только фильтр статуса — контекст (`scope`/
+  /// `organizationId`) и окно периода (`dateFrom`/`dateTo`) ортогональны и
+  /// не трогаются: период больше не «фильтр» поверх списка, а сам список
+  /// показывается за период (mobile.md, «A. Единый выбор периода»).
   void resetFilters() {
-    emit(
-      state.copyWith(
-        filterStatus: null,
-        filterDateFrom: null,
-        filterDateTo: null,
-      ),
-    );
+    emit(state.copyWith(filterStatus: null));
     loadShifts();
   }
 }

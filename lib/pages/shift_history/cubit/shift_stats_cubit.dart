@@ -8,14 +8,18 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
   ShiftStatsCubit({required ShiftRepository shiftRepository})
     : _shiftRepository = shiftRepository,
       super(const ShiftStatsState());
-  // Не грузит сразу: контекст приходит извне через `setContext`, см.
-  // `ShiftHistoryCubit` (тот же принцип, тот же источник координации).
+  // Не грузит сразу: контекст и окно периода приходят извне через
+  // `setContext`/`setPeriod`, см. `ShiftHistoryCubit` (тот же принцип, тот
+  // же источник координации — `ShiftHistoryPage`).
 
   final ShiftRepository _shiftRepository;
 
   /// Контекст применён хотя бы раз — гейт первого запроса (см.
   /// `ShiftHistoryCubit._contextApplied`, тот же приём).
   bool _contextApplied = false;
+
+  /// Тот же приём для окна периода.
+  bool _periodApplied = false;
 
   /// Монотонный токен запроса: ответы устаревших запросов (пользователь
   /// успел сменить окно) игнорируются, чтобы не перетереть актуальные данные.
@@ -30,23 +34,38 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
         _contextApplied &&
         state.scope == scope &&
         state.organizationId == organizationId;
-    if (unchanged) return;
     _contextApplied = true;
+    if (unchanged) return;
     emit(state.copyWith(scope: scope, organizationId: organizationId));
+    _maybeLoad();
+  }
+
+  /// Окно (`shift_history_earnings/mobile.md`) пришло извне от
+  /// `ShiftHistoryPeriodCubit` — единый источник периода на весь экран,
+  /// те же границы, что уходят в `GET /shifts`.
+  void setPeriod(DateTime? dateFrom, DateTime? dateTo) {
+    final unchanged =
+        _periodApplied && state.dateFrom == dateFrom && state.dateTo == dateTo;
+    _periodApplied = true;
+    if (unchanged) return;
+    emit(state.copyWith(dateFrom: dateFrom, dateTo: dateTo));
+    _maybeLoad();
+  }
+
+  void _maybeLoad() {
+    if (!_contextApplied || !_periodApplied) return;
     loadStats();
   }
 
-  /// Перезапрос статистики. Ровно один источник окна: пресет
-  /// `selectedPeriod` ЛИБО диапазон `customFrom`/`customTo` (UTC).
+  /// Перезапрос статистики за окно, заданное извне (`dateFrom`/`dateTo`).
+  /// Серверный параметр `period` не передаётся.
   Future<void> loadStats() async {
     final requestId = ++_requestId;
     emit(state.copyWith(stats: state.stats.toLoading()));
 
-    final isCustom = state.isCustomRange;
     final result = await _shiftRepository.getStats(
-      period: isCustom ? null : state.selectedPeriod?.name,
-      dateFrom: isCustom ? state.customFrom : null,
-      dateTo: isCustom ? state.customTo : null,
+      dateFrom: state.dateFrom,
+      dateTo: state.dateTo,
       scope: state.scope,
       organizationId: state.organizationId,
     );
@@ -64,30 +83,5 @@ class ShiftStatsCubit extends Cubit<ShiftStatsState> {
         );
       },
     );
-  }
-
-  void changePeriod(StatsPeriod period) {
-    if (period == state.selectedPeriod) return;
-    emit(
-      state.copyWith(selectedPeriod: period, customFrom: null, customTo: null),
-    );
-    loadStats();
-  }
-
-  /// Применить произвольное окно (UTC-границы, хотя бы одна непуста).
-  /// Обе `null` — сброс кастомного окна: возврат к дефолтному пресету.
-  void setCustomRange(DateTime? dateFrom, DateTime? dateTo) {
-    if (dateFrom == null && dateTo == null) {
-      if (state.isCustomRange) changePeriod(StatsPeriod.day);
-      return;
-    }
-    emit(
-      state.copyWith(
-        selectedPeriod: null,
-        customFrom: dateFrom,
-        customTo: dateTo,
-      ),
-    );
-    loadStats();
   }
 }

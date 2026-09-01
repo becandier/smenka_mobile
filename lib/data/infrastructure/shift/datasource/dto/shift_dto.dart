@@ -36,6 +36,25 @@ abstract class ShiftOvertimeRequestDto with _$ShiftOvertimeRequestDto {
 }
 
 @freezed
+abstract class ShiftEarningsDto with _$ShiftEarningsDto {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory ShiftEarningsDto({
+    required String currency,
+    required int grossAmountMinor,
+    required int penaltyAmountMinor,
+    required int penaltiesCount,
+    required int adjustmentAmountMinor,
+    required int adjustmentsCount,
+    required int netAmountMinor,
+    required int overtimeSeconds,
+    required bool hasRate,
+  }) = _ShiftEarningsDto;
+
+  factory ShiftEarningsDto.fromJson(Map<String, dynamic> json) =>
+      _$ShiftEarningsDtoFromJson(json);
+}
+
+@freezed
 abstract class ShiftDto with _$ShiftDto {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory ShiftDto({
@@ -85,6 +104,10 @@ abstract class ShiftDto with _$ShiftDto {
     @Default(false) bool geoFallback,
     String? geoFallbackReason,
     String? geoFallbackPhotoFileId,
+
+    /// Заработок по смене (`shift_history_earnings/backend.md`, п.1,
+    /// additive). Старый бэк не шлёт → `null`.
+    ShiftEarningsDto? earnings,
   }) = _ShiftDto;
 
   factory ShiftDto.fromJson(Map<String, dynamic> json) =>

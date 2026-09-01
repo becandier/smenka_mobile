@@ -22,12 +22,12 @@ abstract class ShiftRepository {
   /// несуществующая или soft-deleted смена → `404 SHIFT_NOT_FOUND`.
   Future<Task<Shift>> getShiftById(String shiftId);
 
-  /// Окно статистики: ровно один источник — либо [period],
-  /// либо [dateFrom]/[dateTo] (UTC). [scope]/[organizationId] — см.
-  /// [getShifts]; та же семантика, статистика считается по тому же
-  /// множеству смен, что отдаёт список.
+  /// Окно статистики — [dateFrom]/[dateTo] (UTC), границы вычисляет
+  /// клиент (`shift_history_earnings/mobile.md`: единый источник окна на
+  /// экран, серверный параметр `period` не используется).
+  /// [scope]/[organizationId] — см. [getShifts]; та же семантика,
+  /// статистика считается по тому же множеству смен, что отдаёт список.
   Future<Task<ShiftStats>> getStats({
-    String? period,
     DateTime? dateFrom,
     DateTime? dateTo,
     ShiftScope? scope,

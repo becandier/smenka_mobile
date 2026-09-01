@@ -48,6 +48,32 @@ Map<String, dynamic> _$ShiftOvertimeRequestDtoToJson(
   'reviewed_at': instance.reviewedAt?.toIso8601String(),
 };
 
+_ShiftEarningsDto _$ShiftEarningsDtoFromJson(Map<String, dynamic> json) =>
+    _ShiftEarningsDto(
+      currency: json['currency'] as String,
+      grossAmountMinor: (json['gross_amount_minor'] as num).toInt(),
+      penaltyAmountMinor: (json['penalty_amount_minor'] as num).toInt(),
+      penaltiesCount: (json['penalties_count'] as num).toInt(),
+      adjustmentAmountMinor: (json['adjustment_amount_minor'] as num).toInt(),
+      adjustmentsCount: (json['adjustments_count'] as num).toInt(),
+      netAmountMinor: (json['net_amount_minor'] as num).toInt(),
+      overtimeSeconds: (json['overtime_seconds'] as num).toInt(),
+      hasRate: json['has_rate'] as bool,
+    );
+
+Map<String, dynamic> _$ShiftEarningsDtoToJson(_ShiftEarningsDto instance) =>
+    <String, dynamic>{
+      'currency': instance.currency,
+      'gross_amount_minor': instance.grossAmountMinor,
+      'penalty_amount_minor': instance.penaltyAmountMinor,
+      'penalties_count': instance.penaltiesCount,
+      'adjustment_amount_minor': instance.adjustmentAmountMinor,
+      'adjustments_count': instance.adjustmentsCount,
+      'net_amount_minor': instance.netAmountMinor,
+      'overtime_seconds': instance.overtimeSeconds,
+      'has_rate': instance.hasRate,
+    };
+
 _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
   id: json['id'] as String,
   userId: json['user_id'] as String,
@@ -98,6 +124,9 @@ _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
   geoFallback: json['geo_fallback'] as bool? ?? false,
   geoFallbackReason: json['geo_fallback_reason'] as String?,
   geoFallbackPhotoFileId: json['geo_fallback_photo_file_id'] as String?,
+  earnings: json['earnings'] == null
+      ? null
+      : ShiftEarningsDto.fromJson(json['earnings'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
@@ -134,4 +163,5 @@ Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
   'geo_fallback': instance.geoFallback,
   'geo_fallback_reason': instance.geoFallbackReason,
   'geo_fallback_photo_file_id': instance.geoFallbackPhotoFileId,
+  'earnings': instance.earnings?.toJson(),
 };

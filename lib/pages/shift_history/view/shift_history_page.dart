@@ -5,18 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smenka_mobile/core/models/period_preset.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/utils/money_format.dart';
 import 'package:smenka_mobile/data/api/local/shift_history_context_storage.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
+import 'package:smenka_mobile/data/domain/payroll/models/_models.dart';
+import 'package:smenka_mobile/data/domain/payroll/repositories/payroll_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
 import 'package:smenka_mobile/l10n/applied_range_label.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
+import 'package:smenka_mobile/pages/shift_history/cubit/shift_earnings_cubit.dart';
+import 'package:smenka_mobile/pages/shift_history/cubit/shift_earnings_state.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_context_cubit.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_context_state.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_cubit.dart';
+import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_period_cubit.dart';
+import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_period_state.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_state.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_stats_cubit.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_stats_state.dart';
@@ -43,6 +51,7 @@ class ShiftHistoryPage extends StatelessWidget {
             ),
           ),
         ),
+        BlocProvider(create: (_) => ShiftHistoryPeriodCubit()),
         BlocProvider(
           create: (_) => ShiftHistoryCubit(
             shiftRepository: context.read<ShiftRepository>(),
@@ -51,6 +60,11 @@ class ShiftHistoryPage extends StatelessWidget {
         BlocProvider(
           create: (_) =>
               ShiftStatsCubit(shiftRepository: context.read<ShiftRepository>()),
+        ),
+        BlocProvider(
+          create: (_) => ShiftEarningsCubit(
+            payrollRepository: context.read<PayrollRepository>(),
+          ),
         ),
       ],
       child: const _ShiftHistoryView(),
@@ -67,6 +81,7 @@ class _ShiftHistoryView extends StatefulWidget {
 
 class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
   StreamSubscription<ShiftHistoryContextState>? _contextSub;
+  StreamSubscription<ShiftHistoryPeriodState>? _periodSub;
 
   @override
   void initState() {
@@ -80,10 +95,17 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
     final contextCubit = context.read<ShiftHistoryContextCubit>();
     _applyContext(contextCubit.state);
     _contextSub = contextCubit.stream.listen(_applyContext);
+
+    // Окно периода вычисляется синхронно в конструкторе
+    // `ShiftHistoryPeriodCubit` (дефолт — неделя), поэтому применяем его
+    // сразу тем же приёмом, что и контекст выше.
+    final periodCubit = context.read<ShiftHistoryPeriodCubit>();
+    _applyPeriod(periodCubit.state);
+    _periodSub = periodCubit.stream.listen(_applyPeriod);
   }
 
-  /// Прокидывает резолвленный контекст в оба независимых кубита экрана.
-  /// Они не знают друг о друге и об источнике контекста — только этот метод
+  /// Прокидывает резолвленный контекст в независимые кубиты экрана. Они не
+  /// знают друг о друге и об источнике контекста — только этот метод
   /// связывает их (mobile.md: «инвариант "кубиты не зависят друг от друга"
   /// сохраняется»).
   void _applyContext(ShiftHistoryContextState state) {
@@ -96,11 +118,25 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
       state.scope,
       state.organizationId,
     );
+    context.read<ShiftEarningsCubit>().setContext(
+      state.scope,
+      state.organizationId,
+    );
+  }
+
+  /// Прокидывает вычисленное окно периода в независимые кубиты экрана —
+  /// единственный источник `dateFrom`/`dateTo`, одинаковых во все три
+  /// запроса (`shift_history_earnings/mobile.md`, «A»).
+  void _applyPeriod(ShiftHistoryPeriodState state) {
+    context.read<ShiftHistoryCubit>().setPeriod(state.dateFrom, state.dateTo);
+    context.read<ShiftStatsCubit>().setPeriod(state.dateFrom, state.dateTo);
+    context.read<ShiftEarningsCubit>().setPeriod(state.dateFrom, state.dateTo);
   }
 
   @override
   void dispose() {
     unawaited(_contextSub?.cancel());
+    unawaited(_periodSub?.cancel());
     super.dispose();
   }
 
@@ -155,20 +191,16 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
     );
   }
 
-  /// Приоритет пуст-текстов (mobile.md, «Пустые состояния»): фильтры
-  /// статуса/дат — это уже существующий текст «за выбранный период»/общий
-  /// «Нет смен»; только если фильтров нет, подсказка зависит от контекста
-  /// (организация/персональные/все).
+  /// Приоритет пуст-текстов (shift_history_earnings/mobile.md: период —
+  /// теперь единый и всегда применён, это больше не отдельный «фильтр»
+  /// поверх списка). Подсказка про контекст (организация/персональные)
+  /// приоритетнее — она более действенная («переключите контекст»), чем
+  /// общее «нет смен за период» — и показывается, только пока не включён
+  /// фильтр статуса. Иначе — общий текст «за выбранный период»: период на
+  /// экране применён всегда, значит именно он объясняет пустоту списка.
   Widget _buildEmptyState(BuildContext context) {
     final historyState = context.read<ShiftHistoryCubit>().state;
     final l10n = context.l10n;
-
-    if (historyState.hasDateFilter) {
-      return AppEmptyState(
-        icon: Icons.history_outlined,
-        title: l10n.shiftsEmptyForRange,
-      );
-    }
 
     if (!historyState.hasFilters) {
       switch (historyState.scope) {
@@ -192,7 +224,7 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
 
     return AppEmptyState(
       icon: Icons.history_outlined,
-      title: l10n.historyEmpty,
+      title: l10n.shiftsEmptyForRange,
     );
   }
 }
