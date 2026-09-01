@@ -16,11 +16,13 @@ const _stats = ShiftStats(
 void main() {
   late _MockShiftRepository shiftRepo;
 
+  final periodFrom = DateTime.utc(2026, 6);
+  final periodTo = DateTime.utc(2026, 6, 7, 23, 59, 59);
+
   setUp(() {
     shiftRepo = _MockShiftRepository();
     when(
       () => shiftRepo.getStats(
-        period: any(named: 'period'),
         dateFrom: any(named: 'dateFrom'),
         dateTo: any(named: 'dateTo'),
         scope: any(named: 'scope'),
@@ -29,12 +31,11 @@ void main() {
     ).thenAnswer((_) async => const Task<ShiftStats>.success(_stats));
   });
 
-  test('до первого setContext запрос не уходит', () {
+  test('до применения контекста и периода запрос не уходит', () {
     ShiftStatsCubit(shiftRepository: shiftRepo);
 
     verifyNever(
       () => shiftRepo.getStats(
-        period: any(named: 'period'),
         dateFrom: any(named: 'dateFrom'),
         dateTo: any(named: 'dateTo'),
         scope: any(named: 'scope'),
@@ -43,38 +44,57 @@ void main() {
     );
   });
 
-  test(
-    'первый setContext запускает загрузку статистики с этим контекстом',
-    () async {
-      final cubit = ShiftStatsCubit(shiftRepository: shiftRepo)
-        ..setContext(ShiftScope.organization, 'org1');
-      await pumpEventQueue();
+  test('только setContext (без периода) не запускает загрузку', () async {
+    final cubit = ShiftStatsCubit(shiftRepository: shiftRepo)
+      ..setContext(ShiftScope.organization, 'org1');
+    await pumpEventQueue();
 
-      expect(cubit.state.scope, ShiftScope.organization);
-      expect(cubit.state.organizationId, 'org1');
-      verify(
-        () => shiftRepo.getStats(
-          period: 'day',
-          scope: ShiftScope.organization,
-          organizationId: 'org1',
-        ),
-      ).called(1);
-      await cubit.close();
-    },
-  );
+    verifyNever(
+      () => shiftRepo.getStats(
+        dateFrom: any(named: 'dateFrom'),
+        dateTo: any(named: 'dateTo'),
+        scope: any(named: 'scope'),
+        organizationId: any(named: 'organizationId'),
+      ),
+    );
+    await cubit.close();
+  });
+
+  test('setContext, затем setPeriod — запускают загрузку с общими границами '
+      '(серверный `period` не передаётся)', () async {
+    final cubit = ShiftStatsCubit(shiftRepository: shiftRepo)
+      ..setContext(ShiftScope.organization, 'org1');
+    await pumpEventQueue();
+    cubit.setPeriod(periodFrom, periodTo);
+    await pumpEventQueue();
+
+    expect(cubit.state.scope, ShiftScope.organization);
+    expect(cubit.state.organizationId, 'org1');
+    expect(cubit.state.dateFrom, periodFrom);
+    expect(cubit.state.dateTo, periodTo);
+    verify(
+      () => shiftRepo.getStats(
+        dateFrom: periodFrom,
+        dateTo: periodTo,
+        scope: ShiftScope.organization,
+        organizationId: 'org1',
+      ),
+    ).called(1);
+    await cubit.close();
+  });
 
   test(
     'повторный setContext с тем же контекстом — не перезапрашивает',
     () async {
       final cubit = ShiftStatsCubit(shiftRepository: shiftRepo)
-        ..setContext(ShiftScope.personal, null);
+        ..setContext(ShiftScope.personal, null)
+        ..setPeriod(periodFrom, periodTo);
       await pumpEventQueue();
       cubit.setContext(ShiftScope.personal, null);
       await pumpEventQueue();
 
       verify(
         () => shiftRepo.getStats(
-          period: any(named: 'period'),
           dateFrom: any(named: 'dateFrom'),
           dateTo: any(named: 'dateTo'),
           scope: any(named: 'scope'),
@@ -85,26 +105,50 @@ void main() {
     },
   );
 
-  test(
-    'смена контекста считает статистику по тому же контексту, что и список',
-    () async {
-      final cubit = ShiftStatsCubit(shiftRepository: shiftRepo)
-        ..setContext(ShiftScope.all, null);
-      await pumpEventQueue();
+  test('смена контекста считает статистику по тому же контексту и периоду, '
+      'что и список', () async {
+    final cubit = ShiftStatsCubit(shiftRepository: shiftRepo)
+      ..setContext(ShiftScope.all, null)
+      ..setPeriod(periodFrom, periodTo);
+    await pumpEventQueue();
 
-      cubit.setContext(ShiftScope.organization, 'org2');
-      await pumpEventQueue();
+    cubit.setContext(ShiftScope.organization, 'org2');
+    await pumpEventQueue();
 
-      expect(cubit.state.scope, ShiftScope.organization);
-      expect(cubit.state.organizationId, 'org2');
-      verify(
-        () => shiftRepo.getStats(
-          period: 'day',
-          scope: ShiftScope.organization,
-          organizationId: 'org2',
-        ),
-      ).called(1);
-      await cubit.close();
-    },
-  );
+    expect(cubit.state.scope, ShiftScope.organization);
+    expect(cubit.state.organizationId, 'org2');
+    verify(
+      () => shiftRepo.getStats(
+        dateFrom: periodFrom,
+        dateTo: periodTo,
+        scope: ShiftScope.organization,
+        organizationId: 'org2',
+      ),
+    ).called(1);
+    await cubit.close();
+  });
+
+  test('смена периода перезапрашивает статистику с новыми границами', () async {
+    final cubit = ShiftStatsCubit(shiftRepository: shiftRepo)
+      ..setContext(ShiftScope.organization, 'org1')
+      ..setPeriod(periodFrom, periodTo);
+    await pumpEventQueue();
+
+    final newFrom = DateTime.utc(2026, 7);
+    final newTo = DateTime.utc(2026, 7, 31, 23, 59, 59);
+    cubit.setPeriod(newFrom, newTo);
+    await pumpEventQueue();
+
+    expect(cubit.state.dateFrom, newFrom);
+    expect(cubit.state.dateTo, newTo);
+    verify(
+      () => shiftRepo.getStats(
+        dateFrom: newFrom,
+        dateTo: newTo,
+        scope: ShiftScope.organization,
+        organizationId: 'org1',
+      ),
+    ).called(1);
+    await cubit.close();
+  });
 }

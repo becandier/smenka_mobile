@@ -2800,6 +2800,12 @@ abstract class AppLocalizations {
   /// **'Начисления и удержания'**
   String get myEarningsAdjustments;
 
+  /// No description provided for @shiftHistoryAdjustments.
+  ///
+  /// In ru, this message translates to:
+  /// **'Доплаты'**
+  String get shiftHistoryAdjustments;
+
   /// No description provided for @notificationOpenMyEarningsHint.
   ///
   /// In ru, this message translates to:

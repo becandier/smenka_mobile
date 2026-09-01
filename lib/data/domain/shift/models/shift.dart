@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smenka_mobile/data/domain/organization/models/work_location.dart';
+import 'package:smenka_mobile/data/domain/shift/models/shift_earnings.dart';
 import 'package:smenka_mobile/data/domain/shift/models/shift_overtime_request.dart';
 
 part 'shift.freezed.dart';
@@ -118,5 +119,10 @@ abstract class Shift with _$Shift {
     /// Файл фото, приложенного к fallback-старту. `null` — обычная смена или
     /// файл удалён (FK `ON DELETE SET NULL`, причина при этом остаётся).
     String? geoFallbackPhotoFileId,
+
+    /// Заработок по этой смене (`shift_history_earnings/backend.md`, п.1,
+    /// additive). `null` — смена персональная либо не в статусе `finished`
+    /// (ADR-005 п.6/8), см. [ShiftEarnings].
+    ShiftEarnings? earnings,
   }) = _Shift;
 }

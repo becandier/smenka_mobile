@@ -27,6 +27,9 @@ Task<DefaultPaginator<Shift>> _page(
 void main() {
   late _MockShiftRepository shiftRepo;
 
+  final periodFrom = DateTime.utc(2026, 6);
+  final periodTo = DateTime.utc(2026, 6, 7, 23, 59, 59);
+
   setUp(() {
     shiftRepo = _MockShiftRepository();
     when(
@@ -42,7 +45,7 @@ void main() {
     ).thenAnswer((_) async => _page([_shift('s1')]));
   });
 
-  test('до первого setContext запрос не уходит', () {
+  test('до применения контекста и периода запрос не уходит', () {
     ShiftHistoryCubit(shiftRepository: shiftRepo);
 
     verifyNever(
@@ -58,40 +61,143 @@ void main() {
     );
   });
 
-  test('первый setContext запускает загрузку с этим контекстом', () async {
+  test('только setContext (без периода) не запускает загрузку', () async {
     final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
       ..setContext(ShiftScope.organization, 'org1');
     await pumpEventQueue();
 
+    verifyNever(
+      () => shiftRepo.getShifts(
+        status: any(named: 'status'),
+        dateFrom: any(named: 'dateFrom'),
+        dateTo: any(named: 'dateTo'),
+        scope: any(named: 'scope'),
+        organizationId: any(named: 'organizationId'),
+        limit: any(named: 'limit'),
+        offset: any(named: 'offset'),
+      ),
+    );
+    await cubit.close();
+  });
+
+  test('только setPeriod (без контекста) не запускает загрузку', () async {
+    final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
+      ..setPeriod(periodFrom, periodTo);
+    await pumpEventQueue();
+
+    verifyNever(
+      () => shiftRepo.getShifts(
+        status: any(named: 'status'),
+        dateFrom: any(named: 'dateFrom'),
+        dateTo: any(named: 'dateTo'),
+        scope: any(named: 'scope'),
+        organizationId: any(named: 'organizationId'),
+        limit: any(named: 'limit'),
+        offset: any(named: 'offset'),
+      ),
+    );
+    await cubit.close();
+  });
+
+  test('setContext, затем setPeriod — запускают первую загрузку с обоими '
+      'применёнными одинаковыми границами', () async {
+    final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
+      ..setContext(ShiftScope.organization, 'org1');
+    await pumpEventQueue();
+    cubit.setPeriod(periodFrom, periodTo);
+    await pumpEventQueue();
+
     expect(cubit.state.scope, ShiftScope.organization);
     expect(cubit.state.organizationId, 'org1');
+    expect(cubit.state.dateFrom, periodFrom);
+    expect(cubit.state.dateTo, periodTo);
     verify(
       () => shiftRepo.getShifts(
         scope: ShiftScope.organization,
         organizationId: 'org1',
+        dateFrom: periodFrom,
+        dateTo: periodTo,
         limit: any(named: 'limit'),
       ),
     ).called(1);
     await cubit.close();
   });
 
-  test('первый setContext(null, null) — контекст без ограничения — тоже '
-      'запускает загрузку (не путать с «ещё не пришёл»)', () async {
-    final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
-      ..setContext(null, null);
-    await pumpEventQueue();
+  test(
+    'setPeriod, затем setContext — тот же результат (порядок не важен)',
+    () async {
+      final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
+        ..setPeriod(periodFrom, periodTo);
+      await pumpEventQueue();
+      cubit.setContext(ShiftScope.organization, 'org1');
+      await pumpEventQueue();
 
-    verify(() => shiftRepo.getShifts(limit: any(named: 'limit'))).called(1);
-    await cubit.close();
-  });
+      verify(
+        () => shiftRepo.getShifts(
+          scope: ShiftScope.organization,
+          organizationId: 'org1',
+          dateFrom: periodFrom,
+          dateTo: periodTo,
+          limit: any(named: 'limit'),
+        ),
+      ).called(1);
+      await cubit.close();
+    },
+  );
+
+  test(
+    'первый setContext(null, null) — контекст без ограничения — тоже '
+    'запускает загрузку вместе с периодом (не путать с «ещё не пришёл»)',
+    () async {
+      final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
+        ..setContext(null, null)
+        ..setPeriod(periodFrom, periodTo);
+      await pumpEventQueue();
+
+      verify(
+        () => shiftRepo.getShifts(
+          dateFrom: periodFrom,
+          dateTo: periodTo,
+          limit: any(named: 'limit'),
+        ),
+      ).called(1);
+      await cubit.close();
+    },
+  );
 
   test(
     'повторный setContext с тем же контекстом — не перезапрашивает',
     () async {
       final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
-        ..setContext(ShiftScope.personal, null);
+        ..setContext(ShiftScope.personal, null)
+        ..setPeriod(periodFrom, periodTo);
       await pumpEventQueue();
       cubit.setContext(ShiftScope.personal, null);
+      await pumpEventQueue();
+
+      verify(
+        () => shiftRepo.getShifts(
+          status: any(named: 'status'),
+          dateFrom: any(named: 'dateFrom'),
+          dateTo: any(named: 'dateTo'),
+          scope: any(named: 'scope'),
+          organizationId: any(named: 'organizationId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'),
+        ),
+      ).called(1);
+      await cubit.close();
+    },
+  );
+
+  test(
+    'повторный setPeriod с теми же границами — не перезапрашивает',
+    () async {
+      final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
+        ..setContext(ShiftScope.personal, null)
+        ..setPeriod(periodFrom, periodTo);
+      await pumpEventQueue();
+      cubit.setPeriod(periodFrom, periodTo);
       await pumpEventQueue();
 
       verify(
@@ -123,7 +229,8 @@ void main() {
     ).thenAnswer((_) async => _page([_shift('s1')], hasMore: true));
 
     final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
-      ..setContext(ShiftScope.organization, 'org1');
+      ..setContext(ShiftScope.organization, 'org1')
+      ..setPeriod(periodFrom, periodTo);
     await pumpEventQueue();
     await cubit.loadShifts(isRefresh: false); // подгрузка страницы 2
     await pumpEventQueue();
@@ -137,35 +244,65 @@ void main() {
       () => shiftRepo.getShifts(
         scope: ShiftScope.organization,
         organizationId: 'org2',
+        dateFrom: periodFrom,
+        dateTo: periodTo,
         limit: any(named: 'limit'),
       ),
     ).called(1);
     await cubit.close();
   });
 
-  test('смена контекста сохраняет фильтры статуса/дат', () async {
+  test('смена периода перезапрашивает с новыми границами, сохраняя '
+      'контекст и фильтр статуса', () async {
     final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
-      ..setContext(ShiftScope.all, null);
+      ..setContext(ShiftScope.organization, 'org1')
+      ..setPeriod(periodFrom, periodTo);
+    await pumpEventQueue();
+    cubit.setStatusFilter(ShiftStatus.finished);
     await pumpEventQueue();
 
-    final dateFrom = DateTime.utc(2026, 6);
-    final dateTo = DateTime.utc(2026, 6, 30);
-    cubit
-      ..setStatusFilter(ShiftStatus.finished)
-      ..setDateRange(dateFrom, dateTo);
+    final newFrom = DateTime.utc(2026, 7);
+    final newTo = DateTime.utc(2026, 7, 31, 23, 59, 59);
+    cubit.setPeriod(newFrom, newTo);
+    await pumpEventQueue();
+
+    expect(cubit.state.dateFrom, newFrom);
+    expect(cubit.state.dateTo, newTo);
+    expect(cubit.state.filterStatus, ShiftStatus.finished);
+    expect(cubit.state.scope, ShiftScope.organization);
+    verify(
+      () => shiftRepo.getShifts(
+        status: ShiftStatus.finished,
+        dateFrom: newFrom,
+        dateTo: newTo,
+        scope: ShiftScope.organization,
+        organizationId: 'org1',
+        limit: any(named: 'limit'),
+      ),
+    ).called(1);
+    await cubit.close();
+  });
+
+  test('смена контекста сохраняет фильтр статуса и период', () async {
+    final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
+      ..setContext(ShiftScope.all, null)
+      ..setPeriod(periodFrom, periodTo);
+    await pumpEventQueue();
+
+    cubit.setStatusFilter(ShiftStatus.finished);
     await pumpEventQueue();
 
     cubit.setContext(ShiftScope.personal, null);
     await pumpEventQueue();
 
     expect(cubit.state.filterStatus, ShiftStatus.finished);
-    expect(cubit.state.filterDateFrom, dateFrom);
-    expect(cubit.state.filterDateTo, dateTo);
+    expect(cubit.state.dateFrom, periodFrom);
+    expect(cubit.state.dateTo, periodTo);
     verify(
       () => shiftRepo.getShifts(
         status: ShiftStatus.finished,
-        dateFrom: dateFrom,
-        dateTo: dateTo,
+        dateFrom: periodFrom,
+        dateTo: periodTo,
         scope: ShiftScope.personal,
         limit: any(named: 'limit'),
       ),
@@ -173,9 +310,10 @@ void main() {
     await cubit.close();
   });
 
-  test('resetFilters сбрасывает статус/даты, но не контекст', () async {
+  test('resetFilters сбрасывает статус, но не контекст и не период', () async {
     final cubit = ShiftHistoryCubit(shiftRepository: shiftRepo)
-      ..setContext(ShiftScope.organization, 'org1');
+      ..setContext(ShiftScope.organization, 'org1')
+      ..setPeriod(periodFrom, periodTo);
     await pumpEventQueue();
     cubit.setStatusFilter(ShiftStatus.active);
     await pumpEventQueue();
@@ -186,6 +324,8 @@ void main() {
     expect(cubit.state.filterStatus, isNull);
     expect(cubit.state.scope, ShiftScope.organization);
     expect(cubit.state.organizationId, 'org1');
+    expect(cubit.state.dateFrom, periodFrom);
+    expect(cubit.state.dateTo, periodTo);
     await cubit.close();
   });
 }

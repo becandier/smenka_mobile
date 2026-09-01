@@ -44,6 +44,22 @@ extension ShiftOvertimeRequestMapper on ShiftOvertimeRequestDto {
   }
 }
 
+extension ShiftEarningsMapper on ShiftEarningsDto {
+  ShiftEarnings toDomain() {
+    return ShiftEarnings(
+      currency: currency,
+      grossAmountMinor: grossAmountMinor,
+      penaltyAmountMinor: penaltyAmountMinor,
+      penaltiesCount: penaltiesCount,
+      adjustmentAmountMinor: adjustmentAmountMinor,
+      adjustmentsCount: adjustmentsCount,
+      netAmountMinor: netAmountMinor,
+      overtimeSeconds: overtimeSeconds,
+      hasRate: hasRate,
+    );
+  }
+}
+
 extension ShiftMapper on ShiftDto {
   Shift toDomain() {
     return Shift(
@@ -79,6 +95,7 @@ extension ShiftMapper on ShiftDto {
       geoFallback: geoFallback,
       geoFallbackReason: geoFallbackReason,
       geoFallbackPhotoFileId: geoFallbackPhotoFileId,
+      earnings: earnings?.toDomain(),
     );
   }
 }

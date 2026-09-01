@@ -46,18 +46,16 @@ class ShiftDataSource {
     return ShiftDto.fromJson(response.data!);
   }
 
-  /// Статистика смен. Окно — либо [period], либо [dateFrom]/[dateTo]
-  /// (взаимоисключение обеспечивает вызывающая сторона, см. кубиты).
-  /// [scope]/[organizationId] — см. [getShifts].
+  /// Статистика смен. Окно — [dateFrom]/[dateTo] (UTC), вычисляется
+  /// клиентом (`shift_history_earnings/mobile.md`); серверный параметр
+  /// `period` не передаётся. [scope]/[organizationId] — см. [getShifts].
   Future<ShiftStatsDto> getStats({
-    String? period,
     DateTime? dateFrom,
     DateTime? dateTo,
     String? scope,
     String? organizationId,
   }) async {
     final queryParameters = <String, dynamic>{};
-    if (period != null) queryParameters['period'] = period;
     if (dateFrom != null) {
       queryParameters['date_from'] = dateFrom.toIso8601String();
     }
