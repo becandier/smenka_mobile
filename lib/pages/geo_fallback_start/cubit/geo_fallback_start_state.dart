@@ -31,6 +31,11 @@ abstract class GeoFallbackStartState with _$GeoFallbackStartState {
 
     /// Эффективный набор графиков по выбранной точке.
     @Default(SectionData<MySchedules>()) SectionData<MySchedules> schedules,
+
+    /// Текущее время для пересчёта стартуемости графиков. Обновляется cubit
+    /// раз в секунду после успешной загрузки, чтобы UI не держал закрывшееся
+    /// окно открытым.
+    DateTime? scheduleNow,
     String? workScheduleId,
 
     /// Источник кадра — решается пробой камеры, не пользователем.
@@ -57,7 +62,9 @@ abstract class GeoFallbackStartState with _$GeoFallbackStartState {
       schedules.data?.items ?? const <WorkSchedule>[];
 
   List<WorkSchedule> get startableSchedules =>
-      schedules.data?.startableSchedulesAt(DateTime.now().toUtc()) ??
+      schedules.data?.startableSchedulesAt(
+        scheduleNow ?? DateTime.now().toUtc(),
+      ) ??
       const <WorkSchedule>[];
 
   /// Обязательность графика по настройке организации. Пока набор не загружен —

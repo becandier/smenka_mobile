@@ -20,7 +20,10 @@ mixin _$GeoFallbackStartState {
  String get geoFallbackReason;/// Выбранная сотрудником рабочая точка. Обязательна: сервер её не
 /// резолвит (координат нет), без неё бэк вернёт `WORK_LOCATION_REQUIRED`.
  WorkLocation? get workLocation;/// Эффективный набор графиков по выбранной точке.
- SectionData<MySchedules> get schedules; String? get workScheduleId;/// Источник кадра — решается пробой камеры, не пользователем.
+ SectionData<MySchedules> get schedules;/// Текущее время для пересчёта стартуемости графиков. Обновляется cubit
+/// раз в секунду после успешной загрузки, чтобы UI не держал закрывшееся
+/// окно открытым.
+ DateTime? get scheduleNow; String? get workScheduleId;/// Источник кадра — решается пробой камеры, не пользователем.
  GeoFallbackPhotoMode get photoMode;/// Подготовленный кадр (JPEG) — превью и аплоад. `null` — фото ещё нет.
  Uint8List? get photoBytes;/// Идёт подготовка кадра (чтение + ресайз после съёмки/выбора файла).
  bool get photoProcessing;/// Машинный код ошибки шага фото (`PhotoPickFailure.code` либо серверный
@@ -37,16 +40,16 @@ $GeoFallbackStartStateCopyWith<GeoFallbackStartState> get copyWith => _$GeoFallb
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeoFallbackStartState&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.geoFallbackReason, geoFallbackReason) || other.geoFallbackReason == geoFallbackReason)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.photoMode, photoMode) || other.photoMode == photoMode)&&const DeepCollectionEquality().equals(other.photoBytes, photoBytes)&&(identical(other.photoProcessing, photoProcessing) || other.photoProcessing == photoProcessing)&&(identical(other.photoErrorCode, photoErrorCode) || other.photoErrorCode == photoErrorCode)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeoFallbackStartState&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.geoFallbackReason, geoFallbackReason) || other.geoFallbackReason == geoFallbackReason)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.scheduleNow, scheduleNow) || other.scheduleNow == scheduleNow)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.photoMode, photoMode) || other.photoMode == photoMode)&&const DeepCollectionEquality().equals(other.photoBytes, photoBytes)&&(identical(other.photoProcessing, photoProcessing) || other.photoProcessing == photoProcessing)&&(identical(other.photoErrorCode, photoErrorCode) || other.photoErrorCode == photoErrorCode)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizationId,geoFallbackReason,workLocation,schedules,workScheduleId,photoMode,const DeepCollectionEquality().hash(photoBytes),photoProcessing,photoErrorCode,submitStatus,submitError,submitErrorCode);
+int get hashCode => Object.hash(runtimeType,organizationId,geoFallbackReason,workLocation,schedules,scheduleNow,workScheduleId,photoMode,const DeepCollectionEquality().hash(photoBytes),photoProcessing,photoErrorCode,submitStatus,submitError,submitErrorCode);
 
 @override
 String toString() {
-  return 'GeoFallbackStartState(organizationId: $organizationId, geoFallbackReason: $geoFallbackReason, workLocation: $workLocation, schedules: $schedules, workScheduleId: $workScheduleId, photoMode: $photoMode, photoBytes: $photoBytes, photoProcessing: $photoProcessing, photoErrorCode: $photoErrorCode, submitStatus: $submitStatus, submitError: $submitError, submitErrorCode: $submitErrorCode)';
+  return 'GeoFallbackStartState(organizationId: $organizationId, geoFallbackReason: $geoFallbackReason, workLocation: $workLocation, schedules: $schedules, scheduleNow: $scheduleNow, workScheduleId: $workScheduleId, photoMode: $photoMode, photoBytes: $photoBytes, photoProcessing: $photoProcessing, photoErrorCode: $photoErrorCode, submitStatus: $submitStatus, submitError: $submitError, submitErrorCode: $submitErrorCode)';
 }
 
 
@@ -57,7 +60,7 @@ abstract mixin class $GeoFallbackStartStateCopyWith<$Res>  {
   factory $GeoFallbackStartStateCopyWith(GeoFallbackStartState value, $Res Function(GeoFallbackStartState) _then) = _$GeoFallbackStartStateCopyWithImpl;
 @useResult
 $Res call({
- String organizationId, String geoFallbackReason, WorkLocation? workLocation, SectionData<MySchedules> schedules, String? workScheduleId, GeoFallbackPhotoMode photoMode, Uint8List? photoBytes, bool photoProcessing, String? photoErrorCode, FeatureStatus submitStatus, String? submitError, String? submitErrorCode
+ String organizationId, String geoFallbackReason, WorkLocation? workLocation, SectionData<MySchedules> schedules, DateTime? scheduleNow, String? workScheduleId, GeoFallbackPhotoMode photoMode, Uint8List? photoBytes, bool photoProcessing, String? photoErrorCode, FeatureStatus submitStatus, String? submitError, String? submitErrorCode
 });
 
 
@@ -74,13 +77,14 @@ class _$GeoFallbackStartStateCopyWithImpl<$Res>
 
 /// Create a copy of GeoFallbackStartState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? organizationId = null,Object? geoFallbackReason = null,Object? workLocation = freezed,Object? schedules = null,Object? workScheduleId = freezed,Object? photoMode = null,Object? photoBytes = freezed,Object? photoProcessing = null,Object? photoErrorCode = freezed,Object? submitStatus = null,Object? submitError = freezed,Object? submitErrorCode = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? organizationId = null,Object? geoFallbackReason = null,Object? workLocation = freezed,Object? schedules = null,Object? scheduleNow = freezed,Object? workScheduleId = freezed,Object? photoMode = null,Object? photoBytes = freezed,Object? photoProcessing = null,Object? photoErrorCode = freezed,Object? submitStatus = null,Object? submitError = freezed,Object? submitErrorCode = freezed,}) {
   return _then(_self.copyWith(
 organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as String,geoFallbackReason: null == geoFallbackReason ? _self.geoFallbackReason : geoFallbackReason // ignore: cast_nullable_to_non_nullable
 as String,workLocation: freezed == workLocation ? _self.workLocation : workLocation // ignore: cast_nullable_to_non_nullable
 as WorkLocation?,schedules: null == schedules ? _self.schedules : schedules // ignore: cast_nullable_to_non_nullable
-as SectionData<MySchedules>,workScheduleId: freezed == workScheduleId ? _self.workScheduleId : workScheduleId // ignore: cast_nullable_to_non_nullable
+as SectionData<MySchedules>,scheduleNow: freezed == scheduleNow ? _self.scheduleNow : scheduleNow // ignore: cast_nullable_to_non_nullable
+as DateTime?,workScheduleId: freezed == workScheduleId ? _self.workScheduleId : workScheduleId // ignore: cast_nullable_to_non_nullable
 as String?,photoMode: null == photoMode ? _self.photoMode : photoMode // ignore: cast_nullable_to_non_nullable
 as GeoFallbackPhotoMode,photoBytes: freezed == photoBytes ? _self.photoBytes : photoBytes // ignore: cast_nullable_to_non_nullable
 as Uint8List?,photoProcessing: null == photoProcessing ? _self.photoProcessing : photoProcessing // ignore: cast_nullable_to_non_nullable
@@ -194,10 +198,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String organizationId,  String geoFallbackReason,  WorkLocation? workLocation,  SectionData<MySchedules> schedules,  String? workScheduleId,  GeoFallbackPhotoMode photoMode,  Uint8List? photoBytes,  bool photoProcessing,  String? photoErrorCode,  FeatureStatus submitStatus,  String? submitError,  String? submitErrorCode)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String organizationId,  String geoFallbackReason,  WorkLocation? workLocation,  SectionData<MySchedules> schedules,  DateTime? scheduleNow,  String? workScheduleId,  GeoFallbackPhotoMode photoMode,  Uint8List? photoBytes,  bool photoProcessing,  String? photoErrorCode,  FeatureStatus submitStatus,  String? submitError,  String? submitErrorCode)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GeoFallbackStartState() when $default != null:
-return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,_that.schedules,_that.workScheduleId,_that.photoMode,_that.photoBytes,_that.photoProcessing,_that.photoErrorCode,_that.submitStatus,_that.submitError,_that.submitErrorCode);case _:
+return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,_that.schedules,_that.scheduleNow,_that.workScheduleId,_that.photoMode,_that.photoBytes,_that.photoProcessing,_that.photoErrorCode,_that.submitStatus,_that.submitError,_that.submitErrorCode);case _:
   return orElse();
 
 }
@@ -215,10 +219,10 @@ return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String organizationId,  String geoFallbackReason,  WorkLocation? workLocation,  SectionData<MySchedules> schedules,  String? workScheduleId,  GeoFallbackPhotoMode photoMode,  Uint8List? photoBytes,  bool photoProcessing,  String? photoErrorCode,  FeatureStatus submitStatus,  String? submitError,  String? submitErrorCode)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String organizationId,  String geoFallbackReason,  WorkLocation? workLocation,  SectionData<MySchedules> schedules,  DateTime? scheduleNow,  String? workScheduleId,  GeoFallbackPhotoMode photoMode,  Uint8List? photoBytes,  bool photoProcessing,  String? photoErrorCode,  FeatureStatus submitStatus,  String? submitError,  String? submitErrorCode)  $default,) {final _that = this;
 switch (_that) {
 case _GeoFallbackStartState():
-return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,_that.schedules,_that.workScheduleId,_that.photoMode,_that.photoBytes,_that.photoProcessing,_that.photoErrorCode,_that.submitStatus,_that.submitError,_that.submitErrorCode);case _:
+return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,_that.schedules,_that.scheduleNow,_that.workScheduleId,_that.photoMode,_that.photoBytes,_that.photoProcessing,_that.photoErrorCode,_that.submitStatus,_that.submitError,_that.submitErrorCode);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -235,10 +239,10 @@ return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String organizationId,  String geoFallbackReason,  WorkLocation? workLocation,  SectionData<MySchedules> schedules,  String? workScheduleId,  GeoFallbackPhotoMode photoMode,  Uint8List? photoBytes,  bool photoProcessing,  String? photoErrorCode,  FeatureStatus submitStatus,  String? submitError,  String? submitErrorCode)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String organizationId,  String geoFallbackReason,  WorkLocation? workLocation,  SectionData<MySchedules> schedules,  DateTime? scheduleNow,  String? workScheduleId,  GeoFallbackPhotoMode photoMode,  Uint8List? photoBytes,  bool photoProcessing,  String? photoErrorCode,  FeatureStatus submitStatus,  String? submitError,  String? submitErrorCode)?  $default,) {final _that = this;
 switch (_that) {
 case _GeoFallbackStartState() when $default != null:
-return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,_that.schedules,_that.workScheduleId,_that.photoMode,_that.photoBytes,_that.photoProcessing,_that.photoErrorCode,_that.submitStatus,_that.submitError,_that.submitErrorCode);case _:
+return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,_that.schedules,_that.scheduleNow,_that.workScheduleId,_that.photoMode,_that.photoBytes,_that.photoProcessing,_that.photoErrorCode,_that.submitStatus,_that.submitError,_that.submitErrorCode);case _:
   return null;
 
 }
@@ -250,7 +254,7 @@ return $default(_that.organizationId,_that.geoFallbackReason,_that.workLocation,
 
 
 class _GeoFallbackStartState extends GeoFallbackStartState {
-  const _GeoFallbackStartState({required this.organizationId, required this.geoFallbackReason, this.workLocation, this.schedules = const SectionData<MySchedules>(), this.workScheduleId, this.photoMode = GeoFallbackPhotoMode.unknown, this.photoBytes, this.photoProcessing = false, this.photoErrorCode, this.submitStatus = FeatureStatus.initial, this.submitError, this.submitErrorCode}): super._();
+  const _GeoFallbackStartState({required this.organizationId, required this.geoFallbackReason, this.workLocation, this.schedules = const SectionData<MySchedules>(), this.scheduleNow, this.workScheduleId, this.photoMode = GeoFallbackPhotoMode.unknown, this.photoBytes, this.photoProcessing = false, this.photoErrorCode, this.submitStatus = FeatureStatus.initial, this.submitError, this.submitErrorCode}): super._();
   
 
 /// Организация смены (у неё включена геопроверка — иначе фолбэк не нужен).
@@ -263,6 +267,10 @@ class _GeoFallbackStartState extends GeoFallbackStartState {
 @override final  WorkLocation? workLocation;
 /// Эффективный набор графиков по выбранной точке.
 @override@JsonKey() final  SectionData<MySchedules> schedules;
+/// Текущее время для пересчёта стартуемости графиков. Обновляется cubit
+/// раз в секунду после успешной загрузки, чтобы UI не держал закрывшееся
+/// окно открытым.
+@override final  DateTime? scheduleNow;
 @override final  String? workScheduleId;
 /// Источник кадра — решается пробой камеры, не пользователем.
 @override@JsonKey() final  GeoFallbackPhotoMode photoMode;
@@ -288,16 +296,16 @@ _$GeoFallbackStartStateCopyWith<_GeoFallbackStartState> get copyWith => __$GeoFa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeoFallbackStartState&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.geoFallbackReason, geoFallbackReason) || other.geoFallbackReason == geoFallbackReason)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.photoMode, photoMode) || other.photoMode == photoMode)&&const DeepCollectionEquality().equals(other.photoBytes, photoBytes)&&(identical(other.photoProcessing, photoProcessing) || other.photoProcessing == photoProcessing)&&(identical(other.photoErrorCode, photoErrorCode) || other.photoErrorCode == photoErrorCode)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeoFallbackStartState&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.geoFallbackReason, geoFallbackReason) || other.geoFallbackReason == geoFallbackReason)&&(identical(other.workLocation, workLocation) || other.workLocation == workLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.scheduleNow, scheduleNow) || other.scheduleNow == scheduleNow)&&(identical(other.workScheduleId, workScheduleId) || other.workScheduleId == workScheduleId)&&(identical(other.photoMode, photoMode) || other.photoMode == photoMode)&&const DeepCollectionEquality().equals(other.photoBytes, photoBytes)&&(identical(other.photoProcessing, photoProcessing) || other.photoProcessing == photoProcessing)&&(identical(other.photoErrorCode, photoErrorCode) || other.photoErrorCode == photoErrorCode)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizationId,geoFallbackReason,workLocation,schedules,workScheduleId,photoMode,const DeepCollectionEquality().hash(photoBytes),photoProcessing,photoErrorCode,submitStatus,submitError,submitErrorCode);
+int get hashCode => Object.hash(runtimeType,organizationId,geoFallbackReason,workLocation,schedules,scheduleNow,workScheduleId,photoMode,const DeepCollectionEquality().hash(photoBytes),photoProcessing,photoErrorCode,submitStatus,submitError,submitErrorCode);
 
 @override
 String toString() {
-  return 'GeoFallbackStartState(organizationId: $organizationId, geoFallbackReason: $geoFallbackReason, workLocation: $workLocation, schedules: $schedules, workScheduleId: $workScheduleId, photoMode: $photoMode, photoBytes: $photoBytes, photoProcessing: $photoProcessing, photoErrorCode: $photoErrorCode, submitStatus: $submitStatus, submitError: $submitError, submitErrorCode: $submitErrorCode)';
+  return 'GeoFallbackStartState(organizationId: $organizationId, geoFallbackReason: $geoFallbackReason, workLocation: $workLocation, schedules: $schedules, scheduleNow: $scheduleNow, workScheduleId: $workScheduleId, photoMode: $photoMode, photoBytes: $photoBytes, photoProcessing: $photoProcessing, photoErrorCode: $photoErrorCode, submitStatus: $submitStatus, submitError: $submitError, submitErrorCode: $submitErrorCode)';
 }
 
 
@@ -308,7 +316,7 @@ abstract mixin class _$GeoFallbackStartStateCopyWith<$Res> implements $GeoFallba
   factory _$GeoFallbackStartStateCopyWith(_GeoFallbackStartState value, $Res Function(_GeoFallbackStartState) _then) = __$GeoFallbackStartStateCopyWithImpl;
 @override @useResult
 $Res call({
- String organizationId, String geoFallbackReason, WorkLocation? workLocation, SectionData<MySchedules> schedules, String? workScheduleId, GeoFallbackPhotoMode photoMode, Uint8List? photoBytes, bool photoProcessing, String? photoErrorCode, FeatureStatus submitStatus, String? submitError, String? submitErrorCode
+ String organizationId, String geoFallbackReason, WorkLocation? workLocation, SectionData<MySchedules> schedules, DateTime? scheduleNow, String? workScheduleId, GeoFallbackPhotoMode photoMode, Uint8List? photoBytes, bool photoProcessing, String? photoErrorCode, FeatureStatus submitStatus, String? submitError, String? submitErrorCode
 });
 
 
@@ -325,13 +333,14 @@ class __$GeoFallbackStartStateCopyWithImpl<$Res>
 
 /// Create a copy of GeoFallbackStartState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? organizationId = null,Object? geoFallbackReason = null,Object? workLocation = freezed,Object? schedules = null,Object? workScheduleId = freezed,Object? photoMode = null,Object? photoBytes = freezed,Object? photoProcessing = null,Object? photoErrorCode = freezed,Object? submitStatus = null,Object? submitError = freezed,Object? submitErrorCode = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? organizationId = null,Object? geoFallbackReason = null,Object? workLocation = freezed,Object? schedules = null,Object? scheduleNow = freezed,Object? workScheduleId = freezed,Object? photoMode = null,Object? photoBytes = freezed,Object? photoProcessing = null,Object? photoErrorCode = freezed,Object? submitStatus = null,Object? submitError = freezed,Object? submitErrorCode = freezed,}) {
   return _then(_GeoFallbackStartState(
 organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as String,geoFallbackReason: null == geoFallbackReason ? _self.geoFallbackReason : geoFallbackReason // ignore: cast_nullable_to_non_nullable
 as String,workLocation: freezed == workLocation ? _self.workLocation : workLocation // ignore: cast_nullable_to_non_nullable
 as WorkLocation?,schedules: null == schedules ? _self.schedules : schedules // ignore: cast_nullable_to_non_nullable
-as SectionData<MySchedules>,workScheduleId: freezed == workScheduleId ? _self.workScheduleId : workScheduleId // ignore: cast_nullable_to_non_nullable
+as SectionData<MySchedules>,scheduleNow: freezed == scheduleNow ? _self.scheduleNow : scheduleNow // ignore: cast_nullable_to_non_nullable
+as DateTime?,workScheduleId: freezed == workScheduleId ? _self.workScheduleId : workScheduleId // ignore: cast_nullable_to_non_nullable
 as String?,photoMode: null == photoMode ? _self.photoMode : photoMode // ignore: cast_nullable_to_non_nullable
 as GeoFallbackPhotoMode,photoBytes: freezed == photoBytes ? _self.photoBytes : photoBytes // ignore: cast_nullable_to_non_nullable
 as Uint8List?,photoProcessing: null == photoProcessing ? _self.photoProcessing : photoProcessing // ignore: cast_nullable_to_non_nullable

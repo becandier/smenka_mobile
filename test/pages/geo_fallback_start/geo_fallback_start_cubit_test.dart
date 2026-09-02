@@ -101,16 +101,18 @@ void main() {
     ).thenAnswer((_) async => Task<MySchedules>.success(_schedules(const [])));
   });
 
-  GeoFallbackStartCubit buildCubit({String reason = 'GEO_UNAVAILABLE'}) =>
-      GeoFallbackStartCubit(
-        organizationId: 'org1',
-        geoFallbackReason: reason,
-        shiftRepository: shiftRepo,
-        workScheduleRepository: scheduleRepo,
-        filesRepository: filesRepo,
-        photoPicker: photoPicker,
-        now: () => _now,
-      );
+  GeoFallbackStartCubit buildCubit({
+    String reason = 'GEO_UNAVAILABLE',
+    DateTime Function()? now,
+  }) => GeoFallbackStartCubit(
+    organizationId: 'org1',
+    geoFallbackReason: reason,
+    shiftRepository: shiftRepo,
+    workScheduleRepository: scheduleRepo,
+    filesRepository: filesRepo,
+    photoPicker: photoPicker,
+    now: now ?? (() => _now),
+  );
 
   void stubUpload(Task<StoredFile> result) {
     when(
@@ -138,13 +140,14 @@ void main() {
   /// Доводит кубит до состояния «точка выбрана, кадр снят».
   Future<GeoFallbackStartCubit> readyCubit({
     String reason = 'GEO_UNAVAILABLE',
+    DateTime Function()? now,
   }) async {
     final shot = _MockXFile();
     when(
       () => photoPicker.preparePhoto(shot),
     ).thenAnswer((_) async => PhotoPickSuccess(bytes: _photoBytes));
 
-    final cubit = buildCubit(reason: reason);
+    final cubit = buildCubit(reason: reason, now: now);
     await pumpEventQueue();
     cubit.selectWorkLocation(_location);
     await pumpEventQueue();
@@ -298,6 +301,27 @@ void main() {
         await cubit.close();
       },
     );
+
+    test('canSubmit использует тот же источник времени, что и cubit', () async {
+      final fixedNow = DateTime.utc(2026, 6, 11, 10);
+      final open = _schedule(
+        'open',
+        nextStartAt: fixedNow.subtract(const Duration(hours: 1)),
+        nextEndAt: fixedNow.add(const Duration(hours: 1)),
+      );
+      when(
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'loc1'),
+      ).thenAnswer(
+        (_) async =>
+            Task<MySchedules>.success(_schedules([open], require: true)),
+      );
+
+      final cubit = await readyCubit(now: () => fixedNow);
+
+      expect(cubit.state.workScheduleId, 'open');
+      expect(cubit.state.canSubmit, isTrue);
+      await cubit.close();
+    });
 
     test('required + закрытый график → submit заблокирован окном', () async {
       final closed = _schedule(

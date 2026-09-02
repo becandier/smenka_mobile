@@ -51,6 +51,14 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
   /// Монотонный токен запроса графиков — ответ устаревшего запроса (точку
   /// успели поменять ещё раз) игнорируется.
   int _scheduleRequestId = 0;
+  Timer? _scheduleTimer;
+
+  @override
+  Future<void> close() {
+    _scheduleTimer?.cancel();
+    _scheduleTimer = null;
+    return super.close();
+  }
 
   /// Есть ли камера. Пока проба идёт, шаг фото показывает загрузку; результат
   /// определяет режим — съёмка in-app или (только при отсутствии камеры)
@@ -81,7 +89,15 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
 
   void selectWorkLocation(WorkLocation location) {
     // Набор графиков зависит от точки — прошлый выбор больше не валиден.
-    emit(state.copyWith(workLocation: location, workScheduleId: null));
+    _scheduleTimer?.cancel();
+    _scheduleTimer = null;
+    emit(
+      state.copyWith(
+        workLocation: location,
+        scheduleNow: null,
+        workScheduleId: null,
+      ),
+    );
     unawaited(loadSchedules());
   }
 
@@ -97,6 +113,8 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
     if (location == null) return;
 
     final requestId = ++_scheduleRequestId;
+    _scheduleTimer?.cancel();
+    _scheduleTimer = null;
     emit(state.copyWith(schedules: state.schedules.toLoading()));
 
     final result = await _workScheduleRepository.getMySchedules(
@@ -107,8 +125,20 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
 
     result.fold(
       onSuccess: (schedules) {
-        emit(state.copyWith(schedules: state.schedules.toSuccess(schedules)));
-        final startable = schedules.startableSchedulesAt(_now().toUtc());
+        final now = _now().toUtc();
+        emit(
+          state.copyWith(
+            schedules: state.schedules.toSuccess(schedules),
+            scheduleNow: now,
+          ),
+        );
+        _scheduleTimer?.cancel();
+        _scheduleTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+          if (!isClosed && state.schedules.isSuccess) {
+            emit(state.copyWith(scheduleNow: _now().toUtc()));
+          }
+        });
+        final startable = schedules.startableSchedulesAt(now);
         final selectedId = startable.length == 1 ? startable.first.id : null;
         emit(state.copyWith(workScheduleId: selectedId));
       },
