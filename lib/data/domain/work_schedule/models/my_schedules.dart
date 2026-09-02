@@ -23,3 +23,15 @@ abstract class MySchedules with _$MySchedules {
     @Default(0) int earlyStartMinutes,
   }) = _MySchedules;
 }
+
+extension MySchedulesStartable on MySchedules {
+  /// Графики, по которым смену можно начать в [now] с учётом допуска раннего
+  /// старта. Единая доменная выборка для обычного, geo-check и geo-fallback
+  /// сценариев старта.
+  List<WorkSchedule> startableSchedulesAt(DateTime now) => items
+      .where(
+        (schedule) =>
+            schedule.isStartableAt(now, earlyStartMinutes: earlyStartMinutes),
+      )
+      .toList(growable: false);
+}

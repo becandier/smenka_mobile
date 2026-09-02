@@ -31,17 +31,21 @@ final _photoBytes = Uint8List.fromList([1, 2, 3]);
 
 const _location = WorkLocation(id: 'loc1', name: 'Склад');
 
-final _now = DateTime.utc(2026, 8, 27, 10);
+final _now = DateTime.now().toUtc();
 
-WorkSchedule _schedule(String id) => WorkSchedule(
+WorkSchedule _schedule(
+  String id, {
+  DateTime? nextStartAt,
+  DateTime? nextEndAt,
+}) => WorkSchedule(
   id: id,
   name: 'Дневная',
   startTime: '09:00',
   endTime: '18:00',
   durationMinutes: 540,
   crossesMidnight: false,
-  nextStartAt: _now.subtract(const Duration(hours: 1)),
-  nextEndAt: _now.add(const Duration(hours: 8)),
+  nextStartAt: nextStartAt ?? _now.subtract(const Duration(hours: 1)),
+  nextEndAt: nextEndAt ?? _now.add(const Duration(hours: 8)),
   isCurrent: true,
   startsInMinutes: -60,
 );
@@ -97,15 +101,18 @@ void main() {
     ).thenAnswer((_) async => Task<MySchedules>.success(_schedules(const [])));
   });
 
-  GeoFallbackStartCubit buildCubit({String reason = 'GEO_UNAVAILABLE'}) =>
-      GeoFallbackStartCubit(
-        organizationId: 'org1',
-        geoFallbackReason: reason,
-        shiftRepository: shiftRepo,
-        workScheduleRepository: scheduleRepo,
-        filesRepository: filesRepo,
-        photoPicker: photoPicker,
-      );
+  GeoFallbackStartCubit buildCubit({
+    String reason = 'GEO_UNAVAILABLE',
+    DateTime Function()? now,
+  }) => GeoFallbackStartCubit(
+    organizationId: 'org1',
+    geoFallbackReason: reason,
+    shiftRepository: shiftRepo,
+    workScheduleRepository: scheduleRepo,
+    filesRepository: filesRepo,
+    photoPicker: photoPicker,
+    now: now ?? (() => _now),
+  );
 
   void stubUpload(Task<StoredFile> result) {
     when(
@@ -133,13 +140,14 @@ void main() {
   /// Доводит кубит до состояния «точка выбрана, кадр снят».
   Future<GeoFallbackStartCubit> readyCubit({
     String reason = 'GEO_UNAVAILABLE',
+    DateTime Function()? now,
   }) async {
     final shot = _MockXFile();
     when(
       () => photoPicker.preparePhoto(shot),
     ).thenAnswer((_) async => PhotoPickSuccess(bytes: _photoBytes));
 
-    final cubit = buildCubit(reason: reason);
+    final cubit = buildCubit(reason: reason, now: now);
     await pumpEventQueue();
     cubit.selectWorkLocation(_location);
     await pumpEventQueue();
@@ -271,6 +279,70 @@ void main() {
       await cubit.close();
     });
 
+    test(
+      'optional + закрытый график → выбор не нужен, submit доступен',
+      () async {
+        final closed = _schedule(
+          'closed',
+          nextStartAt: _now.add(const Duration(hours: 1)),
+          nextEndAt: _now.add(const Duration(hours: 10)),
+        );
+        when(
+          () => scheduleRepo.getMySchedules('org1', workLocationId: 'loc1'),
+        ).thenAnswer(
+          (_) async => Task<MySchedules>.success(_schedules([closed])),
+        );
+
+        final cubit = await readyCubit();
+
+        expect(cubit.state.workScheduleId, isNull);
+        expect(cubit.state.scheduleSelectionRequired, isFalse);
+        expect(cubit.state.canSubmit, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test('canSubmit использует тот же источник времени, что и cubit', () async {
+      final fixedNow = DateTime.utc(2026, 6, 11, 10);
+      final open = _schedule(
+        'open',
+        nextStartAt: fixedNow.subtract(const Duration(hours: 1)),
+        nextEndAt: fixedNow.add(const Duration(hours: 1)),
+      );
+      when(
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'loc1'),
+      ).thenAnswer(
+        (_) async =>
+            Task<MySchedules>.success(_schedules([open], require: true)),
+      );
+
+      final cubit = await readyCubit(now: () => fixedNow);
+
+      expect(cubit.state.workScheduleId, 'open');
+      expect(cubit.state.canSubmit, isTrue);
+      await cubit.close();
+    });
+
+    test('required + закрытый график → submit заблокирован окном', () async {
+      final closed = _schedule(
+        'closed',
+        nextStartAt: _now.add(const Duration(hours: 1)),
+        nextEndAt: _now.add(const Duration(hours: 10)),
+      );
+      when(
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'loc1'),
+      ).thenAnswer(
+        (_) async =>
+            Task<MySchedules>.success(_schedules([closed], require: true)),
+      );
+
+      final cubit = await readyCubit();
+
+      expect(cubit.state.workScheduleId, isNull);
+      expect(cubit.state.canSubmit, isFalse);
+      await cubit.close();
+    });
+
     test('без точки старт невозможен', () async {
       final shot = _MockXFile();
       when(
@@ -297,6 +369,39 @@ void main() {
   });
 
   group('отправка', () {
+    test(
+      'optional + закрытый график → запрос старта без work_schedule_id',
+      () async {
+        final closed = _schedule(
+          'closed',
+          nextStartAt: _now.add(const Duration(hours: 1)),
+          nextEndAt: _now.add(const Duration(hours: 10)),
+        );
+        when(
+          () => scheduleRepo.getMySchedules('org1', workLocationId: 'loc1'),
+        ).thenAnswer(
+          (_) async => Task<MySchedules>.success(_schedules([closed])),
+        );
+        stubUpload(Task<StoredFile>.success(_storedFile()));
+        stubStart(Task<Shift>.success(_startedShift()));
+
+        final cubit = await readyCubit();
+        final shift = await cubit.submit();
+
+        expect(shift?.id, 'shift1');
+        verify(
+          () => shiftRepo.startShift(
+            organizationId: 'org1',
+            workLocationId: 'loc1',
+            workScheduleId: any(named: 'workScheduleId', that: isNull),
+            geoFallbackPhotoId: 'file1',
+            geoFallbackReason: 'GEO_UNAVAILABLE',
+          ),
+        ).called(1);
+        await cubit.close();
+      },
+    );
+
     test('happy path: фото в категорию shift_geo_photo, старт без координат '
         'с кодом причины', () async {
       stubUpload(Task<StoredFile>.success(_storedFile()));

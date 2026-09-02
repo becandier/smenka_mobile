@@ -27,10 +27,12 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
     required WorkScheduleRepository workScheduleRepository,
     required FilesRepository filesRepository,
     required PhotoPickerService photoPicker,
+    DateTime Function()? now,
   }) : _shiftRepository = shiftRepository,
        _workScheduleRepository = workScheduleRepository,
        _filesRepository = filesRepository,
        _photoPicker = photoPicker,
+       _now = now ?? DateTime.now,
        super(
          GeoFallbackStartState(
            organizationId: organizationId,
@@ -44,10 +46,19 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
   final WorkScheduleRepository _workScheduleRepository;
   final FilesRepository _filesRepository;
   final PhotoPickerService _photoPicker;
+  final DateTime Function() _now;
 
   /// Монотонный токен запроса графиков — ответ устаревшего запроса (точку
   /// успели поменять ещё раз) игнорируется.
   int _scheduleRequestId = 0;
+  Timer? _scheduleTimer;
+
+  @override
+  Future<void> close() {
+    _scheduleTimer?.cancel();
+    _scheduleTimer = null;
+    return super.close();
+  }
 
   /// Есть ли камера. Пока проба идёт, шаг фото показывает загрузку; результат
   /// определяет режим — съёмка in-app или (только при отсутствии камеры)
@@ -78,7 +89,15 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
 
   void selectWorkLocation(WorkLocation location) {
     // Набор графиков зависит от точки — прошлый выбор больше не валиден.
-    emit(state.copyWith(workLocation: location, workScheduleId: null));
+    _scheduleTimer?.cancel();
+    _scheduleTimer = null;
+    emit(
+      state.copyWith(
+        workLocation: location,
+        scheduleNow: null,
+        workScheduleId: null,
+      ),
+    );
     unawaited(loadSchedules());
   }
 
@@ -94,6 +113,8 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
     if (location == null) return;
 
     final requestId = ++_scheduleRequestId;
+    _scheduleTimer?.cancel();
+    _scheduleTimer = null;
     emit(state.copyWith(schedules: state.schedules.toLoading()));
 
     final result = await _workScheduleRepository.getMySchedules(
@@ -104,11 +125,22 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
 
     result.fold(
       onSuccess: (schedules) {
-        emit(state.copyWith(schedules: state.schedules.toSuccess(schedules)));
-        // Ровно один вариант — подставляем сами, как в обычном старте.
-        if (schedules.items.length == 1) {
-          emit(state.copyWith(workScheduleId: schedules.items.first.id));
-        }
+        final now = _now().toUtc();
+        emit(
+          state.copyWith(
+            schedules: state.schedules.toSuccess(schedules),
+            scheduleNow: now,
+          ),
+        );
+        _scheduleTimer?.cancel();
+        _scheduleTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+          if (!isClosed && state.schedules.isSuccess) {
+            emit(state.copyWith(scheduleNow: _now().toUtc()));
+          }
+        });
+        final startable = schedules.startableSchedulesAt(now);
+        final selectedId = startable.length == 1 ? startable.first.id : null;
+        emit(state.copyWith(workScheduleId: selectedId));
       },
       onFailure: (error) => emit(
         state.copyWith(
@@ -202,10 +234,20 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
       return null;
     }
 
+    final selectedScheduleId = state.workScheduleId;
+    final selectedScheduleIsStartable =
+        state.schedules.data
+            ?.startableSchedulesAt(_now().toUtc())
+            .any((schedule) => schedule.id == selectedScheduleId) ??
+        false;
+    final startableScheduleId =
+        selectedScheduleId != null && selectedScheduleIsStartable
+        ? selectedScheduleId
+        : null;
     final result = await _shiftRepository.startShift(
       organizationId: state.organizationId,
       workLocationId: location.id,
-      workScheduleId: state.workScheduleId,
+      workScheduleId: startableScheduleId,
       geoFallbackPhotoId: file.id,
       geoFallbackReason: state.geoFallbackReason,
     );

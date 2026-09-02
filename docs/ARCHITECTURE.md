@@ -1,6 +1,6 @@
 # Архитектура — текущее состояние
 
-Последнее обновление: 2026-08-27 (фичи: geo_troubleshooting, shift_geo_photo_fallback, pwa_install_promo)
+Последнее обновление: 2026-09-02 (фича: optional_schedule_start)
 
 ---
 
@@ -198,7 +198,7 @@ lib/
 | `ShiftOvertimeRequest` | `domain/shift/models/shift_overtime_request.dart` | id, minutes, status (`OvertimeStatus`: pending/approved/rejected), comment, createdAt, reviewComment?, reviewedAt? (`work_schedules`) |
 | `ShiftStats` | `domain/shift/models/shift_stats.dart` | totalWorked, shiftCount, average, period? + rangeFrom/rangeTo |
 | `WorkSchedule` | `domain/work_schedule/models/work_schedule.dart` | график из эффективного набора сотрудника: id, name, startTime/endTime (`"HH:MM"`, локальное время организации), durationMinutes, crossesMidnight, nextStartAt/nextEndAt (UTC, окно «если начать сейчас»), isCurrent, startsInMinutes (`work_schedules`) |
-| `MySchedules` | `domain/work_schedule/models/my_schedules.dart` | ответ `GET .../my-schedules` целиком: items (`List<WorkSchedule>`), total, requireSchedule (`work_schedules`) |
+| `MySchedules` | `domain/work_schedule/models/my_schedules.dart` | ответ `GET .../my-schedules` целиком: items (`List<WorkSchedule>`), total, requireSchedule; `startableSchedulesAt(now)` — единая выборка графиков по `WorkSchedule.isStartableAt` для всех сценариев старта (`work_schedules`, `optional_schedule_start`) |
 | `ChecklistInstance` / `ChecklistInstanceDetail` / `ChecklistInstanceItem` / `ChecklistItemsSummary` | `domain/checklist/models/checklist_instance.dart` | экземпляры чек-листов смены (`ChecklistInstanceStatus`: pending/completed/incomplete) и их пункты; пункт несёт `photoRequirement`/`photoSource`/`photosCount`/`photos`; detail — `maxPhotosPerItem?`; summary — `satisfiedCount`/`photosRequiredMissing` (прогресс/бейдж по фото) |
 | `ChecklistItemPhoto` / `PhotoRequirement` / `PhotoSource` | `domain/checklist/models/checklist_photo.dart` | фото пункта (fileId, presigned url?, capturedAt?/lat/lng, position); enum требования (none/optional/required) и источника (camera/cameraOrGallery, snake-маппинг с безопасным дефолтом) |
 | `EffectiveChecklistTemplate` | `domain/checklist/models/effective_template.dart` | эффективный шаблон участника (read-only; `ChecklistTemplateSource`: role/personalAdd); `locationIds` — точки привязки (пусто = везде), аддитивное поле, старый бэк без него → `[]` |
@@ -274,7 +274,7 @@ lib/
 | `AuthCubit` | Готов | Глобальное состояние авторизации (`lib/shared/auth/`) |
 | `LoginCubit` | Готов | Login/Register форма с валидацией + OAuth-вход Google/Apple (`oauth_login`, см. раздел ниже) |
 | `VerifyCubit` | Готов | Верификация email (код + таймер) |
-| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор контекста (`shift_org_default`) — дефолт всегда организация (первая доступная, `myRole != owner`), персональная смена только осознанным выбором через `startPersonalShift()` + модалку подтверждения (`PersonalShiftConfirmPage`), не запоминается (`ShiftContextStorage`, только `org_id`); выбор графика (work_schedules) — резолв набора по org+точке, автовыбор при 1, обязательный выбор при >1, запоминание (`WorkScheduleContextStorage`), сброс+перезапрос при `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` |
+| `ShiftTrackerCubit` | Готов | Трекер смены: start/pause/resume/finish + таймер; гео-проверка, офлайн/retry; предвыбор контекста (`shift_org_default`) — дефолт всегда организация (первая доступная, `myRole != owner`), персональная смена только осознанным выбором через `startPersonalShift()` + модалку подтверждения (`PersonalShiftConfirmPage`), не запоминается (`ShiftContextStorage`, только `org_id`); выбор графика (work_schedules) — резолв набора по org+точке, автовыбор при 1 стартуемом, обязательный выбор при >1 стартуемом, запоминание (`WorkScheduleContextStorage`), закрытые графики не отправляются (`optional_schedule_start`), сброс+перезапрос при `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` |
 | `ShiftChecklistsCubit` | Готов | Список чек-листов текущей смены (read) |
 | `ChecklistFillCubit` | Готов | Заполнение пунктов (toggle + debounced комментарий) + фото-подтверждения: антифрод-флоу `addPhoto` (image_picker → гео → штамп в изоляте → flutter_image_compress → `POST /files` → привязка), `retryPhoto` (частичный сбой), `removePhoto`; черновики загрузки в стейте, байты — в приватной мапе; read-only для чужой/завершённой смены |
 | `ShiftHistoryCubit` | Готов | Пагинированный список смен, фильтр статуса; окно периода (`dateFrom`/`dateTo`, `shift_history_earnings`) и контекст (`scope`/`organizationId`, `shift_history_scope`) приходят извне через `setPeriod`/`setContext` — первая загрузка ждёт оба, смена любого из них сбрасывает пагинацию, фильтр статуса сохраняется |
@@ -579,6 +579,16 @@ lib/
 - **UI**: `_WorkScheduleSelector` приглушает строку (`Opacity`), если показанный график сейчас не стартуем, и показывает подпись-причину под ней («Смену можно начать с {time}» / «График «{name}» закончился. Ближайший старт — завтра в {time}»). `WorkSchedulePickerPage` приглушает и блокирует тап по нестартуемым карточкам, оставляя их видимыми. Общий day-diff helper — `orgLocalDayDiff` (`core/utils/org_timezone.dart`), переиспользован пикером и селектором.
 - **Тесты**: группа «окно графика (schedule_window_enforcement)» в `shift_tracker_cubit_test.dart` (через `package:fake_async` — граница `next_end_at`/`next_start_at − early_start_minutes` без перезапроса экрана, сброс выбора, дебаунс перезапроса, `SCHEDULE_WINDOW_CLOSED`, авто-финиш во время фонового поллинга); `test/data/infrastructure/work_schedule/work_schedule_dto_test.dart` (обратная совместимость парсинга `early_start_minutes`).
 
+### Старт без закрытого необязательного графика (optional_schedule_start)
+
+Фича `optional_schedule_start` (`../docs/tasks/optional_schedule_start/mobile.md`) устраняет прод-регрессию: единственный эффективный, но закрытый график раньше автоматически подставлялся в `POST /shifts/start`, поэтому сервер возвращал `SCHEDULE_WINDOW_CLOSED` даже при `require_schedule=false`.
+
+- **Единый алгоритм**: `MySchedules.startableSchedulesAt(now)` фильтрует эффективный набор через существующий `WorkSchedule.isStartableAt`; его используют `ShiftTrackerState`/`ShiftTrackerCubit`, geo-check резолв и `GeoFallbackStartState`/`GeoFallbackStartCubit`. Закрытые графики остаются в `availableSchedules` для информационного UI, но не участвуют в автоподстановке, восстановлении сохранённого выбора и подсчёте обязательности выбора.
+- **Optional**: при 0 стартуемых графиков выбор очищен, кнопка остаётся доступной и запрос отправляется без `work_schedule_id`; при 1 стартуемом он выбирается автоматически; при нескольких нужен выбор. Перед каждым `POST /shifts/start` идентификатор дополнительно проверяется по актуальному времени и не отправляется, если окно успело закрыться.
+- **Required**: отсутствие эффективных графиков и отсутствие стартуемых графиков остаются разными блокирующими состояниями; валидный старт требует выбранного стартуемого графика. Idle-тикер теперь не только очищает закрывшийся выбор, но и автоматически выбирает единственный график, когда его окно открывается.
+- **Geo**: geo-check решает, показывать ли picker, по числу стартуемых графиков и переиспользует уже полученные координаты; geo-fallback применяет ту же выборку после выбора точки и перед отправкой фото-старта. В geo-fallback момент `scheduleNow` обновляется раз в секунду после успешной загрузки, поэтому UI и submit используют один источник времени и не удерживают закрывшееся окно. Кубиты остаются независимыми.
+- **Тесты**: регрессии обычного старта, geo-check и geo-fallback покрывают optional/required, закрытый единственный график, смесь открытого и закрытого, очистку сохранённого закрытого выбора, запрос без `work_schedule_id`, открытие/закрытие окна и `SCHEDULE_WINDOW_CLOSED`.
+
 ---
 
 ## Центр уведомлений (notifications) и прохождение тестов (employee_tests)
@@ -686,7 +696,7 @@ lib/
 
 **Вход**: действие «Начать по фото» в `GeoFailureDialog` — доступно на **любой** финальной ветке `GeoFailure` и только в организации с геопроверкой (`allowPhotoFallback`). Серверный `GEO_CHECK_FAILED` (координаты получены, сотрудник вне зоны) сюда не приводит вовсе: он прилетает как ошибка действия, а не как `GeoFailure`, — обходить «вне зоны» фотографией нельзя.
 
-**Экран** `GeoFallbackStartRoute` (`shift/geo-fallback-start`) зарегистрирован **внутри таба «Смена»**, чтобы переиспользовать соседние модалки `WorkLocationPickerRoute`/`WorkSchedulePickerRoute` без дублей регистрации. Три шага на одной прокручиваемой странице: точка (обязательна — сервер её не резолвит, координат нет) → график (`my-schedules?work_location_id=…`, те же правила 0/1/>1, что и в обычном старте) → кадр. Возвращает стартовавшую `Shift` через `pop`.
+**Экран** `GeoFallbackStartRoute` (`shift/geo-fallback-start`) зарегистрирован **внутри таба «Смена»**, чтобы переиспользовать соседние модалки `WorkLocationPickerRoute`/`WorkSchedulePickerRoute` без дублей регистрации. Три шага на одной прокручиваемой странице: точка (обязательна — сервер её не резолвит, координат нет) → график (`my-schedules?work_location_id=…`, правила 0/1/>1 считаются по стартуемому подмножеству; закрытые остаются видимыми) → кадр. Возвращает стартовавшую `Shift` через `pop`.
 
 **`GeoFallbackStartCubit`** ни от каких кубитов не зависит; связь с трекером — только через результат навигации: `ShiftTrackerCubit.adoptStartedShift(shift)` показывает смену активной и запускает таймер. `submit()` грузит `POST /files` (`category=shift_geo_photo`, `organization_id`) и затем `POST /shifts/start` с `geo_fallback_photo_id` + `geo_fallback_reason`. Файл грузится на **каждой** попытке: бэк принимает только непривязанный файл, а после отказа старта его состояние клиенту неизвестно — сирот подберёт штатная чистка. Реакции строго по `error.code`: `GEO_FALLBACK_PHOTO_INVALID` → кадр сброшен, шаг фото заново; `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND`/`SCHEDULE_WINDOW_CLOSED` → выбор сброшен + перезапрос набора.
 
