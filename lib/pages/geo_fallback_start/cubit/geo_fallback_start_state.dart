@@ -56,6 +56,10 @@ abstract class GeoFallbackStartState with _$GeoFallbackStartState {
   List<WorkSchedule> get availableSchedules =>
       schedules.data?.items ?? const <WorkSchedule>[];
 
+  List<WorkSchedule> get startableSchedules =>
+      schedules.data?.startableSchedulesAt(DateTime.now().toUtc()) ??
+      const <WorkSchedule>[];
+
   /// Обязательность графика по настройке организации. Пока набор не загружен —
   /// `false` (как на idle-экране трекера: сетевой сбой не должен запирать
   /// сотрудника).
@@ -63,17 +67,29 @@ abstract class GeoFallbackStartState with _$GeoFallbackStartState {
 
   int get earlyStartMinutes => schedules.data?.earlyStartMinutes ?? 0;
 
-  /// >1 графика — выбор обязателен на клиенте (то же правило, что в трекере).
-  bool get scheduleSelectionRequired => availableSchedules.length > 1;
+  /// >1 стартуемого графика — выбор обязателен на клиенте (то же правило,
+  /// что в трекере). Закрытые варианты остаются видимыми в пикере.
+  bool get scheduleSelectionRequired => startableSchedules.length > 1;
 
   /// Графиков нет, а они обязательны — старт закрыт, нужен администратор.
   bool get scheduleBlockedNoOptions =>
       schedules.data != null && availableSchedules.isEmpty && requireSchedule;
 
+  bool get scheduleBlockedWindowClosed =>
+      requireSchedule &&
+      availableSchedules.isNotEmpty &&
+      startableSchedules.isEmpty;
+
   WorkSchedule? get selectedWorkSchedule {
     final id = workScheduleId;
     if (id == null) return null;
     return availableSchedules.where((s) => s.id == id).firstOrNull;
+  }
+
+  bool get hasSelectedStartableSchedule {
+    final selectedId = workScheduleId;
+    return selectedId != null &&
+        startableSchedules.any((schedule) => schedule.id == selectedId);
   }
 
   bool get hasPhoto => photoBytes != null;
@@ -89,5 +105,7 @@ abstract class GeoFallbackStartState with _$GeoFallbackStartState {
       !isSubmitting &&
       !schedules.isLoading &&
       !scheduleBlockedNoOptions &&
-      (!scheduleSelectionRequired || workScheduleId != null);
+      !scheduleBlockedWindowClosed &&
+      (!requireSchedule || hasSelectedStartableSchedule) &&
+      (!scheduleSelectionRequired || hasSelectedStartableSchedule);
 }

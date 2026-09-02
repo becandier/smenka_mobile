@@ -341,6 +341,17 @@
 
 ---
 
+## Фича — Старт без закрытого необязательного графика (optional_schedule_start) `[x]` (`../docs/tasks/optional_schedule_start/mobile.md`)
+- [x] **Домен**: `MySchedules.startableSchedulesAt(now)` — единая выборка через существующий `WorkSchedule.isStartableAt`; формула окна не дублируется
+- [x] **Обычный старт**: автоподстановка, сохранённый выбор и обязательность выбора считают только стартуемые графики; optional при 0 стартуемых отправляет запрос без `work_schedule_id`, required остаётся заблокирован; idle-тикер очищает закрывшийся и подставляет единственный открывшийся график
+- [x] **Geo-check**: picker открывается только при нескольких стартуемых графиках; при 0 optional старт продолжается с теми же координатами без графика, при 1 — сразу с ним
+- [x] **Geo-fallback**: после выбора точки действует та же выборка; закрытый optional-график не блокирует фото-старт и не уходит в запросе
+- [x] **Защита от гонки**: непосредственно перед `POST /shifts/start` выбранный id повторно проверяется по текущему времени; `SCHEDULE_WINDOW_CLOSED` по-прежнему очищает выбор и обновляет набор
+- [x] `make check` зелёный: analyze без замечаний, 454/454 теста; новые регрессии — обычный старт, geo-check, geo-fallback и открытие окна
+- [ ] **End-to-end**: требует совместного релиза с backend fallback для старых нативных клиентов; нативная публикация вне scope
+
+---
+
 ## Фича — Промо установки PWA (pwa_install_promo) `[x]` (`../docs/tasks/pwa_install_promo/mobile.md`)
 - [x] **Только web, бэкенда нет**: фича полностью клиентская. Весь JS-interop — в одном файле `lib/core/pwa/pwa_install_platform_web.dart` за conditional export (`dart.library.js_interop`, как у `url_strategy`); на native/VM подключается no-op `pwa_install_platform_stub.dart`, поэтому нативные сборки и тесты браузерного кода не видят. Новая прямая зависимость `web: ^1.1.1` — ровно под этот файл
 - [x] **Детект**: `display-mode: standalone` + легаси `navigator.standalone` (старые iOS Safari) → в установленном PWA промо и иконка не показываются вовсе; `beforeinstallprompt` перехватывается с `preventDefault` и хранится для отложенного `prompt()`; `appinstalled` скрывает точки входа; iOS/iPadOS определяется по UA (+ `maxTouchPoints` для iPadOS, который маскируется под macOS)

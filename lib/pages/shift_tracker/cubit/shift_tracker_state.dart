@@ -153,6 +153,13 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   List<WorkSchedule> get availableSchedules =>
       schedules.data?.items ?? const <WorkSchedule>[];
 
+  /// Подмножество [availableSchedules], доступное для старта прямо сейчас.
+  /// Закрытые графики остаются в полном списке для информационного UI, но не
+  /// участвуют в выборе и обязательности выбора.
+  List<WorkSchedule> get startableSchedules =>
+      schedules.data?.startableSchedulesAt(_windowClockNow) ??
+      const <WorkSchedule>[];
+
   /// Обязательность графика по настройке организации. Пока набор графиков не
   /// загружен успешно (ошибка/ещё не начали грузить) — считаем `false`, а не
   /// блокируем старт из-за неизвестности (см. ТЗ: сетевой сбой не должен
@@ -166,9 +173,9 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   bool get scheduleBlockedNoOptions =>
       schedules.data != null && availableSchedules.isEmpty && requireSchedule;
 
-  /// >1 графика — выбор обязателен на клиенте, даже если организация не
-  /// требует этого явно (см. ТЗ п.1).
-  bool get scheduleSelectionRequired => availableSchedules.length > 1;
+  /// >1 стартуемого графика — выбор обязателен на клиенте, даже если
+  /// организация не требует график явно.
+  bool get scheduleSelectionRequired => startableSchedules.length > 1;
 
   WorkSchedule? get selectedWorkSchedule {
     final id = selectedWorkScheduleId;
@@ -203,7 +210,8 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
           (!schedulesLoading &&
               !scheduleBlockedNoOptions &&
               !scheduleBlockedWindowClosed &&
-              (!scheduleSelectionRequired || selectedWorkScheduleId != null) &&
+              (!requireSchedule || hasSelectedStartableSchedule) &&
+              (!scheduleSelectionRequired || hasSelectedStartableSchedule) &&
               selectedScheduleStillStartable));
 
   /// `require_schedule=true`, графики есть, но ни один не стартуем прямо
@@ -213,7 +221,7 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   bool get scheduleBlockedWindowClosed =>
       requireSchedule &&
       availableSchedules.isNotEmpty &&
-      !availableSchedules.any(isScheduleStartable);
+      startableSchedules.isEmpty;
 
   /// Выбранный график ещё стартуем (или выбора нет вовсе). Основной сброс
   /// закрывшегося выбора делает кубит по тику
@@ -222,6 +230,12 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   bool get selectedScheduleStillStartable {
     final selected = selectedWorkSchedule;
     return selected == null || isScheduleStartable(selected);
+  }
+
+  bool get hasSelectedStartableSchedule {
+    final selectedId = selectedWorkScheduleId;
+    return selectedId != null &&
+        startableSchedules.any((schedule) => schedule.id == selectedId);
   }
 
   /// График, на который ссылается подпись «недоступно» под селектором на

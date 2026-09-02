@@ -146,21 +146,41 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   void _tickIdle() {
     final now = _now().toUtc();
     emit(state.copyWith(idleNow: now));
-    _resetClosedSelection(now);
+    _reconcileScheduleSelection(now);
     _maybeRefetchOnWindowClosed(now);
   }
 
-  /// Сбрасывает выбор графика, если его окно закрылось (mobile.md, п.1:
-  /// «Ранее выбранный график, у которого окно закрылось, сбрасывается из
-  /// выбора автоматически»).
-  void _resetClosedSelection(DateTime now) {
-    final selected = state.selectedWorkSchedule;
-    if (selected == null) return;
-    if (!selected.isStartableAt(
-      now,
-      earlyStartMinutes: state.earlyStartMinutes,
-    )) {
-      emit(state.copyWith(selectedWorkScheduleId: null));
+  /// Синхронизирует выбор с текущим окном: закрывшийся выбор очищается, а
+  /// единственный открывшийся график подставляется автоматически без нового
+  /// запроса. При нескольких стартуемых восстанавливается только сохранённый
+  /// график, который сам остаётся стартуемым.
+  void _reconcileScheduleSelection(DateTime now) {
+    final schedules = state.schedules.data;
+    final orgId = state.selectedOrganizationId;
+    if (schedules == null || orgId == null) return;
+
+    final startable = schedules.startableSchedulesAt(now);
+    final selectedId = state.selectedWorkScheduleId;
+    if (selectedId != null &&
+        startable.any((schedule) => schedule.id == selectedId)) {
+      return;
+    }
+
+    String? nextSelectedId;
+    if (startable.length == 1) {
+      nextSelectedId = startable.first.id;
+    } else if (startable.length > 1) {
+      final workLocationId = state.showWorkLocationSelector
+          ? state.selectedWorkLocation?.id
+          : null;
+      final saved = _scheduleContextStorage.read(orgId, workLocationId);
+      if (saved != null && startable.any((schedule) => schedule.id == saved)) {
+        nextSelectedId = saved;
+      }
+    }
+
+    if (selectedId != nextSelectedId) {
+      emit(state.copyWith(selectedWorkScheduleId: nextSelectedId));
     }
   }
 
@@ -435,15 +455,16 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     _preselectSchedule(schedules, orgId, workLocationId);
   }
 
-  /// Ровно один доступный график — подставляется автоматически (старт
+  /// Ровно один стартуемый график — подставляется автоматически (старт
   /// остаётся в один тап). Несколько — предвыбирается последний сохранённый
-  /// для этой пары org+точка, если он всё ещё доступен.
+  /// для этой пары org+точка, если он всё ещё стартуем. Закрытые графики
+  /// остаются в `schedules.items` только для информационного UI.
   void _preselectSchedule(
     MySchedules schedules,
     String orgId,
     String? workLocationId,
   ) {
-    final items = schedules.items;
+    final items = schedules.startableSchedulesAt(_now().toUtc());
     if (items.length == 1) {
       emit(state.copyWith(selectedWorkScheduleId: items.first.id));
       return;
@@ -679,7 +700,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
       onSuccess: (schedules) {
         _applyResolvedSchedules(schedules, orgId, null);
 
-        if (schedules.items.length > 1) {
+        if (state.startableSchedules.length > 1) {
           _pendingStartCoords = (lat: lat, lng: lng);
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
           return StartShiftResult.scheduleSelectionRequired;
@@ -731,6 +752,16 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   /// Не переводит `actionStatus` в loading сам — вызывающий код уже сделал
   /// это (см. [startShift] / [continueStartAfterScheduleSelection]).
   Future<StartShiftResult> _performStart({double? lat, double? lng}) async {
+    final selectedScheduleId = state.selectedWorkScheduleId;
+    final selectedScheduleIsStartable =
+        state.schedules.data
+            ?.startableSchedulesAt(_now().toUtc())
+            .any((schedule) => schedule.id == selectedScheduleId) ??
+        false;
+    final startableScheduleId =
+        selectedScheduleId != null && selectedScheduleIsStartable
+        ? selectedScheduleId
+        : null;
     final result = await _shiftRepository.startShift(
       organizationId: state.selectedOrganizationId,
       latitude: lat,
@@ -738,7 +769,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
       // При гео точку определяет сервер (selectedWorkLocation тогда null —
       // селектор скрыт). При гео выкл шлём выбранную точку (или null).
       workLocationId: state.selectedWorkLocation?.id,
-      workScheduleId: state.selectedWorkScheduleId,
+      workScheduleId: startableScheduleId,
     );
 
     return result.fold(

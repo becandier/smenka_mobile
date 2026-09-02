@@ -797,6 +797,80 @@ void main() {
     );
 
     test(
+      'optional + единственный закрытый график → старт без work_schedule_id',
+      () async {
+        final closed = _schedule(
+          'closed',
+          nextStartAt: _fixedNow.add(const Duration(hours: 1)),
+          nextEndAt: _fixedNow.add(const Duration(hours: 10)),
+        );
+        when(
+          () => scheduleRepo.getMySchedules(
+            'org1',
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).thenAnswer(
+          (_) async => Task<MySchedules>.success(
+            MySchedules(items: [closed], total: 1, requireSchedule: false),
+          ),
+        );
+        when(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+            workScheduleId: any(named: 'workScheduleId'),
+          ),
+        ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+        final cubit = buildWithOrgSelected(org);
+        await pumpEventQueue();
+
+        expect(cubit.state.selectedWorkScheduleId, isNull);
+        expect(cubit.state.canStartShift, isTrue);
+        expect(await cubit.startShift(), StartShiftResult.success);
+        verify(
+          () => shiftRepo.startShift(
+            organizationId: 'org1',
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+            workScheduleId: any(named: 'workScheduleId', that: isNull),
+          ),
+        ).called(1);
+        await cubit.close();
+      },
+    );
+
+    test('открытый + закрытый графики → автоподстановка открытого', () async {
+      final open = _schedule('open');
+      final closed = _schedule(
+        'closed',
+        nextStartAt: _fixedNow.add(const Duration(hours: 1)),
+        nextEndAt: _fixedNow.add(const Duration(hours: 10)),
+      );
+      when(
+        () => scheduleRepo.getMySchedules(
+          'org1',
+          workLocationId: any(named: 'workLocationId'),
+        ),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(items: [closed, open], total: 2, requireSchedule: false),
+        ),
+      );
+      when(
+        () => scheduleContextStorage.read('org1', null),
+      ).thenReturn('closed');
+
+      final cubit = buildWithOrgSelected(org);
+      await pumpEventQueue();
+
+      expect(cubit.state.scheduleSelectionRequired, isFalse);
+      expect(cubit.state.selectedWorkScheduleId, 'open');
+      await cubit.close();
+    });
+
+    test(
       '>1 графика без сохранённого выбора → старт заблокирован до выбора',
       () async {
         final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
@@ -1027,6 +1101,84 @@ void main() {
           latitude: 55.75,
           longitude: 37.61,
           workScheduleId: 's1',
+        ),
+      ).called(1);
+      await cubit.close();
+    });
+
+    test('optional + закрытый график → geo-старт продолжается без модалки и '
+        'без work_schedule_id', () async {
+      final closed = _schedule(
+        'closed',
+        nextStartAt: _fixedNow.add(const Duration(hours: 1)),
+        nextEndAt: _fixedNow.add(const Duration(hours: 10)),
+      );
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(items: [closed], total: 1, requireSchedule: false),
+        ),
+      );
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      expect(await cubit.startShift(), StartShiftResult.success);
+      expect(cubit.state.selectedWorkScheduleId, isNull);
+      verify(
+        () => shiftRepo.startShift(
+          organizationId: 'org1',
+          latitude: 55.75,
+          longitude: 37.61,
+          workScheduleId: any(named: 'workScheduleId', that: isNull),
+        ),
+      ).called(1);
+      await cubit.close();
+    });
+
+    test('geo-resolve: открытый + закрытый → старт сразу с открытым', () async {
+      final open = _schedule('open');
+      final closed = _schedule(
+        'closed',
+        nextStartAt: _fixedNow.add(const Duration(hours: 1)),
+        nextEndAt: _fixedNow.add(const Duration(hours: 10)),
+      );
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(items: [closed, open], total: 2, requireSchedule: false),
+        ),
+      );
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      expect(await cubit.startShift(), StartShiftResult.success);
+      expect(cubit.state.selectedWorkScheduleId, 'open');
+      verify(
+        () => shiftRepo.startShift(
+          organizationId: 'org1',
+          latitude: 55.75,
+          longitude: 37.61,
+          workScheduleId: 'open',
         ),
       ).called(1);
       await cubit.close();
@@ -1307,6 +1459,7 @@ void main() {
 
           async.elapse(const Duration(minutes: 13, seconds: 1));
 
+          expect(cubit.state.selectedWorkScheduleId, 's1');
           expect(cubit.state.canStartShift, isTrue);
           expect(cubit.state.scheduleBlockedWindowClosed, isFalse);
 

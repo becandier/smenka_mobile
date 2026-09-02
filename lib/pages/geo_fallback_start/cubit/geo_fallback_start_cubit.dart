@@ -27,10 +27,12 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
     required WorkScheduleRepository workScheduleRepository,
     required FilesRepository filesRepository,
     required PhotoPickerService photoPicker,
+    DateTime Function()? now,
   }) : _shiftRepository = shiftRepository,
        _workScheduleRepository = workScheduleRepository,
        _filesRepository = filesRepository,
        _photoPicker = photoPicker,
+       _now = now ?? DateTime.now,
        super(
          GeoFallbackStartState(
            organizationId: organizationId,
@@ -44,6 +46,7 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
   final WorkScheduleRepository _workScheduleRepository;
   final FilesRepository _filesRepository;
   final PhotoPickerService _photoPicker;
+  final DateTime Function() _now;
 
   /// Монотонный токен запроса графиков — ответ устаревшего запроса (точку
   /// успели поменять ещё раз) игнорируется.
@@ -105,10 +108,9 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
     result.fold(
       onSuccess: (schedules) {
         emit(state.copyWith(schedules: state.schedules.toSuccess(schedules)));
-        // Ровно один вариант — подставляем сами, как в обычном старте.
-        if (schedules.items.length == 1) {
-          emit(state.copyWith(workScheduleId: schedules.items.first.id));
-        }
+        final startable = schedules.startableSchedulesAt(_now().toUtc());
+        final selectedId = startable.length == 1 ? startable.first.id : null;
+        emit(state.copyWith(workScheduleId: selectedId));
       },
       onFailure: (error) => emit(
         state.copyWith(
@@ -202,10 +204,20 @@ class GeoFallbackStartCubit extends Cubit<GeoFallbackStartState> {
       return null;
     }
 
+    final selectedScheduleId = state.workScheduleId;
+    final selectedScheduleIsStartable =
+        state.schedules.data
+            ?.startableSchedulesAt(_now().toUtc())
+            .any((schedule) => schedule.id == selectedScheduleId) ??
+        false;
+    final startableScheduleId =
+        selectedScheduleId != null && selectedScheduleIsStartable
+        ? selectedScheduleId
+        : null;
     final result = await _shiftRepository.startShift(
       organizationId: state.organizationId,
       workLocationId: location.id,
-      workScheduleId: state.workScheduleId,
+      workScheduleId: startableScheduleId,
       geoFallbackPhotoId: file.id,
       geoFallbackReason: state.geoFallbackReason,
     );
