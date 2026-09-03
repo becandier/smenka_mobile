@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/pagination_mixin.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/penalty/_penalty.dart';
 import 'package:smenka_mobile/pages/my_penalties/cubit/my_penalties_state.dart';
 
@@ -10,19 +13,39 @@ class MyPenaltiesCubit extends Cubit<MyPenaltiesState>
   MyPenaltiesCubit({
     required String orgId,
     required PenaltyRepository penaltyRepository,
+    required OrganizationRepository organizationRepository,
   }) : _orgId = orgId,
        _penaltyRepository = penaltyRepository,
+       _organizationRepository = organizationRepository,
        super(const MyPenaltiesState()) {
     loadPenalties();
+    unawaited(_loadOrganizationTimezone());
   }
 
   final String _orgId;
   final PenaltyRepository _penaltyRepository;
+  final OrganizationRepository _organizationRepository;
+
+  /// Один запрос за время жизни экрана — таймзона нужна и для пресетов
+  /// ([_window]), и для карточек/чипа диапазона (`MyPenaltiesPage`).
+  /// Ошибка молча оставляет дефолт (см. `MyPenaltiesState.organizationTimezone`).
+  Future<void> _loadOrganizationTimezone() async {
+    final result = await _organizationRepository.getById(_orgId);
+    result.fold(
+      onSuccess: (org) {
+        emit(state.copyWith(organizationTimezone: org.timezone));
+        // Пресеты уже вычислены с дефолтной зоной — пересчитываем под
+        // фактическую, если пользователь ещё не переключился на диапазон.
+        if (!state.isCustomRange) loadPenalties();
+      },
+      onFailure: (_) {},
+    );
+  }
 
   ({DateTime? from, DateTime? to}) get _window {
     final preset = state.preset;
     if (preset != null) {
-      final bounds = preset.boundsUtc(DateTime.now());
+      final bounds = preset.boundsUtc(DateTime.now().toUtc(), state.timeContext);
       return (from: bounds.fromUtc, to: bounds.toUtc);
     }
     return (from: state.customFrom, to: state.customTo);

@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smenka_mobile/core/bloc/paginated_section_data.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/adjustment/_adjustment.dart';
 
 part 'my_adjustments_state.freezed.dart';
@@ -15,8 +16,15 @@ abstract class MyAdjustmentsState with _$MyAdjustmentsState {
     @Default(PeriodPreset.month) PeriodPreset? preset,
     DateTime? customFrom,
     DateTime? customTo,
+
+    /// IANA-таймзона организации — начисления всегда её бизнес-события.
+    /// Дефолт до загрузки совпадает с server_default `Organization.timezone`.
+    @Default('Europe/Moscow') String organizationTimezone,
   }) = _MyAdjustmentsState;
   const MyAdjustmentsState._();
 
   bool get isCustomRange => preset == null;
+
+  AppTimeContext get timeContext =>
+      AppTimeContext.organization(organizationTimezone);
 }

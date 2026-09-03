@@ -49,6 +49,46 @@ int orgLocalDayDiff(DateTime targetUtc, String timezoneName) {
   return targetDate.difference(nowDate).inDays;
 }
 
+/// UTC-границы `[fromUtc, toUtc)` календарных суток [calendarDay]
+/// (используются только `year`/`month`/`day`) в таймзоне [timezoneName].
+///
+/// Строится через настенную полночь начала и следующих суток в IANA-зоне,
+/// а не прибавлением фиксированных 24 часов — в дни перехода DST сутки
+/// короче (23ч) или длиннее (25ч), см. `lib/core/time/app_time.dart`,
+/// единственный вызывающий этот helper.
+///
+/// Невалидное имя зоны — тот же безопасный fallback, что и в [toOrgLocal]:
+/// без падения, границы строятся как обычные UTC-сутки.
+({DateTime fromUtc, DateTime toUtc}) orgUtcDayBounds(
+  DateTime calendarDay,
+  String timezoneName,
+) {
+  _ensureInitialized();
+  try {
+    final location = tz.getLocation(timezoneName);
+    final start = tz.TZDateTime(
+      location,
+      calendarDay.year,
+      calendarDay.month,
+      calendarDay.day,
+    );
+    final end = tz.TZDateTime(
+      location,
+      calendarDay.year,
+      calendarDay.month,
+      calendarDay.day + 1,
+    );
+    return (fromUtc: start.toUtc(), toUtc: end.toUtc());
+  } on Object {
+    final start = DateTime.utc(
+      calendarDay.year,
+      calendarDay.month,
+      calendarDay.day,
+    );
+    return (fromUtc: start, toUtc: start.add(const Duration(days: 1)));
+  }
+}
+
 bool _initialized = false;
 
 void _ensureInitialized() {

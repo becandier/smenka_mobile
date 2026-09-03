@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/l10n/applied_range_label.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -41,6 +42,7 @@ class MyEarningsPage extends StatelessWidget {
       create: (_) => MyEarningsCubit(
         orgId: orgId,
         payrollRepository: context.read<PayrollRepository>(),
+        organizationRepository: context.read<OrganizationRepository>(),
         initialDateFrom: initialDateFrom,
         initialDateTo: initialDateTo,
       ),
@@ -54,14 +56,21 @@ class _MyEarningsView extends StatelessWidget {
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final cubit = context.read<MyEarningsCubit>();
+    final timeContext = cubit.state.timeContext;
+    final customFrom = cubit.state.customFrom;
+    final customTo = cubit.state.customTo;
     final result = await context.router.push<DateRangePickerResult?>(
       DateRangePickerRoute(
-        initialFrom: cubit.state.customFrom?.toLocal(),
-        initialTo: cubit.state.customTo?.toLocal(),
+        initialFrom: customFrom == null
+            ? null
+            : appTimeCalendarDay(customFrom, timeContext),
+        initialTo: customTo == null
+            ? null
+            : appTimeCalendarDay(customTo, timeContext),
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc, result.toUtc);
+      cubit.setCustomRange(result.fromUtc(timeContext), result.toUtc(timeContext));
     }
   }
 
@@ -89,6 +98,7 @@ class _MyEarningsView extends StatelessWidget {
                   preset: state.preset,
                   customFrom: state.customFrom,
                   customTo: state.customTo,
+                  timeContext: state.timeContext,
                   onPresetChanged: cubit.setPreset,
                   onCustomTap: () => _openDateRangePicker(context),
                   onCustomClear: () => cubit.setCustomRange(null, null),
@@ -107,6 +117,10 @@ class _MyEarningsView extends StatelessWidget {
                   selector: (state) => state.earnings,
                   onRetry: () => context.read<MyEarningsCubit>().load(),
                   contentBuilder: (earnings) {
+                    final timeContext = context
+                        .read<MyEarningsCubit>()
+                        .state
+                        .timeContext;
                     return RefreshIndicator.adaptive(
                       onRefresh: () => context.read<MyEarningsCubit>().load(),
                       child: ListView(
@@ -120,6 +134,7 @@ class _MyEarningsView extends StatelessWidget {
                                 context,
                                 earnings.period.dateFrom,
                                 earnings.period.dateTo,
+                                timeContext,
                               )
                               case final label?)
                             Padding(
@@ -144,7 +159,10 @@ class _MyEarningsView extends StatelessWidget {
                           const SizedBox(height: 16),
                           _WorkedStatsCard(earnings: earnings),
                           const SizedBox(height: 16),
-                          _CurrentRateCard(currentRate: earnings.currentRate),
+                          _CurrentRateCard(
+                            currentRate: earnings.currentRate,
+                            timeContext: timeContext,
+                          ),
                           if (earnings.hasMissingRate) ...[
                             const SizedBox(height: 16),
                             const _MissingRateBanner(),
@@ -502,9 +520,10 @@ class _PotentialEarningsCard extends StatelessWidget {
 }
 
 class _CurrentRateCard extends StatelessWidget {
-  const _CurrentRateCard({required this.currentRate});
+  const _CurrentRateCard({required this.currentRate, required this.timeContext});
 
   final CurrentRate? currentRate;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
@@ -544,7 +563,7 @@ class _CurrentRateCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 l10n.payrollRateEffectiveFrom(
-                  DateFormat('dd.MM.yyyy').format(rate.effectiveFrom.toLocal()),
+                  const AppTime().formatDate(rate.effectiveFrom, timeContext),
                 ),
                 style: textTheme.bodySmall?.copyWith(color: colors.secondary),
               ),

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
 import 'package:smenka_mobile/data/api/local/shift_history_context_storage.dart';
@@ -122,6 +123,10 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
       state.scope,
       state.organizationId,
     );
+    // Пересчитывает границы активного пресета в новом контексте (устройство
+    // либо IANA-зона выбранной организации) — см.
+    // `ShiftHistoryPeriodCubit.applyContext`.
+    context.read<ShiftHistoryPeriodCubit>().applyContext(state.periodContext);
   }
 
   /// Прокидывает вычисленное окно периода в независимые кубиты экрана —
@@ -149,7 +154,16 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
         actions: const [NotificationBellButton()],
       ),
       body: BlocBuilder<ShiftHistoryContextCubit, ShiftHistoryContextState>(
-        buildWhen: (prev, curr) => prev.isLoading != curr.isLoading,
+        // Помимо isLoading, перестраиваемся на смену scope/организации и
+        // списка организаций — от них зависят `periodContext`/
+        // `timeContextFor`, используемые ниже для карточек и статистики
+        // (иначе после переключения организации в селекторе они остались
+        // бы вычислены по старому контексту до следующего чужого ребилда).
+        buildWhen: (prev, curr) =>
+            prev.isLoading != curr.isLoading ||
+            prev.scope != curr.scope ||
+            prev.organizationId != curr.organizationId ||
+            prev.organizations != curr.organizations,
         builder: (context, contextState) {
           // Контекст ещё не резолвлен (нет сохранённого выбора, ждём
           // организации для дефолта) — до этого момента ни список, ни
@@ -160,7 +174,7 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
 
           return Column(
             children: [
-              const _StatsSection(),
+              _StatsSection(periodContext: contextState.periodContext),
               const _ShiftFilters(),
               Expanded(
                 child:
@@ -172,6 +186,7 @@ class _ShiftHistoryViewState extends State<_ShiftHistoryView> {
                       selector: (state) => state.shifts,
                       itemBuilder: (context, shift, index) => _ShiftCard(
                         shift: shift,
+                        timeContext: contextState.timeContextFor(shift),
                         onTap: () =>
                             context.router.push(ShiftDetailRoute(shift: shift)),
                       ),

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
 import 'package:smenka_mobile/pages/my_earnings/cubit/my_earnings_state.dart';
 
@@ -9,16 +12,20 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
   MyEarningsCubit({
     required String orgId,
     required PayrollRepository payrollRepository,
+    required OrganizationRepository organizationRepository,
     DateTime? initialDateFrom,
     DateTime? initialDateTo,
   }) : _orgId = orgId,
        _payrollRepository = payrollRepository,
+       _organizationRepository = organizationRepository,
        super(_resolveInitialState(initialDateFrom, initialDateTo)) {
     load();
+    unawaited(_loadOrganizationTimezone());
   }
 
   final String _orgId;
   final PayrollRepository _payrollRepository;
+  final OrganizationRepository _organizationRepository;
 
   String get orgId => _orgId;
 
@@ -38,6 +45,19 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
     );
   }
 
+  /// Один запрос за время жизни экрана (см. `MyPenaltiesCubit`, тот же
+  /// приём). Ошибка молча оставляет дефолт.
+  Future<void> _loadOrganizationTimezone() async {
+    final result = await _organizationRepository.getById(_orgId);
+    result.fold(
+      onSuccess: (org) {
+        emit(state.copyWith(organizationTimezone: org.timezone));
+        if (!state.isCustomRange) load();
+      },
+      onFailure: (_) {},
+    );
+  }
+
   /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
   int _requestId = 0;
 
@@ -47,7 +67,7 @@ class MyEarningsCubit extends Cubit<MyEarningsState> {
 
     final (DateTime? dateFrom, DateTime? dateTo) = switch (state.preset) {
       final preset? => () {
-        final bounds = preset.boundsUtc(DateTime.now());
+        final bounds = preset.boundsUtc(DateTime.now().toUtc(), state.timeContext);
         return (bounds.fromUtc, bounds.toUtc);
       }(),
       null => (state.customFrom, state.customTo),

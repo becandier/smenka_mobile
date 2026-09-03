@@ -84,6 +84,7 @@ _ShiftDto _$ShiftDtoFromJson(Map<String, dynamic> json) => _ShiftDto(
       .toList(),
   workedSeconds: (json['worked_seconds'] as num).toInt(),
   organizationId: json['organization_id'] as String?,
+  organizationTimezone: json['organization_timezone'] as String?,
   finishedAt: json['finished_at'] == null
       ? null
       : DateTime.parse(json['finished_at'] as String),
@@ -137,6 +138,7 @@ Map<String, dynamic> _$ShiftDtoToJson(_ShiftDto instance) => <String, dynamic>{
   'pauses': instance.pauses.map((e) => e.toJson()).toList(),
   'worked_seconds': instance.workedSeconds,
   'organization_id': instance.organizationId,
+  'organization_timezone': instance.organizationTimezone,
   'finished_at': instance.finishedAt?.toIso8601String(),
   'has_incomplete_required_checklists':
       instance.hasIncompleteRequiredChecklists,

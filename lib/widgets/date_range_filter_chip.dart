@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 /// Чип фильтра по диапазону дат.
 ///
-/// [from]/[to] — границы диапазона как UTC-инстансы (как они хранятся
-/// в стейте кубита); для отображения конвертируются в локальное время.
-/// Подписи: «01.06 – 09.06», «с 01.06», «по 09.06»; без диапазона — [label].
+/// [from]/[to] — границы диапазона как UTC-моменты (как они хранятся в
+/// стейте кубита); для отображения переводятся в настенное время явного
+/// [timeContext] (устройство либо IANA-зона организации экрана — общий
+/// фильтр не может одновременно представлять сутки нескольких организаций).
+/// Подписи: «01.06.2026 – 09.06.2026», «с 01.06.2026», «по 09.06.2026»;
+/// без диапазона — [label].
 ///
 /// Тап — открыть пикер ([onTap]), крестик — сбросить диапазон ([onClear],
 /// показывается только при активном диапазоне).
@@ -15,18 +18,19 @@ class DateRangeFilterChip extends StatelessWidget {
     required this.from,
     required this.to,
     required this.label,
+    required this.timeContext,
     required this.onTap,
     required this.onClear,
     super.key,
   });
-
-  static final DateFormat _dateFormat = DateFormat('dd.MM');
 
   final DateTime? from;
   final DateTime? to;
 
   /// Подпись чипа, когда диапазон не задан.
   final String label;
+
+  final AppTimeContext timeContext;
 
   final VoidCallback onTap;
   final VoidCallback onClear;
@@ -35,21 +39,21 @@ class DateRangeFilterChip extends StatelessWidget {
 
   String _chipLabel(BuildContext context) {
     final l10n = context.l10n;
-    final fromLocal = from?.toLocal();
-    final toLocal = to?.toLocal();
+    const appTime = AppTime();
+    final fromMoment = from;
+    final toMoment = to;
+    final fromStr = fromMoment == null
+        ? null
+        : appTime.formatDate(fromMoment, timeContext);
+    final toStr = toMoment == null
+        ? null
+        : appTime.formatDate(toMoment, timeContext);
 
-    if (fromLocal != null && toLocal != null) {
-      return l10n.dateRangeChipBoth(
-        _dateFormat.format(fromLocal),
-        _dateFormat.format(toLocal),
-      );
+    if (fromStr != null && toStr != null) {
+      return l10n.dateRangeChipBoth(fromStr, toStr);
     }
-    if (fromLocal != null) {
-      return l10n.dateRangeChipFromOnly(_dateFormat.format(fromLocal));
-    }
-    if (toLocal != null) {
-      return l10n.dateRangeChipToOnly(_dateFormat.format(toLocal));
-    }
+    if (fromStr != null) return l10n.dateRangeChipFromOnly(fromStr);
+    if (toStr != null) return l10n.dateRangeChipToOnly(toStr);
     return label;
   }
 

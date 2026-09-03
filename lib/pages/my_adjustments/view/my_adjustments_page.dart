@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
 import 'package:smenka_mobile/data/domain/adjustment/_adjustment.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/repositories/shift_repository.dart';
 import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -33,6 +34,7 @@ class MyAdjustmentsPage extends StatelessWidget {
       create: (_) => MyAdjustmentsCubit(
         orgId: orgId,
         adjustmentRepository: context.read<AdjustmentRepository>(),
+        organizationRepository: context.read<OrganizationRepository>(),
       ),
       child: const _MyAdjustmentsView(),
     );
@@ -44,14 +46,21 @@ class _MyAdjustmentsView extends StatelessWidget {
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final cubit = context.read<MyAdjustmentsCubit>();
+    final timeContext = cubit.state.timeContext;
+    final customFrom = cubit.state.customFrom;
+    final customTo = cubit.state.customTo;
     final result = await context.router.push<DateRangePickerResult?>(
       DateRangePickerRoute(
-        initialFrom: cubit.state.customFrom?.toLocal(),
-        initialTo: cubit.state.customTo?.toLocal(),
+        initialFrom: customFrom == null
+            ? null
+            : appTimeCalendarDay(customFrom, timeContext),
+        initialTo: customTo == null
+            ? null
+            : appTimeCalendarDay(customTo, timeContext),
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc, result.toUtc);
+      cubit.setCustomRange(result.fromUtc(timeContext), result.toUtc(timeContext));
     }
   }
 
@@ -76,6 +85,7 @@ class _MyAdjustmentsView extends StatelessWidget {
                   preset: state.preset,
                   customFrom: state.customFrom,
                   customTo: state.customTo,
+                  timeContext: state.timeContext,
                   onPresetChanged: cubit.setPreset,
                   onCustomTap: () => _openDateRangePicker(context),
                   onCustomClear: () => cubit.setCustomRange(null, null),
@@ -101,7 +111,13 @@ class _MyAdjustmentsView extends StatelessWidget {
                     title: l10n.myAdjustmentsEmpty,
                   ),
                   itemBuilder: (context, adjustment, index) =>
-                      _MyAdjustmentTile(adjustment: adjustment),
+                      _MyAdjustmentTile(
+                        adjustment: adjustment,
+                        timeContext: context
+                            .read<MyAdjustmentsCubit>()
+                            .state
+                            .timeContext,
+                      ),
                 ),
           ),
         ],
@@ -111,9 +127,10 @@ class _MyAdjustmentsView extends StatelessWidget {
 }
 
 class _MyAdjustmentTile extends StatelessWidget {
-  const _MyAdjustmentTile({required this.adjustment});
+  const _MyAdjustmentTile({required this.adjustment, required this.timeContext});
 
   final MyAdjustment adjustment;
+  final AppTimeContext timeContext;
 
   /// Открывает смену напрямую по id (`GET /shifts/{shift_id}`,
   /// `shift_self_detail`) — без привязки к `occurred_at` начисления, которое
@@ -183,9 +200,10 @@ class _MyAdjustmentTile extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    DateFormat(
-                      'dd.MM.yyyy HH:mm',
-                    ).format(adjustment.occurredAt.toLocal()),
+                    const AppTime().formatDateTime(
+                      adjustment.occurredAt,
+                      timeContext,
+                    ),
                     style: textTheme.bodySmall?.copyWith(
                       color: colors.secondary,
                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/widgets/date_range_filter_chip.dart';
 
@@ -12,6 +13,7 @@ class PeriodPresetSelector extends StatelessWidget {
     required this.preset,
     required this.customFrom,
     required this.customTo,
+    required this.timeContext,
     required this.onPresetChanged,
     required this.onCustomTap,
     required this.onCustomClear,
@@ -24,6 +26,10 @@ class PeriodPresetSelector extends StatelessWidget {
   /// Границы произвольного диапазона (UTC) — для подписи чипа.
   final DateTime? customFrom;
   final DateTime? customTo;
+
+  /// Контекст представления чипа диапазона (устройство либо IANA-зона
+  /// организации экрана).
+  final AppTimeContext timeContext;
 
   final ValueChanged<PeriodPreset> onPresetChanged;
   final VoidCallback onCustomTap;
@@ -76,6 +82,7 @@ class PeriodPresetSelector extends StatelessWidget {
             from: customFrom,
             to: customTo,
             label: l10n.statsModeCustom,
+            timeContext: timeContext,
             onTap: onCustomTap,
             onClear: onCustomClear,
           ),

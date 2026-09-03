@@ -2,13 +2,21 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
 
 /// Результат выбора в модалке диапазона дат.
 ///
-/// [from] и [to] — выбранные **локальные календарные дни** (без времени).
-/// Допустим открытый диапазон: заполнена только одна из границ.
+/// [from] и [to] — выбранные календарные дни (год/месяц/день, без времени и
+/// БЕЗ привязки к таймзоне: это просто дата, которую пользователь увидел на
+/// календаре). Допустим открытый диапазон: заполнена только одна из границ.
+///
+/// Перевод в UTC-границы вызывающая сторона делает сама, явным
+/// `AppTime().utcBoundsForDay(day, context)` — с устройством для
+/// персональных/смешанных фильтров или с IANA-зоной организации на её
+/// экране (см. `design.md`: один календарный пикер не может сам знать,
+/// в чьей таймзоне открыт).
 ///
 /// `from == null && to == null` — пользователь нажал «Сбросить».
 /// Если модалку закрыли свайпом/тапом по фону — роут вернёт `null` целиком,
@@ -16,28 +24,42 @@ import 'package:smenka_mobile/widgets/_widgets.dart';
 class DateRangePickerResult {
   const DateRangePickerResult({this.from, this.to});
 
-  /// Локальный календарный день нижней границы.
+  /// Календарный день нижней границы.
   final DateTime? from;
 
-  /// Локальный календарный день верхней границы.
+  /// Календарный день верхней границы.
   final DateTime? to;
 
   /// Сброс диапазона (обе границы пусты).
   bool get isEmpty => from == null && to == null;
+}
 
-  /// Начало дня [from] (00:00:00 локали) в UTC — для отправки на бэк.
-  DateTime? get fromUtc {
+/// Переводит выбранные [DateRangePickerResult] дни в UTC-границы явного
+/// [AppTimeContext] — единая точка для всех вызывающих сторон пикера, чтобы
+/// формула перевода (через `AppTime.utcBoundsForDay`, IANA-сутки в
+/// организационном контексте) не дублировалась в каждом экране.
+extension DateRangePickerResultBounds on DateRangePickerResult {
+  /// Начало календарного дня [from] в UTC. `null`, если граница не выбрана.
+  DateTime? fromUtc(AppTimeContext context) {
     final day = from;
     if (day == null) return null;
-    return DateTime(day.year, day.month, day.day).toUtc();
+    return const AppTime().utcBoundsForDay(day, context).fromUtc;
   }
 
-  /// Конец дня [to] (23:59:59 локали) в UTC — для отправки на бэк.
-  DateTime? get toUtc {
+  /// Конец календарного дня [to] (исключающая верхняя граница следующих
+  /// суток) в UTC. `null`, если граница не выбрана.
+  DateTime? toUtc(AppTimeContext context) {
     final day = to;
     if (day == null) return null;
-    return DateTime(day.year, day.month, day.day, 23, 59, 59).toUtc();
+    return const AppTime().utcBoundsForDay(day, context).toUtc;
   }
+}
+
+/// Календарный день (без времени) настенного представления [utcMoment] в
+/// [context] — для предзаполнения пикера уже применённой UTC-границей.
+DateTime appTimeCalendarDay(DateTime utcMoment, AppTimeContext context) {
+  final wall = const AppTime().wallTime(utcMoment, context);
+  return DateTime(wall.year, wall.month, wall.day);
 }
 
 /// Граница диапазона, активная в календаре.

@@ -1,16 +1,22 @@
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 /// Подпись фактически применённого окна (из `range_from`/`range_to` статистики
-/// либо `period` payroll-ответа). Поддерживает открытые границы:
-/// «за 01.06.2026 – 10.06.2026», «с 01.06.2026», «по 10.06.2026».
-/// Обе границы пусты — `null` (подпись не рисуется).
-String? appliedRangeLabel(BuildContext context, DateTime? from, DateTime? to) {
+/// либо `period` payroll-ответа), в настенном времени явного [timeContext].
+/// Поддерживает открытые границы: «за 01.06.2026 – 10.06.2026», «с
+/// 01.06.2026», «по 10.06.2026». Обе границы пусты — `null` (подпись не
+/// рисуется).
+String? appliedRangeLabel(
+  BuildContext context,
+  DateTime? from,
+  DateTime? to,
+  AppTimeContext timeContext,
+) {
   final l10n = context.l10n;
-  final format = DateFormat('dd.MM.yyyy');
-  final fromStr = from == null ? null : format.format(from.toLocal());
-  final toStr = to == null ? null : format.format(to.toLocal());
+  const appTime = AppTime();
+  final fromStr = from == null ? null : appTime.formatDate(from, timeContext);
+  final toStr = to == null ? null : appTime.formatDate(to, timeContext);
 
   if (fromStr != null && toStr != null) {
     return l10n.statsAppliedRange(fromStr, toStr);

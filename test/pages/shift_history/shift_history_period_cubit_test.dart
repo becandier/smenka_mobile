@@ -2,13 +2,18 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_period_cubit.dart';
 import 'package:smenka_mobile/pages/shift_history/cubit/shift_history_period_state.dart';
+
+/// Кубит по умолчанию считает границы в контексте устройства, пока
+/// `ShiftHistoryPage` не резолвит контекст экрана через [applyContext].
+const _device = AppTimeContext.device();
 
 void main() {
   test('по умолчанию — пресет «неделя» с вычисленными границами (UTC)', () {
     final cubit = ShiftHistoryPeriodCubit();
-    final expected = PeriodPreset.week.boundsUtc(DateTime.now());
+    final expected = PeriodPreset.week.boundsUtc(DateTime.now().toUtc(), _device);
 
     expect(cubit.state.selectedPreset, PeriodPreset.week);
     expect(cubit.state.dateFrom, expected.fromUtc);
@@ -19,7 +24,7 @@ void main() {
 
   test('changePeriod(month) пересчитывает границы под месяц', () {
     final cubit = ShiftHistoryPeriodCubit()..changePeriod(PeriodPreset.month);
-    final expected = PeriodPreset.month.boundsUtc(DateTime.now());
+    final expected = PeriodPreset.month.boundsUtc(DateTime.now().toUtc(), _device);
 
     expect(cubit.state.selectedPreset, PeriodPreset.month);
     expect(cubit.state.dateFrom, expected.fromUtc);
@@ -66,7 +71,7 @@ void main() {
       ..setCustomRange(DateTime.utc(2026, 6), DateTime.utc(2026, 6, 10))
       ..setCustomRange(null, null);
 
-    final expected = PeriodPreset.week.boundsUtc(DateTime.now());
+    final expected = PeriodPreset.week.boundsUtc(DateTime.now().toUtc(), _device);
 
     expect(cubit.state.selectedPreset, PeriodPreset.week);
     expect(cubit.state.isCustomRange, isFalse);

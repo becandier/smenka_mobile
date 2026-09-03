@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
 import 'package:smenka_mobile/core/network/task.dart';
@@ -17,6 +19,7 @@ class PayrollCubit extends Cubit<PayrollState> {
        super(const PayrollState()) {
     load();
     loadMembers();
+    unawaited(_loadOrganizationTimezone());
   }
 
   final String _orgId;
@@ -24,6 +27,19 @@ class PayrollCubit extends Cubit<PayrollState> {
   final OrganizationRepository _organizationRepository;
 
   String get orgId => _orgId;
+
+  /// Один запрос за время жизни экрана (см. `MyPenaltiesCubit`, тот же
+  /// приём). Ошибка молча оставляет дефолт.
+  Future<void> _loadOrganizationTimezone() async {
+    final result = await _organizationRepository.getById(_orgId);
+    result.fold(
+      onSuccess: (org) {
+        emit(state.copyWith(organizationTimezone: org.timezone));
+        if (!state.isCustomRange) load();
+      },
+      onFailure: (_) {},
+    );
+  }
 
   /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
   int _requestId = 0;
@@ -34,7 +50,7 @@ class PayrollCubit extends Cubit<PayrollState> {
 
     final (DateTime? dateFrom, DateTime? dateTo) = switch (state.preset) {
       final preset? => () {
-        final bounds = preset.boundsUtc(DateTime.now());
+        final bounds = preset.boundsUtc(DateTime.now().toUtc(), state.timeContext);
         return (bounds.fromUtc, bounds.toUtc);
       }(),
       null => (state.customFrom, state.customTo),

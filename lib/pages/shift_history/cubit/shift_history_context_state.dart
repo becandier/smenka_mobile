@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smenka_mobile/core/bloc/section_data.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 
@@ -48,5 +49,33 @@ abstract class ShiftHistoryContextState with _$ShiftHistoryContextState {
     final id = organizationId;
     if (id == null) return null;
     return availableOrganizations.where((o) => o.id == id).firstOrNull;
+  }
+
+  /// Контекст представления времени для КОНКРЕТНОЙ смены списка: её
+  /// собственная таймзона ([Shift.organizationTimezone]) либо (rolling
+  /// fallback) уже загруженная организация из [availableOrganizations] —
+  /// без лишнего запроса на каждую смену. Актуально и для «Все смены»
+  /// (список из нескольких организаций — контекст своей строки), и для
+  /// фильтра по одной организации.
+  AppTimeContext timeContextFor(Shift shift) {
+    final orgId = shift.organizationId;
+    if (orgId == null) return const AppTimeContext.device();
+    final scopedTimezone = availableOrganizations
+        .where((o) => o.id == orgId)
+        .firstOrNull
+        ?.timezone;
+    return shift.timeContext(scopedOrganizationTimezone: scopedTimezone);
+  }
+
+  /// Контекст календарных вычислений периода/фильтра ЭКРАНА (не строки):
+  /// своя IANA-зона на экране конкретной организации, иначе — устройство,
+  /// поскольку общий фильтр «Все смены»/«Персональные» не может
+  /// одновременно представлять календарные сутки нескольких организаций.
+  AppTimeContext get periodContext {
+    if (scope != ShiftScope.organization) return const AppTimeContext.device();
+    final timeZone = selectedOrganization?.timezone;
+    return timeZone == null
+        ? const AppTimeContext.device()
+        : AppTimeContext.organization(timeZone);
   }
 }
