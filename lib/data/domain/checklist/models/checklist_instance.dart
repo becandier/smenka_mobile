@@ -50,6 +50,12 @@ abstract class ChecklistInstanceDetail with _$ChecklistInstanceDetail {
     /// Верхняя граница числа фото на пункт (с бэка, не хардкод). Клиент по нему
     /// прячет кнопку «Добавить фото». `null` — старый бэк лимит не прислал.
     int? maxPhotosPerItem,
+
+    /// IANA-таймзона организации смены (additive, backend `d84750c`). `null`
+    /// для персональной смены и для старого бэка без поля (rolling deploy) —
+    /// тогда штамп фото и настенное время пунктов используют
+    /// `AppTimeContext.device()`.
+    String? organizationTimezone,
   }) = _ChecklistInstanceDetail;
 }
 

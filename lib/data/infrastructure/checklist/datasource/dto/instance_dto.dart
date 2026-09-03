@@ -50,6 +50,11 @@ abstract class ChecklistInstanceDetailDto with _$ChecklistInstanceDetailDto {
     required List<ChecklistInstanceItemDto> items,
     DateTime? completedAt,
     int? maxPhotosPerItem,
+
+    /// Self-contained additive (backend `d84750c`): текущая IANA-зона
+    /// организации смены; `null` для персональной смены и для старого бэка
+    /// без поля (rolling deploy).
+    String? organizationTimezone,
   }) = _ChecklistInstanceDetailDto;
 
   factory ChecklistInstanceDetailDto.fromJson(Map<String, dynamic> json) =>
