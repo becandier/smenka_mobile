@@ -68,8 +68,12 @@ class OrgShiftsCubit extends Cubit<OrgShiftsState>
     loadShifts();
   }
 
-  /// Применить диапазон дат (UTC-границы, обе включительно по `started_at`).
-  /// Обе `null` — сброс диапазона. Один перезапрос с первой страницы.
+  /// Применить диапазон дат: [dateFrom] — начало первого выбранного дня
+  /// (UTC), [dateTo] — начало дня, СЛЕДУЮЩЕГО за последним выбранным (см.
+  /// `DateRangePickerResultBounds.toUtc` — backend сравнивает `started_at`
+  /// с ним через `<=` включительно, известное расхождение на самой границе
+  /// суток задокументировано там же). Обе `null` — сброс диапазона. Один
+  /// перезапрос с первой страницы.
   void setDateRange(DateTime? dateFrom, DateTime? dateTo) {
     emit(state.copyWith(filterDateFrom: dateFrom, filterDateTo: dateTo));
     loadShifts();
