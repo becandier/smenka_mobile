@@ -47,7 +47,18 @@ mixin _$ShiftTrackerState {
 /// только для пересчёта стартуемости окна графика, см.
 /// `schedule_window_enforcement/mobile.md`). `null`, пока тик не
 /// запущен (сеть ещё грузится / смена активна / кубит закрыт).
- DateTime? get idleNow;
+ DateTime? get idleNow;/// Последняя завершённая своя смена с ещё открытым окном дозаполнения
+/// чек-листа (`checklist_grace_period`) — драйвер «заметного блока» на
+/// idle-экране (mobile.md, п.2). `null` — смены не было, обязательные
+/// пункты уже закрыты, либо окно истекло.
+ Shift? get checklistGraceShift;/// Дедлайн окна [checklistGraceShift] — момент из ответа
+/// `GET /shifts/{id}/checklists` (`fill_deadline_at`), UTC. `null`
+/// вместе с [checklistGraceShift].
+ DateTime? get checklistGraceDeadlineAt;/// Тик обратного отсчёта окна — обновляется раз в секунду, пока окно
+/// открыто (`ShiftTrackerCubit._tickChecklistGrace`). Отдельное от
+/// [checklistGraceDeadlineAt] поле — чтобы блок пересчитывал остаток
+/// каждую секунду без лишних действий над остальным стейтом.
+ DateTime? get checklistGraceNow;
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -58,16 +69,16 @@ $ShiftTrackerStateCopyWith<ShiftTrackerState> get copyWith => _$ShiftTrackerStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.lastGeoFailure, lastGeoFailure) || other.lastGeoFailure == lastGeoFailure)&&(identical(other.geoBlockLevel, geoBlockLevel) || other.geoBlockLevel == geoBlockLevel)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.lastGeoFailure, lastGeoFailure) || other.lastGeoFailure == lastGeoFailure)&&(identical(other.geoBlockLevel, geoBlockLevel) || other.geoBlockLevel == geoBlockLevel)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow)&&(identical(other.checklistGraceShift, checklistGraceShift) || other.checklistGraceShift == checklistGraceShift)&&(identical(other.checklistGraceDeadlineAt, checklistGraceDeadlineAt) || other.checklistGraceDeadlineAt == checklistGraceDeadlineAt)&&(identical(other.checklistGraceNow, checklistGraceNow) || other.checklistGraceNow == checklistGraceNow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,lastGeoFailure,geoBlockLevel,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow);
+int get hashCode => Object.hashAll([runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,lastGeoFailure,geoBlockLevel,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow,checklistGraceShift,checklistGraceDeadlineAt,checklistGraceNow]);
 
 @override
 String toString() {
-  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, lastGeoFailure: $lastGeoFailure, geoBlockLevel: $geoBlockLevel, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow)';
+  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, lastGeoFailure: $lastGeoFailure, geoBlockLevel: $geoBlockLevel, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow, checklistGraceShift: $checklistGraceShift, checklistGraceDeadlineAt: $checklistGraceDeadlineAt, checklistGraceNow: $checklistGraceNow)';
 }
 
 
@@ -78,11 +89,11 @@ abstract mixin class $ShiftTrackerStateCopyWith<$Res>  {
   factory $ShiftTrackerStateCopyWith(ShiftTrackerState value, $Res Function(ShiftTrackerState) _then) = _$ShiftTrackerStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, GeoFailure? lastGeoFailure, GeoBlockLevel geoBlockLevel, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow
+ SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, GeoFailure? lastGeoFailure, GeoBlockLevel geoBlockLevel, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow, Shift? checklistGraceShift, DateTime? checklistGraceDeadlineAt, DateTime? checklistGraceNow
 });
 
 
-$SectionDataCopyWith<Shift, $Res> get activeShift;$SectionDataCopyWith<List<Organization>, $Res> get organizations;$WorkLocationCopyWith<$Res>? get selectedWorkLocation;$SectionDataCopyWith<MySchedules, $Res> get schedules;
+$SectionDataCopyWith<Shift, $Res> get activeShift;$SectionDataCopyWith<List<Organization>, $Res> get organizations;$WorkLocationCopyWith<$Res>? get selectedWorkLocation;$SectionDataCopyWith<MySchedules, $Res> get schedules;$ShiftCopyWith<$Res>? get checklistGraceShift;
 
 }
 /// @nodoc
@@ -95,7 +106,7 @@ class _$ShiftTrackerStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? lastGeoFailure = freezed,Object? geoBlockLevel = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? lastGeoFailure = freezed,Object? geoBlockLevel = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,Object? checklistGraceShift = freezed,Object? checklistGraceDeadlineAt = freezed,Object? checklistGraceNow = freezed,}) {
   return _then(_self.copyWith(
 activeShift: null == activeShift ? _self.activeShift : activeShift // ignore: cast_nullable_to_non_nullable
 as SectionData<Shift>,organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
@@ -113,6 +124,9 @@ as bool,selectedWorkLocation: freezed == selectedWorkLocation ? _self.selectedWo
 as WorkLocation?,schedules: null == schedules ? _self.schedules : schedules // ignore: cast_nullable_to_non_nullable
 as SectionData<MySchedules>,selectedWorkScheduleId: freezed == selectedWorkScheduleId ? _self.selectedWorkScheduleId : selectedWorkScheduleId // ignore: cast_nullable_to_non_nullable
 as String?,idleNow: freezed == idleNow ? _self.idleNow : idleNow // ignore: cast_nullable_to_non_nullable
+as DateTime?,checklistGraceShift: freezed == checklistGraceShift ? _self.checklistGraceShift : checklistGraceShift // ignore: cast_nullable_to_non_nullable
+as Shift?,checklistGraceDeadlineAt: freezed == checklistGraceDeadlineAt ? _self.checklistGraceDeadlineAt : checklistGraceDeadlineAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,checklistGraceNow: freezed == checklistGraceNow ? _self.checklistGraceNow : checklistGraceNow // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -154,6 +168,18 @@ $SectionDataCopyWith<MySchedules, $Res> get schedules {
   
   return $SectionDataCopyWith<MySchedules, $Res>(_self.schedules, (value) {
     return _then(_self.copyWith(schedules: value));
+  });
+}/// Create a copy of ShiftTrackerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ShiftCopyWith<$Res>? get checklistGraceShift {
+    if (_self.checklistGraceShift == null) {
+    return null;
+  }
+
+  return $ShiftCopyWith<$Res>(_self.checklistGraceShift!, (value) {
+    return _then(_self.copyWith(checklistGraceShift: value));
   });
 }
 }
@@ -237,10 +263,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow,  Shift? checklistGraceShift,  DateTime? checklistGraceDeadlineAt,  DateTime? checklistGraceNow)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState() when $default != null:
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow,_that.checklistGraceShift,_that.checklistGraceDeadlineAt,_that.checklistGraceNow);case _:
   return orElse();
 
 }
@@ -258,10 +284,10 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow,  Shift? checklistGraceShift,  DateTime? checklistGraceDeadlineAt,  DateTime? checklistGraceNow)  $default,) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState():
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow,_that.checklistGraceShift,_that.checklistGraceDeadlineAt,_that.checklistGraceNow);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -278,10 +304,10 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<Shift> activeShift,  SectionData<List<Organization>> organizations,  String? selectedOrganizationId,  int elapsedSeconds,  FeatureStatus actionStatus,  String? actionError,  String? actionErrorCode,  bool isOffline,  bool showLowAccuracyWarning,  GeoFailure? lastGeoFailure,  GeoBlockLevel geoBlockLevel,  bool shiftAutoFinished,  WorkLocation? selectedWorkLocation,  SectionData<MySchedules> schedules,  String? selectedWorkScheduleId,  DateTime? idleNow,  Shift? checklistGraceShift,  DateTime? checklistGraceDeadlineAt,  DateTime? checklistGraceNow)?  $default,) {final _that = this;
 switch (_that) {
 case _ShiftTrackerState() when $default != null:
-return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow);case _:
+return $default(_that.activeShift,_that.organizations,_that.selectedOrganizationId,_that.elapsedSeconds,_that.actionStatus,_that.actionError,_that.actionErrorCode,_that.isOffline,_that.showLowAccuracyWarning,_that.lastGeoFailure,_that.geoBlockLevel,_that.shiftAutoFinished,_that.selectedWorkLocation,_that.schedules,_that.selectedWorkScheduleId,_that.idleNow,_that.checklistGraceShift,_that.checklistGraceDeadlineAt,_that.checklistGraceNow);case _:
   return null;
 
 }
@@ -293,7 +319,7 @@ return $default(_that.activeShift,_that.organizations,_that.selectedOrganization
 
 
 class _ShiftTrackerState extends ShiftTrackerState {
-  const _ShiftTrackerState({this.activeShift = const SectionData<Shift>(), this.organizations = const SectionData<List<Organization>>(), this.selectedOrganizationId, this.elapsedSeconds = 0, this.actionStatus = FeatureStatus.initial, this.actionError, this.actionErrorCode, this.isOffline = false, this.showLowAccuracyWarning = false, this.lastGeoFailure, this.geoBlockLevel = GeoBlockLevel.unknown, this.shiftAutoFinished = false, this.selectedWorkLocation, this.schedules = const SectionData<MySchedules>(), this.selectedWorkScheduleId, this.idleNow}): super._();
+  const _ShiftTrackerState({this.activeShift = const SectionData<Shift>(), this.organizations = const SectionData<List<Organization>>(), this.selectedOrganizationId, this.elapsedSeconds = 0, this.actionStatus = FeatureStatus.initial, this.actionError, this.actionErrorCode, this.isOffline = false, this.showLowAccuracyWarning = false, this.lastGeoFailure, this.geoBlockLevel = GeoBlockLevel.unknown, this.shiftAutoFinished = false, this.selectedWorkLocation, this.schedules = const SectionData<MySchedules>(), this.selectedWorkScheduleId, this.idleNow, this.checklistGraceShift, this.checklistGraceDeadlineAt, this.checklistGraceNow}): super._();
   
 
 /// Активная смена (SectionData — loading/error на init, success при наличии)
@@ -345,6 +371,20 @@ class _ShiftTrackerState extends ShiftTrackerState {
 /// `schedule_window_enforcement/mobile.md`). `null`, пока тик не
 /// запущен (сеть ещё грузится / смена активна / кубит закрыт).
 @override final  DateTime? idleNow;
+/// Последняя завершённая своя смена с ещё открытым окном дозаполнения
+/// чек-листа (`checklist_grace_period`) — драйвер «заметного блока» на
+/// idle-экране (mobile.md, п.2). `null` — смены не было, обязательные
+/// пункты уже закрыты, либо окно истекло.
+@override final  Shift? checklistGraceShift;
+/// Дедлайн окна [checklistGraceShift] — момент из ответа
+/// `GET /shifts/{id}/checklists` (`fill_deadline_at`), UTC. `null`
+/// вместе с [checklistGraceShift].
+@override final  DateTime? checklistGraceDeadlineAt;
+/// Тик обратного отсчёта окна — обновляется раз в секунду, пока окно
+/// открыто (`ShiftTrackerCubit._tickChecklistGrace`). Отдельное от
+/// [checklistGraceDeadlineAt] поле — чтобы блок пересчитывал остаток
+/// каждую секунду без лишних действий над остальным стейтом.
+@override final  DateTime? checklistGraceNow;
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
@@ -356,16 +396,16 @@ _$ShiftTrackerStateCopyWith<_ShiftTrackerState> get copyWith => __$ShiftTrackerS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.lastGeoFailure, lastGeoFailure) || other.lastGeoFailure == lastGeoFailure)&&(identical(other.geoBlockLevel, geoBlockLevel) || other.geoBlockLevel == geoBlockLevel)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShiftTrackerState&&(identical(other.activeShift, activeShift) || other.activeShift == activeShift)&&(identical(other.organizations, organizations) || other.organizations == organizations)&&(identical(other.selectedOrganizationId, selectedOrganizationId) || other.selectedOrganizationId == selectedOrganizationId)&&(identical(other.elapsedSeconds, elapsedSeconds) || other.elapsedSeconds == elapsedSeconds)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.actionError, actionError) || other.actionError == actionError)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.isOffline, isOffline) || other.isOffline == isOffline)&&(identical(other.showLowAccuracyWarning, showLowAccuracyWarning) || other.showLowAccuracyWarning == showLowAccuracyWarning)&&(identical(other.lastGeoFailure, lastGeoFailure) || other.lastGeoFailure == lastGeoFailure)&&(identical(other.geoBlockLevel, geoBlockLevel) || other.geoBlockLevel == geoBlockLevel)&&(identical(other.shiftAutoFinished, shiftAutoFinished) || other.shiftAutoFinished == shiftAutoFinished)&&(identical(other.selectedWorkLocation, selectedWorkLocation) || other.selectedWorkLocation == selectedWorkLocation)&&(identical(other.schedules, schedules) || other.schedules == schedules)&&(identical(other.selectedWorkScheduleId, selectedWorkScheduleId) || other.selectedWorkScheduleId == selectedWorkScheduleId)&&(identical(other.idleNow, idleNow) || other.idleNow == idleNow)&&(identical(other.checklistGraceShift, checklistGraceShift) || other.checklistGraceShift == checklistGraceShift)&&(identical(other.checklistGraceDeadlineAt, checklistGraceDeadlineAt) || other.checklistGraceDeadlineAt == checklistGraceDeadlineAt)&&(identical(other.checklistGraceNow, checklistGraceNow) || other.checklistGraceNow == checklistGraceNow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,lastGeoFailure,geoBlockLevel,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow);
+int get hashCode => Object.hashAll([runtimeType,activeShift,organizations,selectedOrganizationId,elapsedSeconds,actionStatus,actionError,actionErrorCode,isOffline,showLowAccuracyWarning,lastGeoFailure,geoBlockLevel,shiftAutoFinished,selectedWorkLocation,schedules,selectedWorkScheduleId,idleNow,checklistGraceShift,checklistGraceDeadlineAt,checklistGraceNow]);
 
 @override
 String toString() {
-  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, lastGeoFailure: $lastGeoFailure, geoBlockLevel: $geoBlockLevel, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow)';
+  return 'ShiftTrackerState(activeShift: $activeShift, organizations: $organizations, selectedOrganizationId: $selectedOrganizationId, elapsedSeconds: $elapsedSeconds, actionStatus: $actionStatus, actionError: $actionError, actionErrorCode: $actionErrorCode, isOffline: $isOffline, showLowAccuracyWarning: $showLowAccuracyWarning, lastGeoFailure: $lastGeoFailure, geoBlockLevel: $geoBlockLevel, shiftAutoFinished: $shiftAutoFinished, selectedWorkLocation: $selectedWorkLocation, schedules: $schedules, selectedWorkScheduleId: $selectedWorkScheduleId, idleNow: $idleNow, checklistGraceShift: $checklistGraceShift, checklistGraceDeadlineAt: $checklistGraceDeadlineAt, checklistGraceNow: $checklistGraceNow)';
 }
 
 
@@ -376,11 +416,11 @@ abstract mixin class _$ShiftTrackerStateCopyWith<$Res> implements $ShiftTrackerS
   factory _$ShiftTrackerStateCopyWith(_ShiftTrackerState value, $Res Function(_ShiftTrackerState) _then) = __$ShiftTrackerStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, GeoFailure? lastGeoFailure, GeoBlockLevel geoBlockLevel, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow
+ SectionData<Shift> activeShift, SectionData<List<Organization>> organizations, String? selectedOrganizationId, int elapsedSeconds, FeatureStatus actionStatus, String? actionError, String? actionErrorCode, bool isOffline, bool showLowAccuracyWarning, GeoFailure? lastGeoFailure, GeoBlockLevel geoBlockLevel, bool shiftAutoFinished, WorkLocation? selectedWorkLocation, SectionData<MySchedules> schedules, String? selectedWorkScheduleId, DateTime? idleNow, Shift? checklistGraceShift, DateTime? checklistGraceDeadlineAt, DateTime? checklistGraceNow
 });
 
 
-@override $SectionDataCopyWith<Shift, $Res> get activeShift;@override $SectionDataCopyWith<List<Organization>, $Res> get organizations;@override $WorkLocationCopyWith<$Res>? get selectedWorkLocation;@override $SectionDataCopyWith<MySchedules, $Res> get schedules;
+@override $SectionDataCopyWith<Shift, $Res> get activeShift;@override $SectionDataCopyWith<List<Organization>, $Res> get organizations;@override $WorkLocationCopyWith<$Res>? get selectedWorkLocation;@override $SectionDataCopyWith<MySchedules, $Res> get schedules;@override $ShiftCopyWith<$Res>? get checklistGraceShift;
 
 }
 /// @nodoc
@@ -393,7 +433,7 @@ class __$ShiftTrackerStateCopyWithImpl<$Res>
 
 /// Create a copy of ShiftTrackerState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? lastGeoFailure = freezed,Object? geoBlockLevel = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? activeShift = null,Object? organizations = null,Object? selectedOrganizationId = freezed,Object? elapsedSeconds = null,Object? actionStatus = null,Object? actionError = freezed,Object? actionErrorCode = freezed,Object? isOffline = null,Object? showLowAccuracyWarning = null,Object? lastGeoFailure = freezed,Object? geoBlockLevel = null,Object? shiftAutoFinished = null,Object? selectedWorkLocation = freezed,Object? schedules = null,Object? selectedWorkScheduleId = freezed,Object? idleNow = freezed,Object? checklistGraceShift = freezed,Object? checklistGraceDeadlineAt = freezed,Object? checklistGraceNow = freezed,}) {
   return _then(_ShiftTrackerState(
 activeShift: null == activeShift ? _self.activeShift : activeShift // ignore: cast_nullable_to_non_nullable
 as SectionData<Shift>,organizations: null == organizations ? _self.organizations : organizations // ignore: cast_nullable_to_non_nullable
@@ -411,6 +451,9 @@ as bool,selectedWorkLocation: freezed == selectedWorkLocation ? _self.selectedWo
 as WorkLocation?,schedules: null == schedules ? _self.schedules : schedules // ignore: cast_nullable_to_non_nullable
 as SectionData<MySchedules>,selectedWorkScheduleId: freezed == selectedWorkScheduleId ? _self.selectedWorkScheduleId : selectedWorkScheduleId // ignore: cast_nullable_to_non_nullable
 as String?,idleNow: freezed == idleNow ? _self.idleNow : idleNow // ignore: cast_nullable_to_non_nullable
+as DateTime?,checklistGraceShift: freezed == checklistGraceShift ? _self.checklistGraceShift : checklistGraceShift // ignore: cast_nullable_to_non_nullable
+as Shift?,checklistGraceDeadlineAt: freezed == checklistGraceDeadlineAt ? _self.checklistGraceDeadlineAt : checklistGraceDeadlineAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,checklistGraceNow: freezed == checklistGraceNow ? _self.checklistGraceNow : checklistGraceNow // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -453,6 +496,18 @@ $SectionDataCopyWith<MySchedules, $Res> get schedules {
   
   return $SectionDataCopyWith<MySchedules, $Res>(_self.schedules, (value) {
     return _then(_self.copyWith(schedules: value));
+  });
+}/// Create a copy of ShiftTrackerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ShiftCopyWith<$Res>? get checklistGraceShift {
+    if (_self.checklistGraceShift == null) {
+    return null;
+  }
+
+  return $ShiftCopyWith<$Res>(_self.checklistGraceShift!, (value) {
+    return _then(_self.copyWith(checklistGraceShift: value));
   });
 }
 }

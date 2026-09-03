@@ -23,6 +23,16 @@ class _IdleShiftContent extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Заметный блок дозаполнения чек-листа последней смены
+            // (checklist_grace_period, mobile.md п.2) — над остальным
+            // содержимым idle-экрана, пока открыто окно.
+            if (state.checklistGraceShift case final graceShift?) ...[
+              _ChecklistGraceBlock(
+                shift: graceShift,
+                remaining: state.checklistGraceRemaining ?? Duration.zero,
+              ),
+              const SizedBox(height: 24),
+            ],
             Icon(
               Icons.timer_outlined,
               size: 80,
@@ -295,4 +305,81 @@ Future<WorkSchedulePickerResult?> _pushWorkSchedulePicker(
           state.selectedOrganization?.timezone ?? 'Europe/Moscow',
     ),
   );
+}
+
+/// Заметный блок «дозаполните чек-лист последней смены» — виден, пока
+/// открыто окно дозаполнения (`checklist_grace_period`, mobile.md п.2).
+/// Тап ведёт в уже существующий список чек-листов смены
+/// (`ShiftChecklistsRoute`) — там же, где сотрудник заполняет чек-листы
+/// активной смены, только для завершённой смены внутри окна.
+class _ChecklistGraceBlock extends StatelessWidget {
+  const _ChecklistGraceBlock({required this.shift, required this.remaining});
+
+  final Shift shift;
+  final Duration remaining;
+
+  Future<void> _open(BuildContext context) async {
+    final cubit = context.read<ShiftTrackerCubit>();
+    await context.router.push(
+      ShiftChecklistsRoute(
+        shiftId: shift.id,
+        organizationId: shift.organizationId,
+      ),
+    );
+    if (!context.mounted) return;
+    // Пользователь мог закрыть все обязательные пункты, либо окно истекло,
+    // пока он был на экране чек-листов — перепроверяем без ожидания
+    // следующего резюма/pull-to-refresh.
+    await cubit.refreshChecklistGrace();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+    final minutesLeft = wholeMinutesCeil(remaining);
+
+    return Material(
+      color: colors.warning.withValues(alpha: 0.12),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _open(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Icon(Icons.timer_outlined, color: colors.warning),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.shiftTrackerGraceBlockTitle,
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.checklistGraceRemainingMinutes(minutesLeft),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: colors.secondary.withValues(alpha: 0.5),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

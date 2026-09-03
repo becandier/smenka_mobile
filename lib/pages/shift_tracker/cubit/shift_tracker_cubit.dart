@@ -8,6 +8,7 @@ import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/api/local/work_schedule_context_storage.dart';
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -21,6 +22,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     required ShiftRepository shiftRepository,
     required OrganizationRepository organizationRepository,
     required WorkScheduleRepository workScheduleRepository,
+    required ChecklistRepository checklistRepository,
     required GeoService geoService,
     required ShiftContextStorage contextStorage,
     required WorkScheduleContextStorage scheduleContextStorage,
@@ -29,6 +31,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   }) : _shiftRepository = shiftRepository,
        _organizationRepository = organizationRepository,
        _workScheduleRepository = workScheduleRepository,
+       _checklistRepository = checklistRepository,
        _geoService = geoService,
        _contextStorage = contextStorage,
        _scheduleContextStorage = scheduleContextStorage,
@@ -48,6 +51,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   final ShiftRepository _shiftRepository;
   final OrganizationRepository _organizationRepository;
   final WorkScheduleRepository _workScheduleRepository;
+  final ChecklistRepository _checklistRepository;
   final GeoService _geoService;
   final ShiftContextStorage _contextStorage;
   final WorkScheduleContextStorage _scheduleContextStorage;
@@ -63,6 +67,14 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   /// пока смена не активна, выбрана организация и список графиков загружен
   /// (см. [_syncIdleTicker]).
   Timer? _idleTimer;
+
+  /// Тикер обратного отсчёта окна дозаполнения чек-листа
+  /// (`checklist_grace_period`, mobile.md п.2-3) — идёт, пока
+  /// `state.checklistGraceDeadlineAt` не `null`. Отдельный от [_idleTimer]:
+  /// блок дозаполнения не зависит от выбранной организации/загрузки
+  /// графиков (условие тикера графика), а только от наличия последней
+  /// завершённой смены с открытым окном.
+  Timer? _checklistGraceTimer;
 
   /// Момент последнего перезапроса `my-schedules` из-за закрытия окна —
   /// дебаунс на [_windowCloseRefetchCooldown] от `now`, а не от «была ли уже
@@ -238,6 +250,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     ]);
     _initCompleted = true;
     _maybePreselectContext();
+    unawaited(_loadChecklistGrace());
   }
 
   /// Предвыбор контекста смены (shift_org_default, инверсия дефолта
@@ -955,6 +968,10 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
             elapsedSeconds: 0,
           ),
         );
+        // Смена только что завершилась — если у неё остались незакрытые
+        // обязательные пункты, сразу проверяем окно дозаполнения (mobile.md,
+        // п.2), не дожидаясь следующего резюма/pull-to-refresh.
+        unawaited(_loadChecklistGrace());
         return true;
       },
       onFailure: (error) {
@@ -976,6 +993,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     await Future.wait([
       _pollSync(),
       _organizationRepository.fetchMyOrganizations(),
+      _loadChecklistGrace(),
     ]);
   }
 
@@ -1005,6 +1023,113 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
   void clearAutoFinishedNotice() {
     emit(state.copyWith(shiftAutoFinished: false));
+  }
+
+  /// Перепроверка окна дозаполнения после возврата с экрана чек-листов
+  /// (`_ChecklistGraceBlock`, mobile.md п.2) — пользователь мог закрыть все
+  /// обязательные пункты, либо окно истекло, пока он там был.
+  Future<void> refreshChecklistGrace() => _loadChecklistGrace();
+
+  /// Проверяет, есть ли у сотрудника последняя завершённая смена с открытым
+  /// окном дозаполнения чек-листа — источник «заметного блока» на
+  /// idle-экране (mobile.md, п.2). Дешёвый предфильтр по
+  /// `Shift.hasIncompleteRequiredChecklists` (сервер сам держит его
+  /// актуальным весь период окна, backend.md) экономит второй запрос, когда
+  /// дозаполнять нечего.
+  Future<void> _loadChecklistGrace() async {
+    if (state.hasActiveShift) {
+      _clearChecklistGrace();
+      return;
+    }
+
+    final result = await _shiftRepository.getShifts(
+      status: ShiftStatus.finished,
+      limit: 1,
+    );
+    final shift = result.fold(
+      onSuccess: (paginator) => paginator.data?.firstOrNull,
+      onFailure: (_) => null,
+    );
+
+    if (shift == null ||
+        shift.organizationId == null ||
+        !shift.hasIncompleteRequiredChecklists) {
+      _clearChecklistGrace();
+      return;
+    }
+
+    final checklistsResult = await _checklistRepository.getShiftChecklists(
+      shift.id,
+    );
+    final deadline = checklistsResult.fold(
+      onSuccess: (items) => items
+          .where((i) => i.fillAllowed && i.fillDeadlineAt != null)
+          .map((i) => i.fillDeadlineAt)
+          .whereType<DateTime>()
+          .firstOrNull,
+      onFailure: (_) => null,
+    );
+
+    if (deadline == null) {
+      _clearChecklistGrace();
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        checklistGraceShift: shift,
+        checklistGraceDeadlineAt: deadline,
+        checklistGraceNow: _now().toUtc(),
+      ),
+    );
+    _startChecklistGraceTimer();
+  }
+
+  void _clearChecklistGrace() {
+    _stopChecklistGraceTimer();
+    if (state.checklistGraceShift == null &&
+        state.checklistGraceDeadlineAt == null) {
+      return;
+    }
+    emit(
+      state.copyWith(
+        checklistGraceShift: null,
+        checklistGraceDeadlineAt: null,
+        checklistGraceNow: null,
+      ),
+    );
+  }
+
+  void _startChecklistGraceTimer() {
+    _stopChecklistGraceTimer();
+    _checklistGraceTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => _tickChecklistGrace(),
+    );
+  }
+
+  void _stopChecklistGraceTimer() {
+    _checklistGraceTimer?.cancel();
+    _checklistGraceTimer = null;
+  }
+
+  /// Локальный клиентский тик — переводит блок в скрытое состояние по
+  /// истечении расчёта от серверного `fill_deadline_at`, без нового запроса
+  /// (mobile.md, п.3). Часы устройства могут отставать/спешить — это
+  /// косметика: реальное решение по-прежнему принимает сервер при
+  /// фактической попытке дозаполнения.
+  void _tickChecklistGrace() {
+    final deadline = state.checklistGraceDeadlineAt;
+    if (deadline == null) {
+      _stopChecklistGraceTimer();
+      return;
+    }
+    final now = _now().toUtc();
+    if (!now.isBefore(deadline)) {
+      _clearChecklistGrace();
+      return;
+    }
+    emit(state.copyWith(checklistGraceNow: now));
   }
 
   /// Тихий опрос: сверяет показанную смену с сервером и ловит авто-завершение,
@@ -1067,6 +1192,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         if (state.isOrgShift && state.showWorkLocationSelector) {
           unawaited(_loadSchedules());
         }
+        unawaited(_loadChecklistGrace());
       }
     } finally {
       _syncing = false;
@@ -1111,6 +1237,7 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   Future<void> close() {
     _stopTimer();
     _stopIdleTicker();
+    _stopChecklistGraceTimer();
     _orgSubscription?.cancel();
     _connectivitySub?.cancel();
     return super.close();

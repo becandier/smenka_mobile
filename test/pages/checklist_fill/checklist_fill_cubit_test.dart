@@ -390,7 +390,7 @@ void main() {
       type: ChecklistType.shiftEnd,
       isRequired: true,
       status: ChecklistInstanceStatus.pending,
-      createdAt: createdAt ?? DateTime.utc(2026, 8, 1),
+      createdAt: createdAt ?? DateTime.utc(2026, 8),
       items: const [],
       fillAllowed: fillAllowed,
       fillDeadlineAt: fillDeadlineAt,
