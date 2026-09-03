@@ -1678,7 +1678,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Не удалось открыть камеру или галерею. Повторите';
 
   @override
-  String get errorShiftFinished => 'Смена завершена';
+  String get errorShiftFinished => 'Время на дозаполнение чек-листа истекло';
 
   @override
   String get errorInstanceNotFound => 'Чек-лист не найден';

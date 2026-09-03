@@ -789,7 +789,7 @@
     "errorPhotoFileEmpty": "Не удалось прочитать фото. Снимите фото заново",
     "errorPhotoDecodeFailed": "Не удалось обработать фото. Попробуйте другой снимок",
     "errorPhotoPickFailed": "Не удалось открыть камеру или галерею. Повторите",
-    "errorShiftFinished": "Смена завершена",
+    "errorShiftFinished": "Время на дозаполнение чек-листа истекло",
     "errorInstanceNotFound": "Чек-лист не найден",
     "errorItemNotFound": "Пункт чек-листа не найден",
     "errorWorkLocationRequired": "Выберите рабочую точку, чтобы начать смену",

@@ -3103,7 +3103,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorShiftFinished.
   ///
   /// In ru, this message translates to:
-  /// **'Смена завершена'**
+  /// **'Время на дозаполнение чек-листа истекло'**
   String get errorShiftFinished;
 
   /// No description provided for @errorInstanceNotFound.
