@@ -387,3 +387,15 @@
 - [x] `make check` зелёный (477/477), `make gen` прогнан после каждого изменения freezed-моделей
 - [ ] **Backend/admin**: backend review clean, но требуется повторный broad final review и чистый полный `make test`; admin — fix round 2 по ESLint-guard регрессу перед merge (см. `HANDOFF.md`/`STATUS.md`)
 - [ ] **End-to-end**: мерж `feature/shift-timezone-display` (backend → admin/mobile web), деплой и read-only проверка прод-кейса `04:39:06Z–18:00:00Z` + `Europe/Moscow` → `07:39–21:00` — за оркестратором (корень)
+
+---
+
+## Фича — Окно дозаполнения чек-листа после завершения смены (checklist_grace_period) `[~]` (`../docs/tasks/checklist_grace_period/mobile.md`)
+- [x] **Read-only по контракту, не по статусу**: `ChecklistFillCubit.readOnly` теперь берётся из серверного `fillAllowed` детали (`loadInstance()`), а не из `shift.status == ShiftStatus.finished`; навигация из истории смен (`_DetailChecklistsSection`) и списка чек-листов (`ShiftChecklistsPage`) переведена с той же заменой на уровне списка (`ChecklistInstance.fillAllowed`)
+- [x] **Обратный отсчёт от серверного `fill_deadline_at`**: шапка `ChecklistFillPage` (`_FillDeadlineBanner`) и блок idle-экрана (`_ChecklistGraceBlock`) тикают раз в секунду по инъецируемому `now`, не по «часам устройства напрямую» в смысле вычисления самого окна — окно целиком приходит с сервера
+- [x] **Истечение во время заполнения**: клиентский тик по достижении дедлайна локально переводит экран в read-only тем же `PhotoNotice.shiftFinished`, что уже обрабатывает серверный `SHIFT_FINISHED` (фото/отметка пункта) — второй механизм не заводили
+- [x] **Точка входа после завершения**: `ShiftTrackerCubit` проверяет последнюю завершённую смену (`Shift.hasIncompleteRequiredChecklists` — дешёвый предфильтр) и, если окно ещё открыто, показывает на idle-экране заметный блок со ссылкой на существующий `ShiftChecklistsRoute`; хук стоит на cold-старте, ручном `finishShift()` и авто-завершении фоновым поллингом
+- [x] **Предупреждение при завершении** дополнено фразой про минуты окна (`Organization.checklistGraceMinutes`, additive `int?` по прецеденту `overtimeRequestDays` — контракт явно не гарантирует поле на `GET /organizations`, при `null` фраза просто не показывается)
+- [x] `make gen`/`make loc` прогнаны, `make check` зелёный (520/520, из них 6 новых в `shift_tracker_cubit_test.dart` + 5 новых в `checklist_fill_cubit_test.dart`), `flutter build web --release --csp --no-tree-shake-icons --base-href=/` собирается
+- [ ] **Backend/admin**: бэкенд-трек (`fill_allowed`/`fill_deadline_at`, `checklist_grace_minutes` в `OrganizationSettings`, финализация статусов на границе окна) делается параллельно другим треком по тому же ТЗ — мобилка на контракте, реальная сквозная проверка возможна только после его готовности
+- [ ] **End-to-end**: мерж веток, деплой, проверка на проде трёх состояний (окно открыто/закрыто/истекло во время заполнения) — за оркестратором (корень)
