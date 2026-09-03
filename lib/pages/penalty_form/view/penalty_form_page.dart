@@ -2,15 +2,17 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/penalty/_penalty.dart';
 import 'package:smenka_mobile/l10n/error_localization.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
+import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
 import 'package:smenka_mobile/pages/penalty_form/cubit/penalty_form_cubit.dart';
 import 'package:smenka_mobile/pages/penalty_form/cubit/penalty_form_state.dart';
 import 'package:smenka_mobile/pages/shift_picker/_shift_picker.dart';
@@ -51,6 +53,7 @@ class PenaltyFormPage extends StatelessWidget {
       create: (_) => PenaltyFormCubit(
         orgId: orgId,
         penaltyRepository: context.read<PenaltyRepository>(),
+        organizationRepository: context.read<OrganizationRepository>(),
       ),
       child: _PenaltyFormView(
         orgId: orgId,
@@ -140,17 +143,25 @@ class _PenaltyFormViewState extends State<_PenaltyFormView> {
   }
 
   Future<void> _pickDate() async {
-    final now = DateTime.now();
+    // Дата штрафа — бизнес-событие организации: календарь и «сегодня»
+    // считаются в её IANA-зоне, не в зоне устройства (design.md).
+    final timeContext = context.read<PenaltyFormCubit>().state.timeContext;
+    final today = appTimeCalendarDay(DateTime.now().toUtc(), timeContext);
+    final occurredAt = _occurredAt;
     final picked = await showDatePicker(
       context: context,
-      initialDate: _occurredAt?.toLocal() ?? now,
+      initialDate: occurredAt == null
+          ? today
+          : appTimeCalendarDay(occurredAt, timeContext),
       firstDate: DateTime(2020),
-      lastDate: now,
+      lastDate: today,
     );
     if (!mounted || picked == null) return;
     setState(() {
-      // Выбранный локальный день → UTC начала дня (как `date_from`).
-      _occurredAt = DateTime(picked.year, picked.month, picked.day).toUtc();
+      // Выбранный календарный день организации → UTC начала её суток.
+      _occurredAt = const AppTime()
+          .utcBoundsForDay(picked, timeContext)
+          .fromUtc;
       _dateError = null;
     });
   }
@@ -259,9 +270,17 @@ class _PenaltyFormViewState extends State<_PenaltyFormView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final occurredAt = _occurredAt;
+    // Только таймзона — не весь `PenaltyFormState` (шаблоны/статус отправки
+    // не должны пересобирать этот build).
+    final organizationTimezone = context.select<PenaltyFormCubit, String>(
+      (cubit) => cubit.state.organizationTimezone,
+    );
     final occurredLabel = occurredAt == null
         ? null
-        : DateFormat('dd.MM.yyyy').format(occurredAt.toLocal());
+        : const AppTime().formatDate(
+            occurredAt,
+            AppTimeContext.organization(organizationTimezone),
+          );
 
     return AppBottomSheet(
       title: _isEdit ? l10n.finesEdit : l10n.finesAssign,

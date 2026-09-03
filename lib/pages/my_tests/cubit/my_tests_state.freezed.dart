@@ -219,8 +219,8 @@ return $default(_that.assignments,_that.organizations,_that.filterOrganizationId
 /// @nodoc
 
 
-class _MyTestsState implements MyTestsState {
-  const _MyTestsState({this.assignments = const PaginatedSectionData<TestAssignment>(), final  List<Organization> organizations = const <Organization>[], this.filterOrganizationId}): _organizations = organizations;
+class _MyTestsState extends MyTestsState {
+  const _MyTestsState({this.assignments = const PaginatedSectionData<TestAssignment>(), final  List<Organization> organizations = const <Organization>[], this.filterOrganizationId}): _organizations = organizations,super._();
   
 
 @override@JsonKey() final  PaginatedSectionData<TestAssignment> assignments;

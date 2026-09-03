@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/_shift.dart';
 import 'package:smenka_mobile/l10n/error_localization.dart';
@@ -121,9 +121,10 @@ class _ShiftPickerView extends StatelessWidget {
               else
                 ...shifts.map(
                   (shift) => _ShiftRow(
-                    label: DateFormat(
-                      'dd.MM.yyyy HH:mm',
-                    ).format(shift.startedAt.toLocal()),
+                    label: const AppTime().formatDateTime(
+                      shift.startedAt,
+                      shift.timeContext(),
+                    ),
                     isSelected: shift.id == selectedShiftId,
                     onTap: () => _pick(context, shift),
                   ),

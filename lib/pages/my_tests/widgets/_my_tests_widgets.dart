@@ -1,9 +1,17 @@
 part of '../view/my_tests_page.dart';
 
 class _MyTestCard extends StatelessWidget {
-  const _MyTestCard({required this.assignment, required this.onTap});
+  const _MyTestCard({
+    required this.assignment,
+    required this.timeContext,
+    required this.onTap,
+  });
 
   final TestAssignment assignment;
+
+  /// Контекст представления дедлайна — IANA-зона организации назначения
+  /// (`MyTestsState.timeContextFor`) либо устройство.
+  final AppTimeContext timeContext;
   final VoidCallback onTap;
 
   @override
@@ -84,7 +92,7 @@ class _MyTestCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   l10n.myTestsDueDate(
-                    DateFormat('dd.MM.yyyy').format(dueAt.toLocal()),
+                    const AppTime().formatDate(dueAt, timeContext),
                   ),
                   style: textTheme.bodySmall?.copyWith(color: colors.secondary),
                 ),
