@@ -32,6 +32,20 @@ abstract class ChecklistInstance with _$ChecklistInstance {
     required ChecklistItemsSummary itemsSummary,
     required DateTime createdAt,
     DateTime? completedAt,
+
+    /// Можно ли сейчас редактировать пункты/фото этого экземпляра —
+    /// серверный признак окна дозаполнения (`checklist_grace_period`).
+    /// `true` для активной смены; для завершённой — пока не истекло окно
+    /// `checklist_grace_minutes`; `false` после его закрытия.
+    /// `@Default(true)` — старый бэк поля не пришлёт; деградация
+    /// самовосстанавливается через существующий обработчик `SHIFT_FINISHED`
+    /// при первой же неудачной мутации (см. `ChecklistFillCubit._update`).
+    @Default(true) bool fillAllowed,
+
+    /// Момент закрытия окна дозаполнения (UTC). Заполнен только пока
+    /// [fillAllowed] и смена завершена; `null` — смена активна, окно уже
+    /// закрыто, либо старый бэк поля не прислал.
+    DateTime? fillDeadlineAt,
   }) = _ChecklistInstance;
 }
 
@@ -56,6 +70,12 @@ abstract class ChecklistInstanceDetail with _$ChecklistInstanceDetail {
     /// тогда штамп фото и настенное время пунктов используют
     /// `AppTimeContext.device()`.
     String? organizationTimezone,
+
+    /// См. [ChecklistInstance.fillAllowed] — та же семантика, для детали.
+    @Default(true) bool fillAllowed,
+
+    /// См. [ChecklistInstance.fillDeadlineAt] — та же семантика, для детали.
+    DateTime? fillDeadlineAt,
   }) = _ChecklistInstanceDetail;
 }
 

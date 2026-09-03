@@ -34,5 +34,30 @@ abstract class ChecklistFillState with _$ChecklistFillState {
     /// Одноразовый `error.code` действия с фото (напр. удаление/лимит) — view
     /// показывает локализованным тостом и сбрасывает.
     String? actionErrorCode,
+
+    /// Дедлайн окна дозаполнения (`ChecklistInstanceDetail.fillDeadlineAt`,
+    /// UTC) — `null` для активной смены и для закрытого окна (сервер его
+    /// тогда не присылает).
+    DateTime? fillDeadlineAt,
+
+    /// Тик обратного отсчёта — обновляется раз в секунду кубитом, пока
+    /// [fillDeadlineAt] не `null` и не в прошлом (см.
+    /// `ChecklistFillCubit._tickFillDeadline`). Отдельное от
+    /// [fillDeadlineAt] поле — чтобы шапка пересчитывала остаток каждую
+    /// секунду без лишних действий над остальным стейтом.
+    DateTime? fillDeadlineTick,
   }) = _ChecklistFillState;
+  const ChecklistFillState._();
+
+  /// Оставшееся время окна дозаполнения для шапки экрана (mobile.md, п.3).
+  /// `null` — баннер не нужен (активная смена/окно закрыто/деталь ещё не
+  /// загружена). Это разница двух UTC-моментов, не настенное время — поэтому
+  /// без `AppTime`.
+  Duration? get fillRemaining {
+    final deadline = fillDeadlineAt;
+    if (deadline == null) return null;
+    final now = fillDeadlineTick ?? deadline;
+    final remaining = deadline.difference(now);
+    return remaining.isNegative ? Duration.zero : remaining;
+  }
 }

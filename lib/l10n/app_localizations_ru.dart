@@ -1232,7 +1232,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get checklistPhotoGeoUnavailable => 'Координаты недоступны';
 
   @override
-  String get checklistPhotoShiftFinished => 'Смена завершена';
+  String get checklistPhotoShiftFinished =>
+      'Время на дозаполнение чек-листа истекло';
 
   @override
   String checklistPhotoCaptionTaken(String datetime) {
@@ -1255,6 +1256,20 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get shiftIncompleteRequiredBadge => 'Чек-листы не выполнены';
+
+  @override
+  String shiftFinishGraceWindowNotice(int minutes) {
+    return 'После завершения будет ещё $minutes мин на дозаполнение чек-листа';
+  }
+
+  @override
+  String checklistGraceRemainingMinutes(int minutes) {
+    return 'Осталось $minutes мин';
+  }
+
+  @override
+  String get shiftTrackerGraceBlockTitle =>
+      'Дозаполните чек-лист последней смены';
 
   @override
   String inviteSuccessTitle(String orgName) {

@@ -567,7 +567,7 @@
     "checklistPhotoDeleteConfirmTitle": "Удалить фото?",
     "checklistPhotoDelete": "Удалить",
     "checklistPhotoGeoUnavailable": "Координаты недоступны",
-    "checklistPhotoShiftFinished": "Смена завершена",
+    "checklistPhotoShiftFinished": "Время на дозаполнение чек-листа истекло",
     "checklistPhotoCaptionTaken": "Снято: {datetime}",
     "@checklistPhotoCaptionTaken": {
         "placeholders": {
@@ -590,6 +590,21 @@
 
     "shiftFinishIncompleteWarning": "Есть незаполненные обязательные чек-листы",
     "shiftIncompleteRequiredBadge": "Чек-листы не выполнены",
+    "shiftFinishGraceWindowNotice": "После завершения будет ещё {minutes} мин на дозаполнение чек-листа",
+    "@shiftFinishGraceWindowNotice": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+
+    "checklistGraceRemainingMinutes": "Осталось {minutes} мин",
+    "@checklistGraceRemainingMinutes": {
+        "placeholders": {
+            "minutes": {"type": "int"}
+        }
+    },
+
+    "shiftTrackerGraceBlockTitle": "Дозаполните чек-лист последней смены",
 
 
     "inviteSuccessTitle": "Вы вступили в организацию «{orgName}»",

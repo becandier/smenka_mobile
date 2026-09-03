@@ -12,6 +12,7 @@ import 'package:smenka_mobile/core/services/photo_picker_service.dart'
     as photo_picker;
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
 import 'package:smenka_mobile/core/time/app_time.dart';
+import 'package:smenka_mobile/core/utils/duration_format.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/file_storage/_file_storage.dart';
 import 'package:smenka_mobile/l10n/error_localization.dart';
@@ -141,6 +142,7 @@ class _ChecklistFillView extends StatelessWidget {
 
                 return Column(
                   children: [
+                    const _FillDeadlineBanner(),
                     Padding(
                       padding: const EdgeInsets.only(
                         left: 16,
@@ -180,6 +182,43 @@ class _ChecklistFillView extends StatelessWidget {
                 );
               },
             ),
+      ),
+    );
+  }
+}
+
+/// Оставшееся время окна дозаполнения чек-листа (`checklist_grace_period`,
+/// mobile.md п.3) — видна только пока `fillDeadlineAt` пришёл от сервера
+/// (завершённая смена в открытом окне). Тикает по `fillRemaining`, который
+/// кубит пересчитывает раз в секунду; это разница двух UTC-моментов, а не
+/// настенное время, поэтому без `AppTime`.
+class _FillDeadlineBanner extends StatelessWidget {
+  const _FillDeadlineBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final remaining = context.select<ChecklistFillCubit, Duration?>(
+      (c) => c.state.fillRemaining,
+    );
+    if (remaining == null) return const SizedBox.shrink();
+
+    final l10n = context.l10n;
+    final colors = context.appColors;
+    final minutesLeft = wholeMinutesCeil(remaining);
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+      child: Row(
+        children: [
+          Icon(Icons.timer_outlined, size: 18, color: colors.warning),
+          const SizedBox(width: 8),
+          Text(
+            l10n.checklistGraceRemainingMinutes(minutesLeft),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: colors.warning),
+          ),
+        ],
       ),
     );
   }

@@ -19,6 +19,7 @@ _OrganizationDto _$OrganizationDtoFromJson(Map<String, dynamic> json) =>
       timezone: json['timezone'] as String? ?? 'Europe/Moscow',
       overtimeRequestDays:
           (json['overtime_request_days'] as num?)?.toInt() ?? 7,
+      checklistGraceMinutes: (json['checklist_grace_minutes'] as num?)?.toInt(),
       myRole: json['my_role'] as String?,
       myCustomRole: json['my_custom_role'] == null
           ? null
@@ -44,6 +45,7 @@ Map<String, dynamic> _$OrganizationDtoToJson(_OrganizationDto instance) =>
       'require_work_location': instance.requireWorkLocation,
       'timezone': instance.timezone,
       'overtime_request_days': instance.overtimeRequestDays,
+      'checklist_grace_minutes': instance.checklistGraceMinutes,
       'my_role': instance.myRole,
       'my_custom_role': instance.myCustomRole,
       'subscription': instance.subscription,

@@ -57,6 +57,8 @@ extension ChecklistInstanceDtoMapper on ChecklistInstanceDto {
     itemsSummary: itemsSummary.toDomain(),
     completedAt: completedAt,
     createdAt: createdAt,
+    fillAllowed: fillAllowed,
+    fillDeadlineAt: fillDeadlineAt,
   );
 }
 
@@ -89,5 +91,7 @@ extension ChecklistInstanceDetailDtoMapper on ChecklistInstanceDetailDto {
     items: items.map((e) => e.toDomain()).toList(),
     maxPhotosPerItem: maxPhotosPerItem,
     organizationTimezone: organizationTimezone,
+    fillAllowed: fillAllowed,
+    fillDeadlineAt: fillDeadlineAt,
   );
 }

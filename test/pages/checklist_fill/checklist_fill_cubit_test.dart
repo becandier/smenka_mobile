@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
@@ -67,6 +68,7 @@ void main() {
 
   ChecklistFillCubit buildCubit({
     Future<Uint8List> Function(Uint8List bytes, String stampText)? photoStamper,
+    DateTime Function()? now,
   }) => ChecklistFillCubit(
     shiftId: 's1',
     instanceId: 'inst1',
@@ -78,6 +80,7 @@ void main() {
     photoStamper: photoStamper,
     // Тесты не поднимают Firebase — молчаливый логгер без побочных эффектов.
     photoLogger: PhotoLogger.silent(),
+    now: now,
   );
 
   void stubPick(PhotoPickResult result) {
@@ -368,5 +371,138 @@ void main() {
     await Future<void>.delayed(Duration.zero);
     expect(cubit.state.saveError, isNull);
     await cubit.close();
+  });
+
+  group('окно дозаполнения (checklist_grace_period)', () {
+    void stubDetail(ChecklistInstanceDetail detail) {
+      when(() => checklistRepo.getInstanceDetail(any(), any())).thenAnswer(
+        (_) async => Task<ChecklistInstanceDetail>.success(detail),
+      );
+    }
+
+    ChecklistInstanceDetail buildDetail({
+      required bool fillAllowed,
+      DateTime? fillDeadlineAt,
+      DateTime? createdAt,
+    }) => ChecklistInstanceDetail(
+      id: 'inst1',
+      name: 'CL',
+      type: ChecklistType.shiftEnd,
+      isRequired: true,
+      status: ChecklistInstanceStatus.pending,
+      createdAt: createdAt ?? DateTime.utc(2026, 8, 1),
+      items: const [],
+      fillAllowed: fillAllowed,
+      fillDeadlineAt: fillDeadlineAt,
+    );
+
+    test(
+      'fillAllowed=false из детали → readOnly=true, даже если конструктор '
+      'создан с readOnly=false (режим чтения — по ответу сервера, не по '
+      'статусу смены)',
+      () async {
+        stubDetail(buildDetail(fillAllowed: false));
+        final cubit = buildCubit();
+        await Future<void>.delayed(Duration.zero);
+
+        expect(cubit.state.readOnly, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test(
+      'fillAllowed=true (смена завершена, окно открыто) → readOnly=false, '
+      'хотя конструктор мог получить readOnly=true из списка',
+      () async {
+        stubDetail(buildDetail(fillAllowed: true));
+        final cubit = ChecklistFillCubit(
+          shiftId: 's1',
+          instanceId: 'inst1',
+          organizationId: 'org1',
+          checklistRepository: checklistRepo,
+          filesRepository: filesRepo,
+          geoService: geo,
+          photoPickerService: pickerService,
+          photoLogger: PhotoLogger.silent(),
+          readOnly: true,
+        );
+        await Future<void>.delayed(Duration.zero);
+
+        expect(cubit.state.readOnly, isFalse);
+        await cubit.close();
+      },
+    );
+
+    test(
+      'отсчёт идёт от серверного fill_deadline_at, а не от часов устройства',
+      () {
+        fakeAsync((async) {
+          final start = DateTime.utc(2026, 8, 1, 12);
+          final deadline = start.add(const Duration(minutes: 5));
+          stubDetail(
+            buildDetail(
+              fillAllowed: true,
+              fillDeadlineAt: deadline,
+              createdAt: start,
+            ),
+          );
+          final cubit = buildCubit(now: () => start.add(async.elapsed));
+          async.flushMicrotasks();
+
+          expect(cubit.state.readOnly, isFalse);
+          expect(cubit.state.fillRemaining, const Duration(minutes: 5));
+
+          async.elapse(const Duration(minutes: 2));
+          expect(cubit.state.fillRemaining, const Duration(minutes: 3));
+          expect(cubit.state.readOnly, isFalse);
+
+          cubit.close();
+          async.flushMicrotasks();
+        });
+      },
+    );
+
+    test(
+      'окно истекает во время заполнения → клиент сам переводит экран в '
+      'read-only с нотисом, без перезагрузки страницы (переиспользует '
+      'PhotoNotice.shiftFinished)',
+      () {
+        fakeAsync((async) {
+          final start = DateTime.utc(2026, 8, 1, 12);
+          final deadline = start.add(const Duration(minutes: 5));
+          stubDetail(
+            buildDetail(
+              fillAllowed: true,
+              fillDeadlineAt: deadline,
+              createdAt: start,
+            ),
+          );
+          final cubit = buildCubit(now: () => start.add(async.elapsed));
+          async.flushMicrotasks();
+
+          expect(cubit.state.readOnly, isFalse);
+
+          async.elapse(const Duration(minutes: 5, seconds: 1));
+
+          expect(cubit.state.readOnly, isTrue);
+          expect(cubit.state.notice, PhotoNotice.shiftFinished);
+          expect(cubit.state.fillDeadlineAt, isNull);
+          expect(cubit.state.fillRemaining, isNull);
+
+          cubit.close();
+          async.flushMicrotasks();
+        });
+      },
+    );
+
+    test('fillDeadlineAt=null (окно закрыто/активная смена) → fillRemaining '
+        'null, баннер не нужен', () async {
+      stubDetail(buildDetail(fillAllowed: false));
+      final cubit = buildCubit();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.fillRemaining, isNull);
+      await cubit.close();
+    });
   });
 }

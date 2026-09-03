@@ -14,14 +14,26 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ChecklistFillState {
 
- SectionData<ChecklistInstanceDetail> get instance; Map<String, FeatureStatus> get itemStatuses; String? get saveError;/// Только чтение — редактирование пунктов и фото недоступно (просмотр
+ SectionData<ChecklistInstanceDetail> get instance; Map<String, FeatureStatus> get itemStatuses;/// Одноразовый `error.code` последнего отказа сохранения пункта/комментария
+/// (не `SHIFT_FINISHED` — тот уводит экран в read-only через [notice], без
+/// тоста через это поле) — view показывает локализованным тостом и
+/// сбрасывает.
+ String? get saveError;/// Только чтение — редактирование пунктов и фото недоступно (просмотр
 /// чужой/завершённой смены). Чекбоксы, комментарии и кнопки фото неактивны.
  bool get readOnly;/// Черновики загрузки фото (uploading/error) по `item.id`. Серверные фото
 /// лежат в `instance.data.items[].photos` и тут не дублируются.
  Map<String, List<ChecklistPhotoDraft>> get photoDrafts;/// Одноразовый нотис (info/warning) — view показывает тостом и сбрасывает.
  PhotoNotice? get notice;/// Одноразовый `error.code` действия с фото (напр. удаление/лимит) — view
 /// показывает локализованным тостом и сбрасывает.
- String? get actionErrorCode;
+ String? get actionErrorCode;/// Дедлайн окна дозаполнения (`ChecklistInstanceDetail.fillDeadlineAt`,
+/// UTC) — `null` для активной смены и для закрытого окна (сервер его
+/// тогда не присылает).
+ DateTime? get fillDeadlineAt;/// Тик обратного отсчёта — обновляется раз в секунду кубитом, пока
+/// [fillDeadlineAt] не `null` и не в прошлом (см.
+/// `ChecklistFillCubit._tickFillDeadline`). Отдельное от
+/// [fillDeadlineAt] поле — чтобы шапка пересчитывала остаток каждую
+/// секунду без лишних действий над остальным стейтом.
+ DateTime? get fillDeadlineTick;
 /// Create a copy of ChecklistFillState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,16 +44,16 @@ $ChecklistFillStateCopyWith<ChecklistFillState> get copyWith => _$ChecklistFillS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistFillState&&(identical(other.instance, instance) || other.instance == instance)&&const DeepCollectionEquality().equals(other.itemStatuses, itemStatuses)&&(identical(other.saveError, saveError) || other.saveError == saveError)&&(identical(other.readOnly, readOnly) || other.readOnly == readOnly)&&const DeepCollectionEquality().equals(other.photoDrafts, photoDrafts)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistFillState&&(identical(other.instance, instance) || other.instance == instance)&&const DeepCollectionEquality().equals(other.itemStatuses, itemStatuses)&&(identical(other.saveError, saveError) || other.saveError == saveError)&&(identical(other.readOnly, readOnly) || other.readOnly == readOnly)&&const DeepCollectionEquality().equals(other.photoDrafts, photoDrafts)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.fillDeadlineAt, fillDeadlineAt) || other.fillDeadlineAt == fillDeadlineAt)&&(identical(other.fillDeadlineTick, fillDeadlineTick) || other.fillDeadlineTick == fillDeadlineTick));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,instance,const DeepCollectionEquality().hash(itemStatuses),saveError,readOnly,const DeepCollectionEquality().hash(photoDrafts),notice,actionErrorCode);
+int get hashCode => Object.hash(runtimeType,instance,const DeepCollectionEquality().hash(itemStatuses),saveError,readOnly,const DeepCollectionEquality().hash(photoDrafts),notice,actionErrorCode,fillDeadlineAt,fillDeadlineTick);
 
 @override
 String toString() {
-  return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError, readOnly: $readOnly, photoDrafts: $photoDrafts, notice: $notice, actionErrorCode: $actionErrorCode)';
+  return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError, readOnly: $readOnly, photoDrafts: $photoDrafts, notice: $notice, actionErrorCode: $actionErrorCode, fillDeadlineAt: $fillDeadlineAt, fillDeadlineTick: $fillDeadlineTick)';
 }
 
 
@@ -52,7 +64,7 @@ abstract mixin class $ChecklistFillStateCopyWith<$Res>  {
   factory $ChecklistFillStateCopyWith(ChecklistFillState value, $Res Function(ChecklistFillState) _then) = _$ChecklistFillStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<ChecklistInstanceDetail> instance, Map<String, FeatureStatus> itemStatuses, String? saveError, bool readOnly, Map<String, List<ChecklistPhotoDraft>> photoDrafts, PhotoNotice? notice, String? actionErrorCode
+ SectionData<ChecklistInstanceDetail> instance, Map<String, FeatureStatus> itemStatuses, String? saveError, bool readOnly, Map<String, List<ChecklistPhotoDraft>> photoDrafts, PhotoNotice? notice, String? actionErrorCode, DateTime? fillDeadlineAt, DateTime? fillDeadlineTick
 });
 
 
@@ -69,7 +81,7 @@ class _$ChecklistFillStateCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistFillState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? instance = null,Object? itemStatuses = null,Object? saveError = freezed,Object? readOnly = null,Object? photoDrafts = null,Object? notice = freezed,Object? actionErrorCode = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? instance = null,Object? itemStatuses = null,Object? saveError = freezed,Object? readOnly = null,Object? photoDrafts = null,Object? notice = freezed,Object? actionErrorCode = freezed,Object? fillDeadlineAt = freezed,Object? fillDeadlineTick = freezed,}) {
   return _then(_self.copyWith(
 instance: null == instance ? _self.instance : instance // ignore: cast_nullable_to_non_nullable
 as SectionData<ChecklistInstanceDetail>,itemStatuses: null == itemStatuses ? _self.itemStatuses : itemStatuses // ignore: cast_nullable_to_non_nullable
@@ -78,7 +90,9 @@ as String?,readOnly: null == readOnly ? _self.readOnly : readOnly // ignore: cas
 as bool,photoDrafts: null == photoDrafts ? _self.photoDrafts : photoDrafts // ignore: cast_nullable_to_non_nullable
 as Map<String, List<ChecklistPhotoDraft>>,notice: freezed == notice ? _self.notice : notice // ignore: cast_nullable_to_non_nullable
 as PhotoNotice?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode : actionErrorCode // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,fillDeadlineAt: freezed == fillDeadlineAt ? _self.fillDeadlineAt : fillDeadlineAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,fillDeadlineTick: freezed == fillDeadlineTick ? _self.fillDeadlineTick : fillDeadlineTick // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 /// Create a copy of ChecklistFillState
@@ -172,10 +186,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<ChecklistInstanceDetail> instance,  Map<String, FeatureStatus> itemStatuses,  String? saveError,  bool readOnly,  Map<String, List<ChecklistPhotoDraft>> photoDrafts,  PhotoNotice? notice,  String? actionErrorCode)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<ChecklistInstanceDetail> instance,  Map<String, FeatureStatus> itemStatuses,  String? saveError,  bool readOnly,  Map<String, List<ChecklistPhotoDraft>> photoDrafts,  PhotoNotice? notice,  String? actionErrorCode,  DateTime? fillDeadlineAt,  DateTime? fillDeadlineTick)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChecklistFillState() when $default != null:
-return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly,_that.photoDrafts,_that.notice,_that.actionErrorCode);case _:
+return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly,_that.photoDrafts,_that.notice,_that.actionErrorCode,_that.fillDeadlineAt,_that.fillDeadlineTick);case _:
   return orElse();
 
 }
@@ -193,10 +207,10 @@ return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<ChecklistInstanceDetail> instance,  Map<String, FeatureStatus> itemStatuses,  String? saveError,  bool readOnly,  Map<String, List<ChecklistPhotoDraft>> photoDrafts,  PhotoNotice? notice,  String? actionErrorCode)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<ChecklistInstanceDetail> instance,  Map<String, FeatureStatus> itemStatuses,  String? saveError,  bool readOnly,  Map<String, List<ChecklistPhotoDraft>> photoDrafts,  PhotoNotice? notice,  String? actionErrorCode,  DateTime? fillDeadlineAt,  DateTime? fillDeadlineTick)  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistFillState():
-return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly,_that.photoDrafts,_that.notice,_that.actionErrorCode);case _:
+return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly,_that.photoDrafts,_that.notice,_that.actionErrorCode,_that.fillDeadlineAt,_that.fillDeadlineTick);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +227,10 @@ return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<ChecklistInstanceDetail> instance,  Map<String, FeatureStatus> itemStatuses,  String? saveError,  bool readOnly,  Map<String, List<ChecklistPhotoDraft>> photoDrafts,  PhotoNotice? notice,  String? actionErrorCode)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<ChecklistInstanceDetail> instance,  Map<String, FeatureStatus> itemStatuses,  String? saveError,  bool readOnly,  Map<String, List<ChecklistPhotoDraft>> photoDrafts,  PhotoNotice? notice,  String? actionErrorCode,  DateTime? fillDeadlineAt,  DateTime? fillDeadlineTick)?  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistFillState() when $default != null:
-return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly,_that.photoDrafts,_that.notice,_that.actionErrorCode);case _:
+return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly,_that.photoDrafts,_that.notice,_that.actionErrorCode,_that.fillDeadlineAt,_that.fillDeadlineTick);case _:
   return null;
 
 }
@@ -227,8 +241,8 @@ return $default(_that.instance,_that.itemStatuses,_that.saveError,_that.readOnly
 /// @nodoc
 
 
-class _ChecklistFillState implements ChecklistFillState {
-  const _ChecklistFillState({this.instance = const SectionData<ChecklistInstanceDetail>(), final  Map<String, FeatureStatus> itemStatuses = const <String, FeatureStatus>{}, this.saveError, this.readOnly = false, final  Map<String, List<ChecklistPhotoDraft>> photoDrafts = const <String, List<ChecklistPhotoDraft>>{}, this.notice, this.actionErrorCode}): _itemStatuses = itemStatuses,_photoDrafts = photoDrafts;
+class _ChecklistFillState extends ChecklistFillState {
+  const _ChecklistFillState({this.instance = const SectionData<ChecklistInstanceDetail>(), final  Map<String, FeatureStatus> itemStatuses = const <String, FeatureStatus>{}, this.saveError, this.readOnly = false, final  Map<String, List<ChecklistPhotoDraft>> photoDrafts = const <String, List<ChecklistPhotoDraft>>{}, this.notice, this.actionErrorCode, this.fillDeadlineAt, this.fillDeadlineTick}): _itemStatuses = itemStatuses,_photoDrafts = photoDrafts,super._();
   
 
 @override@JsonKey() final  SectionData<ChecklistInstanceDetail> instance;
@@ -239,6 +253,10 @@ class _ChecklistFillState implements ChecklistFillState {
   return EqualUnmodifiableMapView(_itemStatuses);
 }
 
+/// Одноразовый `error.code` последнего отказа сохранения пункта/комментария
+/// (не `SHIFT_FINISHED` — тот уводит экран в read-only через [notice], без
+/// тоста через это поле) — view показывает локализованным тостом и
+/// сбрасывает.
 @override final  String? saveError;
 /// Только чтение — редактирование пунктов и фото недоступно (просмотр
 /// чужой/завершённой смены). Чекбоксы, комментарии и кнопки фото неактивны.
@@ -259,6 +277,16 @@ class _ChecklistFillState implements ChecklistFillState {
 /// Одноразовый `error.code` действия с фото (напр. удаление/лимит) — view
 /// показывает локализованным тостом и сбрасывает.
 @override final  String? actionErrorCode;
+/// Дедлайн окна дозаполнения (`ChecklistInstanceDetail.fillDeadlineAt`,
+/// UTC) — `null` для активной смены и для закрытого окна (сервер его
+/// тогда не присылает).
+@override final  DateTime? fillDeadlineAt;
+/// Тик обратного отсчёта — обновляется раз в секунду кубитом, пока
+/// [fillDeadlineAt] не `null` и не в прошлом (см.
+/// `ChecklistFillCubit._tickFillDeadline`). Отдельное от
+/// [fillDeadlineAt] поле — чтобы шапка пересчитывала остаток каждую
+/// секунду без лишних действий над остальным стейтом.
+@override final  DateTime? fillDeadlineTick;
 
 /// Create a copy of ChecklistFillState
 /// with the given fields replaced by the non-null parameter values.
@@ -270,16 +298,16 @@ _$ChecklistFillStateCopyWith<_ChecklistFillState> get copyWith => __$ChecklistFi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistFillState&&(identical(other.instance, instance) || other.instance == instance)&&const DeepCollectionEquality().equals(other._itemStatuses, _itemStatuses)&&(identical(other.saveError, saveError) || other.saveError == saveError)&&(identical(other.readOnly, readOnly) || other.readOnly == readOnly)&&const DeepCollectionEquality().equals(other._photoDrafts, _photoDrafts)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistFillState&&(identical(other.instance, instance) || other.instance == instance)&&const DeepCollectionEquality().equals(other._itemStatuses, _itemStatuses)&&(identical(other.saveError, saveError) || other.saveError == saveError)&&(identical(other.readOnly, readOnly) || other.readOnly == readOnly)&&const DeepCollectionEquality().equals(other._photoDrafts, _photoDrafts)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.actionErrorCode, actionErrorCode) || other.actionErrorCode == actionErrorCode)&&(identical(other.fillDeadlineAt, fillDeadlineAt) || other.fillDeadlineAt == fillDeadlineAt)&&(identical(other.fillDeadlineTick, fillDeadlineTick) || other.fillDeadlineTick == fillDeadlineTick));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,instance,const DeepCollectionEquality().hash(_itemStatuses),saveError,readOnly,const DeepCollectionEquality().hash(_photoDrafts),notice,actionErrorCode);
+int get hashCode => Object.hash(runtimeType,instance,const DeepCollectionEquality().hash(_itemStatuses),saveError,readOnly,const DeepCollectionEquality().hash(_photoDrafts),notice,actionErrorCode,fillDeadlineAt,fillDeadlineTick);
 
 @override
 String toString() {
-  return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError, readOnly: $readOnly, photoDrafts: $photoDrafts, notice: $notice, actionErrorCode: $actionErrorCode)';
+  return 'ChecklistFillState(instance: $instance, itemStatuses: $itemStatuses, saveError: $saveError, readOnly: $readOnly, photoDrafts: $photoDrafts, notice: $notice, actionErrorCode: $actionErrorCode, fillDeadlineAt: $fillDeadlineAt, fillDeadlineTick: $fillDeadlineTick)';
 }
 
 
@@ -290,7 +318,7 @@ abstract mixin class _$ChecklistFillStateCopyWith<$Res> implements $ChecklistFil
   factory _$ChecklistFillStateCopyWith(_ChecklistFillState value, $Res Function(_ChecklistFillState) _then) = __$ChecklistFillStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<ChecklistInstanceDetail> instance, Map<String, FeatureStatus> itemStatuses, String? saveError, bool readOnly, Map<String, List<ChecklistPhotoDraft>> photoDrafts, PhotoNotice? notice, String? actionErrorCode
+ SectionData<ChecklistInstanceDetail> instance, Map<String, FeatureStatus> itemStatuses, String? saveError, bool readOnly, Map<String, List<ChecklistPhotoDraft>> photoDrafts, PhotoNotice? notice, String? actionErrorCode, DateTime? fillDeadlineAt, DateTime? fillDeadlineTick
 });
 
 
@@ -307,7 +335,7 @@ class __$ChecklistFillStateCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistFillState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? instance = null,Object? itemStatuses = null,Object? saveError = freezed,Object? readOnly = null,Object? photoDrafts = null,Object? notice = freezed,Object? actionErrorCode = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? instance = null,Object? itemStatuses = null,Object? saveError = freezed,Object? readOnly = null,Object? photoDrafts = null,Object? notice = freezed,Object? actionErrorCode = freezed,Object? fillDeadlineAt = freezed,Object? fillDeadlineTick = freezed,}) {
   return _then(_ChecklistFillState(
 instance: null == instance ? _self.instance : instance // ignore: cast_nullable_to_non_nullable
 as SectionData<ChecklistInstanceDetail>,itemStatuses: null == itemStatuses ? _self._itemStatuses : itemStatuses // ignore: cast_nullable_to_non_nullable
@@ -316,7 +344,9 @@ as String?,readOnly: null == readOnly ? _self.readOnly : readOnly // ignore: cas
 as bool,photoDrafts: null == photoDrafts ? _self._photoDrafts : photoDrafts // ignore: cast_nullable_to_non_nullable
 as Map<String, List<ChecklistPhotoDraft>>,notice: freezed == notice ? _self.notice : notice // ignore: cast_nullable_to_non_nullable
 as PhotoNotice?,actionErrorCode: freezed == actionErrorCode ? _self.actionErrorCode : actionErrorCode // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,fillDeadlineAt: freezed == fillDeadlineAt ? _self.fillDeadlineAt : fillDeadlineAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,fillDeadlineTick: freezed == fillDeadlineTick ? _self.fillDeadlineTick : fillDeadlineTick // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
