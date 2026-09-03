@@ -66,6 +66,7 @@ _TestAttemptForFillDto _$TestAttemptForFillDtoFromJson(
           )
           .toList() ??
       const <TestAttemptQuestionDto>[],
+  organizationTimezone: json['organization_timezone'] as String?,
 );
 
 Map<String, dynamic> _$TestAttemptForFillDtoToJson(
@@ -74,6 +75,7 @@ Map<String, dynamic> _$TestAttemptForFillDtoToJson(
   'id': instance.id,
   'started_at': instance.startedAt.toIso8601String(),
   'questions': instance.questions.map((e) => e.toJson()).toList(),
+  'organization_timezone': instance.organizationTimezone,
 };
 
 _TestAttemptDetailDto _$TestAttemptDetailDtoFromJson(
@@ -98,6 +100,7 @@ _TestAttemptDetailDto _$TestAttemptDetailDtoFromJson(
           )
           .toList() ??
       const <TestAttemptQuestionDto>[],
+  organizationTimezone: json['organization_timezone'] as String?,
 );
 
 Map<String, dynamic> _$TestAttemptDetailDtoToJson(
@@ -114,4 +117,5 @@ Map<String, dynamic> _$TestAttemptDetailDtoToJson(
   'passed': instance.passed,
   'submitted_at': instance.submittedAt?.toIso8601String(),
   'questions': instance.questions.map((e) => e.toJson()).toList(),
+  'organization_timezone': instance.organizationTimezone,
 };

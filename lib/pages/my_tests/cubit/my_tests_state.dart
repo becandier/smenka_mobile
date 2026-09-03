@@ -21,19 +21,17 @@ abstract class MyTestsState with _$MyTestsState {
   }) = _MyTestsState;
   const MyTestsState._();
 
-  /// Контекст представления дедлайна/попыток назначения: своя IANA-зона
-  /// организации назначения (из уже загруженного [organizations] — без
-  /// лишнего запроса на каждое назначение) либо устройство, если она ещё не
-  /// подгрузилась. `test-assignments` не несёт `organization_timezone`
-  /// в самом ответе (в отличие от смен/чек-листов) — контекст строго
-  /// клиентский, по `organizationId` назначения.
+  /// Контекст представления дедлайна/попыток назначения: см.
+  /// `TestAssignmentTimeContext.timeContext` — основной источник это
+  /// self-contained `TestAssignment.organizationTimezone` (backend
+  /// `23dc2e3`); резолв по уже загруженному [organizations] (без лишнего
+  /// запроса на каждое назначение) остаётся клиентским фолбэком на время
+  /// rolling-деплоя/невалидной серверной зоны.
   AppTimeContext timeContextFor(TestAssignment assignment) {
-    final timeZone = organizations
+    final scopedTimeZone = organizations
         .where((o) => o.id == assignment.organizationId)
         .firstOrNull
         ?.timezone;
-    return timeZone == null
-        ? const AppTimeContext.device()
-        : AppTimeContext.organization(timeZone);
+    return assignment.timeContext(scopedOrganizationTimezone: scopedTimeZone);
   }
 }

@@ -89,6 +89,27 @@ int orgLocalDayDiff(DateTime targetUtc, String timezoneName) {
   }
 }
 
+/// `true`, если [timezoneName] — известное IANA-имя в загруженной базе
+/// (`latest_10y`).
+///
+/// [toOrgLocal]/[orgUtcDayBounds] намеренно не падают на невалидном имени —
+/// они тихо откатываются на UTC, что безопасно как самостоятельное
+/// поведение, но опасно как единственная проверка выше по цепочке вызовов:
+/// код, который выбирает между self-contained backend-полем и валидным
+/// scoped-фолбэком (`ShiftTimeContext.timeContext`,
+/// `TestAssignmentTimeContext.timeContext`), должен уметь отличить
+/// «невалидное имя» от «валидное имя», чтобы не потерять достижимый
+/// scoped-фолбэк за молчаливым откатом на UTC.
+bool isValidTimeZone(String timezoneName) {
+  _ensureInitialized();
+  try {
+    tz.getLocation(timezoneName);
+    return true;
+  } on Object {
+    return false;
+  }
+}
+
 bool _initialized = false;
 
 void _ensureInitialized() {

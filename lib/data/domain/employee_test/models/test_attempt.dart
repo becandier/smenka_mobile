@@ -59,6 +59,10 @@ abstract class TestAttemptFill with _$TestAttemptFill {
     required String id,
     required DateTime startedAt,
     required List<TestAttemptQuestion> questions,
+
+    /// Аддитивный nullable backend-контракт (`TestAttemptForFill`, `ce32b62`)
+    /// — `/my/*` не scoped по `{org_id}`, зона указывается на попытке явно.
+    String? organizationTimezone,
   }) = _TestAttemptFill;
 }
 
@@ -81,13 +85,21 @@ abstract class TestAttemptDetail with _$TestAttemptDetail {
     int? percent,
     bool? passed,
     DateTime? submittedAt,
+
+    /// Аддитивный nullable backend-контракт (`MyAttemptDetail`, `23dc2e3`)
+    /// — `/my/*` не scoped по `{org_id}`, зона указывается на попытке явно.
+    String? organizationTimezone,
   }) = _TestAttemptDetail;
   const TestAttemptDetail._();
 
   /// Узкая проекция на форму заполнения — то, что нужно fill-экрану при
   /// резюме открытой попытки, без количественных полей результата.
-  TestAttemptFill toFill() =>
-      TestAttemptFill(id: id, startedAt: startedAt, questions: questions);
+  TestAttemptFill toFill() => TestAttemptFill(
+    id: id,
+    startedAt: startedAt,
+    questions: questions,
+    organizationTimezone: organizationTimezone,
+  );
 }
 
 /// Ответ на один вопрос при отправке (`POST /my/test-attempts/{id}/submit`).
