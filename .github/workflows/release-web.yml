@@ -10,6 +10,11 @@ permissions:
   packages: write
 
 jobs:
+  # Гейт деплоя: analyze + тесты. Раньше release-web.yml был независим от CI,
+  # а ci.yml на main не запускался — пуш выкатывал код без единой проверки.
+  checks:
+    uses: ./.github/workflows/checks.yml
+
   build-push:
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +52,7 @@ jobs:
 
   # автодеплой по SSH — выполняется только когда явно включён переменной репозитория
   deploy:
-    needs: build-push
+    needs: [build-push, checks]
     runs-on: ubuntu-latest
     if: ${{ vars.DEPLOY_ENABLED == 'true' }}
     steps:
