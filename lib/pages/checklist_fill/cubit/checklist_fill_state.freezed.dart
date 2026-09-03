@@ -14,7 +14,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ChecklistFillState {
 
- SectionData<ChecklistInstanceDetail> get instance; Map<String, FeatureStatus> get itemStatuses; String? get saveError;/// Только чтение — редактирование пунктов и фото недоступно (просмотр
+ SectionData<ChecklistInstanceDetail> get instance; Map<String, FeatureStatus> get itemStatuses;/// Одноразовый `error.code` последнего отказа сохранения пункта/комментария
+/// (не `SHIFT_FINISHED` — тот уводит экран в read-only через [notice], без
+/// тоста через это поле) — view показывает локализованным тостом и
+/// сбрасывает.
+ String? get saveError;/// Только чтение — редактирование пунктов и фото недоступно (просмотр
 /// чужой/завершённой смены). Чекбоксы, комментарии и кнопки фото неактивны.
  bool get readOnly;/// Черновики загрузки фото (uploading/error) по `item.id`. Серверные фото
 /// лежат в `instance.data.items[].photos` и тут не дублируются.
@@ -239,6 +243,10 @@ class _ChecklistFillState implements ChecklistFillState {
   return EqualUnmodifiableMapView(_itemStatuses);
 }
 
+/// Одноразовый `error.code` последнего отказа сохранения пункта/комментария
+/// (не `SHIFT_FINISHED` — тот уводит экран в read-only через [notice], без
+/// тоста через это поле) — view показывает локализованным тостом и
+/// сбрасывает.
 @override final  String? saveError;
 /// Только чтение — редактирование пунктов и фото недоступно (просмотр
 /// чужой/завершённой смены). Чекбоксы, комментарии и кнопки фото неактивны.

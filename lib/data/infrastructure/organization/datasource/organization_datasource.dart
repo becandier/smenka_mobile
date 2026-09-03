@@ -49,6 +49,21 @@ class OrganizationDataSource {
         .toList();
   }
 
+  /// Точки организации в радиусе координат, отсортированные по возрастанию
+  /// расстояния (`shift_start_location_choice`). Пустой `items` — штатный
+  /// случай «сотрудник вне всех зон», не ошибка.
+  Future<NearbyWorkLocationsDto> getNearbyWorkLocations(
+    String orgId, {
+    required double latitude,
+    required double longitude,
+  }) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/organizations/$orgId/work-locations/nearby',
+      queryParameters: {'latitude': latitude, 'longitude': longitude},
+    );
+    return NearbyWorkLocationsDto.fromJson(response.data!);
+  }
+
   Future<void> removeMember(String orgId, String memberUserId) async {
     await _dio.delete<void>('/organizations/$orgId/members/$memberUserId');
   }

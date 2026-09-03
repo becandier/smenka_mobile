@@ -12,6 +12,15 @@ abstract class OrganizationRepository {
   /// Список рабочих точек организации (для выбора точки при старте смены).
   Future<Task<List<WorkLocation>>> getWorkLocations(String orgId);
 
+  /// Точки организации в радиусе координат, отсортированные по расстоянию —
+  /// для выбора точки при старте смены с включённой геопроверкой
+  /// (`shift_start_location_choice`).
+  Future<Task<NearbyWorkLocations>> getNearbyWorkLocations(
+    String orgId, {
+    required double latitude,
+    required double longitude,
+  });
+
   /// Покинуть организацию — участник удаляет собственное членство (self-leave).
   Future<Task<void>> removeMember(String orgId, String memberUserId);
 

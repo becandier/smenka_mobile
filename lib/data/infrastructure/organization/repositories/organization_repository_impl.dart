@@ -79,6 +79,22 @@ class OrganizationRepositoryImpl
   }
 
   @override
+  Future<Task<NearbyWorkLocations>> getNearbyWorkLocations(
+    String orgId, {
+    required double latitude,
+    required double longitude,
+  }) {
+    return execute(() async {
+      final dto = await _dataSource.getNearbyWorkLocations(
+        orgId,
+        latitude: latitude,
+        longitude: longitude,
+      );
+      return dto.toDomain();
+    });
+  }
+
+  @override
   Future<Task<void>> removeMember(String orgId, String memberUserId) {
     return executeVoid(() => _dataSource.removeMember(orgId, memberUserId));
   }

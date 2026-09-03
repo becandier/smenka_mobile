@@ -1,5 +1,6 @@
 export 'join_result_mapper.dart';
 export 'member_mapper.dart';
+export 'nearby_work_location_mapper.dart';
 export 'org_stats_mapper.dart';
 export 'organization_mapper.dart';
 export 'organization_subscription_mapper.dart';
