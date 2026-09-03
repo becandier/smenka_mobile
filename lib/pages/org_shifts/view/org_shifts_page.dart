@@ -51,7 +51,6 @@ class _OrgShiftsView extends StatelessWidget {
         buildWhen: (prev, curr) =>
             prev.organizationTimezone != curr.organizationTimezone,
         builder: (context, state) {
-          final timeContext = state.timeContext;
           return Column(
             children: [
               const _OrgShiftsFilters(),
@@ -65,7 +64,14 @@ class _OrgShiftsView extends StatelessWidget {
                       selector: (state) => state.shifts,
                       itemBuilder: (context, shift, index) => _OrgShiftCard(
                         shift: shift,
-                        timeContext: timeContext,
+                        // Своя таймзона смены (уже в первом ответе списка)
+                        // приоритетнее зоны экрана — та лишь rolling-deploy
+                        // фолбэк, пока `organizationTimezone` не подгрузится
+                        // отдельным запросом (`OrgShiftsCubit`).
+                        timeContext: shift.timeContext(
+                          scopedOrganizationTimezone:
+                              state.organizationTimezone,
+                        ),
                         onTap: () => context.router.push(
                           OrgShiftDetailRoute(orgId: orgId, shiftId: shift.id),
                         ),
