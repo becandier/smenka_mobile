@@ -171,9 +171,22 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
       onFailure: (error) {
         final newStatuses = {...state.itemStatuses};
         newStatuses[item.id] = FeatureStatus.error;
-        emit(
-          state.copyWith(itemStatuses: newStatuses, saveError: error.message),
-        );
+        if (error.code == 'SHIFT_FINISHED') {
+          // Смена завершилась (авто-завершение/админ), пока сотрудник заполнял
+          // чек-лист — ретрай бессмысленен, переходим в read-only симметрично
+          // _handleAttachFailure (тот же нотис/текст, что и для фото).
+          emit(
+            state.copyWith(
+              itemStatuses: newStatuses,
+              readOnly: true,
+              notice: PhotoNotice.shiftFinished,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(itemStatuses: newStatuses, saveError: error.code),
+          );
+        }
       },
     );
   }
@@ -298,6 +311,8 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
   void clearNotice() => emit(state.copyWith(notice: null));
 
   void clearActionError() => emit(state.copyWith(actionErrorCode: null));
+
+  void clearSaveError() => emit(state.copyWith(saveError: null));
 
   Future<void> _uploadAndAttach(String draftId) async {
     final upload = _uploads[draftId];

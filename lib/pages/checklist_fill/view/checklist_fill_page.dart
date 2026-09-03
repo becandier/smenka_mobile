@@ -105,6 +105,16 @@ class _ChecklistFillView extends StatelessWidget {
             context.read<ChecklistFillCubit>().clearActionError();
           },
         ),
+        BlocListener<ChecklistFillCubit, ChecklistFillState>(
+          listenWhen: (p, c) =>
+              p.saveError != c.saveError && c.saveError != null,
+          listener: (context, state) {
+            context.modals.showError(
+              localizedErrorMessage(context, code: state.saveError),
+            );
+            context.read<ChecklistFillCubit>().clearSaveError();
+          },
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(
