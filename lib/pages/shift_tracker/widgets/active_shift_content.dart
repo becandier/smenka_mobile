@@ -146,6 +146,11 @@ class _ActiveShiftContent extends StatelessWidget {
   Future<void> _onFinishShift(BuildContext context) async {
     final l10n = context.l10n;
     final shift = state.activeShift.data;
+    // Минуты окна дозаполнения организации (checklist_grace_period) — `null`,
+    // если бэк это поле сюда не прислал (см. doc-комментарий
+    // Organization.checklistGraceMinutes): тогда предупреждение просто не
+    // упоминает окно.
+    final graceMinutes = state.activeShiftOrganization?.checklistGraceMinutes;
 
     var hasIncompleteRequired = false;
     if (shift != null && shift.organizationId != null) {
@@ -189,6 +194,17 @@ class _ActiveShiftContent extends StatelessWidget {
                   ),
                 ],
               ),
+              // Окно дозаполнения включено (checklist_grace_minutes > 0) —
+              // уточняем, сколько времени останется на дозаполнение после
+              // завершения (mobile.md, п.5). Завершение по-прежнему не
+              // блокируется — это осознанное решение владельца.
+              if (graceMinutes case final minutes? when minutes > 0) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.shiftFinishGraceWindowNotice(minutes),
+                  style: TextStyle(color: ctx.appColors.secondary),
+                ),
+              ],
             ],
           ],
         ),

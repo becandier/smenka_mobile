@@ -40,6 +40,10 @@ _ChecklistInstanceDto _$ChecklistInstanceDtoFromJson(
   completedAt: json['completed_at'] == null
       ? null
       : DateTime.parse(json['completed_at'] as String),
+  fillAllowed: json['fill_allowed'] as bool? ?? true,
+  fillDeadlineAt: json['fill_deadline_at'] == null
+      ? null
+      : DateTime.parse(json['fill_deadline_at'] as String),
 );
 
 Map<String, dynamic> _$ChecklistInstanceDtoToJson(
@@ -53,6 +57,8 @@ Map<String, dynamic> _$ChecklistInstanceDtoToJson(
   'items_summary': instance.itemsSummary,
   'created_at': instance.createdAt.toIso8601String(),
   'completed_at': instance.completedAt?.toIso8601String(),
+  'fill_allowed': instance.fillAllowed,
+  'fill_deadline_at': instance.fillDeadlineAt?.toIso8601String(),
 };
 
 _ChecklistInstanceDetailDto _$ChecklistInstanceDetailDtoFromJson(
@@ -72,6 +78,10 @@ _ChecklistInstanceDetailDto _$ChecklistInstanceDetailDtoFromJson(
       : DateTime.parse(json['completed_at'] as String),
   maxPhotosPerItem: (json['max_photos_per_item'] as num?)?.toInt(),
   organizationTimezone: json['organization_timezone'] as String?,
+  fillAllowed: json['fill_allowed'] as bool? ?? true,
+  fillDeadlineAt: json['fill_deadline_at'] == null
+      ? null
+      : DateTime.parse(json['fill_deadline_at'] as String),
 );
 
 Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
@@ -87,6 +97,8 @@ Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
   'completed_at': instance.completedAt?.toIso8601String(),
   'max_photos_per_item': instance.maxPhotosPerItem,
   'organization_timezone': instance.organizationTimezone,
+  'fill_allowed': instance.fillAllowed,
+  'fill_deadline_at': instance.fillDeadlineAt?.toIso8601String(),
 };
 
 _ChecklistInstanceItemDto _$ChecklistInstanceItemDtoFromJson(

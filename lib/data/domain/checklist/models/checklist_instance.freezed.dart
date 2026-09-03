@@ -286,7 +286,17 @@ as int,
 /// @nodoc
 mixin _$ChecklistInstance {
 
- String get id; String get name; ChecklistType get type; bool get isRequired; ChecklistInstanceStatus get status; ChecklistItemsSummary get itemsSummary; DateTime get createdAt; DateTime? get completedAt;
+ String get id; String get name; ChecklistType get type; bool get isRequired; ChecklistInstanceStatus get status; ChecklistItemsSummary get itemsSummary; DateTime get createdAt; DateTime? get completedAt;/// Можно ли сейчас редактировать пункты/фото этого экземпляра —
+/// серверный признак окна дозаполнения (`checklist_grace_period`).
+/// `true` для активной смены; для завершённой — пока не истекло окно
+/// `checklist_grace_minutes`; `false` после его закрытия.
+/// `@Default(true)` — старый бэк поля не пришлёт; деградация
+/// самовосстанавливается через существующий обработчик `SHIFT_FINISHED`
+/// при первой же неудачной мутации (см. `ChecklistFillCubit._update`).
+ bool get fillAllowed;/// Момент закрытия окна дозаполнения (UTC). Заполнен только пока
+/// [fillAllowed] и смена завершена; `null` — смена активна, окно уже
+/// закрыто, либо старый бэк поля не прислал.
+ DateTime? get fillDeadlineAt;
 /// Create a copy of ChecklistInstance
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -297,16 +307,16 @@ $ChecklistInstanceCopyWith<ChecklistInstance> get copyWith => _$ChecklistInstanc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistInstance&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.itemsSummary, itemsSummary) || other.itemsSummary == itemsSummary)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistInstance&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.itemsSummary, itemsSummary) || other.itemsSummary == itemsSummary)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.fillAllowed, fillAllowed) || other.fillAllowed == fillAllowed)&&(identical(other.fillDeadlineAt, fillDeadlineAt) || other.fillDeadlineAt == fillDeadlineAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,itemsSummary,createdAt,completedAt);
+int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,itemsSummary,createdAt,completedAt,fillAllowed,fillDeadlineAt);
 
 @override
 String toString() {
-  return 'ChecklistInstance(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, createdAt: $createdAt, completedAt: $completedAt)';
+  return 'ChecklistInstance(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, createdAt: $createdAt, completedAt: $completedAt, fillAllowed: $fillAllowed, fillDeadlineAt: $fillDeadlineAt)';
 }
 
 
@@ -317,7 +327,7 @@ abstract mixin class $ChecklistInstanceCopyWith<$Res>  {
   factory $ChecklistInstanceCopyWith(ChecklistInstance value, $Res Function(ChecklistInstance) _then) = _$ChecklistInstanceCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, ChecklistItemsSummary itemsSummary, DateTime createdAt, DateTime? completedAt
+ String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, ChecklistItemsSummary itemsSummary, DateTime createdAt, DateTime? completedAt, bool fillAllowed, DateTime? fillDeadlineAt
 });
 
 
@@ -334,7 +344,7 @@ class _$ChecklistInstanceCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistInstance
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? itemsSummary = null,Object? createdAt = null,Object? completedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? itemsSummary = null,Object? createdAt = null,Object? completedAt = freezed,Object? fillAllowed = null,Object? fillDeadlineAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -344,6 +354,8 @@ as bool,status: null == status ? _self.status : status // ignore: cast_nullable_
 as ChecklistInstanceStatus,itemsSummary: null == itemsSummary ? _self.itemsSummary : itemsSummary // ignore: cast_nullable_to_non_nullable
 as ChecklistItemsSummary,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,fillAllowed: null == fillAllowed ? _self.fillAllowed : fillAllowed // ignore: cast_nullable_to_non_nullable
+as bool,fillDeadlineAt: freezed == fillDeadlineAt ? _self.fillDeadlineAt : fillDeadlineAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -438,10 +450,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  ChecklistItemsSummary itemsSummary,  DateTime createdAt,  DateTime? completedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  ChecklistItemsSummary itemsSummary,  DateTime createdAt,  DateTime? completedAt,  bool fillAllowed,  DateTime? fillDeadlineAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChecklistInstance() when $default != null:
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.itemsSummary,_that.createdAt,_that.completedAt);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.itemsSummary,_that.createdAt,_that.completedAt,_that.fillAllowed,_that.fillDeadlineAt);case _:
   return orElse();
 
 }
@@ -459,10 +471,10 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  ChecklistItemsSummary itemsSummary,  DateTime createdAt,  DateTime? completedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  ChecklistItemsSummary itemsSummary,  DateTime createdAt,  DateTime? completedAt,  bool fillAllowed,  DateTime? fillDeadlineAt)  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistInstance():
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.itemsSummary,_that.createdAt,_that.completedAt);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.itemsSummary,_that.createdAt,_that.completedAt,_that.fillAllowed,_that.fillDeadlineAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -479,10 +491,10 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  ChecklistItemsSummary itemsSummary,  DateTime createdAt,  DateTime? completedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  ChecklistItemsSummary itemsSummary,  DateTime createdAt,  DateTime? completedAt,  bool fillAllowed,  DateTime? fillDeadlineAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistInstance() when $default != null:
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.itemsSummary,_that.createdAt,_that.completedAt);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.itemsSummary,_that.createdAt,_that.completedAt,_that.fillAllowed,_that.fillDeadlineAt);case _:
   return null;
 
 }
@@ -494,7 +506,7 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_th
 
 
 class _ChecklistInstance implements ChecklistInstance {
-  const _ChecklistInstance({required this.id, required this.name, required this.type, required this.isRequired, required this.status, required this.itemsSummary, required this.createdAt, this.completedAt});
+  const _ChecklistInstance({required this.id, required this.name, required this.type, required this.isRequired, required this.status, required this.itemsSummary, required this.createdAt, this.completedAt, this.fillAllowed = true, this.fillDeadlineAt});
   
 
 @override final  String id;
@@ -505,6 +517,18 @@ class _ChecklistInstance implements ChecklistInstance {
 @override final  ChecklistItemsSummary itemsSummary;
 @override final  DateTime createdAt;
 @override final  DateTime? completedAt;
+/// Можно ли сейчас редактировать пункты/фото этого экземпляра —
+/// серверный признак окна дозаполнения (`checklist_grace_period`).
+/// `true` для активной смены; для завершённой — пока не истекло окно
+/// `checklist_grace_minutes`; `false` после его закрытия.
+/// `@Default(true)` — старый бэк поля не пришлёт; деградация
+/// самовосстанавливается через существующий обработчик `SHIFT_FINISHED`
+/// при первой же неудачной мутации (см. `ChecklistFillCubit._update`).
+@override@JsonKey() final  bool fillAllowed;
+/// Момент закрытия окна дозаполнения (UTC). Заполнен только пока
+/// [fillAllowed] и смена завершена; `null` — смена активна, окно уже
+/// закрыто, либо старый бэк поля не прислал.
+@override final  DateTime? fillDeadlineAt;
 
 /// Create a copy of ChecklistInstance
 /// with the given fields replaced by the non-null parameter values.
@@ -516,16 +540,16 @@ _$ChecklistInstanceCopyWith<_ChecklistInstance> get copyWith => __$ChecklistInst
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistInstance&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.itemsSummary, itemsSummary) || other.itemsSummary == itemsSummary)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistInstance&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.itemsSummary, itemsSummary) || other.itemsSummary == itemsSummary)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.fillAllowed, fillAllowed) || other.fillAllowed == fillAllowed)&&(identical(other.fillDeadlineAt, fillDeadlineAt) || other.fillDeadlineAt == fillDeadlineAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,itemsSummary,createdAt,completedAt);
+int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,itemsSummary,createdAt,completedAt,fillAllowed,fillDeadlineAt);
 
 @override
 String toString() {
-  return 'ChecklistInstance(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, createdAt: $createdAt, completedAt: $completedAt)';
+  return 'ChecklistInstance(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, itemsSummary: $itemsSummary, createdAt: $createdAt, completedAt: $completedAt, fillAllowed: $fillAllowed, fillDeadlineAt: $fillDeadlineAt)';
 }
 
 
@@ -536,7 +560,7 @@ abstract mixin class _$ChecklistInstanceCopyWith<$Res> implements $ChecklistInst
   factory _$ChecklistInstanceCopyWith(_ChecklistInstance value, $Res Function(_ChecklistInstance) _then) = __$ChecklistInstanceCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, ChecklistItemsSummary itemsSummary, DateTime createdAt, DateTime? completedAt
+ String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, ChecklistItemsSummary itemsSummary, DateTime createdAt, DateTime? completedAt, bool fillAllowed, DateTime? fillDeadlineAt
 });
 
 
@@ -553,7 +577,7 @@ class __$ChecklistInstanceCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistInstance
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? itemsSummary = null,Object? createdAt = null,Object? completedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? itemsSummary = null,Object? createdAt = null,Object? completedAt = freezed,Object? fillAllowed = null,Object? fillDeadlineAt = freezed,}) {
   return _then(_ChecklistInstance(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -563,6 +587,8 @@ as bool,status: null == status ? _self.status : status // ignore: cast_nullable_
 as ChecklistInstanceStatus,itemsSummary: null == itemsSummary ? _self.itemsSummary : itemsSummary // ignore: cast_nullable_to_non_nullable
 as ChecklistItemsSummary,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,fillAllowed: null == fillAllowed ? _self.fillAllowed : fillAllowed // ignore: cast_nullable_to_non_nullable
+as bool,fillDeadlineAt: freezed == fillDeadlineAt ? _self.fillDeadlineAt : fillDeadlineAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -588,7 +614,9 @@ mixin _$ChecklistInstanceDetail {
 /// для персональной смены и для старого бэка без поля (rolling deploy) —
 /// тогда штамп фото и настенное время пунктов используют
 /// `AppTimeContext.device()`.
- String? get organizationTimezone;
+ String? get organizationTimezone;/// См. [ChecklistInstance.fillAllowed] — та же семантика, для детали.
+ bool get fillAllowed;/// См. [ChecklistInstance.fillDeadlineAt] — та же семантика, для детали.
+ DateTime? get fillDeadlineAt;
 /// Create a copy of ChecklistInstanceDetail
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -599,16 +627,16 @@ $ChecklistInstanceDetailCopyWith<ChecklistInstanceDetail> get copyWith => _$Chec
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistInstanceDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.maxPhotosPerItem, maxPhotosPerItem) || other.maxPhotosPerItem == maxPhotosPerItem)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistInstanceDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.maxPhotosPerItem, maxPhotosPerItem) || other.maxPhotosPerItem == maxPhotosPerItem)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone)&&(identical(other.fillAllowed, fillAllowed) || other.fillAllowed == fillAllowed)&&(identical(other.fillDeadlineAt, fillDeadlineAt) || other.fillDeadlineAt == fillDeadlineAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,createdAt,const DeepCollectionEquality().hash(items),completedAt,maxPhotosPerItem,organizationTimezone);
+int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,createdAt,const DeepCollectionEquality().hash(items),completedAt,maxPhotosPerItem,organizationTimezone,fillAllowed,fillDeadlineAt);
 
 @override
 String toString() {
-  return 'ChecklistInstanceDetail(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, createdAt: $createdAt, items: $items, completedAt: $completedAt, maxPhotosPerItem: $maxPhotosPerItem, organizationTimezone: $organizationTimezone)';
+  return 'ChecklistInstanceDetail(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, createdAt: $createdAt, items: $items, completedAt: $completedAt, maxPhotosPerItem: $maxPhotosPerItem, organizationTimezone: $organizationTimezone, fillAllowed: $fillAllowed, fillDeadlineAt: $fillDeadlineAt)';
 }
 
 
@@ -619,7 +647,7 @@ abstract mixin class $ChecklistInstanceDetailCopyWith<$Res>  {
   factory $ChecklistInstanceDetailCopyWith(ChecklistInstanceDetail value, $Res Function(ChecklistInstanceDetail) _then) = _$ChecklistInstanceDetailCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, DateTime createdAt, List<ChecklistInstanceItem> items, DateTime? completedAt, int? maxPhotosPerItem, String? organizationTimezone
+ String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, DateTime createdAt, List<ChecklistInstanceItem> items, DateTime? completedAt, int? maxPhotosPerItem, String? organizationTimezone, bool fillAllowed, DateTime? fillDeadlineAt
 });
 
 
@@ -636,7 +664,7 @@ class _$ChecklistInstanceDetailCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistInstanceDetail
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? createdAt = null,Object? items = null,Object? completedAt = freezed,Object? maxPhotosPerItem = freezed,Object? organizationTimezone = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? createdAt = null,Object? items = null,Object? completedAt = freezed,Object? maxPhotosPerItem = freezed,Object? organizationTimezone = freezed,Object? fillAllowed = null,Object? fillDeadlineAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -648,7 +676,9 @@ as DateTime,items: null == items ? _self.items : items // ignore: cast_nullable_
 as List<ChecklistInstanceItem>,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,maxPhotosPerItem: freezed == maxPhotosPerItem ? _self.maxPhotosPerItem : maxPhotosPerItem // ignore: cast_nullable_to_non_nullable
 as int?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,fillAllowed: null == fillAllowed ? _self.fillAllowed : fillAllowed // ignore: cast_nullable_to_non_nullable
+as bool,fillDeadlineAt: freezed == fillDeadlineAt ? _self.fillDeadlineAt : fillDeadlineAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -733,10 +763,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  DateTime createdAt,  List<ChecklistInstanceItem> items,  DateTime? completedAt,  int? maxPhotosPerItem,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  DateTime createdAt,  List<ChecklistInstanceItem> items,  DateTime? completedAt,  int? maxPhotosPerItem,  String? organizationTimezone,  bool fillAllowed,  DateTime? fillDeadlineAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChecklistInstanceDetail() when $default != null:
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.createdAt,_that.items,_that.completedAt,_that.maxPhotosPerItem,_that.organizationTimezone);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.createdAt,_that.items,_that.completedAt,_that.maxPhotosPerItem,_that.organizationTimezone,_that.fillAllowed,_that.fillDeadlineAt);case _:
   return orElse();
 
 }
@@ -754,10 +784,10 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  DateTime createdAt,  List<ChecklistInstanceItem> items,  DateTime? completedAt,  int? maxPhotosPerItem,  String? organizationTimezone)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  DateTime createdAt,  List<ChecklistInstanceItem> items,  DateTime? completedAt,  int? maxPhotosPerItem,  String? organizationTimezone,  bool fillAllowed,  DateTime? fillDeadlineAt)  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistInstanceDetail():
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.createdAt,_that.items,_that.completedAt,_that.maxPhotosPerItem,_that.organizationTimezone);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.createdAt,_that.items,_that.completedAt,_that.maxPhotosPerItem,_that.organizationTimezone,_that.fillAllowed,_that.fillDeadlineAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -774,10 +804,10 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  DateTime createdAt,  List<ChecklistInstanceItem> items,  DateTime? completedAt,  int? maxPhotosPerItem,  String? organizationTimezone)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  ChecklistType type,  bool isRequired,  ChecklistInstanceStatus status,  DateTime createdAt,  List<ChecklistInstanceItem> items,  DateTime? completedAt,  int? maxPhotosPerItem,  String? organizationTimezone,  bool fillAllowed,  DateTime? fillDeadlineAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistInstanceDetail() when $default != null:
-return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.createdAt,_that.items,_that.completedAt,_that.maxPhotosPerItem,_that.organizationTimezone);case _:
+return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_that.createdAt,_that.items,_that.completedAt,_that.maxPhotosPerItem,_that.organizationTimezone,_that.fillAllowed,_that.fillDeadlineAt);case _:
   return null;
 
 }
@@ -789,7 +819,7 @@ return $default(_that.id,_that.name,_that.type,_that.isRequired,_that.status,_th
 
 
 class _ChecklistInstanceDetail implements ChecklistInstanceDetail {
-  const _ChecklistInstanceDetail({required this.id, required this.name, required this.type, required this.isRequired, required this.status, required this.createdAt, required final  List<ChecklistInstanceItem> items, this.completedAt, this.maxPhotosPerItem, this.organizationTimezone}): _items = items;
+  const _ChecklistInstanceDetail({required this.id, required this.name, required this.type, required this.isRequired, required this.status, required this.createdAt, required final  List<ChecklistInstanceItem> items, this.completedAt, this.maxPhotosPerItem, this.organizationTimezone, this.fillAllowed = true, this.fillDeadlineAt}): _items = items;
   
 
 @override final  String id;
@@ -814,6 +844,10 @@ class _ChecklistInstanceDetail implements ChecklistInstanceDetail {
 /// тогда штамп фото и настенное время пунктов используют
 /// `AppTimeContext.device()`.
 @override final  String? organizationTimezone;
+/// См. [ChecklistInstance.fillAllowed] — та же семантика, для детали.
+@override@JsonKey() final  bool fillAllowed;
+/// См. [ChecklistInstance.fillDeadlineAt] — та же семантика, для детали.
+@override final  DateTime? fillDeadlineAt;
 
 /// Create a copy of ChecklistInstanceDetail
 /// with the given fields replaced by the non-null parameter values.
@@ -825,16 +859,16 @@ _$ChecklistInstanceDetailCopyWith<_ChecklistInstanceDetail> get copyWith => __$C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistInstanceDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.maxPhotosPerItem, maxPhotosPerItem) || other.maxPhotosPerItem == maxPhotosPerItem)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistInstanceDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.isRequired, isRequired) || other.isRequired == isRequired)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.maxPhotosPerItem, maxPhotosPerItem) || other.maxPhotosPerItem == maxPhotosPerItem)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone)&&(identical(other.fillAllowed, fillAllowed) || other.fillAllowed == fillAllowed)&&(identical(other.fillDeadlineAt, fillDeadlineAt) || other.fillDeadlineAt == fillDeadlineAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,createdAt,const DeepCollectionEquality().hash(_items),completedAt,maxPhotosPerItem,organizationTimezone);
+int get hashCode => Object.hash(runtimeType,id,name,type,isRequired,status,createdAt,const DeepCollectionEquality().hash(_items),completedAt,maxPhotosPerItem,organizationTimezone,fillAllowed,fillDeadlineAt);
 
 @override
 String toString() {
-  return 'ChecklistInstanceDetail(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, createdAt: $createdAt, items: $items, completedAt: $completedAt, maxPhotosPerItem: $maxPhotosPerItem, organizationTimezone: $organizationTimezone)';
+  return 'ChecklistInstanceDetail(id: $id, name: $name, type: $type, isRequired: $isRequired, status: $status, createdAt: $createdAt, items: $items, completedAt: $completedAt, maxPhotosPerItem: $maxPhotosPerItem, organizationTimezone: $organizationTimezone, fillAllowed: $fillAllowed, fillDeadlineAt: $fillDeadlineAt)';
 }
 
 
@@ -845,7 +879,7 @@ abstract mixin class _$ChecklistInstanceDetailCopyWith<$Res> implements $Checkli
   factory _$ChecklistInstanceDetailCopyWith(_ChecklistInstanceDetail value, $Res Function(_ChecklistInstanceDetail) _then) = __$ChecklistInstanceDetailCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, DateTime createdAt, List<ChecklistInstanceItem> items, DateTime? completedAt, int? maxPhotosPerItem, String? organizationTimezone
+ String id, String name, ChecklistType type, bool isRequired, ChecklistInstanceStatus status, DateTime createdAt, List<ChecklistInstanceItem> items, DateTime? completedAt, int? maxPhotosPerItem, String? organizationTimezone, bool fillAllowed, DateTime? fillDeadlineAt
 });
 
 
@@ -862,7 +896,7 @@ class __$ChecklistInstanceDetailCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistInstanceDetail
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? createdAt = null,Object? items = null,Object? completedAt = freezed,Object? maxPhotosPerItem = freezed,Object? organizationTimezone = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? type = null,Object? isRequired = null,Object? status = null,Object? createdAt = null,Object? items = null,Object? completedAt = freezed,Object? maxPhotosPerItem = freezed,Object? organizationTimezone = freezed,Object? fillAllowed = null,Object? fillDeadlineAt = freezed,}) {
   return _then(_ChecklistInstanceDetail(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -874,7 +908,9 @@ as DateTime,items: null == items ? _self._items : items // ignore: cast_nullable
 as List<ChecklistInstanceItem>,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,maxPhotosPerItem: freezed == maxPhotosPerItem ? _self.maxPhotosPerItem : maxPhotosPerItem // ignore: cast_nullable_to_non_nullable
 as int?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,fillAllowed: null == fillAllowed ? _self.fillAllowed : fillAllowed // ignore: cast_nullable_to_non_nullable
+as bool,fillDeadlineAt: freezed == fillDeadlineAt ? _self.fillDeadlineAt : fillDeadlineAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

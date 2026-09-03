@@ -31,6 +31,8 @@ abstract class ChecklistInstanceDto with _$ChecklistInstanceDto {
     required ChecklistItemsSummaryDto itemsSummary,
     required DateTime createdAt,
     DateTime? completedAt,
+    @Default(true) bool fillAllowed,
+    DateTime? fillDeadlineAt,
   }) = _ChecklistInstanceDto;
 
   factory ChecklistInstanceDto.fromJson(Map<String, dynamic> json) =>
@@ -55,6 +57,8 @@ abstract class ChecklistInstanceDetailDto with _$ChecklistInstanceDetailDto {
     /// организации смены; `null` для персональной смены и для старого бэка
     /// без поля (rolling deploy).
     String? organizationTimezone,
+    @Default(true) bool fillAllowed,
+    DateTime? fillDeadlineAt,
   }) = _ChecklistInstanceDetailDto;
 
   factory ChecklistInstanceDetailDto.fromJson(Map<String, dynamic> json) =>

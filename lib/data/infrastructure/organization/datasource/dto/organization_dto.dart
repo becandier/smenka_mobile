@@ -19,6 +19,7 @@ abstract class OrganizationDto with _$OrganizationDto {
     @Default(false) bool requireWorkLocation,
     @Default('Europe/Moscow') String timezone,
     @Default(7) int overtimeRequestDays,
+    int? checklistGraceMinutes,
     String? myRole,
     OrganizationRoleDto? myCustomRole,
     OrganizationSubscriptionDto? subscription,

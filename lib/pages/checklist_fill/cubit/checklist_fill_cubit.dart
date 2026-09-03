@@ -29,6 +29,7 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     bool readOnly = false,
     Future<Uint8List> Function(Uint8List bytes, String stampText)? photoStamper,
     PhotoLogger? photoLogger,
+    DateTime Function()? now,
   }) : _shiftId = shiftId,
        _instanceId = instanceId,
        _organizationId = organizationId,
@@ -38,6 +39,7 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
        _photoPickerService = photoPickerService,
        _photoStamper = photoStamper ?? burnStamp,
        _photoLogger = photoLogger ?? PhotoLogger(),
+       _now = now ?? DateTime.now,
        super(ChecklistFillState(readOnly: readOnly)) {
     loadInstance();
   }
@@ -58,6 +60,14 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
   /// Логгер этапа штампа (по образцу `PhotoPickerService`). В page-DI — тот же
   /// инстанс, что и у сервиса, чтобы крошки/репорты фото шли одной цепочкой.
   final PhotoLogger _photoLogger;
+
+  /// Источник «сейчас» для отсчёта окна дозаполнения — по умолчанию
+  /// `DateTime.now`, переопределяется в тестах.
+  final DateTime Function() _now;
+
+  /// Тикер обратного отсчёта окна дозаполнения (`checklist_grace_period`,
+  /// mobile.md п.3) — идёт, пока `state.fillDeadlineAt` не `null`.
+  Timer? _fillDeadlineTimer;
 
   final Map<String, Timer> _commentDebouncers = {};
 
@@ -90,6 +100,7 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     }
     _commentDebouncers.clear();
     _uploads.clear();
+    _stopFillDeadlineTimer();
     return super.close();
   }
 
@@ -101,12 +112,71 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     );
     result.fold(
       onSuccess: (detail) {
-        emit(state.copyWith(instance: state.instance.toSuccess(detail)));
+        // Режим чтения — по серверному fill_allowed, не по статусу смены
+        // (checklist_grace_period): смена может быть завершена, но пока
+        // открыто окно дозаполнения, редактирование разрешено.
+        emit(
+          state.copyWith(
+            instance: state.instance.toSuccess(detail),
+            readOnly: !detail.fillAllowed,
+            fillDeadlineAt: detail.fillDeadlineAt,
+            fillDeadlineTick: detail.fillDeadlineAt != null
+                ? _now().toUtc()
+                : null,
+          ),
+        );
+        _syncFillDeadlineTimer();
       },
       onFailure: (error) {
         emit(state.copyWith(instance: state.instance.toError(error.message)));
       },
     );
+  }
+
+  /// Запускает/останавливает тикер вслед за `state.fillDeadlineAt` — идёт,
+  /// пока окно дозаполнения открыто (см. [loadInstance]).
+  void _syncFillDeadlineTimer() {
+    _stopFillDeadlineTimer();
+    if (state.fillDeadlineAt == null) return;
+    _fillDeadlineTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => _tickFillDeadline(),
+    );
+  }
+
+  void _stopFillDeadlineTimer() {
+    _fillDeadlineTimer?.cancel();
+    _fillDeadlineTimer = null;
+  }
+
+  /// Локальный клиентский тик — только UX (переводит экран в чтение без
+  /// перезагрузки страницы, как только истечёт клиентский расчёт по
+  /// серверному `fill_deadline_at`, mobile.md п.3-4). Решение по-прежнему
+  /// принимает сервер: рассинхрон часов устройства здесь не риск, а
+  /// косметика — реальная мутация после истечения всё равно вернула бы
+  /// `SHIFT_FINISHED` и попала бы в тот же обработчик, что и здесь (см.
+  /// [_update], [_handleAttachFailure]) — переиспользуем один и тот же
+  /// переход в read-only + notice, не заводим второй механизм.
+  void _tickFillDeadline() {
+    final deadline = state.fillDeadlineAt;
+    if (deadline == null) {
+      _stopFillDeadlineTimer();
+      return;
+    }
+    final now = _now().toUtc();
+    if (!now.isBefore(deadline)) {
+      _stopFillDeadlineTimer();
+      emit(
+        state.copyWith(
+          readOnly: true,
+          fillDeadlineAt: null,
+          fillDeadlineTick: null,
+          notice: PhotoNotice.shiftFinished,
+        ),
+      );
+      return;
+    }
+    emit(state.copyWith(fillDeadlineTick: now));
   }
 
   Future<void> toggleItem(ChecklistInstanceItem item) async {
@@ -180,10 +250,17 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
           // Смена завершилась (авто-завершение/админ), пока сотрудник заполнял
           // чек-лист — ретрай бессмысленен, переходим в read-only симметрично
           // _handleAttachFailure (тот же нотис/текст, что и для фото).
+          // Останавливаем таймер дедлайна дозаполнения, как это делает
+          // _tickFillDeadline — иначе при рассинхроне часов устройства он
+          // догонит старый fillDeadlineAt и повторно покажет уже неактуальный
+          // тост поверх экрана, давно ушедшего в read-only.
+          _stopFillDeadlineTimer();
           emit(
             state.copyWith(
               itemStatuses: newStatuses,
               readOnly: true,
+              fillDeadlineAt: null,
+              fillDeadlineTick: null,
               notice: PhotoNotice.shiftFinished,
             ),
           );
@@ -379,10 +456,17 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
       case 'SHIFT_FINISHED':
         // Смена авто-завершилась во время добавления: переходим в read-only,
         // ретрай не предлагаем (файл-сирота вычистится cleanup_orphan_files).
+        // Останавливаем таймер дедлайна дозаполнения, как это делает
+        // _tickFillDeadline — иначе при рассинхроне часов устройства он
+        // догонит старый fillDeadlineAt и повторно покажет уже неактуальный
+        // тост поверх экрана, давно ушедшего в read-only.
         _uploads.clear();
+        _stopFillDeadlineTimer();
         emit(
           state.copyWith(
             readOnly: true,
+            fillDeadlineAt: null,
+            fillDeadlineTick: null,
             notice: PhotoNotice.shiftFinished,
             photoDrafts: const {},
           ),

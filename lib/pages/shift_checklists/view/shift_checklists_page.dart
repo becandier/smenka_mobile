@@ -111,6 +111,11 @@ class _ShiftChecklistsView extends StatelessWidget {
         shiftId: cubit.shiftId,
         instanceId: instance.id,
         organizationId: organizationId,
+        // Режим чтения — по серверному fill_allowed (checklist_grace_period).
+        // На активной смене всегда true; на дозаполнении завершённой — тоже
+        // true, пока открыто окно. Авторитетно перепроверяется в
+        // ChecklistFillCubit.loadInstance() по детали.
+        readOnly: !instance.fillAllowed,
       ),
     );
     await cubit.loadChecklists();

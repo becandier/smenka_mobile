@@ -2377,7 +2377,7 @@ abstract class AppLocalizations {
   /// No description provided for @checklistPhotoShiftFinished.
   ///
   /// In ru, this message translates to:
-  /// **'Смена завершена'**
+  /// **'Время на дозаполнение чек-листа истекло'**
   String get checklistPhotoShiftFinished;
 
   /// No description provided for @checklistPhotoCaptionTaken.
@@ -2409,6 +2409,24 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Чек-листы не выполнены'**
   String get shiftIncompleteRequiredBadge;
+
+  /// No description provided for @shiftFinishGraceWindowNotice.
+  ///
+  /// In ru, this message translates to:
+  /// **'После завершения будет ещё {minutes} мин на дозаполнение чек-листа'**
+  String shiftFinishGraceWindowNotice(int minutes);
+
+  /// No description provided for @checklistGraceRemainingMinutes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Осталось {minutes} мин'**
+  String checklistGraceRemainingMinutes(int minutes);
+
+  /// No description provided for @shiftTrackerGraceBlockTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дозаполните чек-лист последней смены'**
+  String get shiftTrackerGraceBlockTitle;
 
   /// No description provided for @inviteSuccessTitle.
   ///
@@ -3127,7 +3145,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorShiftFinished.
   ///
   /// In ru, this message translates to:
-  /// **'Смена завершена'**
+  /// **'Время на дозаполнение чек-листа истекло'**
   String get errorShiftFinished;
 
   /// No description provided for @errorInstanceNotFound.

@@ -99,6 +99,23 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
     /// `schedule_window_enforcement/mobile.md`). `null`, пока тик не
     /// запущен (сеть ещё грузится / смена активна / кубит закрыт).
     DateTime? idleNow,
+
+    /// Последняя завершённая своя смена с ещё открытым окном дозаполнения
+    /// чек-листа (`checklist_grace_period`) — драйвер «заметного блока» на
+    /// idle-экране (mobile.md, п.2). `null` — смены не было, обязательные
+    /// пункты уже закрыты, либо окно истекло.
+    Shift? checklistGraceShift,
+
+    /// Дедлайн окна `checklistGraceShift` — момент из ответа
+    /// `GET /shifts/{id}/checklists` (`fill_deadline_at`), UTC. `null`
+    /// вместе с `checklistGraceShift`.
+    DateTime? checklistGraceDeadlineAt,
+
+    /// Тик обратного отсчёта окна — обновляется раз в секунду, пока окно
+    /// открыто (`ShiftTrackerCubit._tickChecklistGrace`). Отдельное от
+    /// `checklistGraceDeadlineAt` поле — чтобы блок пересчитывал остаток
+    /// каждую секунду без лишних действий над остальным стейтом.
+    DateTime? checklistGraceNow,
   }) = _ShiftTrackerState;
   const ShiftTrackerState._();
 
@@ -277,4 +294,20 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   /// подпись, `workScheduleRequiredEmpty`).
   WorkSchedule? get scheduleWindowReasonSource =>
       scheduleBlockedWindowClosed ? availableSchedules.firstOrNull : null;
+
+  /// Показывать ли на idle-экране блок дозаполнения чек-листа
+  /// (`checklist_grace_period`, mobile.md п.2).
+  bool get showChecklistGraceBlock =>
+      checklistGraceShift != null && checklistGraceDeadlineAt != null;
+
+  /// Оставшееся время окна дозаполнения — `null`, если блок не показывается.
+  /// Это разница двух UTC-моментов, не настенное время — поэтому без
+  /// `AppTime`.
+  Duration? get checklistGraceRemaining {
+    final deadline = checklistGraceDeadlineAt;
+    if (deadline == null) return null;
+    final now = checklistGraceNow ?? deadline;
+    final remaining = deadline.difference(now);
+    return remaining.isNegative ? Duration.zero : remaining;
+  }
 }

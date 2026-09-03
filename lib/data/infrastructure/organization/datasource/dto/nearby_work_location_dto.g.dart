@@ -11,9 +11,9 @@ _NearbyWorkLocationDto _$NearbyWorkLocationDtoFromJson(
 ) => _NearbyWorkLocationDto(
   id: json['id'] as String,
   name: json['name'] as String,
-  address: json['address'] as String?,
   distanceMeters: (json['distance_meters'] as num).toInt(),
   isNearest: json['is_nearest'] as bool,
+  address: json['address'] as String?,
 );
 
 Map<String, dynamic> _$NearbyWorkLocationDtoToJson(
@@ -21,9 +21,9 @@ Map<String, dynamic> _$NearbyWorkLocationDtoToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'address': instance.address,
   'distance_meters': instance.distanceMeters,
   'is_nearest': instance.isNearest,
+  'address': instance.address,
 };
 
 _NearestOutsideWorkLocationDto _$NearestOutsideWorkLocationDtoFromJson(

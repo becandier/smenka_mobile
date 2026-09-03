@@ -112,9 +112,11 @@ class _InstanceRow extends StatelessWidget {
           shiftId: shift.id,
           instanceId: item.id,
           organizationId: shift.organizationId,
-          // Завершённую смену открываем только на чтение — мутации (чек/фото)
-          // скрываем заранее, бэкенд на них ответил бы SHIFT_FINISHED.
-          readOnly: shift.status == ShiftStatus.finished,
+          // Режим чтения — по серверному fill_allowed (checklist_grace_period),
+          // а не по статусу смены: завершённая смена внутри окна дозаполнения
+          // всё ещё редактируема. Авторитетно перепроверяется в
+          // ChecklistFillCubit.loadInstance() по детали.
+          readOnly: !item.fillAllowed,
         ),
       ),
       child: Padding(

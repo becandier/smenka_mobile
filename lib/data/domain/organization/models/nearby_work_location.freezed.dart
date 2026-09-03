@@ -14,10 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NearbyWorkLocation {
 
- String get id; String get name; String? get address;/// Расстояние до точки, метры (округление вниз, отдаёт сервер).
+ String get id; String get name;/// Расстояние до точки, метры (округление вниз, отдаёт сервер).
  int get distanceMeters;/// `true` — ближайшая из подходящих; ровно у одного элемента списка (у
 /// первого, сервер уже сортирует по [distanceMeters]).
- bool get isNearest;
+ bool get isNearest; String? get address;
 /// Create a copy of NearbyWorkLocation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $NearbyWorkLocationCopyWith<NearbyWorkLocation> get copyWith => _$NearbyWorkLoca
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NearbyWorkLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address)&&(identical(other.distanceMeters, distanceMeters) || other.distanceMeters == distanceMeters)&&(identical(other.isNearest, isNearest) || other.isNearest == isNearest));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NearbyWorkLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.distanceMeters, distanceMeters) || other.distanceMeters == distanceMeters)&&(identical(other.isNearest, isNearest) || other.isNearest == isNearest)&&(identical(other.address, address) || other.address == address));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,address,distanceMeters,isNearest);
+int get hashCode => Object.hash(runtimeType,id,name,distanceMeters,isNearest,address);
 
 @override
 String toString() {
-  return 'NearbyWorkLocation(id: $id, name: $name, address: $address, distanceMeters: $distanceMeters, isNearest: $isNearest)';
+  return 'NearbyWorkLocation(id: $id, name: $name, distanceMeters: $distanceMeters, isNearest: $isNearest, address: $address)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $NearbyWorkLocationCopyWith<$Res>  {
   factory $NearbyWorkLocationCopyWith(NearbyWorkLocation value, $Res Function(NearbyWorkLocation) _then) = _$NearbyWorkLocationCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String? address, int distanceMeters, bool isNearest
+ String id, String name, int distanceMeters, bool isNearest, String? address
 });
 
 
@@ -65,14 +65,14 @@ class _$NearbyWorkLocationCopyWithImpl<$Res>
 
 /// Create a copy of NearbyWorkLocation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? address = freezed,Object? distanceMeters = null,Object? isNearest = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? distanceMeters = null,Object? isNearest = null,Object? address = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String?,distanceMeters: null == distanceMeters ? _self.distanceMeters : distanceMeters // ignore: cast_nullable_to_non_nullable
+as String,distanceMeters: null == distanceMeters ? _self.distanceMeters : distanceMeters // ignore: cast_nullable_to_non_nullable
 as int,isNearest: null == isNearest ? _self.isNearest : isNearest // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -157,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? address,  int distanceMeters,  bool isNearest)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int distanceMeters,  bool isNearest,  String? address)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NearbyWorkLocation() when $default != null:
-return $default(_that.id,_that.name,_that.address,_that.distanceMeters,_that.isNearest);case _:
+return $default(_that.id,_that.name,_that.distanceMeters,_that.isNearest,_that.address);case _:
   return orElse();
 
 }
@@ -178,10 +178,10 @@ return $default(_that.id,_that.name,_that.address,_that.distanceMeters,_that.isN
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? address,  int distanceMeters,  bool isNearest)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int distanceMeters,  bool isNearest,  String? address)  $default,) {final _that = this;
 switch (_that) {
 case _NearbyWorkLocation():
-return $default(_that.id,_that.name,_that.address,_that.distanceMeters,_that.isNearest);case _:
+return $default(_that.id,_that.name,_that.distanceMeters,_that.isNearest,_that.address);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +198,10 @@ return $default(_that.id,_that.name,_that.address,_that.distanceMeters,_that.isN
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? address,  int distanceMeters,  bool isNearest)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int distanceMeters,  bool isNearest,  String? address)?  $default,) {final _that = this;
 switch (_that) {
 case _NearbyWorkLocation() when $default != null:
-return $default(_that.id,_that.name,_that.address,_that.distanceMeters,_that.isNearest);case _:
+return $default(_that.id,_that.name,_that.distanceMeters,_that.isNearest,_that.address);case _:
   return null;
 
 }
@@ -213,17 +213,17 @@ return $default(_that.id,_that.name,_that.address,_that.distanceMeters,_that.isN
 
 
 class _NearbyWorkLocation implements NearbyWorkLocation {
-  const _NearbyWorkLocation({required this.id, required this.name, this.address, required this.distanceMeters, required this.isNearest});
+  const _NearbyWorkLocation({required this.id, required this.name, required this.distanceMeters, required this.isNearest, this.address});
   
 
 @override final  String id;
 @override final  String name;
-@override final  String? address;
 /// Расстояние до точки, метры (округление вниз, отдаёт сервер).
 @override final  int distanceMeters;
 /// `true` — ближайшая из подходящих; ровно у одного элемента списка (у
 /// первого, сервер уже сортирует по [distanceMeters]).
 @override final  bool isNearest;
+@override final  String? address;
 
 /// Create a copy of NearbyWorkLocation
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +235,16 @@ _$NearbyWorkLocationCopyWith<_NearbyWorkLocation> get copyWith => __$NearbyWorkL
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NearbyWorkLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address)&&(identical(other.distanceMeters, distanceMeters) || other.distanceMeters == distanceMeters)&&(identical(other.isNearest, isNearest) || other.isNearest == isNearest));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NearbyWorkLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.distanceMeters, distanceMeters) || other.distanceMeters == distanceMeters)&&(identical(other.isNearest, isNearest) || other.isNearest == isNearest)&&(identical(other.address, address) || other.address == address));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,address,distanceMeters,isNearest);
+int get hashCode => Object.hash(runtimeType,id,name,distanceMeters,isNearest,address);
 
 @override
 String toString() {
-  return 'NearbyWorkLocation(id: $id, name: $name, address: $address, distanceMeters: $distanceMeters, isNearest: $isNearest)';
+  return 'NearbyWorkLocation(id: $id, name: $name, distanceMeters: $distanceMeters, isNearest: $isNearest, address: $address)';
 }
 
 
@@ -255,7 +255,7 @@ abstract mixin class _$NearbyWorkLocationCopyWith<$Res> implements $NearbyWorkLo
   factory _$NearbyWorkLocationCopyWith(_NearbyWorkLocation value, $Res Function(_NearbyWorkLocation) _then) = __$NearbyWorkLocationCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String? address, int distanceMeters, bool isNearest
+ String id, String name, int distanceMeters, bool isNearest, String? address
 });
 
 
@@ -272,14 +272,14 @@ class __$NearbyWorkLocationCopyWithImpl<$Res>
 
 /// Create a copy of NearbyWorkLocation
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? address = freezed,Object? distanceMeters = null,Object? isNearest = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? distanceMeters = null,Object? isNearest = null,Object? address = freezed,}) {
   return _then(_NearbyWorkLocation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String?,distanceMeters: null == distanceMeters ? _self.distanceMeters : distanceMeters // ignore: cast_nullable_to_non_nullable
+as String,distanceMeters: null == distanceMeters ? _self.distanceMeters : distanceMeters // ignore: cast_nullable_to_non_nullable
 as int,isNearest: null == isNearest ? _self.isNearest : isNearest // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

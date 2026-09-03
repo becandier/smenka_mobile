@@ -23,6 +23,7 @@ extension OrganizationMapper on OrganizationDto {
       requireWorkLocation: requireWorkLocation,
       timezone: timezone,
       overtimeRequestDays: overtimeRequestDays,
+      checklistGraceMinutes: checklistGraceMinutes,
       myRole: _parseMyRole(myRole),
       myCustomRole: myCustomRole?.toDomain(),
       subscription: subscription?.toDomain(),

@@ -11,6 +11,7 @@ import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/data/api/local/shift_context_storage.dart';
 import 'package:smenka_mobile/data/api/local/work_schedule_context_storage.dart';
+import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -26,6 +27,8 @@ class _MockOrganizationRepository extends Mock
 
 class _MockWorkScheduleRepository extends Mock
     implements WorkScheduleRepository {}
+
+class _MockChecklistRepository extends Mock implements ChecklistRepository {}
 
 class _MockGeoService extends Mock implements GeoService {}
 
@@ -109,6 +112,7 @@ void main() {
   late _MockShiftRepository shiftRepo;
   late _MockOrganizationRepository orgRepo;
   late _MockWorkScheduleRepository scheduleRepo;
+  late _MockChecklistRepository checklistRepo;
   late _MockGeoService geo;
   late _MockShiftContextStorage contextStorage;
   late _MockWorkScheduleContextStorage scheduleContextStorage;
@@ -118,6 +122,7 @@ void main() {
     shiftRepo = _MockShiftRepository();
     orgRepo = _MockOrganizationRepository();
     scheduleRepo = _MockWorkScheduleRepository();
+    checklistRepo = _MockChecklistRepository();
     geo = _MockGeoService();
     contextStorage = _MockShiftContextStorage();
     scheduleContextStorage = _MockWorkScheduleContextStorage();
@@ -148,6 +153,14 @@ void main() {
     when(
       () => shiftRepo.getShifts(status: ShiftStatus.paused, limit: 1),
     ).thenAnswer((_) async => _shiftsPage(const []));
+    // По умолчанию последней завершённой смены нет — блок дозаполнения
+    // (checklist_grace_period) не показывается. Тесты фичи переопределяют.
+    when(
+      () => shiftRepo.getShifts(status: ShiftStatus.finished, limit: 1),
+    ).thenAnswer((_) async => _shiftsPage(const []));
+    when(
+      () => checklistRepo.getShiftChecklists(any()),
+    ).thenAnswer((_) async => const Task<List<ChecklistInstance>>.success([]));
 
     // По умолчанию у org нет графиков (require_schedule=false) — не мешает
     // тестам, которые не проверяют work_schedules. Два формы вызова —
@@ -204,6 +217,7 @@ void main() {
     shiftRepository: shiftRepo,
     organizationRepository: orgRepo,
     workScheduleRepository: scheduleRepo,
+    checklistRepository: checklistRepo,
     geoService: geo,
     contextStorage: contextStorage,
     scheduleContextStorage: scheduleContextStorage,
@@ -2232,6 +2246,193 @@ void main() {
       expect(cubit.state.actionStatus, FeatureStatus.success);
       expect(cubit.state.hasActiveShift, isTrue);
       await cubit.close();
+    });
+  });
+
+  group('блок дозаполнения чек-листа (checklist_grace_period)', () {
+    Shift finishedShift({
+      bool hasIncompleteRequiredChecklists = true,
+      String organizationId = 'org1',
+    }) => Shift(
+      id: 's1',
+      userId: 'u1',
+      startedAt: _fixedNow.subtract(const Duration(hours: 8)),
+      status: ShiftStatus.finished,
+      pauses: const [],
+      workedSeconds: 8 * 3600,
+      organizationId: organizationId,
+      finishedAt: _fixedNow,
+      hasIncompleteRequiredChecklists: hasIncompleteRequiredChecklists,
+    );
+
+    ChecklistInstance instance({
+      bool fillAllowed = true,
+      DateTime? fillDeadlineAt,
+    }) => ChecklistInstance(
+      id: 'ci1',
+      name: 'Чек-лист при завершении',
+      type: ChecklistType.shiftEnd,
+      isRequired: true,
+      status: ChecklistInstanceStatus.incomplete,
+      itemsSummary: const ChecklistItemsSummary(total: 2, completed: 0),
+      createdAt: _fixedNow.subtract(const Duration(hours: 8)),
+      fillAllowed: fillAllowed,
+      fillDeadlineAt: fillDeadlineAt,
+    );
+
+    void stubLastFinished(Shift shift) {
+      when(
+        () => shiftRepo.getShifts(status: ShiftStatus.finished, limit: 1),
+      ).thenAnswer((_) async => _shiftsPage([shift]));
+    }
+
+    void stubChecklists(List<ChecklistInstance> items) {
+      when(
+        () => checklistRepo.getShiftChecklists(any()),
+      ).thenAnswer((_) async => Task<List<ChecklistInstance>>.success(items));
+    }
+
+    test('нет незакрытых обязательных пунктов → блока нет, второй запрос '
+        '(деталь чек-листов) не делается', () async {
+      stubLastFinished(finishedShift(hasIncompleteRequiredChecklists: false));
+
+      final cubit = buildCubit();
+      await pumpEventQueue();
+
+      expect(cubit.state.showChecklistGraceBlock, isFalse);
+      verifyNever(() => checklistRepo.getShiftChecklists(any()));
+      await cubit.close();
+    });
+
+    test(
+      'есть незакрытые обязательные пункты, окно открыто → блок '
+      'показывается с серверным дедлайном (не вычисленным на клиенте)',
+      () async {
+        final deadline = _fixedNow.add(const Duration(minutes: 24));
+        stubLastFinished(finishedShift());
+        stubChecklists([instance(fillDeadlineAt: deadline)]);
+
+        final cubit = buildCubit();
+        await pumpEventQueue();
+
+        expect(cubit.state.showChecklistGraceBlock, isTrue);
+        expect(cubit.state.checklistGraceShift?.id, 's1');
+        expect(cubit.state.checklistGraceDeadlineAt, deadline);
+        expect(
+          cubit.state.checklistGraceRemaining,
+          const Duration(minutes: 24),
+        );
+        await cubit.close();
+      },
+    );
+
+    test('обязательные пункты не закрыты, но окно уже истекло (fill_allowed '
+        'false у сервера) → блока нет', () async {
+      stubLastFinished(finishedShift());
+      stubChecklists([instance(fillAllowed: false)]);
+
+      final cubit = buildCubit();
+      await pumpEventQueue();
+
+      expect(cubit.state.showChecklistGraceBlock, isFalse);
+      await cubit.close();
+    });
+
+    test(
+      'обратный отсчёт тикает и гасит блок по истечении без нового запроса',
+      () {
+        fakeAsync((async) {
+          final deadline = _fixedNow.add(const Duration(minutes: 2));
+          stubLastFinished(finishedShift());
+          stubChecklists([instance(fillDeadlineAt: deadline)]);
+
+          final cubit = buildCubit(now: () => _fixedNow.add(async.elapsed));
+          async.flushMicrotasks();
+
+          expect(cubit.state.showChecklistGraceBlock, isTrue);
+          expect(
+            cubit.state.checklistGraceRemaining,
+            const Duration(minutes: 2),
+          );
+
+          async.elapse(const Duration(minutes: 1));
+          expect(
+            cubit.state.checklistGraceRemaining,
+            const Duration(minutes: 1),
+          );
+          expect(cubit.state.showChecklistGraceBlock, isTrue);
+
+          async.elapse(const Duration(minutes: 1, seconds: 1));
+          expect(cubit.state.showChecklistGraceBlock, isFalse);
+          expect(cubit.state.checklistGraceShift, isNull);
+
+          cubit.close();
+          async.flushMicrotasks();
+        });
+      },
+    );
+
+    test('finishShift() успешно → сразу проверяет окно дозаполнения новой '
+        'завершённой смены, не дожидаясь резюма/pull-to-refresh', () async {
+      final shift = finishedShift();
+      when(
+        () => shiftRepo.getShifts(status: ShiftStatus.active, limit: 1),
+      ).thenAnswer((_) async => _shiftsPage([_activeShift()]));
+      when(
+        () => shiftRepo.finishShift('s1'),
+      ).thenAnswer((_) async => Task<Shift>.success(shift));
+      final deadline = _fixedNow.add(const Duration(minutes: 30));
+      stubLastFinished(shift);
+      stubChecklists([instance(fillDeadlineAt: deadline)]);
+
+      final cubit = buildCubit();
+      await pumpEventQueue();
+      expect(cubit.state.hasActiveShift, isTrue);
+
+      final ok = await cubit.finishShift();
+      await pumpEventQueue();
+
+      expect(ok, isTrue);
+      expect(cubit.state.showChecklistGraceBlock, isTrue);
+      expect(cubit.state.checklistGraceDeadlineAt, deadline);
+      await cubit.close();
+    });
+
+    test('авто-завершение фоновым поллингом → тоже проверяет окно '
+        'дозаполнения (окно распространяется и на авто-завершённые смены)', () {
+      fakeAsync((async) {
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.active, limit: 1),
+        ).thenAnswer((_) async => _shiftsPage([_activeShift()]));
+
+        final cubit = buildCubit();
+        async.flushMicrotasks();
+        expect(cubit.state.hasActiveShift, isTrue);
+
+        // Бэк уже авто-завершил смену к моменту фонового опроса.
+        final shift = finishedShift();
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.active, limit: 1),
+        ).thenAnswer((_) async => _shiftsPage(const []));
+        when(
+          () => shiftRepo.getShifts(status: ShiftStatus.paused, limit: 1),
+        ).thenAnswer((_) async => _shiftsPage(const []));
+        final deadline = _fixedNow.add(const Duration(minutes: 15));
+        stubLastFinished(shift);
+        stubChecklists([instance(fillDeadlineAt: deadline)]);
+
+        // 60-секундный фоновый поллинг активной смены
+        // (ShiftTrackerCubit._pollSeconds).
+        async.elapse(const Duration(seconds: 61));
+
+        expect(cubit.state.hasActiveShift, isFalse);
+        expect(cubit.state.shiftAutoFinished, isTrue);
+        expect(cubit.state.showChecklistGraceBlock, isTrue);
+        expect(cubit.state.checklistGraceDeadlineAt, deadline);
+
+        cubit.close();
+        async.flushMicrotasks();
+      });
     });
   });
 }

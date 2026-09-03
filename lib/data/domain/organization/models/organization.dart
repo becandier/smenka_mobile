@@ -34,6 +34,18 @@ abstract class Organization with _$Organization {
     /// в объект организации). Дефолт совпадает с server_default бэка на
     /// случай устаревшего кэша без поля.
     @Default(7) int overtimeRequestDays,
+
+    /// Минуты окна дозаполнения чек-листа после завершения смены
+    /// (`OrganizationSettings.checklist_grace_minutes`,
+    /// `checklist_grace_period`). Контракт фичи денормализует поле только в
+    /// `GET/PATCH /organizations/{id}/settings` (admin/owner-only) — на
+    /// этот ответ employee доступа не имеет, поэтому здесь поле нужно по
+    /// прецеденту [overtimeRequestDays] (тот же класс задачи: employee без
+    /// доступа к `/settings` должен знать значение настройки). `null` —
+    /// бэк это поле сюда не прислал: предупреждение при завершении смены
+    /// тогда просто не упоминает окно (безопасная деградация — число,
+    /// которое не подтверждено сервером, не показываем).
+    int? checklistGraceMinutes,
     OrgMembershipRole? myRole,
     OrganizationRole? myCustomRole,
 
