@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:fake_async/fake_async.dart';
@@ -480,6 +481,57 @@ void main() {
         expect(cubit.state.notice, PhotoNotice.shiftFinished);
         expect(cubit.state.fillDeadlineAt, isNull);
         expect(cubit.state.fillRemaining, isNull);
+
+        cubit.close();
+        async.flushMicrotasks();
+      });
+    });
+
+    test('сервер отклоняет правку с SHIFT_FINISHED раньше локального '
+        'дедлайна (часы устройства отстают) → таймер отсчёта останавливается '
+        'вместе с переходом в read-only, повторный тост "время истекло" при '
+        'пересечении старого дедлайна не всплывает', () {
+      fakeAsync((async) {
+        final start = DateTime.utc(2026, 8, 1, 12);
+        final deadline = start.add(const Duration(minutes: 5));
+        stubDetail(
+          buildDetail(
+            fillAllowed: true,
+            fillDeadlineAt: deadline,
+            createdAt: start,
+          ),
+        );
+        stubUpdateItem(
+          const Task<ChecklistInstanceItem>.failure(
+            ApiException.server(message: 'x', code: 'SHIFT_FINISHED'),
+          ),
+        );
+        final cubit = buildCubit(now: () => start.add(async.elapsed));
+        async.flushMicrotasks();
+
+        expect(cubit.state.readOnly, isFalse);
+        expect(cubit.state.fillRemaining, const Duration(minutes: 5));
+
+        // Сервер уже считает смену завершённой задолго до локального
+        // дедлайна — рассинхрон часов устройства с сервером.
+        async.elapse(const Duration(minutes: 1));
+        unawaited(cubit.toggleItem(_item));
+        async.flushMicrotasks();
+
+        expect(cubit.state.readOnly, isTrue);
+        expect(cubit.state.notice, PhotoNotice.shiftFinished);
+        expect(cubit.state.fillDeadlineAt, isNull);
+
+        // View показал тост по нотису и сбросил его — как в реальном флоу.
+        cubit.clearNotice();
+        expect(cubit.state.notice, isNull);
+
+        // Локальное «сейчас» нагоняет старый серверный дедлайн: если бы
+        // таймер отсчёта не был остановлен вместе с read-only-переходом, тут
+        // повторно всплыл бы тот же тост поверх уже read-only экрана.
+        async.elapse(const Duration(minutes: 5));
+
+        expect(cubit.state.notice, isNull);
 
         cubit.close();
         async.flushMicrotasks();

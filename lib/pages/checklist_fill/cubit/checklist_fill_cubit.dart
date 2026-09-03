@@ -250,10 +250,17 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
           // Смена завершилась (авто-завершение/админ), пока сотрудник заполнял
           // чек-лист — ретрай бессмысленен, переходим в read-only симметрично
           // _handleAttachFailure (тот же нотис/текст, что и для фото).
+          // Останавливаем таймер дедлайна дозаполнения, как это делает
+          // _tickFillDeadline — иначе при рассинхроне часов устройства он
+          // догонит старый fillDeadlineAt и повторно покажет уже неактуальный
+          // тост поверх экрана, давно ушедшего в read-only.
+          _stopFillDeadlineTimer();
           emit(
             state.copyWith(
               itemStatuses: newStatuses,
               readOnly: true,
+              fillDeadlineAt: null,
+              fillDeadlineTick: null,
               notice: PhotoNotice.shiftFinished,
             ),
           );
@@ -449,10 +456,17 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
       case 'SHIFT_FINISHED':
         // Смена авто-завершилась во время добавления: переходим в read-only,
         // ретрай не предлагаем (файл-сирота вычистится cleanup_orphan_files).
+        // Останавливаем таймер дедлайна дозаполнения, как это делает
+        // _tickFillDeadline — иначе при рассинхроне часов устройства он
+        // догонит старый fillDeadlineAt и повторно покажет уже неактуальный
+        // тост поверх экрана, давно ушедшего в read-only.
         _uploads.clear();
+        _stopFillDeadlineTimer();
         emit(
           state.copyWith(
             readOnly: true,
+            fillDeadlineAt: null,
+            fillDeadlineTick: null,
             notice: PhotoNotice.shiftFinished,
             photoDrafts: const {},
           ),
