@@ -118,6 +118,24 @@
     "shiftWorkLocationPickerTitle": "Рабочая точка",
     "shiftWorkLocationPickerNone": "Без точки",
     "shiftWorkLocationPickerEmpty": "У организации нет рабочих точек",
+    "shiftLocatingIndicator": "Определяем местоположение…",
+    "shiftNearbyLocationsTitle": "Вы рядом с несколькими точками",
+    "shiftNearbyIsNearestBadge": "Ближайшая",
+    "shiftNearbyDistanceMeters": "~{meters} м",
+    "@shiftNearbyDistanceMeters": {
+        "placeholders": {
+            "meters": {"type": "int"}
+        }
+    },
+    "shiftNoNearbyLocationTitle": "Вы вне рабочих зон",
+    "shiftNoNearbyLocationMessage": "Рядом нет ни одной рабочей точки. Подойдите ближе и повторите попытку.",
+    "shiftNoNearbyLocationHint": "До ближайшей точки «{name}» ~{meters} м",
+    "@shiftNoNearbyLocationHint": {
+        "placeholders": {
+            "name": {"type": "String"},
+            "meters": {"type": "int"}
+        }
+    },
 
     "workScheduleFieldLabel": "График",
     "workScheduleSelectPlaceholder": "Выберите график",
@@ -794,6 +812,7 @@
     "errorItemNotFound": "Пункт чек-листа не найден",
     "errorWorkLocationRequired": "Выберите рабочую точку, чтобы начать смену",
     "errorWorkLocationNotFound": "Рабочая точка не найдена",
+    "errorWorkLocationOutOfRange": "Вы отошли от выбранной точки. Попробуйте начать смену ещё раз",
     "errorScheduleRequired": "Выберите график работы",
     "errorScheduleNotAvailable": "Этот график недоступен на выбранной точке",
     "errorScheduleNotFound": "График не найден, обновите список",

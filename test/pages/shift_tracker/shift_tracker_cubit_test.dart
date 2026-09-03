@@ -186,6 +186,31 @@ void main() {
     when(
       () => scheduleContextStorage.save(any(), any(), any()),
     ).thenAnswer((_) async {});
+
+    // По умолчанию — ровно одна подходящая точка (shift_start_location_choice):
+    // гео-check тесты, которым сам резолв точки не важен, проходят его молча
+    // и попадают в _resolveScheduleForGeoStart с workLocationId: 'wl1'. Тесты
+    // самого резолва (0/>1 точек) переопределяют стаб точечно.
+    when(
+      () => orgRepo.getNearbyWorkLocations(
+        any(),
+        latitude: any(named: 'latitude'),
+        longitude: any(named: 'longitude'),
+      ),
+    ).thenAnswer(
+      (_) async => const Task<NearbyWorkLocations>.success(
+        NearbyWorkLocations(
+          items: [
+            NearbyWorkLocation(
+              id: 'wl1',
+              name: 'Точка',
+              distanceMeters: 10,
+              isNearest: true,
+            ),
+          ],
+        ),
+      ),
+    );
   });
 
   ShiftTrackerCubit buildCubit({DateTime Function()? now}) => ShiftTrackerCubit(
@@ -206,6 +231,14 @@ void main() {
         organizationId: any(named: 'organizationId'),
         latitude: any(named: 'latitude'),
         longitude: any(named: 'longitude'),
+        // Именованные опциональные параметры, отсутствующие в вызове внутри
+        // when(), матчатся Dart'ом как литерал `null` (значение по
+        // умолчанию), а не как «любое значение» — начиная с
+        // shift_start_location_choice геo-check org тоже шлёт непустой
+        // workLocationId, поэтому обязательно требуется any(), иначе стаб не
+        // совпадёт и mocktail отдаст null вместо Future.
+        workLocationId: any(named: 'workLocationId'),
+        workScheduleId: any(named: 'workScheduleId'),
       ),
     ).thenAnswer((_) async => result);
   }
@@ -663,6 +696,11 @@ void main() {
           organizationId: 'orgGeo',
           latitude: 55.75,
           longitude: 37.61,
+          // shift_start_location_choice: точка теперь резолвится и клиентом
+          // передаётся явно (по умолчанию в тестах — единственная 'wl1' из
+          // глобального стаба getNearbyWorkLocations); конкретное значение
+          // здесь не важно для теста геоуспеха.
+          workLocationId: any(named: 'workLocationId'),
         ),
       ).called(1);
       await cubit.close();
@@ -1016,18 +1054,21 @@ void main() {
     });
   });
 
-  group('выбор графика — организация С гео-проверкой (резолв на startShift, '
-      'work_schedules_geo_resolve)', () {
+  group('выбор графика — организация С гео-проверкой (резолв на startShift '
+      'по резолвленной точке, work_schedules_geo_resolve + '
+      'shift_start_location_choice)', () {
     // В отличие от организаций без гео-проверки, cold-старт с этой
     // организацией НЕ должен запускать раннюю загрузку графиков — точка
     // известна только серверу, только на startShift() (см. buildWithOrgSelected
-    // выше в main()).
+    // выше в main()). По умолчанию (глобальный setUp) nearby отдаёт ровно
+    // одну точку 'wl1' — резолв точки проходит молча, графики резолвятся по
+    // workLocationId: 'wl1'.
     final orgGeoOn = _org(geoCheckEnabled: true);
 
     setUp(() {
-      // Org с геопроверкой — рабочую точку определяет сервер по свежим
-      // координатам, поэтому startShift() в этой группе всегда проходит
-      // через геолокацию.
+      // Org с геопроверкой — рабочую точку резолвит клиент по свежим
+      // координатам через work-locations/nearby (shift_start_location_choice),
+      // поэтому startShift() в этой группе всегда проходит через геолокацию.
       when(() => geo.getCurrentPosition()).thenAnswer(
         (_) async => const GeoSuccess(
           latitude: 55.75,
@@ -1059,10 +1100,10 @@ void main() {
       await cubit.close();
     });
 
-    test('0 графиков → резолв по свежим координатам, GPS запрошен один раз, '
+    test('0 графиков → резолв по резолвленной точке, GPS запрошен один раз, '
         'старт продолжается без графика', () async {
       when(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).thenAnswer(
         (_) async => const Task<MySchedules>.success(_emptySchedules),
       );
@@ -1077,7 +1118,7 @@ void main() {
       expect(cubit.state.selectedWorkScheduleId, isNull);
       verify(() => geo.getCurrentPosition()).called(1);
       verify(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).called(1);
       await cubit.close();
     });
@@ -1086,7 +1127,7 @@ void main() {
         'модалки, GPS запрошен один раз', () async {
       final schedule = _schedule('s1');
       when(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).thenAnswer(
         (_) async => Task<MySchedules>.success(
           MySchedules(items: [schedule], total: 1, requireSchedule: false),
@@ -1097,6 +1138,7 @@ void main() {
           organizationId: any(named: 'organizationId'),
           latitude: any(named: 'latitude'),
           longitude: any(named: 'longitude'),
+          workLocationId: any(named: 'workLocationId'),
           workScheduleId: any(named: 'workScheduleId'),
         ),
       ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
@@ -1114,6 +1156,7 @@ void main() {
           organizationId: 'org1',
           latitude: 55.75,
           longitude: 37.61,
+          workLocationId: 'wl1',
           workScheduleId: 's1',
         ),
       ).called(1);
@@ -1128,7 +1171,7 @@ void main() {
         nextEndAt: _fixedNow.add(const Duration(hours: 10)),
       );
       when(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).thenAnswer(
         (_) async => Task<MySchedules>.success(
           MySchedules(items: [closed], total: 1, requireSchedule: false),
@@ -1139,6 +1182,7 @@ void main() {
           organizationId: any(named: 'organizationId'),
           latitude: any(named: 'latitude'),
           longitude: any(named: 'longitude'),
+          workLocationId: any(named: 'workLocationId'),
           workScheduleId: any(named: 'workScheduleId'),
         ),
       ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
@@ -1153,6 +1197,7 @@ void main() {
           organizationId: 'org1',
           latitude: 55.75,
           longitude: 37.61,
+          workLocationId: 'wl1',
           workScheduleId: any(named: 'workScheduleId', that: isNull),
         ),
       ).called(1);
@@ -1167,7 +1212,7 @@ void main() {
         nextEndAt: _fixedNow.add(const Duration(hours: 10)),
       );
       when(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).thenAnswer(
         (_) async => Task<MySchedules>.success(
           MySchedules(items: [closed, open], total: 2, requireSchedule: false),
@@ -1178,6 +1223,7 @@ void main() {
           organizationId: any(named: 'organizationId'),
           latitude: any(named: 'latitude'),
           longitude: any(named: 'longitude'),
+          workLocationId: any(named: 'workLocationId'),
           workScheduleId: any(named: 'workScheduleId'),
         ),
       ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
@@ -1192,6 +1238,7 @@ void main() {
           organizationId: 'org1',
           latitude: 55.75,
           longitude: 37.61,
+          workLocationId: 'wl1',
           workScheduleId: 'open',
         ),
       ).called(1);
@@ -1202,7 +1249,7 @@ void main() {
         'GPS запрошен один раз, старт ещё не отправлен', () async {
       final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
       when(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).thenAnswer(
         (_) async => Task<MySchedules>.success(
           MySchedules(items: schedules, total: 2, requireSchedule: false),
@@ -1236,7 +1283,7 @@ void main() {
       () async {
         final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
         when(
-          () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+          () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
         ).thenAnswer(
           (_) async => Task<MySchedules>.success(
             MySchedules(items: schedules, total: 2, requireSchedule: false),
@@ -1266,7 +1313,7 @@ void main() {
         'выбранным графиком, GPS НЕ запрашивается повторно', () async {
       final schedules = [_schedule('s1'), _schedule('s2', name: 'Ночная')];
       when(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).thenAnswer(
         (_) async => Task<MySchedules>.success(
           MySchedules(items: schedules, total: 2, requireSchedule: false),
@@ -1277,6 +1324,7 @@ void main() {
           organizationId: any(named: 'organizationId'),
           latitude: any(named: 'latitude'),
           longitude: any(named: 'longitude'),
+          workLocationId: any(named: 'workLocationId'),
           workScheduleId: any(named: 'workScheduleId'),
         ),
       ).thenAnswer((_) async => Task<Shift>.success(_activeShift()));
@@ -1299,6 +1347,7 @@ void main() {
           organizationId: 'org1',
           latitude: 55.75,
           longitude: 37.61,
+          workLocationId: 'wl1',
           workScheduleId: 's2',
         ),
       ).called(1);
@@ -1309,7 +1358,7 @@ void main() {
     test('резолв графика падает по сети → ошибка действия, старт не '
         'отправлен', () async {
       when(
-        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
       ).thenAnswer((_) async => const Task<MySchedules>.failure(_networkError));
 
       final cubit = buildWithOrgSelected(orgGeoOn);
@@ -1330,43 +1379,230 @@ void main() {
       await cubit.close();
     });
 
-    test(
-      'SCHEDULE_NOT_AVAILABLE при старте → выбор сброшен; ретрай-перезапрос '
-      'переиспользует те же координаты (не деградирует обратно к "точка '
-      'неизвестна" — исходный баг), GPS всё ещё запрошен только один раз',
-      () async {
-        // Первый резолв (внутри startShift) находит один график и
-        // авто-подставляет его; после SCHEDULE_NOT_AVAILABLE перезапрос теми
-        // же координатами уже находит 2 (сервер знает точку точнее) — старая
-        // выборка не подставляется автоматически повторно.
-        var call = 0;
+    test('SCHEDULE_NOT_AVAILABLE при старте → выбор сброшен; ретрай-перезапрос '
+        'по координатам (fallback-ветка _reloadSchedulesAfterStartFailure не '
+        'знает резолвленную точку повторно) находит больше графиков, GPS '
+        'всё ещё запрошен только один раз', () async {
+      // Первый резолв (внутри startShift, по workLocationId) находит один
+      // график и авто-подставляет его; после SCHEDULE_NOT_AVAILABLE
+      // перезапрос уже идёт по координатам (см. _reloadSchedulesAfterStart
+      // Failure) — старая выборка не подставляется автоматически повторно.
+      when(
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(
+            items: [_schedule('s1')],
+            total: 1,
+            requireSchedule: false,
+          ),
+        ),
+      );
+      when(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).thenAnswer(
+        (_) async => Task<MySchedules>.success(
+          MySchedules(
+            items: [
+              _schedule('s2', name: 'Утро'),
+              _schedule('s3', name: 'Ночь'),
+            ],
+            total: 2,
+            requireSchedule: false,
+          ),
+        ),
+      );
+      when(
+        () => shiftRepo.startShift(
+          organizationId: any(named: 'organizationId'),
+          latitude: any(named: 'latitude'),
+          longitude: any(named: 'longitude'),
+          workLocationId: any(named: 'workLocationId'),
+          workScheduleId: any(named: 'workScheduleId'),
+        ),
+      ).thenAnswer(
+        (_) async => const Task<Shift>.failure(
+          ApiException.server(
+            message: 'недоступен',
+            code: 'SCHEDULE_NOT_AVAILABLE',
+          ),
+        ),
+      );
+
+      final cubit = buildWithOrgSelected(orgGeoOn);
+      await pumpEventQueue();
+
+      final result = await cubit.startShift();
+      await pumpEventQueue();
+
+      expect(result, StartShiftResult.error);
+      expect(cubit.state.selectedWorkScheduleId, isNull);
+      verify(
+        () => scheduleRepo.getMySchedules('org1', workLocationId: 'wl1'),
+      ).called(1);
+      verify(
+        () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+      ).called(1);
+      verify(() => geo.getCurrentPosition()).called(1);
+      await cubit.close();
+    });
+  });
+
+  group(
+    'выбор рабочей точки при пересечении зон (shift_start_location_choice)',
+    () {
+      final orgGeoOn = _org(geoCheckEnabled: true);
+
+      setUp(() {
+        when(() => geo.getCurrentPosition()).thenAnswer(
+          (_) async => const GeoSuccess(
+            latitude: 55.75,
+            longitude: 37.61,
+            lowAccuracy: false,
+          ),
+        );
+        // Резолв графиков не важен для этой группы — 0 графиков молча
+        // пропускает старт дальше в POST /shifts/start.
         when(
-          () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
-        ).thenAnswer((_) async {
-          call++;
-          final items = call == 1
-              ? [_schedule('s1')]
-              : [_schedule('s2', name: 'Утро'), _schedule('s3', name: 'Ночь')];
-          return Task<MySchedules>.success(
-            MySchedules(
-              items: items,
-              total: items.length,
-              requireSchedule: false,
-            ),
-          );
-        });
-        when(
-          () => shiftRepo.startShift(
-            organizationId: any(named: 'organizationId'),
-            latitude: any(named: 'latitude'),
-            longitude: any(named: 'longitude'),
-            workScheduleId: any(named: 'workScheduleId'),
+          () => scheduleRepo.getMySchedules(
+            any(),
+            workLocationId: any(named: 'workLocationId'),
           ),
         ).thenAnswer(
-          (_) async => const Task<Shift>.failure(
-            ApiException.server(
-              message: 'недоступен',
-              code: 'SCHEDULE_NOT_AVAILABLE',
+          (_) async => const Task<MySchedules>.success(_emptySchedules),
+        );
+      });
+
+      const near = NearbyWorkLocation(
+        id: 'wl-near',
+        name: 'Склад №2',
+        address: 'ул. Ленина, 5',
+        distanceMeters: 40,
+        isNearest: true,
+      );
+      const far = NearbyWorkLocation(
+        id: 'wl-far',
+        name: 'Офис',
+        address: 'ул. Мира, 1',
+        distanceMeters: 90,
+        isNearest: false,
+      );
+
+      void stubNearby(Task<NearbyWorkLocations> result) {
+        when(
+          () => orgRepo.getNearbyWorkLocations(
+            any(),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+          ),
+        ).thenAnswer((_) async => result);
+      }
+
+      test('1 подходящая точка → подставляется молча, модалки нет', () async {
+        stubNearby(
+          const Task<NearbyWorkLocations>.success(
+            NearbyWorkLocations(items: [near]),
+          ),
+        );
+        stubStartShift(Task<Shift>.success(_activeShift()));
+
+        final cubit = buildWithOrgSelected(orgGeoOn);
+        await pumpEventQueue();
+
+        final result = await cubit.startShift();
+
+        expect(result, StartShiftResult.success);
+        expect(cubit.state.selectedWorkLocation?.id, 'wl-near');
+        verify(
+          () => shiftRepo.startShift(
+            organizationId: 'org1',
+            latitude: 55.75,
+            longitude: 37.61,
+            workLocationId: 'wl-near',
+          ),
+        ).called(1);
+        await cubit.close();
+      });
+
+      test(
+        '>1 подходящих точек → workLocationSelectionRequired, порядок '
+        'сервера сохранён, первая помечена ближайшей, старт ещё не отправлен',
+        () async {
+          stubNearby(
+            const Task<NearbyWorkLocations>.success(
+              NearbyWorkLocations(items: [near, far]),
+            ),
+          );
+
+          final cubit = buildWithOrgSelected(orgGeoOn);
+          await pumpEventQueue();
+
+          final result = await cubit.startShift();
+
+          expect(result, StartShiftResult.workLocationSelectionRequired);
+          expect(cubit.state.actionStatus, FeatureStatus.initial);
+          expect(cubit.state.nearbyWorkLocations.map((l) => l.id), [
+            'wl-near',
+            'wl-far',
+          ]);
+          expect(cubit.state.nearbyWorkLocations.first.isNearest, isTrue);
+          verifyNever(
+            () => shiftRepo.startShift(
+              organizationId: any(named: 'organizationId'),
+              latitude: any(named: 'latitude'),
+              longitude: any(named: 'longitude'),
+            ),
+          );
+          await cubit.close();
+        },
+      );
+
+      test(
+        'continueStartAfterWorkLocationSelection стартует с ВЫБРАННОЙ (не '
+        'обязательно ближайшей) точкой, GPS не запрашивается повторно',
+        () async {
+          stubNearby(
+            const Task<NearbyWorkLocations>.success(
+              NearbyWorkLocations(items: [near, far]),
+            ),
+          );
+          stubStartShift(Task<Shift>.success(_activeShift()));
+
+          final cubit = buildWithOrgSelected(orgGeoOn);
+          await pumpEventQueue();
+
+          final firstResult = await cubit.startShift();
+          expect(firstResult, StartShiftResult.workLocationSelectionRequired);
+
+          // Сотрудник выбрал НЕ предвыбранную ближайшую, а вторую точку.
+          final continueResult = await cubit
+              .continueStartAfterWorkLocationSelection(far);
+
+          expect(continueResult, StartShiftResult.success);
+          expect(cubit.state.selectedWorkLocation?.id, 'wl-far');
+          verify(() => geo.getCurrentPosition()).called(1);
+          verify(
+            () => shiftRepo.startShift(
+              organizationId: 'org1',
+              latitude: 55.75,
+              longitude: 37.61,
+              workLocationId: 'wl-far',
+            ),
+          ).called(1);
+          await cubit.close();
+        },
+      );
+
+      test('0 подходящих точек → noNearbyWorkLocation, подсказка о ближайшей '
+          'точке вне радиуса сохранена, старт не отправлен', () async {
+        stubNearby(
+          const Task<NearbyWorkLocations>.success(
+            NearbyWorkLocations(
+              items: [],
+              nearestOutside: NearestOutsideWorkLocation(
+                name: 'Офис',
+                distanceMeters: 320,
+              ),
             ),
           ),
         );
@@ -1375,17 +1611,179 @@ void main() {
         await pumpEventQueue();
 
         final result = await cubit.startShift();
+
+        expect(result, StartShiftResult.noNearbyWorkLocation);
+        expect(cubit.state.actionStatus, FeatureStatus.initial);
+        expect(cubit.state.nearestOutsideHint?.name, 'Офис');
+        expect(cubit.state.nearestOutsideHint?.distanceMeters, 320);
+        verifyNever(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+          ),
+        );
+        await cubit.close();
+      });
+
+      test('0 подходящих точек без nearest_outside → подсказки нет', () async {
+        stubNearby(
+          const Task<NearbyWorkLocations>.success(
+            NearbyWorkLocations(items: []),
+          ),
+        );
+
+        final cubit = buildWithOrgSelected(orgGeoOn);
         await pumpEventQueue();
 
-        expect(result, StartShiftResult.error);
-        expect(cubit.state.selectedWorkScheduleId, isNull);
+        final result = await cubit.startShift();
+
+        expect(result, StartShiftResult.noNearbyWorkLocation);
+        expect(cubit.state.nearestOutsideHint, isNull);
+        await cubit.close();
+      });
+
+      test('повтор после noNearbyWorkLocation запускает сценарий заново: '
+          'свежий GPS + новый запрос nearby', () async {
+        stubNearby(
+          const Task<NearbyWorkLocations>.success(
+            NearbyWorkLocations(items: []),
+          ),
+        );
+
+        final cubit = buildWithOrgSelected(orgGeoOn);
+        await pumpEventQueue();
+
+        expect(await cubit.startShift(), StartShiftResult.noNearbyWorkLocation);
+
+        stubNearby(
+          const Task<NearbyWorkLocations>.success(
+            NearbyWorkLocations(items: [near]),
+          ),
+        );
+        stubStartShift(Task<Shift>.success(_activeShift()));
+
+        expect(await cubit.startShift(), StartShiftResult.success);
+
+        verify(() => geo.getCurrentPosition()).called(2);
         verify(
-          () => scheduleRepo.getMySchedules('org1', lat: 55.75, lng: 37.61),
+          () => orgRepo.getNearbyWorkLocations(
+            'org1',
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+          ),
         ).called(2);
-        verify(() => geo.getCurrentPosition()).called(1);
+        await cubit.close();
+      });
+
+      test('getNearbyWorkLocations падает по сети → ошибка действия, старт не '
+          'отправлен', () async {
+        stubNearby(const Task<NearbyWorkLocations>.failure(_networkError));
+
+        final cubit = buildWithOrgSelected(orgGeoOn);
+        await pumpEventQueue();
+
+        final result = await cubit.startShift();
+
+        expect(result, StartShiftResult.error);
+        expect(cubit.state.actionErrorCode, 'NETWORK_ERROR');
+        verifyNever(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+          ),
+        );
+        await cubit.close();
+      });
+
+      test('WORK_LOCATION_OUT_OF_RANGE от POST /shifts/start (гонка «список '
+          'устарел») → точка и график сброшены, ошибка действия', () async {
+        stubNearby(
+          const Task<NearbyWorkLocations>.success(
+            NearbyWorkLocations(items: [near]),
+          ),
+        );
+        when(
+          () => shiftRepo.startShift(
+            organizationId: any(named: 'organizationId'),
+            latitude: any(named: 'latitude'),
+            longitude: any(named: 'longitude'),
+            workLocationId: any(named: 'workLocationId'),
+          ),
+        ).thenAnswer(
+          (_) async => const Task<Shift>.failure(
+            ApiException.server(
+              message: 'Вы находитесь вне выбранной рабочей точки',
+              code: 'WORK_LOCATION_OUT_OF_RANGE',
+            ),
+          ),
+        );
+
+        final cubit = buildWithOrgSelected(orgGeoOn);
+        await pumpEventQueue();
+
+        final result = await cubit.startShift();
+
+        expect(result, StartShiftResult.error);
+        expect(cubit.state.actionErrorCode, 'WORK_LOCATION_OUT_OF_RANGE');
+        expect(cubit.state.selectedWorkLocation, isNull);
+        expect(cubit.state.selectedWorkScheduleId, isNull);
+        await cubit.close();
+      });
+    },
+  );
+
+  group('обновление настроек организации при возврате на экран/вкладку '
+      '(shift_start_location_choice)', () {
+    setUp(() {
+      when(() => contextStorage.save(any())).thenAnswer((_) async {});
+    });
+
+    test(
+      'onScreenVisible перечитывает организации — geoCheckEnabled, '
+      'переключённый админом, подхватывается без выхода из приложения',
+      () async {
+        final orgOff = _org(geoCheckEnabled: false);
+        final orgOn = orgOff.copyWith(geoCheckEnabled: true);
+        final orgsStream = StreamController<List<Organization>>.broadcast();
+        when(
+          () => orgRepo.watchMyOrganizations(),
+        ).thenAnswer((_) => orgsStream.stream);
+        when(() => orgRepo.fetchMyOrganizations()).thenAnswer((_) async {
+          orgsStream.add([orgOn]);
+        });
+
+        final cubit = buildCubit();
+        orgsStream.add([orgOff]);
+        await pumpEventQueue();
+        cubit.selectOrganization('org1');
+
+        expect(cubit.state.showWorkLocationSelector, isTrue);
+
+        cubit.onScreenVisible();
+        await pumpEventQueue();
+
+        expect(cubit.state.selectedOrganization?.geoCheckEnabled, isTrue);
+        expect(cubit.state.showWorkLocationSelector, isFalse);
+        // 1 вызов — из ShiftTrackerCubit._init() при создании кубита, 2-й —
+        // из onScreenVisible().
+        verify(() => orgRepo.fetchMyOrganizations()).called(2);
+        await orgsStream.close();
         await cubit.close();
       },
     );
+
+    test('onAppResumed тоже перечитывает организации', () async {
+      final cubit = await buildWithActiveShift(_activeShift());
+
+      cubit.onAppResumed();
+      await pumpEventQueue();
+
+      // 1 вызов — из _init() при создании кубита, 2-й — из onAppResumed().
+      verify(() => orgRepo.fetchMyOrganizations()).called(2);
+      await cubit.close();
+    });
   });
 
   group('окно графика (schedule_window_enforcement)', () {

@@ -652,6 +652,48 @@ abstract class AppLocalizations {
   /// **'У организации нет рабочих точек'**
   String get shiftWorkLocationPickerEmpty;
 
+  /// No description provided for @shiftLocatingIndicator.
+  ///
+  /// In ru, this message translates to:
+  /// **'Определяем местоположение…'**
+  String get shiftLocatingIndicator;
+
+  /// No description provided for @shiftNearbyLocationsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы рядом с несколькими точками'**
+  String get shiftNearbyLocationsTitle;
+
+  /// No description provided for @shiftNearbyIsNearestBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ближайшая'**
+  String get shiftNearbyIsNearestBadge;
+
+  /// No description provided for @shiftNearbyDistanceMeters.
+  ///
+  /// In ru, this message translates to:
+  /// **'~{meters} м'**
+  String shiftNearbyDistanceMeters(int meters);
+
+  /// No description provided for @shiftNoNearbyLocationTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы вне рабочих зон'**
+  String get shiftNoNearbyLocationTitle;
+
+  /// No description provided for @shiftNoNearbyLocationMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Рядом нет ни одной рабочей точки. Подойдите ближе и повторите попытку.'**
+  String get shiftNoNearbyLocationMessage;
+
+  /// No description provided for @shiftNoNearbyLocationHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'До ближайшей точки «{name}» ~{meters} м'**
+  String shiftNoNearbyLocationHint(String name, int meters);
+
   /// No description provided for @workScheduleFieldLabel.
   ///
   /// In ru, this message translates to:
@@ -3129,6 +3171,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Рабочая точка не найдена'**
   String get errorWorkLocationNotFound;
+
+  /// No description provided for @errorWorkLocationOutOfRange.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы отошли от выбранной точки. Попробуйте начать смену ещё раз'**
+  String get errorWorkLocationOutOfRange;
 
   /// No description provided for @errorScheduleRequired.
   ///

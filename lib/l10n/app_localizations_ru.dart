@@ -306,6 +306,32 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shiftWorkLocationPickerEmpty => 'У организации нет рабочих точек';
 
   @override
+  String get shiftLocatingIndicator => 'Определяем местоположение…';
+
+  @override
+  String get shiftNearbyLocationsTitle => 'Вы рядом с несколькими точками';
+
+  @override
+  String get shiftNearbyIsNearestBadge => 'Ближайшая';
+
+  @override
+  String shiftNearbyDistanceMeters(int meters) {
+    return '~$meters м';
+  }
+
+  @override
+  String get shiftNoNearbyLocationTitle => 'Вы вне рабочих зон';
+
+  @override
+  String get shiftNoNearbyLocationMessage =>
+      'Рядом нет ни одной рабочей точки. Подойдите ближе и повторите попытку.';
+
+  @override
+  String shiftNoNearbyLocationHint(String name, int meters) {
+    return 'До ближайшей точки «$name» ~$meters м';
+  }
+
+  @override
   String get workScheduleFieldLabel => 'График';
 
   @override
@@ -1692,6 +1718,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorWorkLocationNotFound => 'Рабочая точка не найдена';
+
+  @override
+  String get errorWorkLocationOutOfRange =>
+      'Вы отошли от выбранной точки. Попробуйте начать смену ещё раз';
 
   @override
   String get errorScheduleRequired => 'Выберите график работы';

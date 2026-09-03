@@ -15,6 +15,7 @@ export 'my_adjustments/_my_adjustments.dart';
 export 'my_earnings/_my_earnings.dart';
 export 'my_penalties/_my_penalties.dart';
 export 'my_tests/_my_tests.dart';
+export 'nearby_work_location_picker/_nearby_work_location_picker.dart';
 export 'notifications/_notifications.dart';
 export 'org_shift_detail/_org_shift_detail.dart';
 export 'org_shifts/_org_shifts.dart';

@@ -1,5 +1,6 @@
 export 'join_result_dto.dart';
 export 'member_dto.dart';
+export 'nearby_work_location_dto.dart';
 export 'org_stats_dto.dart';
 export 'organization_dto.dart';
 export 'organization_subscription_dto.dart';

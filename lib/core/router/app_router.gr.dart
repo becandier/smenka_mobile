@@ -1104,6 +1104,65 @@ class MyTestsRouteArgs {
 }
 
 /// generated route for
+/// [NearbyWorkLocationPickerPage]
+class NearbyWorkLocationPickerRoute
+    extends PageRouteInfo<NearbyWorkLocationPickerRouteArgs> {
+  NearbyWorkLocationPickerRoute({
+    required List<NearbyWorkLocation> locations,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         NearbyWorkLocationPickerRoute.name,
+         args: NearbyWorkLocationPickerRouteArgs(
+           locations: locations,
+           key: key,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'NearbyWorkLocationPickerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<NearbyWorkLocationPickerRouteArgs>();
+      return NearbyWorkLocationPickerPage(
+        locations: args.locations,
+        key: args.key,
+      );
+    },
+  );
+}
+
+class NearbyWorkLocationPickerRouteArgs {
+  const NearbyWorkLocationPickerRouteArgs({required this.locations, this.key});
+
+  final List<NearbyWorkLocation> locations;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'NearbyWorkLocationPickerRouteArgs{locations: $locations, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! NearbyWorkLocationPickerRouteArgs) return false;
+    return const ListEquality<NearbyWorkLocation>().equals(
+          locations,
+          other.locations,
+        ) &&
+        key == other.key;
+  }
+
+  @override
+  int get hashCode =>
+      const ListEquality<NearbyWorkLocation>().hash(locations) ^ key.hashCode;
+}
+
+/// generated route for
 /// [NotificationsPage]
 class NotificationsRoute extends PageRouteInfo<void> {
   const NotificationsRoute({List<PageRouteInfo>? children})

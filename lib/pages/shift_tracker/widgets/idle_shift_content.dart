@@ -70,6 +70,13 @@ class _IdleShiftContent extends StatelessWidget {
               _WorkScheduleSelector(state: state),
               const SizedBox(height: 24),
             ],
+            // «Определяем местоположение…» — только на время самого запроса
+            // координат (shift_start_location_choice), не всей операции
+            // старта: кнопка ниже уже заблокирована через isActionLoading.
+            if (state.isLocating) ...[
+              const _LocatingIndicator(),
+              const SizedBox(height: 12),
+            ],
             AppButton(
               label: l10n.shiftStart,
               isLoading: state.isActionLoading,
@@ -163,6 +170,61 @@ class _IdleShiftContent extends StatelessWidget {
         );
         if (!context.mounted) return;
         await _handleStartShiftResult(context, continueResult);
+      case StartShiftResult.workLocationSelectionRequired:
+        // Гео-check организация, координаты попали в радиус >1 точки
+        // (shift_start_location_choice) — сотрудник выбирает точку явно,
+        // вместо того чтобы сервер молча брал ближайшую.
+        final locationPickerResult = await context.router
+            .push<NearbyWorkLocationPickerResult?>(
+              NearbyWorkLocationPickerRoute(
+                locations: cubit.state.nearbyWorkLocations,
+              ),
+            );
+        if (!context.mounted) return;
+        // Закрыто без выбора — старт не продолжаем, без побочных эффектов.
+        if (locationPickerResult == null) return;
+        final locationContinueResult = await cubit
+            .continueStartAfterWorkLocationSelection(
+              locationPickerResult.location,
+            );
+        if (!context.mounted) return;
+        await _handleStartShiftResult(context, locationContinueResult);
+      case StartShiftResult.noNearbyWorkLocation:
+        await _handleNoNearbyWorkLocation(context);
+    }
+  }
+
+  /// «Вы вне рабочих зон» — 0 подходящих точек из `work-locations/nearby`
+  /// (shift_start_location_choice, «Состояния UI»). «Повторить» запускает
+  /// весь сценарий заново: свежие координаты, новый запрос списка.
+  Future<void> _handleNoNearbyWorkLocation(BuildContext context) async {
+    final cubit = context.read<ShiftTrackerCubit>();
+    final l10n = context.l10n;
+    final hint = cubit.state.nearestOutsideHint;
+
+    final retry = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.shiftNoNearbyLocationTitle),
+        content: Text(
+          hint == null
+              ? l10n.shiftNoNearbyLocationMessage
+              : l10n.shiftNoNearbyLocationHint(hint.name, hint.distanceMeters),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.geoRetry),
+          ),
+        ],
+      ),
+    );
+    if ((retry ?? false) && context.mounted) {
+      await _onStartShift(context);
     }
   }
 
@@ -225,6 +287,35 @@ class _IdleShiftContent extends StatelessWidget {
     );
     if (shift == null) return;
     cubit.adoptStartedShift(shift);
+  }
+}
+
+/// Индикатор «Определяем местоположение…» — показывается только на время
+/// запроса координат внутри `startShift()` (shift_start_location_choice),
+/// см. [ShiftTrackerState.isLocating].
+class _LocatingIndicator extends StatelessWidget {
+  const _LocatingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(
+          height: 14,
+          width: 14,
+          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          context.l10n.shiftLocatingIndicator,
+          style: textTheme.bodySmall?.copyWith(color: colors.secondary),
+        ),
+      ],
+    );
   }
 }
 
