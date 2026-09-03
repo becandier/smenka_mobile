@@ -149,7 +149,12 @@ abstract class ShiftTrackerState with _$ShiftTrackerState {
   }
 
   /// Показывать ли селектор точки: гео у выбранной org выключена, значит
-  /// точку выбирает сотрудник. При включённой гео её определяет сервер.
+  /// точку выбирает сотрудник вручную на idle-экране. При включённой гео
+  /// этот селектор не нужен — точку резолвит клиент через `nearby`
+  /// (`GET .../work-locations/nearby`) внутри `ShiftTrackerCubit.startShift`:
+  /// автоматически при одной подходящей точке, либо через отдельную модалку
+  /// выбора при нескольких (`shift_start_location_choice`, см. доку у
+  /// [selectedWorkLocation]).
   bool get showWorkLocationSelector {
     final org = selectedOrganization;
     return org != null && !org.geoCheckEnabled;
