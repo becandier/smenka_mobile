@@ -20,9 +20,11 @@ mixin _$OrgShiftsState {
  DateTime? get filterDateTo;/// Фильтр по сотруднику (`?user_id`); null = все сотрудники
  String? get filterUserId;/// Имя выбранного сотрудника — для отображения в управляющем элементе
  String? get filterUserName;/// IANA-таймзона организации — карточки и date-range фильтр всегда её
-/// бизнес-события. Дефолт до загрузки совпадает с server_default
-/// `Organization.timezone`.
- String get organizationTimezone;
+/// бизнес-события. `null` до первого ответа `getById` — угадывать зону
+/// нельзя (организация может быть не в `Europe/Moscow`), поэтому
+/// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+/// заведомо неверную org-зону.
+ String? get organizationTimezone;
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -53,7 +55,7 @@ abstract mixin class $OrgShiftsStateCopyWith<$Res>  {
   factory $OrgShiftsStateCopyWith(OrgShiftsState value, $Res Function(OrgShiftsState) _then) = _$OrgShiftsStateCopyWithImpl;
 @useResult
 $Res call({
- PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName, String organizationTimezone
+ PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName, String? organizationTimezone
 });
 
 
@@ -70,7 +72,7 @@ class _$OrgShiftsStateCopyWithImpl<$Res>
 
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,Object? organizationTimezone = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_self.copyWith(
 shifts: null == shifts ? _self.shifts : shifts // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<Shift>,filterStatus: freezed == filterStatus ? _self.filterStatus : filterStatus // ignore: cast_nullable_to_non_nullable
@@ -78,8 +80,8 @@ as ShiftStatus?,filterDateFrom: freezed == filterDateFrom ? _self.filterDateFrom
 as DateTime?,filterDateTo: freezed == filterDateTo ? _self.filterDateTo : filterDateTo // ignore: cast_nullable_to_non_nullable
 as DateTime?,filterUserId: freezed == filterUserId ? _self.filterUserId : filterUserId // ignore: cast_nullable_to_non_nullable
 as String?,filterUserName: freezed == filterUserName ? _self.filterUserName : filterUserName // ignore: cast_nullable_to_non_nullable
-as String?,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
-as String,
+as String?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of OrgShiftsState
@@ -173,7 +175,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrgShiftsState() when $default != null:
 return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName,_that.organizationTimezone);case _:
@@ -194,7 +196,7 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String organizationTimezone)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String? organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _OrgShiftsState():
 return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName,_that.organizationTimezone);case _:
@@ -214,7 +216,7 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String organizationTimezone)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String? organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _OrgShiftsState() when $default != null:
 return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName,_that.organizationTimezone);case _:
@@ -229,7 +231,7 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 
 
 class _OrgShiftsState extends OrgShiftsState {
-  const _OrgShiftsState({this.shifts = const PaginatedSectionData<Shift>(), this.filterStatus, this.filterDateFrom, this.filterDateTo, this.filterUserId, this.filterUserName, this.organizationTimezone = 'Europe/Moscow'}): super._();
+  const _OrgShiftsState({this.shifts = const PaginatedSectionData<Shift>(), this.filterStatus, this.filterDateFrom, this.filterDateTo, this.filterUserId, this.filterUserName, this.organizationTimezone}): super._();
   
 
 @override@JsonKey() final  PaginatedSectionData<Shift> shifts;
@@ -244,9 +246,11 @@ class _OrgShiftsState extends OrgShiftsState {
 /// Имя выбранного сотрудника — для отображения в управляющем элементе
 @override final  String? filterUserName;
 /// IANA-таймзона организации — карточки и date-range фильтр всегда её
-/// бизнес-события. Дефолт до загрузки совпадает с server_default
-/// `Organization.timezone`.
-@override@JsonKey() final  String organizationTimezone;
+/// бизнес-события. `null` до первого ответа `getById` — угадывать зону
+/// нельзя (организация может быть не в `Europe/Moscow`), поэтому
+/// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+/// заведомо неверную org-зону.
+@override final  String? organizationTimezone;
 
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
@@ -278,7 +282,7 @@ abstract mixin class _$OrgShiftsStateCopyWith<$Res> implements $OrgShiftsStateCo
   factory _$OrgShiftsStateCopyWith(_OrgShiftsState value, $Res Function(_OrgShiftsState) _then) = __$OrgShiftsStateCopyWithImpl;
 @override @useResult
 $Res call({
- PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName, String organizationTimezone
+ PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName, String? organizationTimezone
 });
 
 
@@ -295,7 +299,7 @@ class __$OrgShiftsStateCopyWithImpl<$Res>
 
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,Object? organizationTimezone = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_OrgShiftsState(
 shifts: null == shifts ? _self.shifts : shifts // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<Shift>,filterStatus: freezed == filterStatus ? _self.filterStatus : filterStatus // ignore: cast_nullable_to_non_nullable
@@ -303,8 +307,8 @@ as ShiftStatus?,filterDateFrom: freezed == filterDateFrom ? _self.filterDateFrom
 as DateTime?,filterDateTo: freezed == filterDateTo ? _self.filterDateTo : filterDateTo // ignore: cast_nullable_to_non_nullable
 as DateTime?,filterUserId: freezed == filterUserId ? _self.filterUserId : filterUserId // ignore: cast_nullable_to_non_nullable
 as String?,filterUserName: freezed == filterUserName ? _self.filterUserName : filterUserName // ignore: cast_nullable_to_non_nullable
-as String?,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
-as String,
+as String?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

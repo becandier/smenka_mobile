@@ -270,17 +270,14 @@ class _PenaltyFormViewState extends State<_PenaltyFormView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final occurredAt = _occurredAt;
-    // Только таймзона — не весь `PenaltyFormState` (шаблоны/статус отправки
+    // Только контекст — не весь `PenaltyFormState` (шаблоны/статус отправки
     // не должны пересобирать этот build).
-    final organizationTimezone = context.select<PenaltyFormCubit, String>(
-      (cubit) => cubit.state.organizationTimezone,
+    final timeContext = context.select<PenaltyFormCubit, AppTimeContext>(
+      (cubit) => cubit.state.timeContext,
     );
     final occurredLabel = occurredAt == null
         ? null
-        : const AppTime().formatDate(
-            occurredAt,
-            AppTimeContext.organization(organizationTimezone),
-          );
+        : const AppTime().formatDate(occurredAt, timeContext);
 
     return AppBottomSheet(
       title: _isEdit ? l10n.finesEdit : l10n.finesAssign,

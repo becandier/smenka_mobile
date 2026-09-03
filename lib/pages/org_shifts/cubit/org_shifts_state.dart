@@ -26,9 +26,11 @@ abstract class OrgShiftsState with _$OrgShiftsState {
     String? filterUserName,
 
     /// IANA-таймзона организации — карточки и date-range фильтр всегда её
-    /// бизнес-события. Дефолт до загрузки совпадает с server_default
-    /// `Organization.timezone`.
-    @Default('Europe/Moscow') String organizationTimezone,
+    /// бизнес-события. `null` до первого ответа `getById` — угадывать зону
+    /// нельзя (организация может быть не в `Europe/Moscow`), поэтому
+    /// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+    /// заведомо неверную org-зону.
+    String? organizationTimezone,
   }) = _OrgShiftsState;
   const OrgShiftsState._();
 
@@ -42,6 +44,8 @@ abstract class OrgShiftsState with _$OrgShiftsState {
 
   bool get hasDateFilter => filterDateFrom != null || filterDateTo != null;
 
-  AppTimeContext get timeContext =>
-      AppTimeContext.organization(organizationTimezone);
+  AppTimeContext get timeContext => switch (organizationTimezone) {
+    final zone? => AppTimeContext.organization(zone),
+    null => const AppTimeContext.device(),
+  };
 }

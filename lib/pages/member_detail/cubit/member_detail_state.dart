@@ -19,9 +19,11 @@ abstract class MemberDetailState with _$MemberDetailState {
     @Default(<WorkLocation>[]) List<WorkLocation> workLocations,
 
     /// IANA-таймзона организации — ставки/штрафы участника всегда её
-    /// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). Дефолт до
-    /// загрузки совпадает с server_default `Organization.timezone`.
-    @Default('Europe/Moscow') String organizationTimezone,
+    /// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). `null` до
+    /// первого ответа `getById` — угадывать зону нельзя, поэтому
+    /// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+    /// заведомо неверную org-зону.
+    String? organizationTimezone,
   }) = _MemberDetailState;
   const MemberDetailState._();
 
@@ -29,6 +31,8 @@ abstract class MemberDetailState with _$MemberDetailState {
       viewerRole == OrgMembershipRole.owner ||
       viewerRole == OrgMembershipRole.admin;
 
-  AppTimeContext get timeContext =>
-      AppTimeContext.organization(organizationTimezone);
+  AppTimeContext get timeContext => switch (organizationTimezone) {
+    final zone? => AppTimeContext.organization(zone),
+    null => const AppTimeContext.device(),
+  };
 }

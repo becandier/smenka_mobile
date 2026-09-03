@@ -18,9 +18,11 @@ mixin _$MemberDetailState {
 // (`EffectiveChecklistTemplate.locationIds`). Своего loading/error не
 // заводим: не резолвился id → нейтральный фолбэк в UI.
  List<WorkLocation> get workLocations;/// IANA-таймзона организации — ставки/штрафы участника всегда её
-/// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). Дефолт до
-/// загрузки совпадает с server_default `Organization.timezone`.
- String get organizationTimezone;
+/// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). `null` до
+/// первого ответа `getById` — угадывать зону нельзя, поэтому
+/// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+/// заведомо неверную org-зону.
+ String? get organizationTimezone;
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,7 +53,7 @@ abstract mixin class $MemberDetailStateCopyWith<$Res>  {
   factory $MemberDetailStateCopyWith(MemberDetailState value, $Res Function(MemberDetailState) _then) = _$MemberDetailStateCopyWithImpl;
 @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations, String organizationTimezone
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations, String? organizationTimezone
 });
 
 
@@ -68,14 +70,14 @@ class _$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,Object? organizationTimezone = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,Object? organizationTimezone = freezed,}) {
   return _then(_self.copyWith(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
 as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
 as SectionData<List<EffectiveChecklistTemplate>>,workLocations: null == workLocations ? _self.workLocations : workLocations // ignore: cast_nullable_to_non_nullable
-as List<WorkLocation>,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
-as String,
+as List<WorkLocation>,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of MemberDetailState
@@ -178,7 +180,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
 return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations,_that.organizationTimezone);case _:
@@ -199,7 +201,7 @@ return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocation
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String organizationTimezone)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String? organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState():
 return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations,_that.organizationTimezone);case _:
@@ -219,7 +221,7 @@ return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocation
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String organizationTimezone)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String? organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
 return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations,_that.organizationTimezone);case _:
@@ -234,7 +236,7 @@ return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocation
 
 
 class _MemberDetailState extends MemberDetailState {
-  const _MemberDetailState({required this.member, this.viewerRole, this.effective = const SectionData<List<EffectiveChecklistTemplate>>(), final  List<WorkLocation> workLocations = const <WorkLocation>[], this.organizationTimezone = 'Europe/Moscow'}): _workLocations = workLocations,super._();
+  const _MemberDetailState({required this.member, this.viewerRole, this.effective = const SectionData<List<EffectiveChecklistTemplate>>(), final  List<WorkLocation> workLocations = const <WorkLocation>[], this.organizationTimezone}): _workLocations = workLocations,super._();
   
 
 @override final  Member member;
@@ -254,9 +256,11 @@ class _MemberDetailState extends MemberDetailState {
 }
 
 /// IANA-таймзона организации — ставки/штрафы участника всегда её
-/// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). Дефолт до
-/// загрузки совпадает с server_default `Organization.timezone`.
-@override@JsonKey() final  String organizationTimezone;
+/// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). `null` до
+/// первого ответа `getById` — угадывать зону нельзя, поэтому
+/// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+/// заведомо неверную org-зону.
+@override final  String? organizationTimezone;
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -288,7 +292,7 @@ abstract mixin class _$MemberDetailStateCopyWith<$Res> implements $MemberDetailS
   factory _$MemberDetailStateCopyWith(_MemberDetailState value, $Res Function(_MemberDetailState) _then) = __$MemberDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations, String organizationTimezone
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations, String? organizationTimezone
 });
 
 
@@ -305,14 +309,14 @@ class __$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,Object? organizationTimezone = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,Object? organizationTimezone = freezed,}) {
   return _then(_MemberDetailState(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
 as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
 as SectionData<List<EffectiveChecklistTemplate>>,workLocations: null == workLocations ? _self._workLocations : workLocations // ignore: cast_nullable_to_non_nullable
-as List<WorkLocation>,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
-as String,
+as List<WorkLocation>,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

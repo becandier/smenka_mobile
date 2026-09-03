@@ -20,14 +20,17 @@ abstract class PenaltyFormState with _$PenaltyFormState {
 
     /// IANA-таймзона организации — дата штрафа (`occurredAt`) всегда её
     /// бизнес-событие, выбор дня и отображение идут в этой зоне, не в
-    /// зоне устройства. Дефолт до загрузки совпадает с server_default
-    /// `Organization.timezone`.
-    @Default('Europe/Moscow') String organizationTimezone,
+    /// зоне устройства. `null` до первого ответа `getById` — угадывать
+    /// зону нельзя, поэтому [timeContext] на этот момент нейтрально отдаёт
+    /// устройство, а не заведомо неверную org-зону.
+    String? organizationTimezone,
   }) = _PenaltyFormState;
   const PenaltyFormState._();
 
   bool get isSubmitting => submitStatus == FeatureStatus.loading;
 
-  AppTimeContext get timeContext =>
-      AppTimeContext.organization(organizationTimezone);
+  AppTimeContext get timeContext => switch (organizationTimezone) {
+    final zone? => AppTimeContext.organization(zone),
+    null => const AppTimeContext.device(),
+  };
 }
