@@ -147,6 +147,13 @@ class AppRouter extends RootStackRouter {
               page: WorkLocationPickerRoute.page,
               customRouteBuilder: _modalBottomSheetBuilder,
             ),
+            // Выбор точки при пересечении нескольких гео-зон
+            // (shift_start_location_choice) — модальный bottom sheet.
+            CustomRoute<NearbyWorkLocationPickerResult?>(
+              path: 'nearby-work-location-picker',
+              page: NearbyWorkLocationPickerRoute.page,
+              customRouteBuilder: _modalBottomSheetBuilder,
+            ),
             // Выбор графика работы при старте смены (work_schedules) —
             // модальный bottom sheet.
             CustomRoute<WorkSchedulePickerResult?>(

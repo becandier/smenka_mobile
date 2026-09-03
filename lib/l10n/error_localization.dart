@@ -55,6 +55,9 @@ String localizedErrorMessage(
     // shift_work_location: привязка рабочей точки к смене
     'WORK_LOCATION_REQUIRED' => l10n.errorWorkLocationRequired,
     'WORK_LOCATION_NOT_FOUND' => l10n.errorWorkLocationNotFound,
+    // shift_start_location_choice: сотрудник отошёл от выбранной/резолвленной
+    // точки между запросом списка и стартом (гонка «список устарел»)
+    'WORK_LOCATION_OUT_OF_RANGE' => l10n.errorWorkLocationOutOfRange,
     // work_schedules: выбор графика при старте смены + переработки
     'SCHEDULE_REQUIRED' => l10n.errorScheduleRequired,
     'SCHEDULE_NOT_AVAILABLE' => l10n.errorScheduleNotAvailable,
