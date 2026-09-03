@@ -42,8 +42,8 @@ class ShiftHistoryPeriodCubit extends Cubit<ShiftHistoryPeriodState> {
   /// Резолвленный контекст экрана (`ShiftHistoryContextCubit`, вызывается
   /// из `ShiftHistoryPage` тем же приёмом, что и `setContext` у сиблингов).
   /// Пересчитывает границы активного пресета в новом контексте; произвольный
-  /// диапазон ([isCustomRange]) уже вычислен вызывающей стороной
-  /// (`DateRangePickerResult`) и не пересчитывается.
+  /// диапазон (`ShiftHistoryPeriodState.isCustomRange`) уже вычислен
+  /// вызывающей стороной (`DateRangePickerResult`) и не пересчитывается.
   void applyContext(AppTimeContext context) {
     _context = context;
     final preset = state.selectedPreset;

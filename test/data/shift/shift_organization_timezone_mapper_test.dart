@@ -36,17 +36,14 @@ void main() {
       expect(shift.organizationTimezone, isNull);
     });
 
-    test(
-      'старый бэк без поля (rolling deploy) — null, парсинг не падает',
-      () {
-        final shift = ShiftDto.fromJson(
-          _shiftJson({'organization_id': 'org1'}),
-        ).toDomain();
+    test('старый бэк без поля (rolling deploy) — null, парсинг не падает', () {
+      final shift = ShiftDto.fromJson(
+        _shiftJson({'organization_id': 'org1'}),
+      ).toDomain();
 
-        expect(shift.organizationId, 'org1');
-        expect(shift.organizationTimezone, isNull);
-      },
-    );
+      expect(shift.organizationId, 'org1');
+      expect(shift.organizationTimezone, isNull);
+    });
 
     test('маппер не подставляет дефолтную таймзону вместо null', () {
       final shift = ShiftDto.fromJson(

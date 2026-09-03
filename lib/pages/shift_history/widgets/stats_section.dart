@@ -4,7 +4,12 @@ part of '../view/shift_history_page.dart';
 /// mobile.md`, «A») + время/количество смен + заработок за период («B»,
 /// только при контексте конкретной организации).
 class _StatsSection extends StatelessWidget {
-  const _StatsSection();
+  const _StatsSection({required this.periodContext});
+
+  /// Контекст представления периода экрана (устройство либо IANA-зона
+  /// организации) — вычислен `ShiftHistoryContextState.periodContext` и
+  /// прокинут родителем (`ShiftHistoryPage`).
+  final AppTimeContext periodContext;
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +20,15 @@ class _StatsSection extends StatelessWidget {
       child: Material(
         color: colors.surface,
         borderRadius: BorderRadius.circular(16),
-        child: const Padding(
-          padding: EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _PeriodSelector(),
-              SizedBox(height: 16),
-              _StatsContent(),
-              _EarningsSummary(),
+              _PeriodSelector(periodContext: periodContext),
+              const SizedBox(height: 16),
+              _StatsContent(periodContext: periodContext),
+              const _EarningsSummary(),
             ],
           ),
         ),
@@ -37,19 +42,30 @@ class _StatsSection extends StatelessWidget {
 /// произвольный диапазон. Управляет списком, статистикой и заработком
 /// одновременно — см. `ShiftHistoryPage._applyPeriod`.
 class _PeriodSelector extends StatelessWidget {
-  const _PeriodSelector();
+  const _PeriodSelector({required this.periodContext});
+
+  final AppTimeContext periodContext;
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final cubit = context.read<ShiftHistoryPeriodCubit>();
     final state = cubit.state;
+    final dateFrom = state.isCustomRange ? state.dateFrom : null;
+    final dateTo = state.isCustomRange ? state.dateTo : null;
     final result = await context.router.push<DateRangePickerResult?>(
       DateRangePickerRoute(
-        initialFrom: state.isCustomRange ? state.dateFrom?.toLocal() : null,
-        initialTo: state.isCustomRange ? state.dateTo?.toLocal() : null,
+        initialFrom: dateFrom == null
+            ? null
+            : appTimeCalendarDay(dateFrom, periodContext),
+        initialTo: dateTo == null
+            ? null
+            : appTimeCalendarDay(dateTo, periodContext),
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc, result.toUtc);
+      cubit.setCustomRange(
+        result.fromUtc(periodContext),
+        result.toUtc(periodContext),
+      );
     }
   }
 
@@ -98,6 +114,7 @@ class _PeriodSelector extends StatelessWidget {
                 from: state.isCustomRange ? state.dateFrom : null,
                 to: state.isCustomRange ? state.dateTo : null,
                 label: context.l10n.statsModeCustom,
+                timeContext: periodContext,
                 onTap: () => _openDateRangePicker(context),
                 onClear: () => context
                     .read<ShiftHistoryPeriodCubit>()
@@ -114,7 +131,9 @@ class _PeriodSelector extends StatelessWidget {
 /// Время и количество смен за период (`ShiftStatsCubit`) — окно приходит
 /// извне от `ShiftHistoryPeriodCubit`, кубит его не выбирает сам.
 class _StatsContent extends StatelessWidget {
-  const _StatsContent();
+  const _StatsContent({required this.periodContext});
+
+  final AppTimeContext periodContext;
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +170,12 @@ class _StatsContent extends StatelessWidget {
                 ),
               ],
             ),
-            if (appliedRangeLabel(context, stats.rangeFrom, stats.rangeTo)
+            if (appliedRangeLabel(
+                  context,
+                  stats.rangeFrom,
+                  stats.rangeTo,
+                  periodContext,
+                )
                 case final rangeLabel?) ...[
               const SizedBox(height: 12),
               Text(

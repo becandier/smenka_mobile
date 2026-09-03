@@ -75,7 +75,7 @@ void main() {
   group('utcBoundsForDay — организационный контекст, IANA/DST', () {
     test('обычные сутки Europe/Moscow — ровно 24 часа', () {
       final bounds = appTime.utcBoundsForDay(
-        DateTime(2026, 9, 1),
+        DateTime(2026, 9),
         const AppTimeContext.organization('Europe/Moscow'),
       );
 
@@ -108,7 +108,7 @@ void main() {
 
     test('границы возвращаются в UTC (timezone-aware), не naive', () {
       final bounds = appTime.utcBoundsForDay(
-        DateTime(2026, 9, 1),
+        DateTime(2026, 9),
         const AppTimeContext.organization('Europe/Moscow'),
       );
 
@@ -128,19 +128,22 @@ void main() {
       );
     });
 
-    test('невалидная зона показывает момент как UTC (не падает, не угадывает)', () {
-      final wall = appTime.wallTime(
-        DateTime.utc(2026, 9, 1, 4, 39, 6),
-        const AppTimeContext.organization('Not/A_Real_Zone'),
-      );
+    test(
+      'невалидная зона показывает момент как UTC (не падает, не угадывает)',
+      () {
+        final wall = appTime.wallTime(
+          DateTime.utc(2026, 9, 1, 4, 39, 6),
+          const AppTimeContext.organization('Not/A_Real_Zone'),
+        );
 
-      expect(wall.isUtc, isTrue);
-      expect(wall.hour, 4);
-    });
+        expect(wall.isUtc, isTrue);
+        expect(wall.hour, 4);
+      },
+    );
 
     test('utcBoundsForDay на невалидной зоне возвращает 24-часовые сутки', () {
       final bounds = appTime.utcBoundsForDay(
-        DateTime(2026, 9, 1),
+        DateTime(2026, 9),
         const AppTimeContext.organization('Not/A_Real_Zone'),
       );
 
@@ -162,17 +165,14 @@ void main() {
       final utc = DateTime.utc(2026, 9, 1, 4, 39, 6);
       final expected = _format(utc.toLocal());
 
-      final result = appTime.formatDateTime(
-        utc,
-        const AppTimeContext.device(),
-      );
+      final result = appTime.formatDateTime(utc, const AppTimeContext.device());
 
       expect(result, expected);
     });
 
     test('utcBoundsForDay(device) — 24 часа вне переходов DST устройства', () {
       final bounds = appTime.utcBoundsForDay(
-        DateTime(2026, 9, 1),
+        DateTime(2026, 9),
         const AppTimeContext.device(),
       );
 
@@ -183,18 +183,21 @@ void main() {
   });
 
   group('UTC-моменты не искажаются вычислениями', () {
-    test('исходный instant после форматирования остаётся тем же UTC-моментом', () {
-      final utcMoment = DateTime.parse('2026-09-01T04:39:06Z');
-      final untouched = utcMoment.toUtc();
+    test(
+      'исходный instant после форматирования остаётся тем же UTC-моментом',
+      () {
+        final utcMoment = DateTime.parse('2026-09-01T04:39:06Z');
+        final untouched = utcMoment.toUtc();
 
-      appTime.formatDateTime(
-        utcMoment,
-        const AppTimeContext.organization('Europe/Moscow'),
-      );
+        appTime.formatDateTime(
+          utcMoment,
+          const AppTimeContext.organization('Europe/Moscow'),
+        );
 
-      expect(utcMoment.toUtc(), untouched);
-      expect(utcMoment.isUtc, isTrue);
-    });
+        expect(utcMoment.toUtc(), untouched);
+        expect(utcMoment.isUtc, isTrue);
+      },
+    );
   });
 }
 

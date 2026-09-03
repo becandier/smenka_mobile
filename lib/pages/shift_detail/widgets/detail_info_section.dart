@@ -15,7 +15,14 @@ class _DetailInfoSection extends StatelessWidget {
     final scheduledStart = shift.scheduledStartAt;
     final scheduledEnd = shift.scheduledEndAt;
     final hasPlan = scheduledStart != null && scheduledEnd != null;
-    final timezone = organization?.timezone ?? 'Europe/Moscow';
+    // Self-detail этой смены уже несёт `organizationTimezone` (backend
+    // additive, rolling deploy) — `organization?.timezone` здесь только
+    // страхует старый бэк без поля (см. `ShiftDetailCubit`, грузит
+    // организацию лениво ради `overtimeRequestDays`).
+    final timeContext = shift.timeContext(
+      scopedOrganizationTimezone: organization?.timezone,
+    );
+    const appTime = AppTime();
     final lateSeconds = shift.lateSeconds ?? 0;
 
     return Card(
@@ -25,13 +32,13 @@ class _DetailInfoSection extends StatelessWidget {
           children: [
             _InfoRow(
               label: l10n.detailStarted,
-              value: _formatDateTime(shift.startedAt),
+              value: appTime.formatDateTime(shift.startedAt, timeContext),
             ),
             const Divider(),
             _InfoRow(
               label: l10n.detailFinished,
               value: switch (shift.finishedAt) {
-                final dt? => _formatDateTime(dt),
+                final dt? => appTime.formatDateTime(dt, timeContext),
                 null => l10n.detailInProgress,
               },
             ),
@@ -45,8 +52,8 @@ class _DetailInfoSection extends StatelessWidget {
               _InfoRow(
                 label: l10n.detailPlan,
                 value:
-                    '${_formatTime(toOrgLocal(scheduledStart, timezone))} — '
-                    '${_formatTime(toOrgLocal(scheduledEnd, timezone))}',
+                    '${appTime.formatTime(scheduledStart, timeContext)} — '
+                    '${appTime.formatTime(scheduledEnd, timeContext)}',
               ),
             ],
             if (lateSeconds > 0) ...[
@@ -85,8 +92,6 @@ class _DetailInfoSection extends StatelessWidget {
     );
   }
 }
-
-String _formatTime(DateTime dt) => DateFormat('HH:mm').format(dt);
 
 class _InfoRow extends StatelessWidget {
   const _InfoRow({required this.label, this.value, this.trailing});
@@ -168,10 +173,6 @@ class _StatusBadge extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatDateTime(DateTime dt) {
-  return DateFormat('dd.MM.yyyy, HH:mm').format(dt);
 }
 
 String _formatDuration(BuildContext context, int totalSeconds) {

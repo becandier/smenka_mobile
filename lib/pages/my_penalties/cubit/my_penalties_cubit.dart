@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/pagination_mixin.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
+import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/penalty/_penalty.dart';
 import 'package:smenka_mobile/pages/my_penalties/cubit/my_penalties_state.dart';
@@ -28,7 +29,8 @@ class MyPenaltiesCubit extends Cubit<MyPenaltiesState>
 
   /// Один запрос за время жизни экрана — таймзона нужна и для пресетов
   /// ([_window]), и для карточек/чипа диапазона (`MyPenaltiesPage`).
-  /// Ошибка молча оставляет дефолт (см. `MyPenaltiesState.organizationTimezone`).
+  /// Ошибка молча оставляет дефолт (см.
+  /// `MyPenaltiesState.organizationTimezone`).
   Future<void> _loadOrganizationTimezone() async {
     final result = await _organizationRepository.getById(_orgId);
     result.fold(
@@ -45,7 +47,10 @@ class MyPenaltiesCubit extends Cubit<MyPenaltiesState>
   ({DateTime? from, DateTime? to}) get _window {
     final preset = state.preset;
     if (preset != null) {
-      final bounds = preset.boundsUtc(DateTime.now().toUtc(), state.timeContext);
+      final bounds = preset.boundsUtc(
+        DateTime.now().toUtc(),
+        state.timeContext,
+      );
       return (from: bounds.fromUtc, to: bounds.toUtc);
     }
     return (from: state.customFrom, to: state.customTo);

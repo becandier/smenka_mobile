@@ -1,15 +1,17 @@
 part of '../view/org_shift_detail_page.dart';
 
 class _OrgShiftInfoSection extends StatelessWidget {
-  const _OrgShiftInfoSection({required this.shift});
+  const _OrgShiftInfoSection({required this.shift, required this.timeContext});
 
   final Shift shift;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
+    const appTime = AppTime();
 
     return Card(
       child: Padding(
@@ -18,13 +20,13 @@ class _OrgShiftInfoSection extends StatelessWidget {
           children: [
             _InfoRow(
               label: l10n.detailStarted,
-              value: _formatDateTime(shift.startedAt),
+              value: appTime.formatDateTime(shift.startedAt, timeContext),
             ),
             const Divider(),
             _InfoRow(
               label: l10n.detailFinished,
               value: switch (shift.finishedAt) {
-                final dt? => _formatDateTime(dt),
+                final dt? => appTime.formatDateTime(dt, timeContext),
                 null => l10n.detailInProgress,
               },
             ),
@@ -144,10 +146,6 @@ class _OrgStatusBadge extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatDateTime(DateTime dt) {
-  return DateFormat('dd.MM.yyyy, HH:mm').format(dt);
 }
 
 String _formatDuration(BuildContext context, int totalSeconds) {

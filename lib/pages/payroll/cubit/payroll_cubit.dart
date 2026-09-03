@@ -50,7 +50,10 @@ class PayrollCubit extends Cubit<PayrollState> {
 
     final (DateTime? dateFrom, DateTime? dateTo) = switch (state.preset) {
       final preset? => () {
-        final bounds = preset.boundsUtc(DateTime.now().toUtc(), state.timeContext);
+        final bounds = preset.boundsUtc(
+          DateTime.now().toUtc(),
+          state.timeContext,
+        );
         return (bounds.fromUtc, bounds.toUtc);
       }(),
       null => (state.customFrom, state.customTo),

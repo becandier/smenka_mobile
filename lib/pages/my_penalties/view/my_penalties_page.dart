@@ -52,7 +52,10 @@ class _MyPenaltiesView extends StatelessWidget {
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc(timeContext), result.toUtc(timeContext));
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -103,7 +106,10 @@ class _MyPenaltiesView extends StatelessWidget {
                   ),
                   itemBuilder: (context, penalty, index) => _MyPenaltyTile(
                     penalty: penalty,
-                    timeContext: context.read<MyPenaltiesCubit>().state.timeContext,
+                    timeContext: context
+                        .read<MyPenaltiesCubit>()
+                        .state
+                        .timeContext,
                   ),
                 ),
           ),

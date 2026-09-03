@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
-import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/payroll/_payroll.dart';
@@ -54,7 +53,10 @@ class _PayrollView extends StatelessWidget {
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc(timeContext), result.toUtc(timeContext));
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -95,7 +97,10 @@ class _PayrollView extends StatelessWidget {
               selector: (state) => state.payroll,
               onRetry: () => context.read<PayrollCubit>().load(),
               contentBuilder: (payroll) {
-                final timeContext = context.read<PayrollCubit>().state.timeContext;
+                final timeContext = context
+                    .read<PayrollCubit>()
+                    .state
+                    .timeContext;
                 return RefreshIndicator.adaptive(
                   onRefresh: () => context.read<PayrollCubit>().load(),
                   child: payroll.items.isEmpty

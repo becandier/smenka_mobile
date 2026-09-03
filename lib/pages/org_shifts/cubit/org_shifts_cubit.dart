@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/pagination_mixin.dart';
+import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -14,12 +17,24 @@ class OrgShiftsCubit extends Cubit<OrgShiftsState>
        _organizationRepository = organizationRepository,
        super(const OrgShiftsState()) {
     loadShifts();
+    unawaited(_loadOrganizationTimezone());
   }
 
   final String _orgId;
   final OrganizationRepository _organizationRepository;
 
   String get orgId => _orgId;
+
+  /// Один запрос за время жизни экрана (см. `MyPenaltiesCubit`, тот же
+  /// приём). Ошибка молча оставляет дефолт.
+  Future<void> _loadOrganizationTimezone() async {
+    final result = await _organizationRepository.getById(_orgId);
+    result.fold(
+      onSuccess: (org) =>
+          emit(state.copyWith(organizationTimezone: org.timezone)),
+      onFailure: (_) {},
+    );
+  }
 
   Future<void> loadShifts({bool isRefresh = true}) => fetchPaginated<Shift>(
     getSection: (s) => s.shifts,

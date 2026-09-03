@@ -60,7 +60,10 @@ class _MyAdjustmentsView extends StatelessWidget {
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc(timeContext), result.toUtc(timeContext));
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -127,7 +130,10 @@ class _MyAdjustmentsView extends StatelessWidget {
 }
 
 class _MyAdjustmentTile extends StatelessWidget {
-  const _MyAdjustmentTile({required this.adjustment, required this.timeContext});
+  const _MyAdjustmentTile({
+    required this.adjustment,
+    required this.timeContext,
+  });
 
   final MyAdjustment adjustment;
   final AppTimeContext timeContext;

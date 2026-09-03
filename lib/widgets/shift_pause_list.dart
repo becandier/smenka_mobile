@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 
 /// Список пауз смены: заголовок + карточки пауз с длительностью.
 /// Переиспользуется на экране детали персональной и чужой (орг) смены.
+///
+/// [timeContext] — контекст родительской смены (см.
+/// `ShiftTimeContext.timeContext`): паузы не несут собственную таймзону,
+/// показываются в той же зоне, что и начало/конец смены.
 class ShiftPauseList extends StatelessWidget {
-  const ShiftPauseList({required this.pauses, super.key});
+  const ShiftPauseList({
+    required this.pauses,
+    required this.timeContext,
+    super.key,
+  });
 
   final List<Pause> pauses;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +46,11 @@ class ShiftPauseList extends StatelessWidget {
           )
         else
           ...List.generate(pauses.length, (index) {
-            return _PauseCard(pause: pauses[index], index: index + 1);
+            return _PauseCard(
+              pause: pauses[index],
+              index: index + 1,
+              timeContext: timeContext,
+            );
           }),
       ],
     );
@@ -45,10 +58,15 @@ class ShiftPauseList extends StatelessWidget {
 }
 
 class _PauseCard extends StatelessWidget {
-  const _PauseCard({required this.pause, required this.index});
+  const _PauseCard({
+    required this.pause,
+    required this.index,
+    required this.timeContext,
+  });
 
   final Pause pause;
   final int index;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +79,8 @@ class _PauseCard extends StatelessWidget {
     final duration = end.difference(pause.startedAt);
     final durationMinutes = duration.inMinutes;
     final durationSeconds = duration.inSeconds % 60;
+    const appTime = AppTime();
+    final startedAtLabel = appTime.formatDateTime(pause.startedAt, timeContext);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -97,13 +117,13 @@ class _PauseCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                '${l10n.detailStarted}: ${_formatDateTime(pause.startedAt)}',
+                '${l10n.detailStarted}: $startedAtLabel',
                 style: textTheme.bodySmall?.copyWith(color: colors.secondary),
               ),
               const SizedBox(height: 4),
               Text(
                 '${l10n.detailFinished}: ${switch (pause.finishedAt) {
-                  final dt? => _formatDateTime(dt),
+                  final dt? => appTime.formatDateTime(dt, timeContext),
                   null => l10n.detailInProgress,
                 }}',
                 style: textTheme.bodySmall?.copyWith(
@@ -116,8 +136,4 @@ class _PauseCard extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatDateTime(DateTime dt) {
-  return DateFormat('dd.MM.yyyy, HH:mm').format(dt);
 }

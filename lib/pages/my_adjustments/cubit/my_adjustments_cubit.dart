@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/pagination_mixin.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
+import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/adjustment/_adjustment.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/pages/my_adjustments/cubit/my_adjustments_state.dart';
@@ -43,7 +44,10 @@ class MyAdjustmentsCubit extends Cubit<MyAdjustmentsState>
   ({DateTime? from, DateTime? to}) get _window {
     final preset = state.preset;
     if (preset != null) {
-      final bounds = preset.boundsUtc(DateTime.now().toUtc(), state.timeContext);
+      final bounds = preset.boundsUtc(
+        DateTime.now().toUtc(),
+        state.timeContext,
+      );
       return (from: bounds.fromUtc, to: bounds.toUtc);
     }
     return (from: state.customFrom, to: state.customTo);

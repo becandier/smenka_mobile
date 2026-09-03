@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
-import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/l10n/applied_range_label.dart';
@@ -55,7 +54,10 @@ class _OrgStatsView extends StatelessWidget {
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc(timeContext), result.toUtc(timeContext));
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -142,7 +144,10 @@ class _OrgStatsView extends StatelessWidget {
               selector: (state) => state.stats,
               onRetry: () => context.read<OrgStatsCubit>().loadStats(),
               contentBuilder: (stats) {
-                final timeContext = context.read<OrgStatsCubit>().state.timeContext;
+                final timeContext = context
+                    .read<OrgStatsCubit>()
+                    .state
+                    .timeContext;
                 return RefreshIndicator.adaptive(
                   onRefresh: () => context.read<OrgStatsCubit>().loadStats(),
                   child: ListView(

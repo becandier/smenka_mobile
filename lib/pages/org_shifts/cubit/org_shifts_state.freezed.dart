@@ -19,7 +19,10 @@ mixin _$OrgShiftsState {
  DateTime? get filterDateFrom;/// Фильтр по дате — до
  DateTime? get filterDateTo;/// Фильтр по сотруднику (`?user_id`); null = все сотрудники
  String? get filterUserId;/// Имя выбранного сотрудника — для отображения в управляющем элементе
- String? get filterUserName;
+ String? get filterUserName;/// IANA-таймзона организации — карточки и date-range фильтр всегда её
+/// бизнес-события. Дефолт до загрузки совпадает с server_default
+/// `Organization.timezone`.
+ String get organizationTimezone;
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,16 +33,16 @@ $OrgShiftsStateCopyWith<OrgShiftsState> get copyWith => _$OrgShiftsStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrgShiftsState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo)&&(identical(other.filterUserId, filterUserId) || other.filterUserId == filterUserId)&&(identical(other.filterUserName, filterUserName) || other.filterUserName == filterUserName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrgShiftsState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo)&&(identical(other.filterUserId, filterUserId) || other.filterUserId == filterUserId)&&(identical(other.filterUserName, filterUserName) || other.filterUserName == filterUserName)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo,filterUserId,filterUserName);
+int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo,filterUserId,filterUserName,organizationTimezone);
 
 @override
 String toString() {
-  return 'OrgShiftsState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo, filterUserId: $filterUserId, filterUserName: $filterUserName)';
+  return 'OrgShiftsState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo, filterUserId: $filterUserId, filterUserName: $filterUserName, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -50,7 +53,7 @@ abstract mixin class $OrgShiftsStateCopyWith<$Res>  {
   factory $OrgShiftsStateCopyWith(OrgShiftsState value, $Res Function(OrgShiftsState) _then) = _$OrgShiftsStateCopyWithImpl;
 @useResult
 $Res call({
- PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName
+ PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName, String organizationTimezone
 });
 
 
@@ -67,7 +70,7 @@ class _$OrgShiftsStateCopyWithImpl<$Res>
 
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,Object? organizationTimezone = null,}) {
   return _then(_self.copyWith(
 shifts: null == shifts ? _self.shifts : shifts // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<Shift>,filterStatus: freezed == filterStatus ? _self.filterStatus : filterStatus // ignore: cast_nullable_to_non_nullable
@@ -75,7 +78,8 @@ as ShiftStatus?,filterDateFrom: freezed == filterDateFrom ? _self.filterDateFrom
 as DateTime?,filterDateTo: freezed == filterDateTo ? _self.filterDateTo : filterDateTo // ignore: cast_nullable_to_non_nullable
 as DateTime?,filterUserId: freezed == filterUserId ? _self.filterUserId : filterUserId // ignore: cast_nullable_to_non_nullable
 as String?,filterUserName: freezed == filterUserName ? _self.filterUserName : filterUserName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 /// Create a copy of OrgShiftsState
@@ -169,10 +173,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrgShiftsState() when $default != null:
-return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName);case _:
+return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName,_that.organizationTimezone);case _:
   return orElse();
 
 }
@@ -190,10 +194,10 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _OrgShiftsState():
-return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName);case _:
+return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName,_that.organizationTimezone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +214,10 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<Shift> shifts,  ShiftStatus? filterStatus,  DateTime? filterDateFrom,  DateTime? filterDateTo,  String? filterUserId,  String? filterUserName,  String organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _OrgShiftsState() when $default != null:
-return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName);case _:
+return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filterDateTo,_that.filterUserId,_that.filterUserName,_that.organizationTimezone);case _:
   return null;
 
 }
@@ -225,7 +229,7 @@ return $default(_that.shifts,_that.filterStatus,_that.filterDateFrom,_that.filte
 
 
 class _OrgShiftsState extends OrgShiftsState {
-  const _OrgShiftsState({this.shifts = const PaginatedSectionData<Shift>(), this.filterStatus, this.filterDateFrom, this.filterDateTo, this.filterUserId, this.filterUserName}): super._();
+  const _OrgShiftsState({this.shifts = const PaginatedSectionData<Shift>(), this.filterStatus, this.filterDateFrom, this.filterDateTo, this.filterUserId, this.filterUserName, this.organizationTimezone = 'Europe/Moscow'}): super._();
   
 
 @override@JsonKey() final  PaginatedSectionData<Shift> shifts;
@@ -239,6 +243,10 @@ class _OrgShiftsState extends OrgShiftsState {
 @override final  String? filterUserId;
 /// Имя выбранного сотрудника — для отображения в управляющем элементе
 @override final  String? filterUserName;
+/// IANA-таймзона организации — карточки и date-range фильтр всегда её
+/// бизнес-события. Дефолт до загрузки совпадает с server_default
+/// `Organization.timezone`.
+@override@JsonKey() final  String organizationTimezone;
 
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
@@ -250,16 +258,16 @@ _$OrgShiftsStateCopyWith<_OrgShiftsState> get copyWith => __$OrgShiftsStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrgShiftsState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo)&&(identical(other.filterUserId, filterUserId) || other.filterUserId == filterUserId)&&(identical(other.filterUserName, filterUserName) || other.filterUserName == filterUserName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrgShiftsState&&(identical(other.shifts, shifts) || other.shifts == shifts)&&(identical(other.filterStatus, filterStatus) || other.filterStatus == filterStatus)&&(identical(other.filterDateFrom, filterDateFrom) || other.filterDateFrom == filterDateFrom)&&(identical(other.filterDateTo, filterDateTo) || other.filterDateTo == filterDateTo)&&(identical(other.filterUserId, filterUserId) || other.filterUserId == filterUserId)&&(identical(other.filterUserName, filterUserName) || other.filterUserName == filterUserName)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo,filterUserId,filterUserName);
+int get hashCode => Object.hash(runtimeType,shifts,filterStatus,filterDateFrom,filterDateTo,filterUserId,filterUserName,organizationTimezone);
 
 @override
 String toString() {
-  return 'OrgShiftsState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo, filterUserId: $filterUserId, filterUserName: $filterUserName)';
+  return 'OrgShiftsState(shifts: $shifts, filterStatus: $filterStatus, filterDateFrom: $filterDateFrom, filterDateTo: $filterDateTo, filterUserId: $filterUserId, filterUserName: $filterUserName, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -270,7 +278,7 @@ abstract mixin class _$OrgShiftsStateCopyWith<$Res> implements $OrgShiftsStateCo
   factory _$OrgShiftsStateCopyWith(_OrgShiftsState value, $Res Function(_OrgShiftsState) _then) = __$OrgShiftsStateCopyWithImpl;
 @override @useResult
 $Res call({
- PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName
+ PaginatedSectionData<Shift> shifts, ShiftStatus? filterStatus, DateTime? filterDateFrom, DateTime? filterDateTo, String? filterUserId, String? filterUserName, String organizationTimezone
 });
 
 
@@ -287,7 +295,7 @@ class __$OrgShiftsStateCopyWithImpl<$Res>
 
 /// Create a copy of OrgShiftsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? shifts = null,Object? filterStatus = freezed,Object? filterDateFrom = freezed,Object? filterDateTo = freezed,Object? filterUserId = freezed,Object? filterUserName = freezed,Object? organizationTimezone = null,}) {
   return _then(_OrgShiftsState(
 shifts: null == shifts ? _self.shifts : shifts // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<Shift>,filterStatus: freezed == filterStatus ? _self.filterStatus : filterStatus // ignore: cast_nullable_to_non_nullable
@@ -295,7 +303,8 @@ as ShiftStatus?,filterDateFrom: freezed == filterDateFrom ? _self.filterDateFrom
 as DateTime?,filterDateTo: freezed == filterDateTo ? _self.filterDateTo : filterDateTo // ignore: cast_nullable_to_non_nullable
 as DateTime?,filterUserId: freezed == filterUserId ? _self.filterUserId : filterUserId // ignore: cast_nullable_to_non_nullable
 as String?,filterUserName: freezed == filterUserName ? _self.filterUserName : filterUserName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

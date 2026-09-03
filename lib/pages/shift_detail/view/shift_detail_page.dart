@@ -1,13 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
-import 'package:smenka_mobile/core/utils/org_timezone.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
@@ -89,7 +88,13 @@ class _ShiftDetailView extends StatelessWidget {
                   _OvertimeSection(state: state),
                 ],
                 const SizedBox(height: 24),
-                ShiftPauseList(pauses: state.shift.pauses),
+                ShiftPauseList(
+                  pauses: state.shift.pauses,
+                  timeContext: state.shift.timeContext(
+                    scopedOrganizationTimezone:
+                        state.organization.data?.timezone,
+                  ),
+                ),
               ],
             ),
           );

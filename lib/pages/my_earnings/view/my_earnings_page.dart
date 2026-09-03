@@ -70,7 +70,10 @@ class _MyEarningsView extends StatelessWidget {
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc(timeContext), result.toUtc(timeContext));
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -520,7 +523,10 @@ class _PotentialEarningsCard extends StatelessWidget {
 }
 
 class _CurrentRateCard extends StatelessWidget {
-  const _CurrentRateCard({required this.currentRate, required this.timeContext});
+  const _CurrentRateCard({
+    required this.currentRate,
+    required this.timeContext,
+  });
 
   final CurrentRate? currentRate;
   final AppTimeContext timeContext;

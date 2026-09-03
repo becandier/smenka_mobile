@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/utils/org_timezone.dart';
 
@@ -34,6 +35,7 @@ sealed class AppTimeContext {
 }
 
 /// См. [AppTimeContext.organization].
+@immutable
 final class OrganizationTimeContext extends AppTimeContext {
   const OrganizationTimeContext(this.timeZone);
 
@@ -52,6 +54,7 @@ final class OrganizationTimeContext extends AppTimeContext {
 }
 
 /// См. [AppTimeContext.device].
+@immutable
 final class DeviceTimeContext extends AppTimeContext {
   const DeviceTimeContext();
 
