@@ -9,8 +9,12 @@ class _OrgShiftCard extends StatelessWidget {
 
   final Shift shift;
 
-  /// Контекст представления начала смены: IANA-зона организации экрана
-  /// (`OrgShiftsState.timeContext`).
+  /// Контекст представления начала смены. Собирается вызывающей стороной
+  /// (`org_shifts_page.dart`) через `shift.timeContext(...)` со
+  /// `scopedOrganizationTimezone: state.organizationTimezone` —
+  /// собственная таймзона смены (уже корректна из первого же ответа
+  /// списка) приоритетнее зоны экрана (`OrgShiftsState.timeContext`),
+  /// которая остаётся лишь rolling-deploy фолбэком (`5103b3e`).
   final AppTimeContext timeContext;
 
   final VoidCallback onTap;
