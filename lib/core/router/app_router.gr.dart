@@ -124,6 +124,7 @@ class ChecklistPhotoViewerRoute
     required List<ChecklistItemPhoto> photos,
     required int initialIndex,
     required bool isAddedSemantics,
+    required AppTimeContext timeContext,
     Future<bool> Function(String)? onDeletePhoto,
     Key? key,
     List<PageRouteInfo>? children,
@@ -133,6 +134,7 @@ class ChecklistPhotoViewerRoute
            photos: photos,
            initialIndex: initialIndex,
            isAddedSemantics: isAddedSemantics,
+           timeContext: timeContext,
            onDeletePhoto: onDeletePhoto,
            key: key,
          ),
@@ -149,6 +151,7 @@ class ChecklistPhotoViewerRoute
         photos: args.photos,
         initialIndex: args.initialIndex,
         isAddedSemantics: args.isAddedSemantics,
+        timeContext: args.timeContext,
         onDeletePhoto: args.onDeletePhoto,
         key: args.key,
       );
@@ -161,6 +164,7 @@ class ChecklistPhotoViewerRouteArgs {
     required this.photos,
     required this.initialIndex,
     required this.isAddedSemantics,
+    required this.timeContext,
     this.onDeletePhoto,
     this.key,
   });
@@ -171,13 +175,15 @@ class ChecklistPhotoViewerRouteArgs {
 
   final bool isAddedSemantics;
 
+  final AppTimeContext timeContext;
+
   final Future<bool> Function(String)? onDeletePhoto;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'ChecklistPhotoViewerRouteArgs{photos: $photos, initialIndex: $initialIndex, isAddedSemantics: $isAddedSemantics, onDeletePhoto: $onDeletePhoto, key: $key}';
+    return 'ChecklistPhotoViewerRouteArgs{photos: $photos, initialIndex: $initialIndex, isAddedSemantics: $isAddedSemantics, timeContext: $timeContext, onDeletePhoto: $onDeletePhoto, key: $key}';
   }
 
   @override
@@ -190,6 +196,7 @@ class ChecklistPhotoViewerRouteArgs {
         ) &&
         initialIndex == other.initialIndex &&
         isAddedSemantics == other.isAddedSemantics &&
+        timeContext == other.timeContext &&
         key == other.key;
   }
 
@@ -198,6 +205,7 @@ class ChecklistPhotoViewerRouteArgs {
       const ListEquality<ChecklistItemPhoto>().hash(photos) ^
       initialIndex.hashCode ^
       isAddedSemantics.hashCode ^
+      timeContext.hashCode ^
       key.hashCode;
 }
 

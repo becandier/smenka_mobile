@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/core/utils/money_format.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/penalty/_penalty.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/pages/date_range_picker/_date_range_picker.dart';
@@ -25,6 +26,7 @@ class MyPenaltiesPage extends StatelessWidget {
       create: (_) => MyPenaltiesCubit(
         orgId: orgId,
         penaltyRepository: context.read<PenaltyRepository>(),
+        organizationRepository: context.read<OrganizationRepository>(),
       ),
       child: const _MyPenaltiesView(),
     );
@@ -36,14 +38,24 @@ class _MyPenaltiesView extends StatelessWidget {
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final cubit = context.read<MyPenaltiesCubit>();
+    final timeContext = cubit.state.timeContext;
+    final customFrom = cubit.state.customFrom;
+    final customTo = cubit.state.customTo;
     final result = await context.router.push<DateRangePickerResult?>(
       DateRangePickerRoute(
-        initialFrom: cubit.state.customFrom?.toLocal(),
-        initialTo: cubit.state.customTo?.toLocal(),
+        initialFrom: customFrom == null
+            ? null
+            : appTimeCalendarDay(customFrom, timeContext),
+        initialTo: customTo == null
+            ? null
+            : appTimeCalendarDay(customTo, timeContext),
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc, result.toUtc);
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -68,6 +80,7 @@ class _MyPenaltiesView extends StatelessWidget {
                   preset: state.preset,
                   customFrom: state.customFrom,
                   customTo: state.customTo,
+                  timeContext: state.timeContext,
                   onPresetChanged: cubit.setPreset,
                   onCustomTap: () => _openDateRangePicker(context),
                   onCustomClear: () => cubit.setCustomRange(null, null),
@@ -91,8 +104,13 @@ class _MyPenaltiesView extends StatelessWidget {
                     icon: Icons.gavel_outlined,
                     title: l10n.finesMyEmpty,
                   ),
-                  itemBuilder: (context, penalty, index) =>
-                      _MyPenaltyTile(penalty: penalty),
+                  itemBuilder: (context, penalty, index) => _MyPenaltyTile(
+                    penalty: penalty,
+                    timeContext: context
+                        .read<MyPenaltiesCubit>()
+                        .state
+                        .timeContext,
+                  ),
                 ),
           ),
         ],
@@ -102,9 +120,10 @@ class _MyPenaltiesView extends StatelessWidget {
 }
 
 class _MyPenaltyTile extends StatelessWidget {
-  const _MyPenaltyTile({required this.penalty});
+  const _MyPenaltyTile({required this.penalty, required this.timeContext});
 
   final MyPenalty penalty;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
@@ -146,9 +165,10 @@ class _MyPenaltyTile extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  DateFormat(
-                    'dd.MM.yyyy HH:mm',
-                  ).format(penalty.occurredAt.toLocal()),
+                  const AppTime().formatDateTime(
+                    penalty.occurredAt,
+                    timeContext,
+                  ),
                   style: textTheme.bodySmall?.copyWith(color: colors.secondary),
                 ),
                 if (penalty.shiftId != null) ...[

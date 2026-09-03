@@ -88,5 +88,6 @@ extension ChecklistInstanceDetailDtoMapper on ChecklistInstanceDetailDto {
     createdAt: createdAt,
     items: items.map((e) => e.toDomain()).toList(),
     maxPhotosPerItem: maxPhotosPerItem,
+    organizationTimezone: organizationTimezone,
   );
 }

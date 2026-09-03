@@ -848,7 +848,13 @@ mixin _$TestAssignmentDto {
 
  String get id; TestOrganizationBriefDto get organization; TestTemplateBriefDto get template;/// Сырое значение (`assigned`/`in_progress`/`passed`/`failed`) —
 /// парсится в маппере.
- String get status; int get attemptsUsed; int? get bestPercent; bool get passed; DateTime? get dueAt; List<TestAssignmentAttemptBriefDto>? get attempts;
+ String get status; int get attemptsUsed; int? get bestPercent; bool get passed; DateTime? get dueAt; List<TestAssignmentAttemptBriefDto>? get attempts;/// Аддитивное nullable поле (`MyTestAssignmentOut.organization_timezone`,
+/// backend `23dc2e3`) — та же форма используется и списком, и деталью
+/// назначения (`GET /my/test-assignments`/`/{id}`). `/my/*` не scoped
+/// по `{org_id}`, поэтому зона нужна на каждом элементе явно, а не
+/// угадывается клиентом по уже загрученному списку организаций
+/// (см. `TestAssignmentTimeContext.timeContext`).
+ String? get organizationTimezone;
 /// Create a copy of TestAssignmentDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -861,16 +867,16 @@ $TestAssignmentDtoCopyWith<TestAssignmentDto> get copyWith => _$TestAssignmentDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAssignmentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.template, template) || other.template == template)&&(identical(other.status, status) || other.status == status)&&(identical(other.attemptsUsed, attemptsUsed) || other.attemptsUsed == attemptsUsed)&&(identical(other.bestPercent, bestPercent) || other.bestPercent == bestPercent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&const DeepCollectionEquality().equals(other.attempts, attempts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAssignmentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.template, template) || other.template == template)&&(identical(other.status, status) || other.status == status)&&(identical(other.attemptsUsed, attemptsUsed) || other.attemptsUsed == attemptsUsed)&&(identical(other.bestPercent, bestPercent) || other.bestPercent == bestPercent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&const DeepCollectionEquality().equals(other.attempts, attempts)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,organization,template,status,attemptsUsed,bestPercent,passed,dueAt,const DeepCollectionEquality().hash(attempts));
+int get hashCode => Object.hash(runtimeType,id,organization,template,status,attemptsUsed,bestPercent,passed,dueAt,const DeepCollectionEquality().hash(attempts),organizationTimezone);
 
 @override
 String toString() {
-  return 'TestAssignmentDto(id: $id, organization: $organization, template: $template, status: $status, attemptsUsed: $attemptsUsed, bestPercent: $bestPercent, passed: $passed, dueAt: $dueAt, attempts: $attempts)';
+  return 'TestAssignmentDto(id: $id, organization: $organization, template: $template, status: $status, attemptsUsed: $attemptsUsed, bestPercent: $bestPercent, passed: $passed, dueAt: $dueAt, attempts: $attempts, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -881,7 +887,7 @@ abstract mixin class $TestAssignmentDtoCopyWith<$Res>  {
   factory $TestAssignmentDtoCopyWith(TestAssignmentDto value, $Res Function(TestAssignmentDto) _then) = _$TestAssignmentDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, TestOrganizationBriefDto organization, TestTemplateBriefDto template, String status, int attemptsUsed, int? bestPercent, bool passed, DateTime? dueAt, List<TestAssignmentAttemptBriefDto>? attempts
+ String id, TestOrganizationBriefDto organization, TestTemplateBriefDto template, String status, int attemptsUsed, int? bestPercent, bool passed, DateTime? dueAt, List<TestAssignmentAttemptBriefDto>? attempts, String? organizationTimezone
 });
 
 
@@ -898,7 +904,7 @@ class _$TestAssignmentDtoCopyWithImpl<$Res>
 
 /// Create a copy of TestAssignmentDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? organization = null,Object? template = null,Object? status = null,Object? attemptsUsed = null,Object? bestPercent = freezed,Object? passed = null,Object? dueAt = freezed,Object? attempts = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? organization = null,Object? template = null,Object? status = null,Object? attemptsUsed = null,Object? bestPercent = freezed,Object? passed = null,Object? dueAt = freezed,Object? attempts = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,organization: null == organization ? _self.organization : organization // ignore: cast_nullable_to_non_nullable
@@ -909,7 +915,8 @@ as int,bestPercent: freezed == bestPercent ? _self.bestPercent : bestPercent // 
 as int?,passed: null == passed ? _self.passed : passed // ignore: cast_nullable_to_non_nullable
 as bool,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,attempts: freezed == attempts ? _self.attempts : attempts // ignore: cast_nullable_to_non_nullable
-as List<TestAssignmentAttemptBriefDto>?,
+as List<TestAssignmentAttemptBriefDto>?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of TestAssignmentDto
@@ -1012,10 +1019,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  TestOrganizationBriefDto organization,  TestTemplateBriefDto template,  String status,  int attemptsUsed,  int? bestPercent,  bool passed,  DateTime? dueAt,  List<TestAssignmentAttemptBriefDto>? attempts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  TestOrganizationBriefDto organization,  TestTemplateBriefDto template,  String status,  int attemptsUsed,  int? bestPercent,  bool passed,  DateTime? dueAt,  List<TestAssignmentAttemptBriefDto>? attempts,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TestAssignmentDto() when $default != null:
-return $default(_that.id,_that.organization,_that.template,_that.status,_that.attemptsUsed,_that.bestPercent,_that.passed,_that.dueAt,_that.attempts);case _:
+return $default(_that.id,_that.organization,_that.template,_that.status,_that.attemptsUsed,_that.bestPercent,_that.passed,_that.dueAt,_that.attempts,_that.organizationTimezone);case _:
   return orElse();
 
 }
@@ -1033,10 +1040,10 @@ return $default(_that.id,_that.organization,_that.template,_that.status,_that.at
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  TestOrganizationBriefDto organization,  TestTemplateBriefDto template,  String status,  int attemptsUsed,  int? bestPercent,  bool passed,  DateTime? dueAt,  List<TestAssignmentAttemptBriefDto>? attempts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  TestOrganizationBriefDto organization,  TestTemplateBriefDto template,  String status,  int attemptsUsed,  int? bestPercent,  bool passed,  DateTime? dueAt,  List<TestAssignmentAttemptBriefDto>? attempts,  String? organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _TestAssignmentDto():
-return $default(_that.id,_that.organization,_that.template,_that.status,_that.attemptsUsed,_that.bestPercent,_that.passed,_that.dueAt,_that.attempts);case _:
+return $default(_that.id,_that.organization,_that.template,_that.status,_that.attemptsUsed,_that.bestPercent,_that.passed,_that.dueAt,_that.attempts,_that.organizationTimezone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1053,10 +1060,10 @@ return $default(_that.id,_that.organization,_that.template,_that.status,_that.at
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  TestOrganizationBriefDto organization,  TestTemplateBriefDto template,  String status,  int attemptsUsed,  int? bestPercent,  bool passed,  DateTime? dueAt,  List<TestAssignmentAttemptBriefDto>? attempts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  TestOrganizationBriefDto organization,  TestTemplateBriefDto template,  String status,  int attemptsUsed,  int? bestPercent,  bool passed,  DateTime? dueAt,  List<TestAssignmentAttemptBriefDto>? attempts,  String? organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _TestAssignmentDto() when $default != null:
-return $default(_that.id,_that.organization,_that.template,_that.status,_that.attemptsUsed,_that.bestPercent,_that.passed,_that.dueAt,_that.attempts);case _:
+return $default(_that.id,_that.organization,_that.template,_that.status,_that.attemptsUsed,_that.bestPercent,_that.passed,_that.dueAt,_that.attempts,_that.organizationTimezone);case _:
   return null;
 
 }
@@ -1068,7 +1075,7 @@ return $default(_that.id,_that.organization,_that.template,_that.status,_that.at
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _TestAssignmentDto implements TestAssignmentDto {
-  const _TestAssignmentDto({required this.id, required this.organization, required this.template, required this.status, this.attemptsUsed = 0, this.bestPercent, this.passed = false, this.dueAt, final  List<TestAssignmentAttemptBriefDto>? attempts}): _attempts = attempts;
+  const _TestAssignmentDto({required this.id, required this.organization, required this.template, required this.status, this.attemptsUsed = 0, this.bestPercent, this.passed = false, this.dueAt, final  List<TestAssignmentAttemptBriefDto>? attempts, this.organizationTimezone}): _attempts = attempts;
   factory _TestAssignmentDto.fromJson(Map<String, dynamic> json) => _$TestAssignmentDtoFromJson(json);
 
 @override final  String id;
@@ -1090,6 +1097,13 @@ class _TestAssignmentDto implements TestAssignmentDto {
   return EqualUnmodifiableListView(value);
 }
 
+/// Аддитивное nullable поле (`MyTestAssignmentOut.organization_timezone`,
+/// backend `23dc2e3`) — та же форма используется и списком, и деталью
+/// назначения (`GET /my/test-assignments`/`/{id}`). `/my/*` не scoped
+/// по `{org_id}`, поэтому зона нужна на каждом элементе явно, а не
+/// угадывается клиентом по уже загрученному списку организаций
+/// (см. `TestAssignmentTimeContext.timeContext`).
+@override final  String? organizationTimezone;
 
 /// Create a copy of TestAssignmentDto
 /// with the given fields replaced by the non-null parameter values.
@@ -1104,16 +1118,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAssignmentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.template, template) || other.template == template)&&(identical(other.status, status) || other.status == status)&&(identical(other.attemptsUsed, attemptsUsed) || other.attemptsUsed == attemptsUsed)&&(identical(other.bestPercent, bestPercent) || other.bestPercent == bestPercent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&const DeepCollectionEquality().equals(other._attempts, _attempts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAssignmentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.template, template) || other.template == template)&&(identical(other.status, status) || other.status == status)&&(identical(other.attemptsUsed, attemptsUsed) || other.attemptsUsed == attemptsUsed)&&(identical(other.bestPercent, bestPercent) || other.bestPercent == bestPercent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&const DeepCollectionEquality().equals(other._attempts, _attempts)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,organization,template,status,attemptsUsed,bestPercent,passed,dueAt,const DeepCollectionEquality().hash(_attempts));
+int get hashCode => Object.hash(runtimeType,id,organization,template,status,attemptsUsed,bestPercent,passed,dueAt,const DeepCollectionEquality().hash(_attempts),organizationTimezone);
 
 @override
 String toString() {
-  return 'TestAssignmentDto(id: $id, organization: $organization, template: $template, status: $status, attemptsUsed: $attemptsUsed, bestPercent: $bestPercent, passed: $passed, dueAt: $dueAt, attempts: $attempts)';
+  return 'TestAssignmentDto(id: $id, organization: $organization, template: $template, status: $status, attemptsUsed: $attemptsUsed, bestPercent: $bestPercent, passed: $passed, dueAt: $dueAt, attempts: $attempts, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -1124,7 +1138,7 @@ abstract mixin class _$TestAssignmentDtoCopyWith<$Res> implements $TestAssignmen
   factory _$TestAssignmentDtoCopyWith(_TestAssignmentDto value, $Res Function(_TestAssignmentDto) _then) = __$TestAssignmentDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, TestOrganizationBriefDto organization, TestTemplateBriefDto template, String status, int attemptsUsed, int? bestPercent, bool passed, DateTime? dueAt, List<TestAssignmentAttemptBriefDto>? attempts
+ String id, TestOrganizationBriefDto organization, TestTemplateBriefDto template, String status, int attemptsUsed, int? bestPercent, bool passed, DateTime? dueAt, List<TestAssignmentAttemptBriefDto>? attempts, String? organizationTimezone
 });
 
 
@@ -1141,7 +1155,7 @@ class __$TestAssignmentDtoCopyWithImpl<$Res>
 
 /// Create a copy of TestAssignmentDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? organization = null,Object? template = null,Object? status = null,Object? attemptsUsed = null,Object? bestPercent = freezed,Object? passed = null,Object? dueAt = freezed,Object? attempts = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? organization = null,Object? template = null,Object? status = null,Object? attemptsUsed = null,Object? bestPercent = freezed,Object? passed = null,Object? dueAt = freezed,Object? attempts = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_TestAssignmentDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,organization: null == organization ? _self.organization : organization // ignore: cast_nullable_to_non_nullable
@@ -1152,7 +1166,8 @@ as int,bestPercent: freezed == bestPercent ? _self.bestPercent : bestPercent // 
 as int?,passed: null == passed ? _self.passed : passed // ignore: cast_nullable_to_non_nullable
 as bool,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,attempts: freezed == attempts ? _self._attempts : attempts // ignore: cast_nullable_to_non_nullable
-as List<TestAssignmentAttemptBriefDto>?,
+as List<TestAssignmentAttemptBriefDto>?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

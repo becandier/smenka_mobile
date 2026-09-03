@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -45,38 +45,59 @@ class _OrgShiftsView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.orgShiftsTitle), centerTitle: true),
-      body: Column(
-        children: [
-          const _OrgShiftsFilters(),
-          Expanded(
-            child:
-                PaginatedSectionDataList<OrgShiftsCubit, OrgShiftsState, Shift>(
-                  selector: (state) => state.shifts,
-                  itemBuilder: (context, shift, index) => _OrgShiftCard(
-                    shift: shift,
-                    onTap: () => context.router.push(
-                      OrgShiftDetailRoute(orgId: orgId, shiftId: shift.id),
+      body: BlocBuilder<OrgShiftsCubit, OrgShiftsState>(
+        // Карточки читают только зону организации: пагинация/фильтры не
+        // должны пересоздавать список лишний раз.
+        buildWhen: (prev, curr) =>
+            prev.organizationTimezone != curr.organizationTimezone,
+        builder: (context, state) {
+          return Column(
+            children: [
+              const _OrgShiftsFilters(),
+              Expanded(
+                child:
+                    PaginatedSectionDataList<
+                      OrgShiftsCubit,
+                      OrgShiftsState,
+                      Shift
+                    >(
+                      selector: (state) => state.shifts,
+                      itemBuilder: (context, shift, index) => _OrgShiftCard(
+                        shift: shift,
+                        // Своя таймзона смены (уже в первом ответе списка)
+                        // приоритетнее зоны экрана — та лишь rolling-deploy
+                        // фолбэк, пока `organizationTimezone` не подгрузится
+                        // отдельным запросом (`OrgShiftsCubit`).
+                        timeContext: shift.timeContext(
+                          scopedOrganizationTimezone:
+                              state.organizationTimezone,
+                        ),
+                        onTap: () => context.router.push(
+                          OrgShiftDetailRoute(orgId: orgId, shiftId: shift.id),
+                        ),
+                      ),
+                      onLoadMore: () => context
+                          .read<OrgShiftsCubit>()
+                          .loadShifts(isRefresh: false),
+                      onRefresh: () =>
+                          context.read<OrgShiftsCubit>().loadShifts(),
+                      emptyBuilder: () {
+                        final state = context.read<OrgShiftsCubit>().state;
+                        final title = state.hasDateFilter
+                            ? l10n.shiftsEmptyForRange
+                            : state.hasEmployeeFilter
+                            ? l10n.orgShiftsEmptyForEmployee
+                            : l10n.orgShiftsEmpty;
+                        return AppEmptyState(
+                          icon: Icons.work_history_outlined,
+                          title: title,
+                        );
+                      },
                     ),
-                  ),
-                  onLoadMore: () => context.read<OrgShiftsCubit>().loadShifts(
-                    isRefresh: false,
-                  ),
-                  onRefresh: () => context.read<OrgShiftsCubit>().loadShifts(),
-                  emptyBuilder: () {
-                    final state = context.read<OrgShiftsCubit>().state;
-                    final title = state.hasDateFilter
-                        ? l10n.shiftsEmptyForRange
-                        : state.hasEmployeeFilter
-                        ? l10n.orgShiftsEmptyForEmployee
-                        : l10n.orgShiftsEmpty;
-                    return AppEmptyState(
-                      icon: Icons.work_history_outlined,
-                      title: title,
-                    );
-                  },
-                ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

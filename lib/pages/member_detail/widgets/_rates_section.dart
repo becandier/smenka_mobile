@@ -26,6 +26,11 @@ class _RatesSectionState extends State<_RatesSection> {
     final l10n = context.l10n;
     final colors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
+    // Ставки — бизнес-события организации участника, не `MemberRatesCubit`
+    // (не грузит `Organization` сам — кубиты независимы, см. mobile.md).
+    final timeContext = context.select<MemberDetailCubit, AppTimeContext>(
+      (cubit) => cubit.state.timeContext,
+    );
 
     return Material(
       color: colors.surface,
@@ -54,7 +59,10 @@ class _RatesSectionState extends State<_RatesSection> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _CurrentRateBlock(current: current),
+                    _CurrentRateBlock(
+                      current: current,
+                      timeContext: timeContext,
+                    ),
                     const SizedBox(height: 12),
                     if (rates.isEmpty)
                       Padding(
@@ -68,7 +76,11 @@ class _RatesSectionState extends State<_RatesSection> {
                       )
                     else
                       for (final rate in rates)
-                        _RateRow(rate: rate, isCurrent: rate.id == current?.id),
+                        _RateRow(
+                          rate: rate,
+                          isCurrent: rate.id == current?.id,
+                          timeContext: timeContext,
+                        ),
                   ],
                 );
               },
@@ -83,9 +95,10 @@ class _RatesSectionState extends State<_RatesSection> {
 /// Блок «Текущая ставка»: действующая на «сейчас» запись истории
 /// либо «Ставка не задана» (в т.ч. когда все ставки начинаются в будущем).
 class _CurrentRateBlock extends StatelessWidget {
-  const _CurrentRateBlock({required this.current});
+  const _CurrentRateBlock({required this.current, required this.timeContext});
 
   final Rate? current;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +113,7 @@ class _CurrentRateBlock extends StatelessWidget {
           ? l10n.payrollRateHourly
           : l10n.payrollRatePerShift;
       final since = l10n.payrollRateEffectiveFrom(
-        DateFormat('dd.MM.yyyy').format(rate.effectiveFrom.toLocal()),
+        const AppTime().formatDate(rate.effectiveFrom, timeContext),
       );
       rateLabel = '${formatMoneyMinor(rate.rateAmountMinor)} $type · $since';
     }
@@ -129,10 +142,15 @@ class _CurrentRateBlock extends StatelessWidget {
 }
 
 class _RateRow extends StatelessWidget {
-  const _RateRow({required this.rate, required this.isCurrent});
+  const _RateRow({
+    required this.rate,
+    required this.isCurrent,
+    required this.timeContext,
+  });
 
   final Rate rate;
   final bool isCurrent;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
@@ -191,9 +209,7 @@ class _RateRow extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   l10n.payrollRateEffectiveFrom(
-                    DateFormat(
-                      'dd.MM.yyyy',
-                    ).format(rate.effectiveFrom.toLocal()),
+                    const AppTime().formatDate(rate.effectiveFrom, timeContext),
                   ),
                   style: textTheme.bodySmall?.copyWith(color: colors.secondary),
                 ),

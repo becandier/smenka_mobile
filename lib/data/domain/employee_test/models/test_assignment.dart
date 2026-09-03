@@ -65,6 +65,12 @@ abstract class TestAssignmentAttemptBrief with _$TestAssignmentAttemptBrief {
 /// [attempts] — `null`, когда назначение пришло из списка (`GET
 /// /my/test-assignments`, без истории попыток); заполняется при загрузке
 /// деталей (`GET /my/test-assignments/{id}`).
+///
+/// [organizationTimezone] — аддитивный nullable backend-контракт
+/// (`23dc2e3`): `/my/*` не scoped по `{org_id}` и смешивает назначения
+/// сотрудника по нескольким организациям, поэтому зона указывается на
+/// каждом элементе явно. Основной источник контекста представления —
+/// см. `TestAssignmentTimeContext.timeContext`.
 @freezed
 abstract class TestAssignment with _$TestAssignment {
   const factory TestAssignment({
@@ -78,5 +84,6 @@ abstract class TestAssignment with _$TestAssignment {
     int? bestPercent,
     DateTime? dueAt,
     List<TestAssignmentAttemptBrief>? attempts,
+    String? organizationTimezone,
   }) = _TestAssignment;
 }

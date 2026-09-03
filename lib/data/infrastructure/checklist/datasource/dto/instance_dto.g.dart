@@ -71,6 +71,7 @@ _ChecklistInstanceDetailDto _$ChecklistInstanceDetailDtoFromJson(
       ? null
       : DateTime.parse(json['completed_at'] as String),
   maxPhotosPerItem: (json['max_photos_per_item'] as num?)?.toInt(),
+  organizationTimezone: json['organization_timezone'] as String?,
 );
 
 Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
@@ -85,6 +86,7 @@ Map<String, dynamic> _$ChecklistInstanceDetailDtoToJson(
   'items': instance.items,
   'completed_at': instance.completedAt?.toIso8601String(),
   'max_photos_per_item': instance.maxPhotosPerItem,
+  'organization_timezone': instance.organizationTimezone,
 };
 
 _ChecklistInstanceItemDto _$ChecklistInstanceItemDtoFromJson(

@@ -1,9 +1,22 @@
 part of '../view/org_shifts_page.dart';
 
 class _OrgShiftCard extends StatelessWidget {
-  const _OrgShiftCard({required this.shift, required this.onTap});
+  const _OrgShiftCard({
+    required this.shift,
+    required this.timeContext,
+    required this.onTap,
+  });
 
   final Shift shift;
+
+  /// Контекст представления начала смены. Собирается вызывающей стороной
+  /// (`org_shifts_page.dart`) через `shift.timeContext(...)` со
+  /// `scopedOrganizationTimezone: state.organizationTimezone` —
+  /// собственная таймзона смены (уже корректна из первого же ответа
+  /// списка) приоритетнее зоны экрана (`OrgShiftsState.timeContext`),
+  /// которая остаётся лишь rolling-deploy фолбэком (`5103b3e`).
+  final AppTimeContext timeContext;
+
   final VoidCallback onTap;
 
   @override
@@ -11,9 +24,10 @@ class _OrgShiftCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = context.appColors;
 
-    final dateFormatted = DateFormat(
-      'dd.MM.yyyy, HH:mm',
-    ).format(shift.startedAt);
+    final dateFormatted = const AppTime().formatDateTime(
+      shift.startedAt,
+      timeContext,
+    );
     final duration = _formatDuration(context, shift.workedSeconds);
     final statusLabel = _statusLabel(context, shift.status);
     final statusColor = _statusColor(context, shift.status);

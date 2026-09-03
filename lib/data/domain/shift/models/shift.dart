@@ -33,6 +33,15 @@ abstract class Shift with _$Shift {
     required List<Pause> pauses,
     required int workedSeconds,
     String? organizationId,
+
+    /// IANA-таймзона организации на момент ответа (`Organization.timezone`,
+    /// additive, backend `553a235`). `null` для персональной смены и для
+    /// старого бэка без поля (rolling deploy) — в этом случае настенное
+    /// время строится через `AppTimeContext.device()` либо через уже
+    /// загруженную `Organization.timezone`, если экран её знает
+    /// (`shift.organizationTimezone ?? loadedOrganization.timezone`).
+    /// Никогда не подставляется дефолтная зона на этом уровне.
+    String? organizationTimezone,
     DateTime? finishedAt,
     @Default(false) bool hasIncompleteRequiredChecklists,
 

@@ -77,9 +77,10 @@ String? _scheduleWindowReason(BuildContext context, ShiftTrackerState state) {
   final l10n = context.l10n;
   final timezone = state.selectedOrganization?.timezone ?? 'Europe/Moscow';
   final earliestStart = source.earliestStartAt(state.earlyStartMinutes);
-  final timeLabel = DateFormat(
-    'HH:mm',
-  ).format(toOrgLocal(earliestStart, timezone));
+  final timeLabel = const AppTime().formatTime(
+    earliestStart,
+    AppTimeContext.organization(timezone),
+  );
 
   if (orgLocalDayDiff(earliestStart, timezone) == 0) {
     return l10n.workScheduleAvailableFrom(timeLabel);

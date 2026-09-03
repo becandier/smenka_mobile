@@ -18,14 +18,24 @@ class _OrgShiftsFilters extends StatelessWidget {
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final cubit = context.read<OrgShiftsCubit>();
+    final timeContext = cubit.state.timeContext;
+    final filterDateFrom = cubit.state.filterDateFrom;
+    final filterDateTo = cubit.state.filterDateTo;
     final result = await context.router.push<DateRangePickerResult?>(
       DateRangePickerRoute(
-        initialFrom: cubit.state.filterDateFrom?.toLocal(),
-        initialTo: cubit.state.filterDateTo?.toLocal(),
+        initialFrom: filterDateFrom == null
+            ? null
+            : appTimeCalendarDay(filterDateFrom, timeContext),
+        initialTo: filterDateTo == null
+            ? null
+            : appTimeCalendarDay(filterDateTo, timeContext),
       ),
     );
     if (result != null) {
-      cubit.setDateRange(result.fromUtc, result.toUtc);
+      cubit.setDateRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -61,6 +71,7 @@ class _OrgShiftsFilters extends StatelessWidget {
                   from: state.filterDateFrom,
                   to: state.filterDateTo,
                   label: l10n.dateRangeFilterTitle,
+                  timeContext: state.timeContext,
                   onTap: () => _openDateRangePicker(context),
                   onClear: () => cubit.setDateRange(null, null),
                 ),

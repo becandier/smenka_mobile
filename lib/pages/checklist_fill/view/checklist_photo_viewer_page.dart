@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
 import 'package:smenka_mobile/widgets/_widgets.dart';
@@ -20,6 +20,7 @@ class ChecklistPhotoViewerPage extends StatefulWidget {
     required this.photos,
     required this.initialIndex,
     required this.isAddedSemantics,
+    required this.timeContext,
     this.onDeletePhoto,
     super.key,
   });
@@ -27,6 +28,10 @@ class ChecklistPhotoViewerPage extends StatefulWidget {
   final List<ChecklistItemPhoto> photos;
   final int initialIndex;
   final bool isAddedSemantics;
+
+  /// Контекст представления `captured_at` — таймзона организации чек-листа
+  /// (`ChecklistInstanceDetail.timeContext`) либо устройство.
+  final AppTimeContext timeContext;
 
   /// Удаляет фото и возвращает `true` при успехе. `null` на чужой/завершённой
   /// смене (удаление недоступно).
@@ -38,8 +43,6 @@ class ChecklistPhotoViewerPage extends StatefulWidget {
 }
 
 class _ChecklistPhotoViewerPageState extends State<ChecklistPhotoViewerPage> {
-  static final DateFormat _format = DateFormat('dd.MM.yyyy HH:mm');
-
   late final List<ChecklistItemPhoto> _photos = [...widget.photos];
   late final PageController _pageController;
   late int _index;
@@ -155,7 +158,7 @@ class _ChecklistPhotoViewerPageState extends State<ChecklistPhotoViewerPage> {
             child: _Caption(
               photo: _photos[_index],
               isAddedSemantics: widget.isAddedSemantics,
-              formatter: _format,
+              timeContext: widget.timeContext,
             ),
           ),
         ],
@@ -168,12 +171,12 @@ class _Caption extends StatelessWidget {
   const _Caption({
     required this.photo,
     required this.isAddedSemantics,
-    required this.formatter,
+    required this.timeContext,
   });
 
   final ChecklistItemPhoto photo;
   final bool isAddedSemantics;
-  final DateFormat formatter;
+  final AppTimeContext timeContext;
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +191,7 @@ class _Caption extends StatelessWidget {
 
     final dt = capturedAt == null
         ? null
-        : formatter.format(capturedAt.toLocal());
+        : const AppTime().formatDateTime(capturedAt, timeContext);
 
     return SafeArea(
       top: false,

@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/employee_test/_employee_test.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
@@ -45,43 +45,51 @@ class _MyTestsView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.myTestsTitle), centerTitle: true),
-      body: Column(
-        children: [
-          const _OrgFilterRow(),
-          Expanded(
-            child:
-                PaginatedSectionDataList<
-                  MyTestsCubit,
-                  MyTestsState,
-                  TestAssignment
-                >(
-                  selector: (state) => state.assignments,
-                  itemBuilder: (context, assignment, index) => _MyTestCard(
-                    assignment: assignment,
-                    onTap: () async {
-                      final cubit = context.read<MyTestsCubit>();
-                      // Экран прохождения может показать «Тест больше не
-                      // назначен» (снятие/удаление за время просмотра) —
-                      // после возврата список должен сам обновиться, а не
-                      // ждать ручного pull-to-refresh.
-                      await context.router.root.push(
-                        TestAttemptRoute(assignmentId: assignment.id),
-                      );
-                      unawaited(cubit.loadAssignments());
-                    },
-                  ),
-                  onLoadMore: () => context
-                      .read<MyTestsCubit>()
-                      .loadAssignments(isRefresh: false),
-                  onRefresh: () =>
-                      context.read<MyTestsCubit>().loadAssignments(),
-                  emptyBuilder: () => AppEmptyState(
-                    icon: Icons.fact_check_outlined,
-                    title: l10n.myTestsEmpty,
-                  ),
-                ),
-          ),
-        ],
+      body: BlocBuilder<MyTestsCubit, MyTestsState>(
+        // Карточки читают только список организаций (контекст таймзоны) —
+        // пагинация и фильтр не должны пересоздавать список лишний раз.
+        buildWhen: (prev, curr) => prev.organizations != curr.organizations,
+        builder: (context, contextState) {
+          return Column(
+            children: [
+              const _OrgFilterRow(),
+              Expanded(
+                child:
+                    PaginatedSectionDataList<
+                      MyTestsCubit,
+                      MyTestsState,
+                      TestAssignment
+                    >(
+                      selector: (state) => state.assignments,
+                      itemBuilder: (context, assignment, index) => _MyTestCard(
+                        assignment: assignment,
+                        timeContext: contextState.timeContextFor(assignment),
+                        onTap: () async {
+                          final cubit = context.read<MyTestsCubit>();
+                          // Экран прохождения может показать «Тест больше не
+                          // назначен» (снятие/удаление за время просмотра) —
+                          // после возврата список должен сам обновиться, а не
+                          // ждать ручного pull-to-refresh.
+                          await context.router.root.push(
+                            TestAttemptRoute(assignmentId: assignment.id),
+                          );
+                          unawaited(cubit.loadAssignments());
+                        },
+                      ),
+                      onLoadMore: () => context
+                          .read<MyTestsCubit>()
+                          .loadAssignments(isRefresh: false),
+                      onRefresh: () =>
+                          context.read<MyTestsCubit>().loadAssignments(),
+                      emptyBuilder: () => AppEmptyState(
+                        icon: Icons.fact_check_outlined,
+                        title: l10n.myTestsEmpty,
+                      ),
+                    ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

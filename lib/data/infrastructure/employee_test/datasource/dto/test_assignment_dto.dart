@@ -70,6 +70,14 @@ abstract class TestAssignmentDto with _$TestAssignmentDto {
     @Default(false) bool passed,
     DateTime? dueAt,
     List<TestAssignmentAttemptBriefDto>? attempts,
+
+    /// Аддитивное nullable поле (`MyTestAssignmentOut.organization_timezone`,
+    /// backend `23dc2e3`) — та же форма используется и списком, и деталью
+    /// назначения (`GET /my/test-assignments`/`/{id}`). `/my/*` не scoped
+    /// по `{org_id}`, поэтому зона нужна на каждом элементе явно, а не
+    /// угадывается клиентом по уже загрученному списку организаций
+    /// (см. `TestAssignmentTimeContext.timeContext`).
+    String? organizationTimezone,
   }) = _TestAssignmentDto;
 
   factory TestAssignmentDto.fromJson(Map<String, dynamic> json) =>

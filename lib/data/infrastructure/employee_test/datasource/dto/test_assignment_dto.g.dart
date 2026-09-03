@@ -88,6 +88,7 @@ _TestAssignmentDto _$TestAssignmentDtoFromJson(Map<String, dynamic> json) =>
             ),
           )
           .toList(),
+      organizationTimezone: json['organization_timezone'] as String?,
     );
 
 Map<String, dynamic> _$TestAssignmentDtoToJson(_TestAssignmentDto instance) =>
@@ -101,6 +102,7 @@ Map<String, dynamic> _$TestAssignmentDtoToJson(_TestAssignmentDto instance) =>
       'passed': instance.passed,
       'due_at': instance.dueAt?.toIso8601String(),
       'attempts': instance.attempts?.map((e) => e.toJson()).toList(),
+      'organization_timezone': instance.organizationTimezone,
     };
 
 _PaginatedTestAssignmentsDto _$PaginatedTestAssignmentsDtoFromJson(

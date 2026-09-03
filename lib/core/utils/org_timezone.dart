@@ -49,6 +49,67 @@ int orgLocalDayDiff(DateTime targetUtc, String timezoneName) {
   return targetDate.difference(nowDate).inDays;
 }
 
+/// UTC-границы `[fromUtc, toUtc)` календарных суток [calendarDay]
+/// (используются только `year`/`month`/`day`) в таймзоне [timezoneName].
+///
+/// Строится через настенную полночь начала и следующих суток в IANA-зоне,
+/// а не прибавлением фиксированных 24 часов — в дни перехода DST сутки
+/// короче (23ч) или длиннее (25ч), см. `lib/core/time/app_time.dart`,
+/// единственный вызывающий этот helper.
+///
+/// Невалидное имя зоны — тот же безопасный fallback, что и в [toOrgLocal]:
+/// без падения, границы строятся как обычные UTC-сутки.
+({DateTime fromUtc, DateTime toUtc}) orgUtcDayBounds(
+  DateTime calendarDay,
+  String timezoneName,
+) {
+  _ensureInitialized();
+  try {
+    final location = tz.getLocation(timezoneName);
+    final start = tz.TZDateTime(
+      location,
+      calendarDay.year,
+      calendarDay.month,
+      calendarDay.day,
+    );
+    final end = tz.TZDateTime(
+      location,
+      calendarDay.year,
+      calendarDay.month,
+      calendarDay.day + 1,
+    );
+    return (fromUtc: start.toUtc(), toUtc: end.toUtc());
+  } on Object {
+    final start = DateTime.utc(
+      calendarDay.year,
+      calendarDay.month,
+      calendarDay.day,
+    );
+    return (fromUtc: start, toUtc: start.add(const Duration(days: 1)));
+  }
+}
+
+/// `true`, если [timezoneName] — известное IANA-имя в загруженной базе
+/// (`latest_10y`).
+///
+/// [toOrgLocal]/[orgUtcDayBounds] намеренно не падают на невалидном имени —
+/// они тихо откатываются на UTC, что безопасно как самостоятельное
+/// поведение, но опасно как единственная проверка выше по цепочке вызовов:
+/// код, который выбирает между self-contained backend-полем и валидным
+/// scoped-фолбэком (`ShiftTimeContext.timeContext`,
+/// `TestAssignmentTimeContext.timeContext`), должен уметь отличить
+/// «невалидное имя» от «валидное имя», чтобы не потерять достижимый
+/// scoped-фолбэк за молчаливым откатом на UTC.
+bool isValidTimeZone(String timezoneName) {
+  _ensureInitialized();
+  try {
+    tz.getLocation(timezoneName);
+    return true;
+  } on Object {
+    return false;
+  }
+}
+
 bool _initialized = false;
 
 void _ensureInitialized() {

@@ -18,7 +18,9 @@ class _ManualNoticeSection extends StatelessWidget {
 
     final notice = shift.isManual
         ? l10n.shiftManualAddedNotice
-        : l10n.shiftManualEditedNotice(_formatDateTime(shift.editedAt));
+        : l10n.shiftManualEditedNotice(
+            _formatDateTime(shift.editedAt, shift.timeContext()),
+          );
 
     return Material(
       color: colors.info.withValues(alpha: 0.08),
@@ -60,6 +62,6 @@ class _ManualNoticeSection extends StatelessWidget {
 
   /// [DateTime?] здесь всегда non-null при вызове (виден только когда
   /// `isEdited`), но тип поля nullable — обрабатываем явно, без `!`.
-  String _formatDateTime(DateTime? dt) =>
-      dt == null ? '' : DateFormat('dd.MM.yyyy, HH:mm').format(dt.toLocal());
+  String _formatDateTime(DateTime? dt, AppTimeContext timeContext) =>
+      dt == null ? '' : const AppTime().formatDateTime(dt, timeContext);
 }

@@ -2,11 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:smenka_mobile/core/models/period_preset.dart';
 import 'package:smenka_mobile/core/network/task.dart';
+import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
+import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/payroll/models/_models.dart';
 import 'package:smenka_mobile/data/domain/payroll/repositories/payroll_repository.dart';
 import 'package:smenka_mobile/pages/my_earnings/cubit/my_earnings_cubit.dart';
 
 class _MockPayrollRepository extends Mock implements PayrollRepository {}
+
+class _MockOrganizationRepository extends Mock
+    implements OrganizationRepository {}
 
 const _earnings = MyEarnings(
   period: PayrollPeriod(),
@@ -18,11 +23,22 @@ const _earnings = MyEarnings(
   netAmountMinor: 100000,
 );
 
+Organization _org() => Organization(
+  id: 'org1',
+  name: 'Org 1',
+  ownerId: 'owner1',
+  inviteCode: 'INV12345',
+  isDeleted: false,
+  createdAt: DateTime.utc(2026),
+);
+
 void main() {
   late _MockPayrollRepository payrollRepo;
+  late _MockOrganizationRepository orgRepo;
 
   setUp(() {
     payrollRepo = _MockPayrollRepository();
+    orgRepo = _MockOrganizationRepository();
     when(
       () => payrollRepo.getMyEarnings(
         any(),
@@ -30,6 +46,9 @@ void main() {
         dateTo: any(named: 'dateTo'),
       ),
     ).thenAnswer((_) async => const Task<MyEarnings>.success(_earnings));
+    when(
+      () => orgRepo.getById(any()),
+    ).thenAnswer((_) async => Task<Organization>.success(_org()));
   });
 
   group('без границ периода (открыт обычным путём) — работает как раньше', () {
@@ -37,6 +56,7 @@ void main() {
       final cubit = MyEarningsCubit(
         orgId: 'org1',
         payrollRepository: payrollRepo,
+        organizationRepository: orgRepo,
       );
 
       expect(cubit.state.preset, PeriodPreset.month);
@@ -47,7 +67,11 @@ void main() {
 
     test('первый запрос уходит с границами пресета «месяц», а не '
         'переданными датами', () async {
-      MyEarningsCubit(orgId: 'org1', payrollRepository: payrollRepo);
+      MyEarningsCubit(
+        orgId: 'org1',
+        payrollRepository: payrollRepo,
+        organizationRepository: orgRepo,
+      );
       await pumpEventQueue();
 
       final captured = verify(
@@ -72,6 +96,7 @@ void main() {
       final cubit = MyEarningsCubit(
         orgId: 'org1',
         payrollRepository: payrollRepo,
+        organizationRepository: orgRepo,
         initialDateFrom: historyFrom,
         initialDateTo: historyTo,
       );
@@ -87,6 +112,7 @@ void main() {
       MyEarningsCubit(
         orgId: 'org1',
         payrollRepository: payrollRepo,
+        organizationRepository: orgRepo,
         initialDateFrom: historyFrom,
         initialDateTo: historyTo,
       );
@@ -106,6 +132,7 @@ void main() {
       final cubit = MyEarningsCubit(
         orgId: 'org1',
         payrollRepository: payrollRepo,
+        organizationRepository: orgRepo,
         initialDateFrom: historyFrom,
         initialDateTo: historyTo,
       );

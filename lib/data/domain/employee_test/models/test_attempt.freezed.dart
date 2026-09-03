@@ -568,7 +568,9 @@ as int?,
 /// @nodoc
 mixin _$TestAttemptFill {
 
- String get id; DateTime get startedAt; List<TestAttemptQuestion> get questions;
+ String get id; DateTime get startedAt; List<TestAttemptQuestion> get questions;/// Аддитивный nullable backend-контракт (`TestAttemptForFill`, `ce32b62`)
+/// — `/my/*` не scoped по `{org_id}`, зона указывается на попытке явно.
+ String? get organizationTimezone;
 /// Create a copy of TestAttemptFill
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -579,16 +581,16 @@ $TestAttemptFillCopyWith<TestAttemptFill> get copyWith => _$TestAttemptFillCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAttemptFill&&(identical(other.id, id) || other.id == id)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other.questions, questions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAttemptFill&&(identical(other.id, id) || other.id == id)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other.questions, questions)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,startedAt,const DeepCollectionEquality().hash(questions));
+int get hashCode => Object.hash(runtimeType,id,startedAt,const DeepCollectionEquality().hash(questions),organizationTimezone);
 
 @override
 String toString() {
-  return 'TestAttemptFill(id: $id, startedAt: $startedAt, questions: $questions)';
+  return 'TestAttemptFill(id: $id, startedAt: $startedAt, questions: $questions, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -599,7 +601,7 @@ abstract mixin class $TestAttemptFillCopyWith<$Res>  {
   factory $TestAttemptFillCopyWith(TestAttemptFill value, $Res Function(TestAttemptFill) _then) = _$TestAttemptFillCopyWithImpl;
 @useResult
 $Res call({
- String id, DateTime startedAt, List<TestAttemptQuestion> questions
+ String id, DateTime startedAt, List<TestAttemptQuestion> questions, String? organizationTimezone
 });
 
 
@@ -616,12 +618,13 @@ class _$TestAttemptFillCopyWithImpl<$Res>
 
 /// Create a copy of TestAttemptFill
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? startedAt = null,Object? questions = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? startedAt = null,Object? questions = null,Object? organizationTimezone = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,startedAt: null == startedAt ? _self.startedAt : startedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,questions: null == questions ? _self.questions : questions // ignore: cast_nullable_to_non_nullable
-as List<TestAttemptQuestion>,
+as List<TestAttemptQuestion>,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -706,10 +709,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  DateTime startedAt,  List<TestAttemptQuestion> questions)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  DateTime startedAt,  List<TestAttemptQuestion> questions,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TestAttemptFill() when $default != null:
-return $default(_that.id,_that.startedAt,_that.questions);case _:
+return $default(_that.id,_that.startedAt,_that.questions,_that.organizationTimezone);case _:
   return orElse();
 
 }
@@ -727,10 +730,10 @@ return $default(_that.id,_that.startedAt,_that.questions);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  DateTime startedAt,  List<TestAttemptQuestion> questions)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  DateTime startedAt,  List<TestAttemptQuestion> questions,  String? organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptFill():
-return $default(_that.id,_that.startedAt,_that.questions);case _:
+return $default(_that.id,_that.startedAt,_that.questions,_that.organizationTimezone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -747,10 +750,10 @@ return $default(_that.id,_that.startedAt,_that.questions);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  DateTime startedAt,  List<TestAttemptQuestion> questions)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  DateTime startedAt,  List<TestAttemptQuestion> questions,  String? organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptFill() when $default != null:
-return $default(_that.id,_that.startedAt,_that.questions);case _:
+return $default(_that.id,_that.startedAt,_that.questions,_that.organizationTimezone);case _:
   return null;
 
 }
@@ -762,7 +765,7 @@ return $default(_that.id,_that.startedAt,_that.questions);case _:
 
 
 class _TestAttemptFill implements TestAttemptFill {
-  const _TestAttemptFill({required this.id, required this.startedAt, required final  List<TestAttemptQuestion> questions}): _questions = questions;
+  const _TestAttemptFill({required this.id, required this.startedAt, required final  List<TestAttemptQuestion> questions, this.organizationTimezone}): _questions = questions;
   
 
 @override final  String id;
@@ -774,6 +777,9 @@ class _TestAttemptFill implements TestAttemptFill {
   return EqualUnmodifiableListView(_questions);
 }
 
+/// Аддитивный nullable backend-контракт (`TestAttemptForFill`, `ce32b62`)
+/// — `/my/*` не scoped по `{org_id}`, зона указывается на попытке явно.
+@override final  String? organizationTimezone;
 
 /// Create a copy of TestAttemptFill
 /// with the given fields replaced by the non-null parameter values.
@@ -785,16 +791,16 @@ _$TestAttemptFillCopyWith<_TestAttemptFill> get copyWith => __$TestAttemptFillCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAttemptFill&&(identical(other.id, id) || other.id == id)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other._questions, _questions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAttemptFill&&(identical(other.id, id) || other.id == id)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,startedAt,const DeepCollectionEquality().hash(_questions));
+int get hashCode => Object.hash(runtimeType,id,startedAt,const DeepCollectionEquality().hash(_questions),organizationTimezone);
 
 @override
 String toString() {
-  return 'TestAttemptFill(id: $id, startedAt: $startedAt, questions: $questions)';
+  return 'TestAttemptFill(id: $id, startedAt: $startedAt, questions: $questions, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -805,7 +811,7 @@ abstract mixin class _$TestAttemptFillCopyWith<$Res> implements $TestAttemptFill
   factory _$TestAttemptFillCopyWith(_TestAttemptFill value, $Res Function(_TestAttemptFill) _then) = __$TestAttemptFillCopyWithImpl;
 @override @useResult
 $Res call({
- String id, DateTime startedAt, List<TestAttemptQuestion> questions
+ String id, DateTime startedAt, List<TestAttemptQuestion> questions, String? organizationTimezone
 });
 
 
@@ -822,12 +828,13 @@ class __$TestAttemptFillCopyWithImpl<$Res>
 
 /// Create a copy of TestAttemptFill
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? startedAt = null,Object? questions = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? startedAt = null,Object? questions = null,Object? organizationTimezone = freezed,}) {
   return _then(_TestAttemptFill(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,startedAt: null == startedAt ? _self.startedAt : startedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
-as List<TestAttemptQuestion>,
+as List<TestAttemptQuestion>,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -837,7 +844,9 @@ as List<TestAttemptQuestion>,
 /// @nodoc
 mixin _$TestAttemptDetail {
 
- String get id; int get attemptNumber; TestAttemptStatus get status; int get maxScore; int get passThresholdPercent; DateTime get startedAt; List<TestAttemptQuestion> get questions; int? get score; int? get percent; bool? get passed; DateTime? get submittedAt;
+ String get id; int get attemptNumber; TestAttemptStatus get status; int get maxScore; int get passThresholdPercent; DateTime get startedAt; List<TestAttemptQuestion> get questions; int? get score; int? get percent; bool? get passed; DateTime? get submittedAt;/// Аддитивный nullable backend-контракт (`MyAttemptDetail`, `23dc2e3`)
+/// — `/my/*` не scoped по `{org_id}`, зона указывается на попытке явно.
+ String? get organizationTimezone;
 /// Create a copy of TestAttemptDetail
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -848,16 +857,16 @@ $TestAttemptDetailCopyWith<TestAttemptDetail> get copyWith => _$TestAttemptDetai
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAttemptDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptNumber, attemptNumber) || other.attemptNumber == attemptNumber)&&(identical(other.status, status) || other.status == status)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.passThresholdPercent, passThresholdPercent) || other.passThresholdPercent == passThresholdPercent)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other.questions, questions)&&(identical(other.score, score) || other.score == score)&&(identical(other.percent, percent) || other.percent == percent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.submittedAt, submittedAt) || other.submittedAt == submittedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TestAttemptDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptNumber, attemptNumber) || other.attemptNumber == attemptNumber)&&(identical(other.status, status) || other.status == status)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.passThresholdPercent, passThresholdPercent) || other.passThresholdPercent == passThresholdPercent)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other.questions, questions)&&(identical(other.score, score) || other.score == score)&&(identical(other.percent, percent) || other.percent == percent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.submittedAt, submittedAt) || other.submittedAt == submittedAt)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,attemptNumber,status,maxScore,passThresholdPercent,startedAt,const DeepCollectionEquality().hash(questions),score,percent,passed,submittedAt);
+int get hashCode => Object.hash(runtimeType,id,attemptNumber,status,maxScore,passThresholdPercent,startedAt,const DeepCollectionEquality().hash(questions),score,percent,passed,submittedAt,organizationTimezone);
 
 @override
 String toString() {
-  return 'TestAttemptDetail(id: $id, attemptNumber: $attemptNumber, status: $status, maxScore: $maxScore, passThresholdPercent: $passThresholdPercent, startedAt: $startedAt, questions: $questions, score: $score, percent: $percent, passed: $passed, submittedAt: $submittedAt)';
+  return 'TestAttemptDetail(id: $id, attemptNumber: $attemptNumber, status: $status, maxScore: $maxScore, passThresholdPercent: $passThresholdPercent, startedAt: $startedAt, questions: $questions, score: $score, percent: $percent, passed: $passed, submittedAt: $submittedAt, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -868,7 +877,7 @@ abstract mixin class $TestAttemptDetailCopyWith<$Res>  {
   factory $TestAttemptDetailCopyWith(TestAttemptDetail value, $Res Function(TestAttemptDetail) _then) = _$TestAttemptDetailCopyWithImpl;
 @useResult
 $Res call({
- String id, int attemptNumber, TestAttemptStatus status, int maxScore, int passThresholdPercent, DateTime startedAt, List<TestAttemptQuestion> questions, int? score, int? percent, bool? passed, DateTime? submittedAt
+ String id, int attemptNumber, TestAttemptStatus status, int maxScore, int passThresholdPercent, DateTime startedAt, List<TestAttemptQuestion> questions, int? score, int? percent, bool? passed, DateTime? submittedAt, String? organizationTimezone
 });
 
 
@@ -885,7 +894,7 @@ class _$TestAttemptDetailCopyWithImpl<$Res>
 
 /// Create a copy of TestAttemptDetail
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? attemptNumber = null,Object? status = null,Object? maxScore = null,Object? passThresholdPercent = null,Object? startedAt = null,Object? questions = null,Object? score = freezed,Object? percent = freezed,Object? passed = freezed,Object? submittedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? attemptNumber = null,Object? status = null,Object? maxScore = null,Object? passThresholdPercent = null,Object? startedAt = null,Object? questions = null,Object? score = freezed,Object? percent = freezed,Object? passed = freezed,Object? submittedAt = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,attemptNumber: null == attemptNumber ? _self.attemptNumber : attemptNumber // ignore: cast_nullable_to_non_nullable
@@ -898,7 +907,8 @@ as List<TestAttemptQuestion>,score: freezed == score ? _self.score : score // ig
 as int?,percent: freezed == percent ? _self.percent : percent // ignore: cast_nullable_to_non_nullable
 as int?,passed: freezed == passed ? _self.passed : passed // ignore: cast_nullable_to_non_nullable
 as bool?,submittedAt: freezed == submittedAt ? _self.submittedAt : submittedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -983,10 +993,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int attemptNumber,  TestAttemptStatus status,  int maxScore,  int passThresholdPercent,  DateTime startedAt,  List<TestAttemptQuestion> questions,  int? score,  int? percent,  bool? passed,  DateTime? submittedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int attemptNumber,  TestAttemptStatus status,  int maxScore,  int passThresholdPercent,  DateTime startedAt,  List<TestAttemptQuestion> questions,  int? score,  int? percent,  bool? passed,  DateTime? submittedAt,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TestAttemptDetail() when $default != null:
-return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.passThresholdPercent,_that.startedAt,_that.questions,_that.score,_that.percent,_that.passed,_that.submittedAt);case _:
+return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.passThresholdPercent,_that.startedAt,_that.questions,_that.score,_that.percent,_that.passed,_that.submittedAt,_that.organizationTimezone);case _:
   return orElse();
 
 }
@@ -1004,10 +1014,10 @@ return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.p
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int attemptNumber,  TestAttemptStatus status,  int maxScore,  int passThresholdPercent,  DateTime startedAt,  List<TestAttemptQuestion> questions,  int? score,  int? percent,  bool? passed,  DateTime? submittedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int attemptNumber,  TestAttemptStatus status,  int maxScore,  int passThresholdPercent,  DateTime startedAt,  List<TestAttemptQuestion> questions,  int? score,  int? percent,  bool? passed,  DateTime? submittedAt,  String? organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptDetail():
-return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.passThresholdPercent,_that.startedAt,_that.questions,_that.score,_that.percent,_that.passed,_that.submittedAt);case _:
+return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.passThresholdPercent,_that.startedAt,_that.questions,_that.score,_that.percent,_that.passed,_that.submittedAt,_that.organizationTimezone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1024,10 +1034,10 @@ return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.p
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int attemptNumber,  TestAttemptStatus status,  int maxScore,  int passThresholdPercent,  DateTime startedAt,  List<TestAttemptQuestion> questions,  int? score,  int? percent,  bool? passed,  DateTime? submittedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int attemptNumber,  TestAttemptStatus status,  int maxScore,  int passThresholdPercent,  DateTime startedAt,  List<TestAttemptQuestion> questions,  int? score,  int? percent,  bool? passed,  DateTime? submittedAt,  String? organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _TestAttemptDetail() when $default != null:
-return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.passThresholdPercent,_that.startedAt,_that.questions,_that.score,_that.percent,_that.passed,_that.submittedAt);case _:
+return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.passThresholdPercent,_that.startedAt,_that.questions,_that.score,_that.percent,_that.passed,_that.submittedAt,_that.organizationTimezone);case _:
   return null;
 
 }
@@ -1039,7 +1049,7 @@ return $default(_that.id,_that.attemptNumber,_that.status,_that.maxScore,_that.p
 
 
 class _TestAttemptDetail extends TestAttemptDetail {
-  const _TestAttemptDetail({required this.id, required this.attemptNumber, required this.status, required this.maxScore, required this.passThresholdPercent, required this.startedAt, required final  List<TestAttemptQuestion> questions, this.score, this.percent, this.passed, this.submittedAt}): _questions = questions,super._();
+  const _TestAttemptDetail({required this.id, required this.attemptNumber, required this.status, required this.maxScore, required this.passThresholdPercent, required this.startedAt, required final  List<TestAttemptQuestion> questions, this.score, this.percent, this.passed, this.submittedAt, this.organizationTimezone}): _questions = questions,super._();
   
 
 @override final  String id;
@@ -1059,6 +1069,9 @@ class _TestAttemptDetail extends TestAttemptDetail {
 @override final  int? percent;
 @override final  bool? passed;
 @override final  DateTime? submittedAt;
+/// Аддитивный nullable backend-контракт (`MyAttemptDetail`, `23dc2e3`)
+/// — `/my/*` не scoped по `{org_id}`, зона указывается на попытке явно.
+@override final  String? organizationTimezone;
 
 /// Create a copy of TestAttemptDetail
 /// with the given fields replaced by the non-null parameter values.
@@ -1070,16 +1083,16 @@ _$TestAttemptDetailCopyWith<_TestAttemptDetail> get copyWith => __$TestAttemptDe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAttemptDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptNumber, attemptNumber) || other.attemptNumber == attemptNumber)&&(identical(other.status, status) || other.status == status)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.passThresholdPercent, passThresholdPercent) || other.passThresholdPercent == passThresholdPercent)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.score, score) || other.score == score)&&(identical(other.percent, percent) || other.percent == percent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.submittedAt, submittedAt) || other.submittedAt == submittedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TestAttemptDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptNumber, attemptNumber) || other.attemptNumber == attemptNumber)&&(identical(other.status, status) || other.status == status)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.passThresholdPercent, passThresholdPercent) || other.passThresholdPercent == passThresholdPercent)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.score, score) || other.score == score)&&(identical(other.percent, percent) || other.percent == percent)&&(identical(other.passed, passed) || other.passed == passed)&&(identical(other.submittedAt, submittedAt) || other.submittedAt == submittedAt)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,attemptNumber,status,maxScore,passThresholdPercent,startedAt,const DeepCollectionEquality().hash(_questions),score,percent,passed,submittedAt);
+int get hashCode => Object.hash(runtimeType,id,attemptNumber,status,maxScore,passThresholdPercent,startedAt,const DeepCollectionEquality().hash(_questions),score,percent,passed,submittedAt,organizationTimezone);
 
 @override
 String toString() {
-  return 'TestAttemptDetail(id: $id, attemptNumber: $attemptNumber, status: $status, maxScore: $maxScore, passThresholdPercent: $passThresholdPercent, startedAt: $startedAt, questions: $questions, score: $score, percent: $percent, passed: $passed, submittedAt: $submittedAt)';
+  return 'TestAttemptDetail(id: $id, attemptNumber: $attemptNumber, status: $status, maxScore: $maxScore, passThresholdPercent: $passThresholdPercent, startedAt: $startedAt, questions: $questions, score: $score, percent: $percent, passed: $passed, submittedAt: $submittedAt, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -1090,7 +1103,7 @@ abstract mixin class _$TestAttemptDetailCopyWith<$Res> implements $TestAttemptDe
   factory _$TestAttemptDetailCopyWith(_TestAttemptDetail value, $Res Function(_TestAttemptDetail) _then) = __$TestAttemptDetailCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int attemptNumber, TestAttemptStatus status, int maxScore, int passThresholdPercent, DateTime startedAt, List<TestAttemptQuestion> questions, int? score, int? percent, bool? passed, DateTime? submittedAt
+ String id, int attemptNumber, TestAttemptStatus status, int maxScore, int passThresholdPercent, DateTime startedAt, List<TestAttemptQuestion> questions, int? score, int? percent, bool? passed, DateTime? submittedAt, String? organizationTimezone
 });
 
 
@@ -1107,7 +1120,7 @@ class __$TestAttemptDetailCopyWithImpl<$Res>
 
 /// Create a copy of TestAttemptDetail
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? attemptNumber = null,Object? status = null,Object? maxScore = null,Object? passThresholdPercent = null,Object? startedAt = null,Object? questions = null,Object? score = freezed,Object? percent = freezed,Object? passed = freezed,Object? submittedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? attemptNumber = null,Object? status = null,Object? maxScore = null,Object? passThresholdPercent = null,Object? startedAt = null,Object? questions = null,Object? score = freezed,Object? percent = freezed,Object? passed = freezed,Object? submittedAt = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_TestAttemptDetail(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,attemptNumber: null == attemptNumber ? _self.attemptNumber : attemptNumber // ignore: cast_nullable_to_non_nullable
@@ -1120,7 +1133,8 @@ as List<TestAttemptQuestion>,score: freezed == score ? _self.score : score // ig
 as int?,percent: freezed == percent ? _self.percent : percent // ignore: cast_nullable_to_non_nullable
 as int?,passed: freezed == passed ? _self.passed : passed // ignore: cast_nullable_to_non_nullable
 as bool?,submittedAt: freezed == submittedAt ? _self.submittedAt : submittedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

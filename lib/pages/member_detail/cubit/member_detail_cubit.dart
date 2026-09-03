@@ -37,7 +37,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
   Future<void> _loadViewerRole() async {
     final result = await _organizationRepository.getById(_orgId);
     result.fold(
-      onSuccess: (org) => emit(state.copyWith(viewerRole: org.myRole)),
+      onSuccess: (org) => emit(
+        state.copyWith(
+          viewerRole: org.myRole,
+          organizationTimezone: org.timezone,
+        ),
+      ),
       onFailure: (_) {},
     );
   }

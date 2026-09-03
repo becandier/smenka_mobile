@@ -69,6 +69,11 @@ abstract class TestAttemptForFillDto with _$TestAttemptForFillDto {
     required String id,
     required DateTime startedAt,
     @Default(<TestAttemptQuestionDto>[]) List<TestAttemptQuestionDto> questions,
+
+    /// Аддитивное nullable поле (`TestAttemptForFill.organization_timezone`,
+    /// backend `ce32b62`) — `/my/*` не scoped по `{org_id}`, зона нужна
+    /// клиенту явно на каждой попытке.
+    String? organizationTimezone,
   }) = _TestAttemptForFillDto;
 
   factory TestAttemptForFillDto.fromJson(Map<String, dynamic> json) =>
@@ -97,6 +102,11 @@ abstract class TestAttemptDetailDto with _$TestAttemptDetailDto {
     bool? passed,
     DateTime? submittedAt,
     @Default(<TestAttemptQuestionDto>[]) List<TestAttemptQuestionDto> questions,
+
+    /// Аддитивное nullable поле (`MyAttemptDetail.organization_timezone`,
+    /// backend `23dc2e3`) — `/my/*` не scoped по `{org_id}`, зона нужна
+    /// клиенту явно на каждой попытке.
+    String? organizationTimezone,
   }) = _TestAttemptDetailDto;
 
   factory TestAttemptDetailDto.fromJson(Map<String, dynamic> json) =>

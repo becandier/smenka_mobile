@@ -101,11 +101,15 @@ class _ItemPhotosSection extends StatelessWidget {
     bool readOnly,
   ) {
     final cubit = context.read<ChecklistFillCubit>();
+    final timeContext =
+        cubit.state.instance.data?.timeContext() ??
+        const AppTimeContext.device();
     context.router.root.push(
       ChecklistPhotoViewerRoute(
         photos: photos,
         initialIndex: index,
         isAddedSemantics: item.photoSource == PhotoSource.cameraOrGallery,
+        timeContext: timeContext,
         onDeletePhoto: readOnly
             ? null
             : (photoId) => cubit.removePhoto(item, photoId),

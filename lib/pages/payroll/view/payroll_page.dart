@@ -39,14 +39,24 @@ class _PayrollView extends StatelessWidget {
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final cubit = context.read<PayrollCubit>();
+    final timeContext = cubit.state.timeContext;
+    final customFrom = cubit.state.customFrom;
+    final customTo = cubit.state.customTo;
     final result = await context.router.push<DateRangePickerResult?>(
       DateRangePickerRoute(
-        initialFrom: cubit.state.customFrom?.toLocal(),
-        initialTo: cubit.state.customTo?.toLocal(),
+        initialFrom: customFrom == null
+            ? null
+            : appTimeCalendarDay(customFrom, timeContext),
+        initialTo: customTo == null
+            ? null
+            : appTimeCalendarDay(customTo, timeContext),
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc, result.toUtc);
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -71,6 +81,7 @@ class _PayrollView extends StatelessWidget {
                   preset: state.preset,
                   customFrom: state.customFrom,
                   customTo: state.customTo,
+                  timeContext: state.timeContext,
                   onPresetChanged: cubit.setPreset,
                   onCustomTap: () => _openDateRangePicker(context),
                   onCustomClear: () => cubit.setCustomRange(null, null),
@@ -86,6 +97,10 @@ class _PayrollView extends StatelessWidget {
               selector: (state) => state.payroll,
               onRetry: () => context.read<PayrollCubit>().load(),
               contentBuilder: (payroll) {
+                final timeContext = context
+                    .read<PayrollCubit>()
+                    .state
+                    .timeContext;
                 return RefreshIndicator.adaptive(
                   onRefresh: () => context.read<PayrollCubit>().load(),
                   child: payroll.items.isEmpty
@@ -109,6 +124,7 @@ class _PayrollView extends StatelessWidget {
                                   context,
                                   payroll.period.dateFrom,
                                   payroll.period.dateTo,
+                                  timeContext,
                                 )
                                 case final label?)
                               Padding(

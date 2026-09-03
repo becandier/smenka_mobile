@@ -61,6 +61,7 @@ extension TestAttemptForFillMapper on TestAttemptForFillDto {
       id: id,
       startedAt: startedAt,
       questions: questions.map((e) => e.toDomain()).toList(),
+      organizationTimezone: organizationTimezone,
     );
   }
 }
@@ -79,6 +80,7 @@ extension TestAttemptDetailMapper on TestAttemptDetailDto {
       passed: passed,
       submittedAt: submittedAt,
       questions: questions.map((e) => e.toDomain()).toList(),
+      organizationTimezone: organizationTimezone,
     );
   }
 }
@@ -123,6 +125,7 @@ extension TestAssignmentMapper on TestAssignmentDto {
       passed: passed,
       dueAt: dueAt,
       attempts: attempts?.map((e) => e.toDomain()).toList(),
+      organizationTimezone: organizationTimezone,
     );
   }
 }

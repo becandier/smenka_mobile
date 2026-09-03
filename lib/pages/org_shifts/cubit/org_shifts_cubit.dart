@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/bloc/pagination_mixin.dart';
+import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/organization/models/_models.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -14,12 +17,24 @@ class OrgShiftsCubit extends Cubit<OrgShiftsState>
        _organizationRepository = organizationRepository,
        super(const OrgShiftsState()) {
     loadShifts();
+    unawaited(_loadOrganizationTimezone());
   }
 
   final String _orgId;
   final OrganizationRepository _organizationRepository;
 
   String get orgId => _orgId;
+
+  /// Один запрос за время жизни экрана (см. `MyPenaltiesCubit`, тот же
+  /// приём). Ошибка молча оставляет дефолт.
+  Future<void> _loadOrganizationTimezone() async {
+    final result = await _organizationRepository.getById(_orgId);
+    result.fold(
+      onSuccess: (org) =>
+          emit(state.copyWith(organizationTimezone: org.timezone)),
+      onFailure: (_) {},
+    );
+  }
 
   Future<void> loadShifts({bool isRefresh = true}) => fetchPaginated<Shift>(
     getSection: (s) => s.shifts,
@@ -53,8 +68,12 @@ class OrgShiftsCubit extends Cubit<OrgShiftsState>
     loadShifts();
   }
 
-  /// Применить диапазон дат (UTC-границы, обе включительно по `started_at`).
-  /// Обе `null` — сброс диапазона. Один перезапрос с первой страницы.
+  /// Применить диапазон дат: [dateFrom] — начало первого выбранного дня
+  /// (UTC), [dateTo] — начало дня, СЛЕДУЮЩЕГО за последним выбранным (см.
+  /// `DateRangePickerResultBounds.toUtc` — backend сравнивает `started_at`
+  /// с ним через `<=` включительно, известное расхождение на самой границе
+  /// суток задокументировано там же). Обе `null` — сброс диапазона. Один
+  /// перезапрос с первой страницы.
   void setDateRange(DateTime? dateFrom, DateTime? dateTo) {
     emit(state.copyWith(filterDateFrom: dateFrom, filterDateTo: dateTo));
     loadShifts();

@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/core/utils/org_timezone.dart';
 import 'package:smenka_mobile/data/domain/work_schedule/models/_models.dart';
 import 'package:smenka_mobile/l10n/localization_extension.dart';
@@ -245,8 +245,13 @@ class _ScheduleStatus extends StatelessWidget {
     if (diffDays == 1) {
       return l10n.workScheduleStartsTomorrowAt(schedule.startTime);
     }
-    final localStart = toOrgLocal(schedule.nextStartAt, timezone);
-    final dateLabel = DateFormat('dd.MM').format(localStart);
+    final localStart = const AppTime().wallTime(
+      schedule.nextStartAt,
+      AppTimeContext.organization(timezone),
+    );
+    final dateLabel =
+        '${localStart.day.toString().padLeft(2, '0')}.'
+        '${localStart.month.toString().padLeft(2, '0')}';
     return l10n.workScheduleStartsOnDateAt(dateLabel, schedule.startTime);
   }
 }

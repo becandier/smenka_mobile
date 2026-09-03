@@ -40,14 +40,24 @@ class _OrgStatsView extends StatelessWidget {
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final cubit = context.read<OrgStatsCubit>();
+    final timeContext = cubit.state.timeContext;
+    final customFrom = cubit.state.customFrom;
+    final customTo = cubit.state.customTo;
     final result = await context.router.push<DateRangePickerResult?>(
       DateRangePickerRoute(
-        initialFrom: cubit.state.customFrom?.toLocal(),
-        initialTo: cubit.state.customTo?.toLocal(),
+        initialFrom: customFrom == null
+            ? null
+            : appTimeCalendarDay(customFrom, timeContext),
+        initialTo: customTo == null
+            ? null
+            : appTimeCalendarDay(customTo, timeContext),
       ),
     );
     if (result != null) {
-      cubit.setCustomRange(result.fromUtc, result.toUtc);
+      cubit.setCustomRange(
+        result.fromUtc(timeContext),
+        result.toUtc(timeContext),
+      );
     }
   }
 
@@ -114,6 +124,7 @@ class _OrgStatsView extends StatelessWidget {
                         from: state.customFrom,
                         to: state.customTo,
                         label: l10n.statsModeCustom,
+                        timeContext: state.timeContext,
                         onTap: () => _openDateRangePicker(context),
                         onClear: () => context
                             .read<OrgStatsCubit>()
@@ -133,6 +144,10 @@ class _OrgStatsView extends StatelessWidget {
               selector: (state) => state.stats,
               onRetry: () => context.read<OrgStatsCubit>().loadStats(),
               contentBuilder: (stats) {
+                final timeContext = context
+                    .read<OrgStatsCubit>()
+                    .state
+                    .timeContext;
                 return RefreshIndicator.adaptive(
                   onRefresh: () => context.read<OrgStatsCubit>().loadStats(),
                   child: ListView(
@@ -142,6 +157,7 @@ class _OrgStatsView extends StatelessWidget {
                             context,
                             stats.rangeFrom,
                             stats.rangeTo,
+                            timeContext,
                           )
                           case final rangeLabel?)
                         Padding(

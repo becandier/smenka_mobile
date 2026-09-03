@@ -79,6 +79,11 @@ class _PenaltiesSectionState extends State<_PenaltiesSection> {
     final l10n = context.l10n;
     final colors = context.appColors;
     final textTheme = Theme.of(context).textTheme;
+    // Штрафы — бизнес-события организации участника, не `MemberPenaltiesCubit`
+    // (не грузит `Organization` сам — кубиты независимы, см. mobile.md).
+    final timeContext = context.select<MemberDetailCubit, AppTimeContext>(
+      (cubit) => cubit.state.timeContext,
+    );
 
     return Material(
       color: colors.surface,
@@ -163,6 +168,7 @@ class _PenaltiesSectionState extends State<_PenaltiesSection> {
                     for (final penalty in section.data)
                       _PenaltyRow(
                         penalty: penalty,
+                        timeContext: timeContext,
                         onEdit: () => _openForm(penalty: penalty),
                         onRemove: () => _confirmRemove(penalty),
                       ),
@@ -189,11 +195,13 @@ class _PenaltiesSectionState extends State<_PenaltiesSection> {
 class _PenaltyRow extends StatelessWidget {
   const _PenaltyRow({
     required this.penalty,
+    required this.timeContext,
     required this.onEdit,
     required this.onRemove,
   });
 
   final Penalty penalty;
+  final AppTimeContext timeContext;
   final VoidCallback onEdit;
   final VoidCallback onRemove;
 
@@ -226,9 +234,10 @@ class _PenaltyRow extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        DateFormat(
-                          'dd.MM.yyyy HH:mm',
-                        ).format(penalty.occurredAt.toLocal()),
+                        const AppTime().formatDateTime(
+                          penalty.occurredAt,
+                          timeContext,
+                        ),
                         style: textTheme.bodySmall?.copyWith(
                           color: colors.secondary,
                         ),

@@ -134,6 +134,25 @@ void main() {
       expect(fill.startedAt, detail.startedAt);
       expect(fill.questions, detail.questions);
     });
+
+    test('organization_timezone (additive, `23dc2e3`) переносится в domain '
+        'и сохраняется через toFill()', () {
+      final detail = TestAttemptDetailDto.fromJson({
+        ..._attemptDetailJson(),
+        'organization_timezone': 'Asia/Vladivostok',
+      }).toDomain();
+
+      expect(detail.organizationTimezone, 'Asia/Vladivostok');
+      expect(detail.toFill().organizationTimezone, 'Asia/Vladivostok');
+    });
+
+    test('старый бэк без organization_timezone — null, без краша', () {
+      final detail = TestAttemptDetailDto.fromJson(
+        _attemptDetailJson(),
+      ).toDomain();
+
+      expect(detail.organizationTimezone, isNull);
+    });
   });
 
   group(
@@ -166,6 +185,26 @@ void main() {
           expect(option.isCorrect, isNull);
         },
       );
+
+      test(
+        'organization_timezone (additive, `ce32b62`) переносится в domain',
+        () {
+          final fill = TestAttemptForFillDto.fromJson({
+            ..._attemptFillJson(),
+            'organization_timezone': 'Asia/Vladivostok',
+          }).toDomain();
+
+          expect(fill.organizationTimezone, 'Asia/Vladivostok');
+        },
+      );
+
+      test('старый бэк без organization_timezone — null, без краша', () {
+        final fill = TestAttemptForFillDto.fromJson(
+          _attemptFillJson(),
+        ).toDomain();
+
+        expect(fill.organizationTimezone, isNull);
+      });
     },
   );
 
@@ -287,6 +326,51 @@ void main() {
         }).toDomain();
 
         expect(assignment.template.shuffleQuestions, isFalse);
+      },
+    );
+
+    test(
+      'organization_timezone (additive, `23dc2e3`) переносится в domain',
+      () {
+        final assignment = TestAssignmentDto.fromJson({
+          'id': 'a1',
+          'organization': {'id': 'org1', 'name': 'Org'},
+          'template': {
+            'id': 't1',
+            'title': 'T',
+            'question_count': 1,
+            'max_attempts': 1,
+            'pass_threshold_percent': 70,
+          },
+          'status': 'assigned',
+          'attempts_used': 0,
+          'passed': false,
+          'organization_timezone': 'Asia/Vladivostok',
+        }).toDomain();
+
+        expect(assignment.organizationTimezone, 'Asia/Vladivostok');
+      },
+    );
+
+    test(
+      'старый бэк без organization_timezone (rolling deploy) — null, без краша',
+      () {
+        final assignment = TestAssignmentDto.fromJson({
+          'id': 'a1',
+          'organization': {'id': 'org1', 'name': 'Org'},
+          'template': {
+            'id': 't1',
+            'title': 'T',
+            'question_count': 1,
+            'max_attempts': 1,
+            'pass_threshold_percent': 70,
+          },
+          'status': 'assigned',
+          'attempts_used': 0,
+          'passed': false,
+        }).toDomain();
+
+        expect(assignment.organizationTimezone, isNull);
       },
     );
 

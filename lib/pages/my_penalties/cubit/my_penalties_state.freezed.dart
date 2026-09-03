@@ -15,7 +15,10 @@ T _$identity<T>(T value) => value;
 mixin _$MyPenaltiesState {
 
  PaginatedSectionData<MyPenalty> get penalties;/// Пресет окна; null — произвольный диапазон ([customFrom]/[customTo]).
- PeriodPreset? get preset; DateTime? get customFrom; DateTime? get customTo;
+ PeriodPreset? get preset; DateTime? get customFrom; DateTime? get customTo;/// IANA-таймзона организации — штрафы всегда её бизнес-события.
+/// Дефолт до загрузки совпадает с server_default `Organization.timezone`
+/// (тот же приём, что и в `WorkSchedulePickerRoute`).
+ String get organizationTimezone;
 /// Create a copy of MyPenaltiesState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +29,16 @@ $MyPenaltiesStateCopyWith<MyPenaltiesState> get copyWith => _$MyPenaltiesStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyPenaltiesState&&(identical(other.penalties, penalties) || other.penalties == penalties)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyPenaltiesState&&(identical(other.penalties, penalties) || other.penalties == penalties)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,penalties,preset,customFrom,customTo);
+int get hashCode => Object.hash(runtimeType,penalties,preset,customFrom,customTo,organizationTimezone);
 
 @override
 String toString() {
-  return 'MyPenaltiesState(penalties: $penalties, preset: $preset, customFrom: $customFrom, customTo: $customTo)';
+  return 'MyPenaltiesState(penalties: $penalties, preset: $preset, customFrom: $customFrom, customTo: $customTo, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -46,7 +49,7 @@ abstract mixin class $MyPenaltiesStateCopyWith<$Res>  {
   factory $MyPenaltiesStateCopyWith(MyPenaltiesState value, $Res Function(MyPenaltiesState) _then) = _$MyPenaltiesStateCopyWithImpl;
 @useResult
 $Res call({
- PaginatedSectionData<MyPenalty> penalties, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo
+ PaginatedSectionData<MyPenalty> penalties, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo, String organizationTimezone
 });
 
 
@@ -63,13 +66,14 @@ class _$MyPenaltiesStateCopyWithImpl<$Res>
 
 /// Create a copy of MyPenaltiesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? penalties = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? penalties = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,Object? organizationTimezone = null,}) {
   return _then(_self.copyWith(
 penalties: null == penalties ? _self.penalties : penalties // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<MyPenalty>,preset: freezed == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
 as PeriodPreset?,customFrom: freezed == customFrom ? _self.customFrom : customFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,customTo: freezed == customTo ? _self.customTo : customTo // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 /// Create a copy of MyPenaltiesState
@@ -163,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<MyPenalty> penalties,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PaginatedSectionData<MyPenalty> penalties,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo,  String organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyPenaltiesState() when $default != null:
-return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo);case _:
+return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo,_that.organizationTimezone);case _:
   return orElse();
 
 }
@@ -184,10 +188,10 @@ return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<MyPenalty> penalties,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PaginatedSectionData<MyPenalty> penalties,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo,  String organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _MyPenaltiesState():
-return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo);case _:
+return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo,_that.organizationTimezone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +208,10 @@ return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<MyPenalty> penalties,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PaginatedSectionData<MyPenalty> penalties,  PeriodPreset? preset,  DateTime? customFrom,  DateTime? customTo,  String organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _MyPenaltiesState() when $default != null:
-return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo);case _:
+return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo,_that.organizationTimezone);case _:
   return null;
 
 }
@@ -219,7 +223,7 @@ return $default(_that.penalties,_that.preset,_that.customFrom,_that.customTo);ca
 
 
 class _MyPenaltiesState extends MyPenaltiesState {
-  const _MyPenaltiesState({this.penalties = const PaginatedSectionData<MyPenalty>(), this.preset = PeriodPreset.month, this.customFrom, this.customTo}): super._();
+  const _MyPenaltiesState({this.penalties = const PaginatedSectionData<MyPenalty>(), this.preset = PeriodPreset.month, this.customFrom, this.customTo, this.organizationTimezone = 'Europe/Moscow'}): super._();
   
 
 @override@JsonKey() final  PaginatedSectionData<MyPenalty> penalties;
@@ -227,6 +231,10 @@ class _MyPenaltiesState extends MyPenaltiesState {
 @override@JsonKey() final  PeriodPreset? preset;
 @override final  DateTime? customFrom;
 @override final  DateTime? customTo;
+/// IANA-таймзона организации — штрафы всегда её бизнес-события.
+/// Дефолт до загрузки совпадает с server_default `Organization.timezone`
+/// (тот же приём, что и в `WorkSchedulePickerRoute`).
+@override@JsonKey() final  String organizationTimezone;
 
 /// Create a copy of MyPenaltiesState
 /// with the given fields replaced by the non-null parameter values.
@@ -238,16 +246,16 @@ _$MyPenaltiesStateCopyWith<_MyPenaltiesState> get copyWith => __$MyPenaltiesStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyPenaltiesState&&(identical(other.penalties, penalties) || other.penalties == penalties)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyPenaltiesState&&(identical(other.penalties, penalties) || other.penalties == penalties)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.customFrom, customFrom) || other.customFrom == customFrom)&&(identical(other.customTo, customTo) || other.customTo == customTo)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,penalties,preset,customFrom,customTo);
+int get hashCode => Object.hash(runtimeType,penalties,preset,customFrom,customTo,organizationTimezone);
 
 @override
 String toString() {
-  return 'MyPenaltiesState(penalties: $penalties, preset: $preset, customFrom: $customFrom, customTo: $customTo)';
+  return 'MyPenaltiesState(penalties: $penalties, preset: $preset, customFrom: $customFrom, customTo: $customTo, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -258,7 +266,7 @@ abstract mixin class _$MyPenaltiesStateCopyWith<$Res> implements $MyPenaltiesSta
   factory _$MyPenaltiesStateCopyWith(_MyPenaltiesState value, $Res Function(_MyPenaltiesState) _then) = __$MyPenaltiesStateCopyWithImpl;
 @override @useResult
 $Res call({
- PaginatedSectionData<MyPenalty> penalties, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo
+ PaginatedSectionData<MyPenalty> penalties, PeriodPreset? preset, DateTime? customFrom, DateTime? customTo, String organizationTimezone
 });
 
 
@@ -275,13 +283,14 @@ class __$MyPenaltiesStateCopyWithImpl<$Res>
 
 /// Create a copy of MyPenaltiesState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? penalties = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? penalties = null,Object? preset = freezed,Object? customFrom = freezed,Object? customTo = freezed,Object? organizationTimezone = null,}) {
   return _then(_MyPenaltiesState(
 penalties: null == penalties ? _self.penalties : penalties // ignore: cast_nullable_to_non_nullable
 as PaginatedSectionData<MyPenalty>,preset: freezed == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
 as PeriodPreset?,customFrom: freezed == customFrom ? _self.customFrom : customFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,customTo: freezed == customTo ? _self.customTo : customTo // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,organizationTimezone: null == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

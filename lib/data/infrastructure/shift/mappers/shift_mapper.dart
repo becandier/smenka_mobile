@@ -66,6 +66,7 @@ extension ShiftMapper on ShiftDto {
       id: id,
       userId: userId,
       organizationId: organizationId,
+      organizationTimezone: organizationTimezone,
       startedAt: startedAt,
       finishedAt: finishedAt,
       status: ShiftStatus.values.byName(status),

@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
 import 'package:smenka_mobile/core/services/photo_logger.dart';
 import 'package:smenka_mobile/core/services/photo_picker_service.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 // Скрываем доменный PhotoSource (camera/cameraOrGallery — конфиг требования
 // пункта): в кубите PhotoSource — это выбранный источник из PhotoPickerService.
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart'
@@ -66,7 +66,12 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
   final Map<String, _PhotoUpload> _uploads = {};
   int _draftCounter = 0;
 
-  static final DateFormat _stampDateFormat = DateFormat('dd.MM.yyyy HH:mm');
+  /// Контекст штампа фото и настенного времени пункта: self-contained
+  /// деталь чек-листа уже несёт `organizationTimezone` (org-чек-лист всегда
+  /// имеет организацию — см. [addPhoto]); `null` (персональная смена/старый
+  /// бэк) — контекст устройства.
+  AppTimeContext get _timeContext =>
+      state.instance.data?.timeContext() ?? const AppTimeContext.device();
 
   // Загрузка/привязка фото — длинные async-операции; пользователь может уйти со
   // страницы раньше, чем завершится upload/attach или onSendProgress-колбэк.
@@ -383,12 +388,22 @@ class ChecklistFillCubit extends Cubit<ChecklistFillState> {
     }
   }
 
+  /// Штамп «дата время [+координаты]», сожжённый в пиксели фото — правится
+  /// на устройстве фотографирующего, поэтому обязан использовать контекст
+  /// смены ([_timeContext]), а не таймзону устройства напрямую: сотрудник
+  /// организации в Москве, снимающий на телефоне с системным временем
+  /// Владивостока, не должен получить штамп во владивостокском времени.
+  /// Ручной паттерн `dd.MM.yyyy HH:mm` (пробел, не запятая — компактнее на
+  /// водяном знаке) сохранён как есть, без `DateFormat`/`intl`.
   String _stampText(
     DateTime capturedAtUtc,
     double? latitude,
     double? longitude,
   ) {
-    final dt = _stampDateFormat.format(capturedAtUtc.toLocal());
+    final wall = const AppTime().wallTime(capturedAtUtc, _timeContext);
+    final dt =
+        '${_twoDigits(wall.day)}.${_twoDigits(wall.month)}.${wall.year} '
+        '${_twoDigits(wall.hour)}:${_twoDigits(wall.minute)}';
     if (latitude == null || longitude == null) return dt;
     return '$dt\n'
         '${latitude.toStringAsFixed(5)}, ${longitude.toStringAsFixed(5)}';
@@ -522,3 +537,5 @@ class _PhotoUpload {
   /// `file_id` после успешного `POST /files` — для ретрая только привязки.
   String? fileId;
 }
+
+String _twoDigits(int value) => value.toString().padLeft(2, '0');

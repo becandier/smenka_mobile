@@ -17,7 +17,12 @@ mixin _$MemberDetailState {
  Member get member; OrgMembershipRole? get viewerRole; SectionData<List<EffectiveChecklistTemplate>> get effective;// Точки организации — только для отображения названий охвата чек-листа
 // (`EffectiveChecklistTemplate.locationIds`). Своего loading/error не
 // заводим: не резолвился id → нейтральный фолбэк в UI.
- List<WorkLocation> get workLocations;
+ List<WorkLocation> get workLocations;/// IANA-таймзона организации — ставки/штрафы участника всегда её
+/// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). `null` до
+/// первого ответа `getById` — угадывать зону нельзя, поэтому
+/// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+/// заведомо неверную org-зону.
+ String? get organizationTimezone;
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +33,16 @@ $MemberDetailStateCopyWith<MemberDetailState> get copyWith => _$MemberDetailStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective)&&const DeepCollectionEquality().equals(other.workLocations, workLocations));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective)&&const DeepCollectionEquality().equals(other.workLocations, workLocations)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,member,viewerRole,effective,const DeepCollectionEquality().hash(workLocations));
+int get hashCode => Object.hash(runtimeType,member,viewerRole,effective,const DeepCollectionEquality().hash(workLocations),organizationTimezone);
 
 @override
 String toString() {
-  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective, workLocations: $workLocations)';
+  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective, workLocations: $workLocations, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -48,7 +53,7 @@ abstract mixin class $MemberDetailStateCopyWith<$Res>  {
   factory $MemberDetailStateCopyWith(MemberDetailState value, $Res Function(MemberDetailState) _then) = _$MemberDetailStateCopyWithImpl;
 @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations, String? organizationTimezone
 });
 
 
@@ -65,13 +70,14 @@ class _$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,Object? organizationTimezone = freezed,}) {
   return _then(_self.copyWith(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
 as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
 as SectionData<List<EffectiveChecklistTemplate>>,workLocations: null == workLocations ? _self.workLocations : workLocations // ignore: cast_nullable_to_non_nullable
-as List<WorkLocation>,
+as List<WorkLocation>,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of MemberDetailState
@@ -174,10 +180,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
-return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations);case _:
+return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations,_that.organizationTimezone);case _:
   return orElse();
 
 }
@@ -195,10 +201,10 @@ return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocation
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String? organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState():
-return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations);case _:
+return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations,_that.organizationTimezone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -215,10 +221,10 @@ return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocation
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Member member,  OrgMembershipRole? viewerRole,  SectionData<List<EffectiveChecklistTemplate>> effective,  List<WorkLocation> workLocations,  String? organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberDetailState() when $default != null:
-return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations);case _:
+return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocations,_that.organizationTimezone);case _:
   return null;
 
 }
@@ -230,7 +236,7 @@ return $default(_that.member,_that.viewerRole,_that.effective,_that.workLocation
 
 
 class _MemberDetailState extends MemberDetailState {
-  const _MemberDetailState({required this.member, this.viewerRole, this.effective = const SectionData<List<EffectiveChecklistTemplate>>(), final  List<WorkLocation> workLocations = const <WorkLocation>[]}): _workLocations = workLocations,super._();
+  const _MemberDetailState({required this.member, this.viewerRole, this.effective = const SectionData<List<EffectiveChecklistTemplate>>(), final  List<WorkLocation> workLocations = const <WorkLocation>[], this.organizationTimezone}): _workLocations = workLocations,super._();
   
 
 @override final  Member member;
@@ -249,6 +255,12 @@ class _MemberDetailState extends MemberDetailState {
   return EqualUnmodifiableListView(_workLocations);
 }
 
+/// IANA-таймзона организации — ставки/штрафы участника всегда её
+/// бизнес-события (см. `_RatesSection`/`_PenaltiesSection`). `null` до
+/// первого ответа `getById` — угадывать зону нельзя, поэтому
+/// [timeContext] на этот момент нейтрально отдаёт устройство, а не
+/// заведомо неверную org-зону.
+@override final  String? organizationTimezone;
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -260,16 +272,16 @@ _$MemberDetailStateCopyWith<_MemberDetailState> get copyWith => __$MemberDetailS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective)&&const DeepCollectionEquality().equals(other._workLocations, _workLocations));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDetailState&&(identical(other.member, member) || other.member == member)&&(identical(other.viewerRole, viewerRole) || other.viewerRole == viewerRole)&&(identical(other.effective, effective) || other.effective == effective)&&const DeepCollectionEquality().equals(other._workLocations, _workLocations)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,member,viewerRole,effective,const DeepCollectionEquality().hash(_workLocations));
+int get hashCode => Object.hash(runtimeType,member,viewerRole,effective,const DeepCollectionEquality().hash(_workLocations),organizationTimezone);
 
 @override
 String toString() {
-  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective, workLocations: $workLocations)';
+  return 'MemberDetailState(member: $member, viewerRole: $viewerRole, effective: $effective, workLocations: $workLocations, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -280,7 +292,7 @@ abstract mixin class _$MemberDetailStateCopyWith<$Res> implements $MemberDetailS
   factory _$MemberDetailStateCopyWith(_MemberDetailState value, $Res Function(_MemberDetailState) _then) = __$MemberDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations
+ Member member, OrgMembershipRole? viewerRole, SectionData<List<EffectiveChecklistTemplate>> effective, List<WorkLocation> workLocations, String? organizationTimezone
 });
 
 
@@ -297,13 +309,14 @@ class __$MemberDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MemberDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? member = null,Object? viewerRole = freezed,Object? effective = null,Object? workLocations = null,Object? organizationTimezone = freezed,}) {
   return _then(_MemberDetailState(
 member: null == member ? _self.member : member // ignore: cast_nullable_to_non_nullable
 as Member,viewerRole: freezed == viewerRole ? _self.viewerRole : viewerRole // ignore: cast_nullable_to_non_nullable
 as OrgMembershipRole?,effective: null == effective ? _self.effective : effective // ignore: cast_nullable_to_non_nullable
 as SectionData<List<EffectiveChecklistTemplate>>,workLocations: null == workLocations ? _self._workLocations : workLocations // ignore: cast_nullable_to_non_nullable
-as List<WorkLocation>,
+as List<WorkLocation>,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

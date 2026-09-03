@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/router/app_modals.dart';
 import 'package:smenka_mobile/core/router/app_router.dart';
 import 'package:smenka_mobile/core/theme/colors/app_colors.dart.dart';
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/checklist/_checklist.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
 import 'package:smenka_mobile/data/domain/shift/models/_models.dart';
@@ -100,6 +100,11 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Self-contained ответ этого endpoint уже несёт `organization_timezone`
+    // (backend `553a235`) — без rolling-deploy scoped fallback: экран не
+    // грузит `Organization` отдельно только ради таймзоны.
+    final timeContext = shift.timeContext();
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -115,9 +120,9 @@ class _Content extends StatelessWidget {
         // быстро оштрафовать сотрудника по этой смене.
         _FineShiftButton(orgId: orgId, shift: shift),
         const SizedBox(height: 20),
-        _OrgShiftInfoSection(shift: shift),
+        _OrgShiftInfoSection(shift: shift, timeContext: timeContext),
         const SizedBox(height: 24),
-        ShiftPauseList(pauses: shift.pauses),
+        ShiftPauseList(pauses: shift.pauses, timeContext: timeContext),
         const SizedBox(height: 24),
         _OrgShiftDetailChecklists(orgId: orgId, shiftId: shiftId),
       ],

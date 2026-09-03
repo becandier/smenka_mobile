@@ -16,7 +16,12 @@ mixin _$PenaltyFormState {
 
 /// Активные шаблоны для выбора (загружаются при открытии формы).
  SectionData<List<PenaltyTemplate>> get templates;/// Статус отправки формы (назначение/исправление).
- FeatureStatus get submitStatus; String? get submitErrorCode; String? get submitError;
+ FeatureStatus get submitStatus; String? get submitErrorCode; String? get submitError;/// IANA-таймзона организации — дата штрафа (`occurredAt`) всегда её
+/// бизнес-событие, выбор дня и отображение идут в этой зоне, не в
+/// зоне устройства. `null` до первого ответа `getById` — угадывать
+/// зону нельзя, поэтому [timeContext] на этот момент нейтрально отдаёт
+/// устройство, а не заведомо неверную org-зону.
+ String? get organizationTimezone;
 /// Create a copy of PenaltyFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +32,16 @@ $PenaltyFormStateCopyWith<PenaltyFormState> get copyWith => _$PenaltyFormStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PenaltyFormState&&(identical(other.templates, templates) || other.templates == templates)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PenaltyFormState&&(identical(other.templates, templates) || other.templates == templates)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,templates,submitStatus,submitErrorCode,submitError);
+int get hashCode => Object.hash(runtimeType,templates,submitStatus,submitErrorCode,submitError,organizationTimezone);
 
 @override
 String toString() {
-  return 'PenaltyFormState(templates: $templates, submitStatus: $submitStatus, submitErrorCode: $submitErrorCode, submitError: $submitError)';
+  return 'PenaltyFormState(templates: $templates, submitStatus: $submitStatus, submitErrorCode: $submitErrorCode, submitError: $submitError, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -47,7 +52,7 @@ abstract mixin class $PenaltyFormStateCopyWith<$Res>  {
   factory $PenaltyFormStateCopyWith(PenaltyFormState value, $Res Function(PenaltyFormState) _then) = _$PenaltyFormStateCopyWithImpl;
 @useResult
 $Res call({
- SectionData<List<PenaltyTemplate>> templates, FeatureStatus submitStatus, String? submitErrorCode, String? submitError
+ SectionData<List<PenaltyTemplate>> templates, FeatureStatus submitStatus, String? submitErrorCode, String? submitError, String? organizationTimezone
 });
 
 
@@ -64,12 +69,13 @@ class _$PenaltyFormStateCopyWithImpl<$Res>
 
 /// Create a copy of PenaltyFormState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? templates = null,Object? submitStatus = null,Object? submitErrorCode = freezed,Object? submitError = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? templates = null,Object? submitStatus = null,Object? submitErrorCode = freezed,Object? submitError = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_self.copyWith(
 templates: null == templates ? _self.templates : templates // ignore: cast_nullable_to_non_nullable
 as SectionData<List<PenaltyTemplate>>,submitStatus: null == submitStatus ? _self.submitStatus : submitStatus // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,submitErrorCode: freezed == submitErrorCode ? _self.submitErrorCode : submitErrorCode // ignore: cast_nullable_to_non_nullable
 as String?,submitError: freezed == submitError ? _self.submitError : submitError // ignore: cast_nullable_to_non_nullable
+as String?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -164,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<PenaltyTemplate>> templates,  FeatureStatus submitStatus,  String? submitErrorCode,  String? submitError)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionData<List<PenaltyTemplate>> templates,  FeatureStatus submitStatus,  String? submitErrorCode,  String? submitError,  String? organizationTimezone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PenaltyFormState() when $default != null:
-return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.submitError);case _:
+return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.submitError,_that.organizationTimezone);case _:
   return orElse();
 
 }
@@ -185,10 +191,10 @@ return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<PenaltyTemplate>> templates,  FeatureStatus submitStatus,  String? submitErrorCode,  String? submitError)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionData<List<PenaltyTemplate>> templates,  FeatureStatus submitStatus,  String? submitErrorCode,  String? submitError,  String? organizationTimezone)  $default,) {final _that = this;
 switch (_that) {
 case _PenaltyFormState():
-return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.submitError);case _:
+return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.submitError,_that.organizationTimezone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +211,10 @@ return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<PenaltyTemplate>> templates,  FeatureStatus submitStatus,  String? submitErrorCode,  String? submitError)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionData<List<PenaltyTemplate>> templates,  FeatureStatus submitStatus,  String? submitErrorCode,  String? submitError,  String? organizationTimezone)?  $default,) {final _that = this;
 switch (_that) {
 case _PenaltyFormState() when $default != null:
-return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.submitError);case _:
+return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.submitError,_that.organizationTimezone);case _:
   return null;
 
 }
@@ -220,7 +226,7 @@ return $default(_that.templates,_that.submitStatus,_that.submitErrorCode,_that.s
 
 
 class _PenaltyFormState extends PenaltyFormState {
-  const _PenaltyFormState({this.templates = const SectionData<List<PenaltyTemplate>>(), this.submitStatus = FeatureStatus.initial, this.submitErrorCode, this.submitError}): super._();
+  const _PenaltyFormState({this.templates = const SectionData<List<PenaltyTemplate>>(), this.submitStatus = FeatureStatus.initial, this.submitErrorCode, this.submitError, this.organizationTimezone}): super._();
   
 
 /// Активные шаблоны для выбора (загружаются при открытии формы).
@@ -229,6 +235,12 @@ class _PenaltyFormState extends PenaltyFormState {
 @override@JsonKey() final  FeatureStatus submitStatus;
 @override final  String? submitErrorCode;
 @override final  String? submitError;
+/// IANA-таймзона организации — дата штрафа (`occurredAt`) всегда её
+/// бизнес-событие, выбор дня и отображение идут в этой зоне, не в
+/// зоне устройства. `null` до первого ответа `getById` — угадывать
+/// зону нельзя, поэтому [timeContext] на этот момент нейтрально отдаёт
+/// устройство, а не заведомо неверную org-зону.
+@override final  String? organizationTimezone;
 
 /// Create a copy of PenaltyFormState
 /// with the given fields replaced by the non-null parameter values.
@@ -240,16 +252,16 @@ _$PenaltyFormStateCopyWith<_PenaltyFormState> get copyWith => __$PenaltyFormStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PenaltyFormState&&(identical(other.templates, templates) || other.templates == templates)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PenaltyFormState&&(identical(other.templates, templates) || other.templates == templates)&&(identical(other.submitStatus, submitStatus) || other.submitStatus == submitStatus)&&(identical(other.submitErrorCode, submitErrorCode) || other.submitErrorCode == submitErrorCode)&&(identical(other.submitError, submitError) || other.submitError == submitError)&&(identical(other.organizationTimezone, organizationTimezone) || other.organizationTimezone == organizationTimezone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,templates,submitStatus,submitErrorCode,submitError);
+int get hashCode => Object.hash(runtimeType,templates,submitStatus,submitErrorCode,submitError,organizationTimezone);
 
 @override
 String toString() {
-  return 'PenaltyFormState(templates: $templates, submitStatus: $submitStatus, submitErrorCode: $submitErrorCode, submitError: $submitError)';
+  return 'PenaltyFormState(templates: $templates, submitStatus: $submitStatus, submitErrorCode: $submitErrorCode, submitError: $submitError, organizationTimezone: $organizationTimezone)';
 }
 
 
@@ -260,7 +272,7 @@ abstract mixin class _$PenaltyFormStateCopyWith<$Res> implements $PenaltyFormSta
   factory _$PenaltyFormStateCopyWith(_PenaltyFormState value, $Res Function(_PenaltyFormState) _then) = __$PenaltyFormStateCopyWithImpl;
 @override @useResult
 $Res call({
- SectionData<List<PenaltyTemplate>> templates, FeatureStatus submitStatus, String? submitErrorCode, String? submitError
+ SectionData<List<PenaltyTemplate>> templates, FeatureStatus submitStatus, String? submitErrorCode, String? submitError, String? organizationTimezone
 });
 
 
@@ -277,12 +289,13 @@ class __$PenaltyFormStateCopyWithImpl<$Res>
 
 /// Create a copy of PenaltyFormState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? templates = null,Object? submitStatus = null,Object? submitErrorCode = freezed,Object? submitError = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? templates = null,Object? submitStatus = null,Object? submitErrorCode = freezed,Object? submitError = freezed,Object? organizationTimezone = freezed,}) {
   return _then(_PenaltyFormState(
 templates: null == templates ? _self.templates : templates // ignore: cast_nullable_to_non_nullable
 as SectionData<List<PenaltyTemplate>>,submitStatus: null == submitStatus ? _self.submitStatus : submitStatus // ignore: cast_nullable_to_non_nullable
 as FeatureStatus,submitErrorCode: freezed == submitErrorCode ? _self.submitErrorCode : submitErrorCode // ignore: cast_nullable_to_non_nullable
 as String?,submitError: freezed == submitError ? _self.submitError : submitError // ignore: cast_nullable_to_non_nullable
+as String?,organizationTimezone: freezed == organizationTimezone ? _self.organizationTimezone : organizationTimezone // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/data/domain/organization/repositories/organization_repository.dart';
@@ -11,10 +13,24 @@ class OrgStatsCubit extends Cubit<OrgStatsState> {
        _organizationRepository = organizationRepository,
        super(const OrgStatsState()) {
     loadStats();
+    unawaited(_loadOrganizationTimezone());
   }
 
   final String _orgId;
   final OrganizationRepository _organizationRepository;
+
+  /// Таймзона — только для пикера/подписи произвольного диапазона (пресеты
+  /// `day|week|month` вычисляет сервер в контексте организации, см.
+  /// [loadStats]). Один запрос за время жизни экрана; ошибка молча
+  /// оставляет дефолт.
+  Future<void> _loadOrganizationTimezone() async {
+    final result = await _organizationRepository.getById(_orgId);
+    result.fold(
+      onSuccess: (org) =>
+          emit(state.copyWith(organizationTimezone: org.timezone)),
+      onFailure: (_) {},
+    );
+  }
 
   /// Монотонный токен запроса: ответы устаревших запросов игнорируются.
   int _requestId = 0;

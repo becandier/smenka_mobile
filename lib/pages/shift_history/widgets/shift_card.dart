@@ -1,9 +1,19 @@
 part of '../view/shift_history_page.dart';
 
 class _ShiftCard extends StatelessWidget {
-  const _ShiftCard({required this.shift, required this.onTap});
+  const _ShiftCard({
+    required this.shift,
+    required this.timeContext,
+    required this.onTap,
+  });
 
   final Shift shift;
+
+  /// Контекст представления начала смены: своя IANA-зона организации
+  /// (`ShiftHistoryContextState.timeContextFor`) либо устройство для
+  /// персональной смены.
+  final AppTimeContext timeContext;
+
   final VoidCallback onTap;
 
   @override
@@ -14,9 +24,10 @@ class _ShiftCard extends StatelessWidget {
 
     final statusLabel = _statusLabel(context, shift.status);
     final statusColor = _statusColor(context, shift.status);
-    final dateFormatted = DateFormat(
-      'dd.MM.yyyy, HH:mm',
-    ).format(shift.startedAt);
+    final dateFormatted = const AppTime().formatDateTime(
+      shift.startedAt,
+      timeContext,
+    );
     final duration = _formatDuration(context, shift.workedSeconds);
     final orgLabel = shift.organizationId != null
         ? l10n.detailOrganization

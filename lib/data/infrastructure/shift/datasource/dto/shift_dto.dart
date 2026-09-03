@@ -65,6 +65,9 @@ abstract class ShiftDto with _$ShiftDto {
     required List<PauseDto> pauses,
     required int workedSeconds,
     String? organizationId,
+
+    /// Additive nullable (`553a235`). Старый бэк не шлёт → `null`.
+    String? organizationTimezone,
     DateTime? finishedAt,
     @Default(false) bool hasIncompleteRequiredChecklists,
 
