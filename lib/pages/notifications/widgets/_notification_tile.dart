@@ -60,9 +60,12 @@ class _NotificationTile extends StatelessWidget {
                     ],
                     const SizedBox(height: 6),
                     Text(
-                      DateFormat(
-                        'dd.MM.yyyy, HH:mm',
-                      ).format(notification.createdAt.toLocal()),
+                      // Платформенное уведомление без org-контекста —
+                      // таймзона устройства (design.md).
+                      const AppTime().formatDateTime(
+                        notification.createdAt,
+                        const AppTimeContext.device(),
+                      ),
                       style: textTheme.bodySmall?.copyWith(
                         color: colors.secondary.withValues(alpha: 0.7),
                       ),

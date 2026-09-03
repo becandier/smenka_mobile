@@ -243,10 +243,14 @@ class _SchedulePlanLine extends StatelessWidget {
     final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     final colors = context.appColors;
-    final timezone = organization?.timezone ?? 'Europe/Moscow';
-    final endLabel = DateFormat(
-      'HH:mm',
-    ).format(toOrgLocal(scheduledEnd, timezone));
+    // Self-detail активной смены уже несёт `organizationTimezone` (backend
+    // additive) — `organization?.timezone` только страхует старый бэк без
+    // поля (rolling deploy), см. `ShiftTrackerState.activeShiftOrganization`.
+    final timeContext = shift.timeContext(
+      scopedOrganizationTimezone: organization?.timezone,
+    );
+    const appTime = AppTime();
+    final endLabel = appTime.formatTime(scheduledEnd, timeContext);
     final lateSeconds = shift.lateSeconds ?? 0;
 
     final String text;
@@ -254,7 +258,7 @@ class _SchedulePlanLine extends StatelessWidget {
       final scheduledStart = shift.scheduledStartAt;
       final startLabel = scheduledStart == null
           ? ''
-          : DateFormat('HH:mm').format(toOrgLocal(scheduledStart, timezone));
+          : appTime.formatTime(scheduledStart, timeContext);
       text = l10n.shiftLateNotice(startLabel, lateSeconds ~/ 60);
     } else if (shift.scheduleName case final name?) {
       text = l10n.shiftPlannedSchedule(name, endLabel);

@@ -7,8 +7,6 @@ part of '../view/organization_detail_page.dart';
 class _SubscriptionBanner extends StatelessWidget {
   const _SubscriptionBanner({required this.banner});
 
-  static final DateFormat _dateFormat = DateFormat('dd.MM.yyyy');
-
   final SubscriptionBanner banner;
 
   @override
@@ -76,7 +74,9 @@ class _SubscriptionBanner extends StatelessWidget {
   }
 
   /// Бэк отдаёт `null`, если дату считать не от чего — прочерк вместо
-  /// пустоты в середине фразы.
-  static String _date(DateTime? value) =>
-      value == null ? '—' : _dateFormat.format(value.toLocal());
+  /// пустоты в середине фразы. Платёжный/биллинговый факт — платформенная
+  /// дата, не бизнес-событие организации (design.md), контекст устройства.
+  static String _date(DateTime? value) => value == null
+      ? '—'
+      : const AppTime().formatDate(value, const AppTimeContext.device());
 }
