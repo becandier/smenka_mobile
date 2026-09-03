@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:smenka_mobile/core/constants/feature_statuses.dart';
 import 'package:smenka_mobile/core/network/api_exceptions.dart';
 import 'package:smenka_mobile/core/network/task.dart';
 import 'package:smenka_mobile/core/services/geo_service.dart';
@@ -294,4 +295,78 @@ void main() {
       await cubit.close();
     },
   );
+
+  void stubUpdateItem(Task<ChecklistInstanceItem> result) {
+    when(
+      () => checklistRepo.updateInstanceItem(
+        any(),
+        any(),
+        any(),
+        isCompleted: any(named: 'isCompleted'),
+        comment: any(named: 'comment'),
+      ),
+    ).thenAnswer((_) async => result);
+  }
+
+  test(
+    'отказ сохранения пункта (не SHIFT_FINISHED) → saveError = код ошибки '
+    'для тоста, itemStatuses = error, экран остаётся редактируемым',
+    () async {
+      stubUpdateItem(
+        const Task<ChecklistInstanceItem>.failure(
+          ApiException.network(message: 'net', code: 'NETWORK_ERROR'),
+        ),
+      );
+      final cubit = buildCubit();
+      await Future<void>.delayed(Duration.zero);
+
+      await cubit.toggleItem(_item);
+
+      expect(cubit.state.itemStatuses[_item.id], FeatureStatus.error);
+      expect(cubit.state.saveError, 'NETWORK_ERROR');
+      expect(cubit.state.readOnly, isFalse);
+      await cubit.close();
+    },
+  );
+
+  test('SHIFT_FINISHED на сохранении пункта → read-only + нотис (симметрично '
+      '_handleAttachFailure), тост saveError не поднимаем повторно', () async {
+    stubUpdateItem(
+      const Task<ChecklistInstanceItem>.failure(
+        ApiException.server(message: 'x', code: 'SHIFT_FINISHED'),
+      ),
+    );
+    final cubit = buildCubit();
+    await Future<void>.delayed(Duration.zero);
+
+    await cubit.toggleItem(_item);
+
+    expect(cubit.state.readOnly, isTrue);
+    expect(cubit.state.notice, PhotoNotice.shiftFinished);
+    // SHIFT_FINISHED идёт через notice, не через saveError — иначе один и
+    // тот же отказ показался бы пользователю двумя тостами сразу.
+    expect(cubit.state.saveError, isNull);
+    await cubit.close();
+  });
+
+  test('saveError одноразовый: clearSaveError() сбрасывает поле, без нового '
+      'отказа сохранения оно само не возвращается', () async {
+    stubUpdateItem(
+      const Task<ChecklistInstanceItem>.failure(
+        ApiException.network(message: 'net', code: 'NETWORK_ERROR'),
+      ),
+    );
+    final cubit = buildCubit();
+    await Future<void>.delayed(Duration.zero);
+
+    await cubit.toggleItem(_item);
+    expect(cubit.state.saveError, 'NETWORK_ERROR');
+
+    cubit.clearSaveError();
+    expect(cubit.state.saveError, isNull);
+
+    await Future<void>.delayed(Duration.zero);
+    expect(cubit.state.saveError, isNull);
+    await cubit.close();
+  });
 }

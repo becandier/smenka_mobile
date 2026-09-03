@@ -12,6 +12,11 @@ abstract class ChecklistFillState with _$ChecklistFillState {
     @Default(SectionData<ChecklistInstanceDetail>())
     SectionData<ChecklistInstanceDetail> instance,
     @Default(<String, FeatureStatus>{}) Map<String, FeatureStatus> itemStatuses,
+
+    /// Одноразовый `error.code` последнего отказа сохранения пункта/комментария
+    /// (не `SHIFT_FINISHED` — тот уводит экран в read-only через [notice], без
+    /// тоста через это поле) — view показывает локализованным тостом и
+    /// сбрасывает.
     String? saveError,
 
     /// Только чтение — редактирование пунктов и фото недоступно (просмотр
