@@ -480,10 +480,12 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     emit(state.copyWith(selectedWorkScheduleId: null));
   }
 
-  /// Координаты, полученные на текущей попытке старта — кэшируются между
-  /// [startShift] (резолв графика при гео-проверке) и
-  /// [continueStartAfterScheduleSelection] (продолжение после модалки
-  /// выбора), чтобы не запрашивать GPS дважды в рамках одного тапа «Начать».
+  /// Координаты, полученные на текущей попытке старта — кэшируются в
+  /// [startShift] сразу после успешной геолокации и переживают ОБЕ
+  /// возможные модалки на пути до старта (точка →
+  /// [continueStartAfterWorkLocationSelection], график →
+  /// [continueStartAfterScheduleSelection]), чтобы не запрашивать GPS дважды
+  /// в рамках одного тапа «Начать» (`shift_start_location_choice`).
   ({double? lat, double? lng})? _pendingStartCoords;
 
   Future<StartShiftResult> startShift() async {
@@ -493,9 +495,12 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         actionStatus: FeatureStatus.loading,
         actionError: null,
         actionErrorCode: null,
-        // Новая попытка — прошлый гео-отказ больше не описывает реальность.
+        // Новая попытка — прошлый гео-отказ/подсказка больше не описывают
+        // реальность.
         lastGeoFailure: null,
         geoBlockLevel: GeoBlockLevel.unknown,
+        nearestOutsideHint: null,
+        nearbyWorkLocations: const [],
       ),
     );
 
@@ -506,7 +511,11 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
     double? lng;
 
     if (needsGeo) {
+      // «Определяем местоположение…» — идёт только на время самого запроса
+      // координат, не всей операции старта (shift_start_location_choice).
+      emit(state.copyWith(isLocating: true));
       final geoResult = await _geoService.getCurrentPosition();
+      emit(state.copyWith(isLocating: false));
 
       switch (geoResult) {
         case GeoSuccess():
@@ -545,23 +554,40 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
           return _failStartWithGeo(geoResult, StartShiftResult.geoUnsupported);
       }
 
-      // Гео-check организация: точка известна только сейчас (только что
-      // получена от GPS) — резолвим эффективный набор графиков по тем же
-      // координатам, которые пойдут в POST /shifts/start ниже (см.
-      // docs/tasks/work_schedules_geo_resolve/mobile.md). Без этого шага
-      // location-only графики (без роли/глобально) никогда не резолвились бы
-      // для гео-check организаций — это и был исходный баг.
       final orgId = state.selectedOrganizationId;
       if (orgId != null) {
-        final selectionOutcome = await _resolveScheduleForGeoStart(
+        // Координаты этой попытки кэшируются сразу — переживают ОБЕ модалки
+        // (точка → график), которые могут понадобиться ниже, до самого
+        // _performStart (см. continueStartAfterWorkLocationSelection /
+        // continueStartAfterScheduleSelection).
+        _pendingStartCoords = (lat: lat, lng: lng);
+
+        // Явный выбор точки при пересечении зон (shift_start_location_choice):
+        // сервер больше не решает молча, какую точку считать «той самой».
+        final locationOutcome = await _resolveWorkLocationForGeoStart(
           orgId,
           lat,
           lng,
+        );
+        if (locationOutcome != null) return locationOutcome;
+
+        // Точка уже известна (авто при одной подходящей, либо будет выбрана
+        // после continueStartAfterWorkLocationSelection) — резолвим
+        // эффективный набор графиков по НЕЙ, а не по сырым координатам:
+        // иначе выбор сотрудником НЕ ближайшей точки разошёлся бы с тем,
+        // location-only графики какой точки резолвит бэк (см.
+        // docs/tasks/work_schedules_geo_resolve/mobile.md — тот исходный баг
+        // чинился резолвом по координатам, здесь уточняем его резолвом по
+        // явной точке, раз она уже известна).
+        final selectionOutcome = await _resolveScheduleForGeoStart(
+          orgId,
+          state.selectedWorkLocation?.id,
         );
         if (selectionOutcome != null) return selectionOutcome;
       }
     }
 
+    _pendingStartCoords = null;
     return _performStart(lat: lat, lng: lng);
   }
 
@@ -673,27 +699,150 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
 
   Future<void> openGeoLocationSettings() => _geoService.openLocationSettings();
 
-  /// Резолвит эффективный набор графиков по свежим координатам
-  /// непосредственно перед стартом (только гео-check организации).
+  /// Резолвит рабочую точку по свежим координатам непосредственно перед
+  /// стартом (только гео-check организации, `GET .../work-locations/nearby`,
+  /// `shift_start_location_choice`) — заменяет прежнее молчаливое решение
+  /// сервера «беру ближайшую» явным выбором сотрудника, когда подходящих
+  /// точек несколько.
+  ///
+  /// 0 точек — сценарий блокируется (сотрудник вне всех зон): подсказка о
+  /// ближайшей точке вне радиуса кладётся в [ShiftTrackerState.
+  /// nearestOutsideHint], возвращается [StartShiftResult.noNearbyWorkLocation].
+  /// 1 точка — подставляется автоматически в [ShiftTrackerState.
+  /// selectedWorkLocation] без лишнего шага, вызывающий код продолжает старт
+  /// сразу (возвращает `null`). Больше одного — просит UI показать модалку
+  /// выбора (`NearbyWorkLocationPickerRoute`), возвращая
+  /// [StartShiftResult.workLocationSelectionRequired]; координаты для
+  /// продолжения уже сохранены вызывающим кодом ([startShift]) в
+  /// [_pendingStartCoords]. Сбой запроса — часть уже идущего действия
+  /// «Начать»: тост/сетевая плашка + «Повторить», который заново пройдёт этот
+  /// же путь.
+  Future<StartShiftResult?> _resolveWorkLocationForGeoStart(
+    String orgId,
+    double? lat,
+    double? lng,
+  ) async {
+    if (lat == null || lng == null) return null;
+
+    final result = await _organizationRepository.getNearbyWorkLocations(
+      orgId,
+      latitude: lat,
+      longitude: lng,
+    );
+
+    return result.fold(
+      onSuccess: (nearby) {
+        if (nearby.items.isEmpty) {
+          emit(
+            state.copyWith(
+              actionStatus: FeatureStatus.initial,
+              nearestOutsideHint: nearby.nearestOutside,
+            ),
+          );
+          return StartShiftResult.noNearbyWorkLocation;
+        }
+
+        if (nearby.items.length == 1) {
+          final only = nearby.items.first;
+          emit(
+            state.copyWith(
+              selectedWorkLocation: WorkLocation(
+                id: only.id,
+                name: only.name,
+                address: only.address,
+              ),
+            ),
+          );
+          return null;
+        }
+
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.initial,
+            nearbyWorkLocations: nearby.items,
+          ),
+        );
+        return StartShiftResult.workLocationSelectionRequired;
+      },
+      onFailure: (error) {
+        emit(
+          state.copyWith(
+            actionStatus: FeatureStatus.error,
+            actionError: error.message,
+            actionErrorCode: error.code,
+          ),
+        );
+        return StartShiftResult.error;
+      },
+    );
+  }
+
+  /// Продолжение старта после того, как сотрудник выбрал рабочую точку в
+  /// модалке (гео-check организация, `>1` подходящих точек, см. [startShift]
+  /// / [_resolveWorkLocationForGeoStart]). Переиспользует координаты,
+  /// полученные на этом же тапе «Начать» — повторного запроса GPS нет.
+  Future<StartShiftResult> continueStartAfterWorkLocationSelection(
+    NearbyWorkLocation location,
+  ) async {
+    emit(
+      state.copyWith(
+        selectedWorkLocation: WorkLocation(
+          id: location.id,
+          name: location.name,
+          address: location.address,
+        ),
+        actionStatus: FeatureStatus.loading,
+        actionError: null,
+        actionErrorCode: null,
+      ),
+    );
+
+    final orgId = state.selectedOrganizationId;
+    // Координаты ЕЩЁ нужны ниже — если графиков окажется >1, второй модалке
+    // (WorkSchedulePickerRoute → continueStartAfterScheduleSelection) тоже
+    // придётся дождаться своей очереди читать [_pendingStartCoords], поэтому
+    // очищаем поле только непосредственно перед финальным _performStart.
+    final coords = _pendingStartCoords;
+    if (orgId == null) return _performStart();
+
+    final selectionOutcome = await _resolveScheduleForGeoStart(
+      orgId,
+      location.id,
+    );
+    if (selectionOutcome != null) return selectionOutcome;
+
+    _pendingStartCoords = null;
+    return _performStart(lat: coords?.lat, lng: coords?.lng);
+  }
+
+  /// Резолвит эффективный набор графиков по явно известной рабочей точке
+  /// непосредственно перед стартом (только гео-check организации, точка уже
+  /// резолвлена — см. [_resolveWorkLocationForGeoStart] /
+  /// [continueStartAfterWorkLocationSelection]).
   ///
   /// 0 или 1 график — подставляется автоматически ([_preselectSchedule]),
   /// вызывающий код продолжает старт сразу (возвращает `null`). Больше
-  /// одного — сохраняет координаты для [continueStartAfterScheduleSelection]
-  /// и просит UI показать модалку выбора (см. `_WorkScheduleSelector`),
+  /// одного — просит UI показать модалку выбора (см. `_WorkScheduleSelector`),
   /// возвращая [StartShiftResult.scheduleSelectionRequired]. Сбой запроса —
   /// это часть уже идущего действия «Начать», поэтому обрабатывается как
   /// обычная ошибка действия (тост/сетевая плашка + «Повторить», который
   /// заново пройдёт этот же путь) — отдельного молчаливого фолбэка нет,
   /// чтобы не стартовать смену с неизвестным требованием графика.
+  ///
+  /// Ключ кэша выбора графика (`_scheduleContextStorage`) для гео-check
+  /// организаций сознательно остаётся `null` (как и до этой фичи) — им
+  /// симметрично пишет [selectWorkSchedule], который для гео-org тоже всегда
+  /// сохраняет по ключу `null` (см. тело
+  /// `ShiftTrackerState.showWorkLocationSelector`): привязка кэша к реальному
+  /// `work_location_id` потребовала бы синхронно менять оба места, это
+  /// отдельное улучшение вне scope shift_start_location_choice.
   Future<StartShiftResult?> _resolveScheduleForGeoStart(
     String orgId,
-    double? lat,
-    double? lng,
+    String? workLocationId,
   ) async {
     final result = await _workScheduleRepository.getMySchedules(
       orgId,
-      lat: lat,
-      lng: lng,
+      workLocationId: workLocationId,
     );
 
     return result.fold(
@@ -701,7 +850,6 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
         _applyResolvedSchedules(schedules, orgId, null);
 
         if (state.startableSchedules.length > 1) {
-          _pendingStartCoords = (lat: lat, lng: lng);
           emit(state.copyWith(actionStatus: FeatureStatus.initial));
           return StartShiftResult.scheduleSelectionRequired;
         }
@@ -766,8 +914,11 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
       organizationId: state.selectedOrganizationId,
       latitude: lat,
       longitude: lng,
-      // При гео точку определяет сервер (selectedWorkLocation тогда null —
-      // селектор скрыт). При гео выкл шлём выбранную точку (или null).
+      // При гео точку резолвит кубит перед стартом (_resolveWorkLocationFor
+      // GeoStart/continueStartAfterWorkLocationSelection) и кладёт сюда же —
+      // явный выбор вместо молчаливого «сервер решит сам»
+      // (shift_start_location_choice). При гео выкл шлём выбранную вручную
+      // точку (или null).
       workLocationId: state.selectedWorkLocation?.id,
       workScheduleId: startableScheduleId,
     );
@@ -802,6 +953,20 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
             error.code == 'SCHEDULE_WINDOW_CLOSED') {
           emit(state.copyWith(selectedWorkScheduleId: null));
           unawaited(_reloadSchedulesAfterStartFailure(lat: lat, lng: lng));
+        }
+        // Сотрудник успел отойти от выбранной/резолвленной точки между
+        // work-locations/nearby и стартом (гонка «список устарел»,
+        // shift_start_location_choice/backend.md) — точка больше не
+        // актуальна, сбрасываем её. Ничего не перезапрашиваем сами: сценарий
+        // целиком (свежие координаты → новый nearby) начнётся заново со
+        // следующего тапа «Начать» — здесь нечего резолвить без свежего GPS.
+        if (error.code == 'WORK_LOCATION_OUT_OF_RANGE') {
+          emit(
+            state.copyWith(
+              selectedWorkLocation: null,
+              selectedWorkScheduleId: null,
+            ),
+          );
         }
         return StartShiftResult.error;
       },
@@ -994,8 +1159,19 @@ class ShiftTrackerCubit extends Cubit<ShiftTrackerState> {
   /// активную смену и, если сейчас снова idle организационной смены,
   /// принудительно перезапрашивает график — локальный тик мог быть
   /// заморожен (фон ОС) или экран был на другом табе всё это время.
+  ///
+  /// Также перечитывает список организаций
+  /// (`shift_start_location_choice`): `geoCheckEnabled`/`requireWorkLocation`
+  /// и т.п. настройки раньше обновлялись только pull-to-refresh, поэтому
+  /// админ, переключивший геопроверку, не подхватывался у уже открытой
+  /// вкладки — тот же `fetchMyOrganizations()`, что и в [refresh], пушит
+  /// свежие данные в уже действующую подписку `_orgSubscription`, не трогая
+  /// текущий выбор (`_maybePreselectContext` срабатывает не более раза).
   Future<void> _refreshVisibleContext() async {
-    await _pollSync();
+    await Future.wait([
+      _pollSync(),
+      _organizationRepository.fetchMyOrganizations(),
+    ]);
     if (!state.hasActiveShift &&
         state.isOrgShift &&
         state.showWorkLocationSelector) {
@@ -1150,4 +1326,17 @@ enum StartShiftResult {
   /// показать модалку выбора (`WorkSchedulePickerRoute`) и по её результату
   /// вызвать [ShiftTrackerCubit.continueStartAfterScheduleSelection].
   scheduleSelectionRequired,
+
+  /// Гео-check организация: по координатам найдено `>1` подходящей рабочей
+  /// точки (`GET .../work-locations/nearby`, `shift_start_location_choice`) —
+  /// вызывающий код должен показать модалку выбора
+  /// (`NearbyWorkLocationPickerRoute`) и по её результату вызвать
+  /// [ShiftTrackerCubit.continueStartAfterWorkLocationSelection].
+  workLocationSelectionRequired,
+
+  /// Гео-check организация: сотрудник не попал ни в одну рабочую зону
+  /// (`nearby.items` пуст) — вызывающий код показывает сообщение
+  /// «Вы вне рабочих зон» (см. [ShiftTrackerState.nearestOutsideHint] для
+  /// подсказки о ближайшей точке) с «Повторить», запускающим сценарий заново.
+  noNearbyWorkLocation,
 }

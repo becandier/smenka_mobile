@@ -183,10 +183,15 @@ class GeoDiagnostics {
 ///   таймаут) как `deniedForever`. Поэтому на web мы не полагаемся на них для
 ///   решения: сразу запрашиваем позицию (это триггерит браузерный prompt) и
 ///   классифицируем реальную ошибку.
-/// - **Точность.** Web — `enableHighAccuracy:false` (десктоп без GPS часто даёт
-///   timeout при high). Native — high с fallback на medium и на
-///   `getLastKnownPosition` (последний строго под `!kIsWeb` — на web бросает
-///   `UnsupportedError`).
+/// - **Точность.** Web — короткая попытка `enableHighAccuracy:true`
+///   ([webHighAccuracyTimeout]), затем фолбэк на `enableHighAccuracy:false`
+///   ([webTimeout]) — десктоп без GPS часто даёт timeout при high, а
+///   мобильный браузер на медленной высокой попытке иначе отдал бы
+///   устаревшие координаты по Wi-Fi/вышкам (`shift_start_location_choice`).
+///   Ошибка/таймаут высокой попытки — внутренний шаг, наружу не
+///   классифицируется: результат фолбэка используется как есть. Native —
+///   high с fallback на medium и на `getLastKnownPosition` (последний строго
+///   под `!kIsWeb` — на web бросает `UnsupportedError`).
 /// - **Повторы/таймауты** — параметры с разумными дефолтами (ниже).
 class GeoService {
   GeoService({
@@ -194,6 +199,7 @@ class GeoService {
     GeoLogger? logger,
     bool? isWeb,
     bool Function()? insecureContextProbe,
+    this.webHighAccuracyTimeout = const Duration(seconds: 6),
     this.webTimeout = const Duration(seconds: 20),
     this.nativePrimaryTimeout = const Duration(seconds: 15),
     this.nativeFallbackTimeout = const Duration(seconds: 20),
@@ -208,7 +214,13 @@ class GeoService {
   final bool _isWeb;
   final bool Function() _insecureContextProbe;
 
-  /// Таймаут единственной попытки на web (medium accuracy).
+  /// Таймаут первой (high accuracy) попытки на web — короткий: если GPS не
+  /// успел зафиксироваться, лучше сразу уйти в фолбэк [webTimeout], чем
+  /// заставлять сотрудника ждать (`shift_start_location_choice`).
+  final Duration webHighAccuracyTimeout;
+
+  /// Таймаут фолбэк-попытки на web (medium accuracy) — текущее поведение,
+  /// не изменилось этой фичей.
   final Duration webTimeout;
 
   /// Таймаут основной (high accuracy) попытки на native.
@@ -254,13 +266,33 @@ class GeoService {
     // доступ ещё не выдан) и даёт настоящую ошибку для классификации. Мы НЕ
     // используем checkPermission()/requestPermission() — они на web лживы (см.
     // док-стринг класса).
+    //
+    // Первая попытка — высокая точность, короткий таймаут
+    // (shift_start_location_choice): в мобильном браузере low accuracy отдаёт
+    // устаревшую позицию по Wi-Fi/вышкам, из-за чего сотрудник, физически
+    // стоящий на точке, получает «вы вне зоны». Любая ошибка/таймаут здесь —
+    // внутренний шаг, НЕ классифицируется и не долетает до пользователя: код
+    // просто уходит в фолбэк ниже, результат которого используется как есть.
     try {
       final position = await _requestPosition(
-        // enableHighAccuracy:false — на десктоп-браузере без GPS high часто
-        // уходит в timeout / PositionUnavailable.
+        accuracy: LocationAccuracy.high,
+        timeout: webHighAccuracyTimeout,
+        attempt: 1,
+      );
+      return _success(position);
+    } on Object catch (e) {
+      _log.step('web high-accuracy attempt failed, falling back to medium: $e');
+    }
+
+    // Фолбэк — единственная попытка medium accuracy, поведение полностью
+    // совпадает с тем, что было до shift_start_location_choice: на
+    // десктоп-браузере без GPS high часто уходит в timeout /
+    // PositionUpdateException, поэтому здесь снова понижаем точность.
+    try {
+      final position = await _requestPosition(
         accuracy: LocationAccuracy.medium,
         timeout: webTimeout,
-        attempt: 1,
+        attempt: 2,
       );
       return _success(position);
     } on PermissionDeniedException catch (e) {

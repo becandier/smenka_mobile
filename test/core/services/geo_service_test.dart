@@ -376,28 +376,81 @@ void main() {
       },
     );
 
+    test('success сразу на высокой точности (shift_start_location_choice) — '
+        'без фолбэка, без getLastKnown', () async {
+      stubGetPosition(_position(accuracy: 5));
+
+      final result = await webService().getCurrentPosition();
+
+      expect(result, isA<GeoSuccess>());
+      // На web не полагаемся на проверки разрешений/сервиса и не трогаем кэш.
+      verifyNever(() => geolocator.isLocationServiceEnabled());
+      verifyNever(() => geolocator.checkPermission());
+      verifyNever(() => geolocator.getLastKnownPosition());
+
+      final captured = verify(
+        () => geolocator.getCurrentPosition(
+          locationSettings: captureAny(named: 'locationSettings'),
+        ),
+      ).captured;
+      expect(captured, hasLength(1));
+      final settings = captured.single as LocationSettings;
+      expect(settings.accuracy, LocationAccuracy.high);
+    });
+
     test(
-      'success c enableHighAccuracy=false (medium); без getLastKnown',
+      'высокая точность падает таймаутом → фолбэк medium → success '
+      '(shift_start_location_choice); таймаут не долетает до пользователя',
       () async {
-        stubGetPosition(_position(accuracy: 30));
+        var calls = 0;
+        when(
+          () => geolocator.getCurrentPosition(
+            locationSettings: any(named: 'locationSettings'),
+          ),
+        ).thenAnswer((_) async {
+          calls++;
+          if (calls == 1) throw TimeoutException('slow high-accuracy');
+          return _position(accuracy: 30);
+        });
 
         final result = await webService().getCurrentPosition();
 
         expect(result, isA<GeoSuccess>());
-        // На web не полагаемся на проверки разрешений/сервиса и не трогаем кэш.
-        verifyNever(() => geolocator.isLocationServiceEnabled());
-        verifyNever(() => geolocator.checkPermission());
-        verifyNever(() => geolocator.getLastKnownPosition());
-
+        expect(calls, 2);
         final captured = verify(
           () => geolocator.getCurrentPosition(
             locationSettings: captureAny(named: 'locationSettings'),
           ),
         ).captured;
-        final settings = captured.single as LocationSettings;
-        expect(settings.accuracy, LocationAccuracy.medium);
+        expect(
+          (captured[0] as LocationSettings).accuracy,
+          LocationAccuracy.high,
+        );
+        expect(
+          (captured[1] as LocationSettings).accuracy,
+          LocationAccuracy.medium,
+        );
       },
     );
+
+    test('неожиданная ошибка высокой точности → тоже уходит в фолбэк medium '
+        '(без спецклассификации первой попытки)', () async {
+      var calls = 0;
+      when(
+        () => geolocator.getCurrentPosition(
+          locationSettings: any(named: 'locationSettings'),
+        ),
+      ).thenAnswer((_) async {
+        calls++;
+        if (calls == 1) throw StateError('unexpected');
+        return _position();
+      });
+
+      final result = await webService().getCurrentPosition();
+
+      expect(result, isA<GeoSuccess>());
+      expect(calls, 2);
+    });
 
     test('PermissionDenied → GeoPermissionDeniedForever (web)', () async {
       when(

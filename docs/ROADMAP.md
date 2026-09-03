@@ -387,3 +387,19 @@
 - [x] `make check` зелёный (477/477), `make gen` прогнан после каждого изменения freezed-моделей
 - [ ] **Backend/admin**: backend review clean, но требуется повторный broad final review и чистый полный `make test`; admin — fix round 2 по ESLint-guard регрессу перед merge (см. `HANDOFF.md`/`STATUS.md`)
 - [ ] **End-to-end**: мерж `feature/shift-timezone-display` (backend → admin/mobile web), деплой и read-only проверка прод-кейса `04:39:06Z–18:00:00Z` + `Europe/Moscow` → `07:39–21:00` — за оркестратором (корень)
+
+---
+
+## Фича — Явный выбор рабочей точки при старте смены + точность геолокации (shift_start_location_choice) `[~]` (`../docs/tasks/shift_start_location_choice/mobile.md`)
+- [x] **Прод-баг**: сервер молча резолвил ближайшую точку из пересекающихся зон, клиент даже не показывал, что подходящих точек было несколько; вторая проблема — web всегда запрашивал только `LocationAccuracy.medium`, из-за чего мобильный браузер отдавал устаревшую позицию по Wi-Fi/вышкам и сотрудникам на месте писало «вы вне зоны»
+- [x] **Новый эндпоинт** `GET /organizations/{org_id}/work-locations/nearby` — `OrganizationDataSource`/`OrganizationRepository.getNearbyWorkLocations` → `Task<NearbyWorkLocations>`; домен `NearbyWorkLocation`/`NearestOutsideWorkLocation`/`NearbyWorkLocations` (freezed + DTO + mapper, по канону остальных сущностей организации)
+- [x] **`ShiftTrackerCubit.startShift()`**: новый шаг между геолокацией и резолвом графика — `_resolveWorkLocationForGeoStart` по свежим координатам; 0 точек → `noNearbyWorkLocation` (диалог + подсказка о ближайшей точке вне радиуса, «Повторить» перезапускает весь сценарий с нуля), 1 → подставляется молча без лишнего шага, >1 → `workLocationSelectionRequired` + `NearbyWorkLocationPickerRoute` (bottom-sheet, порядок сервера, бейдж «Ближайшая»), `continueStartAfterWorkLocationSelection` продолжает с выбранной (не обязательно ближайшей) точкой без повторного GPS
+- [x] **Резолв графика — по явной точке, не по сырым координатам**: `_resolveScheduleForGeoStart(orgId, workLocationId)` вместо `lat`/`lng` — иначе выбор НЕ ближайшей точки в модалке разошёлся бы с тем, какую точку резолвит бэк для location-only графиков
+- [x] **`WORK_LOCATION_OUT_OF_RANGE`** (новый код 403, «гонка «список устарел»») замаплен в `error_localization.dart`; точка/график сбрасываются, сценарий целиком начинается заново со следующего тапа «Начать»
+- [x] **Точность на web**: `GeoService` — первая попытка `LocationAccuracy.high` с коротким `webHighAccuracyTimeout` (6с, константа рядом с прочими таймаутами), любая ошибка/таймаут — внутренний шаг (не долетает до пользователя), молчаливый фолбэк на прежний `LocationAccuracy.medium`/`webTimeout` (20с) без изменений. Блокировку старта по погрешности координат НЕ вводили (осознанное решение владельца)
+- [x] **Индикатор «Определяем местоположение…»** (`ShiftTrackerState.isLocating`, `_LocatingIndicator`) — только на время самого запроса координат
+- [x] **Обновление контекста организации**: `_refreshVisibleContext` (общий хвост `onAppResumed`/`onScreenVisible`) теперь также перечитывает организации — переключение `geoCheckEnabled` админом подхватывается без выхода из приложения, не только pull-to-refresh
+- [x] Никаких `!` на nullable в рукописном коде; строковых хардкодов контрактных значений нет (единственный новый код ошибки сравнивается как есть — по образцу существующих `SCHEDULE_NOT_AVAILABLE`/`SCHEDULE_NOT_FOUND` в этом же файле)
+- [x] `make gen`/`make loc` прогнаны, `make check` зелёный (см. STATUS.md за числами), `flutter build web --release --csp --no-tree-shake-icons --base-href=/` собирается
+- [ ] **Backend**: параллельная дорожка того же ТЗ — контракт `nearby`/`WORK_LOCATION_OUT_OF_RANGE` согласован из `docs/tasks/shift_start_location_choice/backend.md`, но нужно дождаться и смержить
+- [ ] **Мерж в `main` + деплой** — за оркестратором (корень)
