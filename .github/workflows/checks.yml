@@ -26,3 +26,9 @@ jobs:
 
       - name: Test
         run: flutter test
+
+      # Analyze не видит ошибок в сгенерированных part-файлах (`*.gr.dart`):
+      # пропущенный импорт типа всплывает только на компиляции. Собираем здесь,
+      # чтобы ловить это на ветке, а не на релизе.
+      - name: Build web
+        run: flutter build web --release --csp --no-tree-shake-icons --base-href=/

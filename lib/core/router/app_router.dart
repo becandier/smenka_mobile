@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smenka_mobile/core/services/photo_picker_service.dart'
     show PhotoSource;
+import 'package:smenka_mobile/core/time/app_time.dart';
 import 'package:smenka_mobile/data/domain/auth/auth_state_notifier.dart';
 // Скрываем доменный PhotoSource (конфиг требования пункта) — здесь тип pop
 // bottom-sheet выбора источника, это PhotoSource из PhotoPickerService.
